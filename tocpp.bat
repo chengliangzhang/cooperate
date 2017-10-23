@@ -1,0 +1,1 @@
+slice2cpp -d --depend -IDIR services/src/main/resources/zeroc/%1 --include-dir services/src/main/resources/zeroc --output-dir "C:/work/Win32Project1/Win32Project1/Win32Project1"
