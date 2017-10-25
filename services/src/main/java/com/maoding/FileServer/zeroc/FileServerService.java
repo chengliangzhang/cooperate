@@ -22,19 +22,19 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileServerService extends com.zeroc.Ice.Object
 {
-    java.lang.Integer getFileServerType(com.zeroc.Ice.Current current);
-
     HttpRequestDTO getUploadRequestForHttp(com.zeroc.Ice.Current current);
 
     HttpRequestDTO getDownloadRequestForHttp(String src, com.zeroc.Ice.Current current);
 
-    String DuplicateFile(String src, com.zeroc.Ice.Current current);
+    String duplicateFile(String src, com.zeroc.Ice.Current current);
 
-    void DeleteFile(String src, com.zeroc.Ice.Current current);
+    void deleteFile(String src, com.zeroc.Ice.Current current);
 
     java.lang.Boolean isExist(String src, com.zeroc.Ice.Current current);
 
-    java.util.List<java.lang.String> listFile(com.zeroc.Ice.Current current);
+    java.util.List<java.lang.String> listFile(String scope, com.zeroc.Ice.Current current);
+
+    java.util.List<java.lang.String> listScope(com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -57,17 +57,6 @@ public interface FileServerService extends com.zeroc.Ice.Object
     static String ice_staticId()
     {
         return "::zeroc::FileServerService";
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFileServerType(FileServerService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        inS.readEmptyParams();
-        java.lang.Integer ret = obj.getFileServerType(current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeSerializable(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getUploadRequestForHttp(FileServerService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -95,28 +84,28 @@ public interface FileServerService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_DuplicateFile(FileServerService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_duplicateFile(FileServerService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         String iceP_src;
         iceP_src = istr.readString();
         inS.endReadParams();
-        String ret = obj.DuplicateFile(iceP_src, current);
+        String ret = obj.duplicateFile(iceP_src, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         ostr.writeString(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_DeleteFile(FileServerService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_deleteFile(FileServerService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         String iceP_src;
         iceP_src = istr.readString();
         inS.endReadParams();
-        obj.DeleteFile(iceP_src, current);
+        obj.deleteFile(iceP_src, current);
         return inS.setResult(inS.writeEmptyParams());
     }
 
@@ -137,27 +126,41 @@ public interface FileServerService extends com.zeroc.Ice.Object
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listFile(FileServerService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        inS.readEmptyParams();
-        java.util.List<java.lang.String> ret = obj.listFile(current);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_scope;
+        iceP_scope = istr.readString();
+        inS.endReadParams();
+        java.util.List<java.lang.String> ret = obj.listFile(iceP_scope, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         FileListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listScope(FileServerService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        java.util.List<java.lang.String> ret = obj.listScope(current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ScopeListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     final static String[] _iceOps =
     {
-        "DeleteFile",
-        "DuplicateFile",
+        "deleteFile",
+        "duplicateFile",
         "getDownloadRequestForHttp",
-        "getFileServerType",
         "getUploadRequestForHttp",
         "ice_id",
         "ice_ids",
         "ice_isA",
         "ice_ping",
         "isExist",
-        "listFile"
+        "listFile",
+        "listScope"
     };
 
     @Override
@@ -174,11 +177,11 @@ public interface FileServerService extends com.zeroc.Ice.Object
         {
             case 0:
             {
-                return _iceD_DeleteFile(this, in, current);
+                return _iceD_deleteFile(this, in, current);
             }
             case 1:
             {
-                return _iceD_DuplicateFile(this, in, current);
+                return _iceD_duplicateFile(this, in, current);
             }
             case 2:
             {
@@ -186,35 +189,35 @@ public interface FileServerService extends com.zeroc.Ice.Object
             }
             case 3:
             {
-                return _iceD_getFileServerType(this, in, current);
+                return _iceD_getUploadRequestForHttp(this, in, current);
             }
             case 4:
             {
-                return _iceD_getUploadRequestForHttp(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 5:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 6:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 7:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 8:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return _iceD_isExist(this, in, current);
             }
             case 9:
             {
-                return _iceD_isExist(this, in, current);
+                return _iceD_listFile(this, in, current);
             }
             case 10:
             {
-                return _iceD_listFile(this, in, current);
+                return _iceD_listScope(this, in, current);
             }
         }
 

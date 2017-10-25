@@ -11,15 +11,6 @@
 
     <artifactId>services</artifactId>
 
-    <dependencies>
-        <!-- 模块 -->
-        <dependency>
-            <groupId>com.maoding</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <finalName>services-${project.version}</finalName>
         <plugins>
@@ -72,5 +63,12 @@
 
         </plugins>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>com.maoding</groupId>
+            <artifactId>core</artifactId>
+            <version>v1.0</version>
+        </dependency>
+    </dependencies>
 
 </project>

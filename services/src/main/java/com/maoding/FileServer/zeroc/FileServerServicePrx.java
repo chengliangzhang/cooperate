@@ -22,37 +22,6 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileServerServicePrx extends com.zeroc.Ice.ObjectPrx
 {
-    default java.lang.Integer getFileServerType()
-    {
-        return getFileServerType(com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default java.lang.Integer getFileServerType(java.util.Map<String, String> context)
-    {
-        return _iceI_getFileServerTypeAsync(context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<java.lang.Integer> getFileServerTypeAsync()
-    {
-        return _iceI_getFileServerTypeAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<java.lang.Integer> getFileServerTypeAsync(java.util.Map<String, String> context)
-    {
-        return _iceI_getFileServerTypeAsync(context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> _iceI_getFileServerTypeAsync(java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFileServerType", null, sync, null);
-        f.invoke(true, context, null, null, istr -> {
-                     java.lang.Integer ret;
-                     ret = istr.readSerializable(java.lang.Integer.class);
-                     return ret;
-                 });
-        return f;
-    }
-
     default HttpRequestDTO getUploadRequestForHttp()
     {
         return getUploadRequestForHttp(com.zeroc.Ice.ObjectPrx.noExplicitContext);
@@ -117,29 +86,29 @@ public interface FileServerServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default String DuplicateFile(String src)
+    default String duplicateFile(String src)
     {
-        return DuplicateFile(src, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return duplicateFile(src, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default String DuplicateFile(String src, java.util.Map<String, String> context)
+    default String duplicateFile(String src, java.util.Map<String, String> context)
     {
-        return _iceI_DuplicateFileAsync(src, context, true).waitForResponse();
+        return _iceI_duplicateFileAsync(src, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.String> DuplicateFileAsync(String src)
+    default java.util.concurrent.CompletableFuture<java.lang.String> duplicateFileAsync(String src)
     {
-        return _iceI_DuplicateFileAsync(src, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_duplicateFileAsync(src, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.String> DuplicateFileAsync(String src, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.lang.String> duplicateFileAsync(String src, java.util.Map<String, String> context)
     {
-        return _iceI_DuplicateFileAsync(src, context, false);
+        return _iceI_duplicateFileAsync(src, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_DuplicateFileAsync(String iceP_src, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_duplicateFileAsync(String iceP_src, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "DuplicateFile", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "duplicateFile", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      ostr.writeString(iceP_src);
                  }, istr -> {
@@ -150,29 +119,29 @@ public interface FileServerServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void DeleteFile(String src)
+    default void deleteFile(String src)
     {
-        DeleteFile(src, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        deleteFile(src, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void DeleteFile(String src, java.util.Map<String, String> context)
+    default void deleteFile(String src, java.util.Map<String, String> context)
     {
-        _iceI_DeleteFileAsync(src, context, true).waitForResponse();
+        _iceI_deleteFileAsync(src, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> DeleteFileAsync(String src)
+    default java.util.concurrent.CompletableFuture<Void> deleteFileAsync(String src)
     {
-        return _iceI_DeleteFileAsync(src, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_deleteFileAsync(src, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> DeleteFileAsync(String src, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> deleteFileAsync(String src, java.util.Map<String, String> context)
     {
-        return _iceI_DeleteFileAsync(src, context, false);
+        return _iceI_deleteFileAsync(src, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_DeleteFileAsync(String iceP_src, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_deleteFileAsync(String iceP_src, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "DeleteFile", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "deleteFile", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      ostr.writeString(iceP_src);
                  }, null);
@@ -212,32 +181,65 @@ public interface FileServerServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default java.util.List<java.lang.String> listFile()
+    default java.util.List<java.lang.String> listFile(String scope)
     {
-        return listFile(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return listFile(scope, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default java.util.List<java.lang.String> listFile(java.util.Map<String, String> context)
+    default java.util.List<java.lang.String> listFile(String scope, java.util.Map<String, String> context)
     {
-        return _iceI_listFileAsync(context, true).waitForResponse();
+        return _iceI_listFileAsync(scope, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.util.List<java.lang.String>> listFileAsync()
+    default java.util.concurrent.CompletableFuture<java.util.List<java.lang.String>> listFileAsync(String scope)
     {
-        return _iceI_listFileAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_listFileAsync(scope, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.util.List<java.lang.String>> listFileAsync(java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.util.List<java.lang.String>> listFileAsync(String scope, java.util.Map<String, String> context)
     {
-        return _iceI_listFileAsync(context, false);
+        return _iceI_listFileAsync(scope, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<java.lang.String>> _iceI_listFileAsync(java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<java.lang.String>> _iceI_listFileAsync(String iceP_scope, java.util.Map<String, String> context, boolean sync)
     {
         com.zeroc.IceInternal.OutgoingAsync<java.util.List<java.lang.String>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listFile", null, sync, null);
-        f.invoke(true, context, null, null, istr -> {
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_scope);
+                 }, istr -> {
                      java.util.List<java.lang.String> ret;
                      ret = FileListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default java.util.List<java.lang.String> listScope()
+    {
+        return listScope(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<java.lang.String> listScope(java.util.Map<String, String> context)
+    {
+        return _iceI_listScopeAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<java.lang.String>> listScopeAsync()
+    {
+        return _iceI_listScopeAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<java.lang.String>> listScopeAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_listScopeAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<java.lang.String>> _iceI_listScopeAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<java.lang.String>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listScope", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     java.util.List<java.lang.String> ret;
+                     ret = ScopeListHelper.read(istr);
                      return ret;
                  });
         return f;
