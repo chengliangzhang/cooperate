@@ -3,11 +3,9 @@ package com.maoding.Base;
 import com.maoding.Utils.SpringContextUtils;
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.ObjectAdapter;
+import com.zeroc.Ice.ObjectPrx;
 import com.zeroc.Ice.Util;
-import com.zeroc.Ice._ObjectPrxI;
 import com.zeroc.IceBox.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -15,10 +13,7 @@ import org.slf4j.LoggerFactory;
  * 日    期 : 2017/9/13 9:34
  * 描    述 :
  */
-public class BaseLocalService extends _ObjectPrxI implements Service, com.zeroc.Ice.Object{
-    /** 日志对象，不能用于static方法 */
-    protected final Logger log = LoggerFactory.getLogger(this.getClass());
-
+public class BaseLocalService<P extends ObjectPrx> extends BaseRemoteService<P> implements Service, com.zeroc.Ice.Object{
     /** icebox代理 */
     private ObjectAdapter adapter = null;
 

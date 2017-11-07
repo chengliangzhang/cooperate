@@ -10,9 +10,9 @@ import java.io.Serializable;
  */
 public class BasicFileDTO implements Serializable {
     /** 文件空间，即阿里云的buchet或FastFDS的group */
-    String scope;
+    private String scope;
     /** 文件标志，即阿里云的key或FastFDS的key */
-    String key;
+    private String key;
 
     public String getScope() {
         return scope;

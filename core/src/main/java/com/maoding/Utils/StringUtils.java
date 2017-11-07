@@ -34,4 +34,24 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static String getParam(String str, String prefix){
         return getParam(str,prefix," ");
     }
+
+    /** 标准化路径（所有路径分隔都用"/"） */
+    public static String formatPath(String path) {
+        if (path == null) return null;
+        return path.replaceAll("\\\\", "/").trim();
+    }
+
+    /** 获取文件名 */
+    public static String getFileName(String path){
+        if (path == null) return null;
+        path = formatPath(path);
+        return path.substring(path.lastIndexOf("/")+1);
+    }
+
+    /** 获取路径名 */
+    public static String getDirName(String path){
+        if (path == null) return null;
+        path = formatPath(path);
+        return path.substring(0,path.lastIndexOf("/"));
+    }
 }

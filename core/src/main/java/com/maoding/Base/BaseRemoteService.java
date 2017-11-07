@@ -1,12 +1,10 @@
 package com.maoding.Base;
 
+import com.maoding.Config.IceConfig;
 import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -14,13 +12,9 @@ import org.springframework.core.env.Environment;
  * 日    期 : 2017/9/12 20:12
  * 描    述 :
  */
-@PropertySource(value = {"classpath:properties/ice-config.properties"},encoding="utf-8",ignoreResourceNotFound=true)
 public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
     /** 日志对象 */
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    private Environment environment;
 
     /** 查找远程服务线程 */
     private class ConnectThread extends Thread {
@@ -39,13 +33,13 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
         @Override
         public void run() {
             //初始化连接器
-            String gridLocation = environment.getProperty(GRID_LOCATION);
+            String gridLocation = IceConfig.getProperty(GRID_LOCATION);
             if ((communicator == null) || !StringUtils.isSame(gridLocation, lastGridLocation)) {
                 communicator = (!StringUtils.isEmpty(gridLocation)) ?
                         Util.initialize(new String[]{"--" + GRID_LOCATION + "=" + gridLocation}) :
                         Util.initialize();
                 lastGridLocation = gridLocation;
-                log.info("IceGrid服务器切换到" + gridLocation);
+                if (gridLocation != null) log.info("IceGrid服务器切换到" + gridLocation);
             }
 
             assert (!StringUtils.isEmpty(serviceName));
@@ -53,7 +47,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
 
             P prx = null;
             //在IceGrid服务器上查找服务代理
-            String adapterId = environment.getProperty(serviceName + "." + ADAPTER_ID);
+            String adapterId = IceConfig.getProperty(serviceName + "." + ADAPTER_ID);
             if ((communicator.getDefaultLocator() != null) && (!StringUtils.isEmpty(adapterId))) {
                 String svr = serviceName + "@" + adapterId;
                 try {
@@ -67,7 +61,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
             }
 
             //直接查找服务代理
-            String endPoints = environment.getProperty(serviceName + "." + END_POINTS);
+            String endPoints = IceConfig.getProperty(serviceName + "." + END_POINTS);
             if ((prx == null) && (!StringUtils.isEmpty(endPoints))){
                 String svr = serviceName + ":default " + StringUtils.getParam(endPoints,"-p ");
                 try {
@@ -103,9 +97,12 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
     /** 查找远程服务线程 */
     private volatile ConnectThread connectThread = null;
 
-    protected P getServicePrx(String serviceName, Class<P> proxy, Class<?> impl, P defaultPrx) {
+    protected P getServicePrx(final String serviceName, final Class<P> proxy, final Class<?> impl, final P defaultPrx) {
+        assert !StringUtils.isEmpty(serviceName);
+        assert proxy != null;
+
         if (connectThread == null){
-            connectThread = new ConnectThread(serviceName,proxy,impl);
+            connectThread = new ConnectThread(serviceName,proxy,((impl != null)?impl:proxy));
             connectThread.start();
             //如果未配置默认服务代理等待连接动作完成，否则立即返回默认服务代理
             try {
@@ -141,7 +138,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
         }
         return prx;
     }
-    protected P getServicePrx(String serviceName, Class<P> proxy, Class<?> impl) {
+    protected P getServicePrx(final String serviceName, final Class<P> proxy, final Class<?> impl) {
         return getServicePrx(serviceName,proxy,impl,null);
     }
 }

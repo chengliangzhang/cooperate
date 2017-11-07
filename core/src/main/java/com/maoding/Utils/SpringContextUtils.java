@@ -22,9 +22,10 @@ public class SpringContextUtils implements ApplicationContextAware {
         return applicationContext;
     }
 
-    public static <T> T getBean(String name) throws BeansException {
-        return (T) applicationContext.getBean(name);
-    }
+/***** 强制转换有警告，不再提供只根据名字获取Bean的方法，获取Bean时必须要指定类型 */
+//    public static <T> T getBean(String name) throws BeansException {
+//        return (T) applicationContext.getBean(name);
+//    }
 
     public  static <T> T getBean(String name,Class<T> aClass) throws BeansException {
         return applicationContext.getBean(name,aClass);
