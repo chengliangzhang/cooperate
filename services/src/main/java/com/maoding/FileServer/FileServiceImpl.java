@@ -2,6 +2,7 @@ package com.maoding.FileServer;
 
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Bean.*;
+import com.maoding.Const.FileServerConst;
 import com.maoding.FileServer.Config.FileServerConfig;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Utils.BeanUtils;
@@ -60,6 +61,10 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback, Current current) {
+        assert fileServerSetting != null;
+        if (fileServer == null) {
+            this.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,(Current)null);
+        }
         assert fileServer != null;
         BasicFileDTO basicSrc = BeanUtils.createFrom(src,BasicFileDTO.class);
         BasicCallbackDTO basicCallback = BeanUtils.createFrom(callback,BasicCallbackDTO.class,true);
@@ -69,6 +74,10 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback, Current current) {
+        assert fileServerSetting != null;
+        if (fileServer == null) {
+            this.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,(Current)null);
+        }
         assert fileServer != null;
         BasicFileDTO basicSrc = BeanUtils.createFrom(src,BasicFileDTO.class);
         BasicCallbackDTO basicCallback = BeanUtils.createFrom(callback,BasicCallbackDTO.class,true);
@@ -79,29 +88,49 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public boolean isExist(FileDTO src, Current current) {
+        assert fileServerSetting != null;
+        if (fileServer == null) {
+            this.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,(Current)null);
+        }
         BasicFileDTO fileDTO = BeanUtils.createFrom(src,BasicFileDTO.class);
         return fileServer.isExist(fileDTO);
     }
 
     @Override
     public String duplicateFile(FileDTO src, Current current) {
+        assert fileServerSetting != null;
+        if (fileServer == null) {
+            this.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,(Current)null);
+        }
         BasicFileDTO fileDTO = BeanUtils.createFrom(src,BasicFileDTO.class);
         return fileServer.duplicateFile(fileDTO);
     }
 
     @Override
     public void deleteFile(FileDTO src, Current current) {
+        assert fileServerSetting != null;
+        if (fileServer == null) {
+            this.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,(Current)null);
+        }
         BasicFileDTO fileDTO = BeanUtils.createFrom(src,BasicFileDTO.class);
         fileServer.deleteFile(fileDTO);
     }
 
     @Override
     public List<String> listFile(String scope, Current current) {
+        assert fileServerSetting != null;
+        if (fileServer == null) {
+            this.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,(Current)null);
+        }
         return fileServer.listFile(scope);
     }
 
     @Override
     public List<String> listScope(Current current) {
+        assert fileServerSetting != null;
+        if (fileServer == null) {
+            this.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,(Current)null);
+        }
         return fileServer.listScope();
     }
 
