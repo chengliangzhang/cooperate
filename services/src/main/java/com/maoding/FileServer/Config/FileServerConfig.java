@@ -1,7 +1,6 @@
 package com.maoding.FileServer.Config;
 
 import com.maoding.Const.FileServerConst;
-import com.maoding.FileServer.Aliyun.AliyunServer;
 import com.maoding.FileServer.BasicFileServerInterface;
 import com.maoding.FileServer.FastFDS.FastFDSServer;
 import com.maoding.FileServer.Ftp.FtpServer;
@@ -35,7 +34,7 @@ public class FileServerConfig {
 
     public BasicFileServerInterface getFileServer(){
         if (FileServerConst.FILE_SERVER_TYPE_ALIYUN.equals(fileServerType)) {
-            if (aliyunServer == null) aliyunServer = new AliyunServer();
+//            if (aliyunServer == null) aliyunServer = new AliyunServer();
             return aliyunServer;
         } else if (FileServerConst.FILE_SERVER_TYPE_FASTFDS.equals(fileServerType)){
             if (fastFDSServer == null) fastFDSServer= new FastFDSServer();

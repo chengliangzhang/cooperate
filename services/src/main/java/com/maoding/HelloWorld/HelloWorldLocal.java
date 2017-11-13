@@ -16,13 +16,12 @@ import org.springframework.stereotype.Service;
 @Service("helloWorldLocal")
 public class HelloWorldLocal extends BaseLocalService<HelloWorldServicePrx> implements HelloWorldService,HelloWorldServicePrx {
     /** 同步方式获取业务接口代理对象 */
-    private static volatile HelloWorldServicePrx instance = null;
+    public static HelloWorldServicePrx getInstance(String adapterName) {
+        HelloWorldLocal prx = new HelloWorldLocal();
+        return prx.getServicePrx("HelloWorldService",adapterName,HelloWorldServicePrx.class,_HelloWorldServicePrxI.class);
+    }
     public static HelloWorldServicePrx getInstance() {
-        if (instance == null){
-            HelloWorldLocal prx = new HelloWorldLocal();
-            instance = prx.getServicePrx("HelloWorldService",HelloWorldServicePrx.class,_HelloWorldServicePrxI.class);
-        }
-        return instance;
+        return getInstance(null);
     }
 
     @Override
@@ -33,4 +32,5 @@ public class HelloWorldLocal extends BaseLocalService<HelloWorldServicePrx> impl
         }
         return s.toString();
     }
+
 }

@@ -23,13 +23,12 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     private BasicFileServerInterface fileServer = fileServerSetting.getFileServer();
 
     /** 同步方式获取业务接口代理对象 */
-    private static volatile FileServicePrx instance = null;
+    public static FileServicePrx getInstance(String adapterName) {
+        FileServiceImpl prx = new FileServiceImpl();
+        return prx.getServicePrx("FileService",adapterName,FileServicePrx.class,_FileServicePrxI.class);
+    }
     public static FileServicePrx getInstance() {
-        if (instance == null){
-            FileServiceImpl prx = new FileServiceImpl();
-            instance = prx.getServicePrx("FileService",FileServicePrx.class,_FileServicePrxI.class);
-        }
-        return instance;
+        return getInstance(null);
     }
 
     @Override
@@ -63,17 +62,18 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     public FileRequestDTO getUploadRequest(FileDTO src, Integer mode, CallbackDTO callback, Current current) {
         assert fileServer != null;
         BasicFileDTO basicSrc = BeanUtils.createFrom(src,BasicFileDTO.class);
-        BasicCallbackDTO basicCallback = BeanUtils.createFrom(callback,BasicCallbackDTO.class);
+        BasicCallbackDTO basicCallback = BeanUtils.createFrom(callback,BasicCallbackDTO.class,true);
         BasicFileRequestDTO basicResult = fileServer.getUploadRequest(basicSrc,mode,basicCallback);
-        return BeanUtils.createFrom(basicResult,FileRequestDTO.class);
+        return BeanUtils.createFrom(basicResult,FileRequestDTO.class,true);
     }
 
     @Override
     public FileRequestDTO getDownloadRequest(FileDTO src, Integer mode, CallbackDTO callback, Current current) {
-        BasicFileDTO fileDTO = BeanUtils.createFrom(src,BasicFileDTO.class);
-        BasicFileRequestDTO basicResult = fileServer.getDownloadRequest(fileDTO,null);
-        FileRequestDTO result = BeanUtils.createFrom(basicResult,FileRequestDTO.class);
-        return result;
+        assert fileServer != null;
+        BasicFileDTO basicSrc = BeanUtils.createFrom(src,BasicFileDTO.class);
+        BasicCallbackDTO basicCallback = BeanUtils.createFrom(callback,BasicCallbackDTO.class,true);
+        BasicFileRequestDTO basicResult = fileServer.getDownloadRequest(basicSrc,mode,basicCallback);
+        return BeanUtils.createFrom(basicResult,FileRequestDTO.class,true);
     }
 
 

@@ -4,6 +4,11 @@ import com.maoding.Const.ApiResponseConst;
 import com.maoding.Const.FileServerConst;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Utils.BeanUtils;
+import com.maoding.Utils.HttpUtils;
+import com.maoding.Utils.StringUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,7 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /** 
 * FileServerLocal Tester. 
@@ -26,204 +34,265 @@ import java.io.FileInputStream;
 @SpringBootTest
 //@SpringBootConfiguration //only enable when target module hasn't @SpringBootApplication
 public class FileServiceLocalTest {
-    private static final String localPath = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer";
-    private static final Integer chunkSize = 8192;
+    private static final String testLocalFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer\\upload_test.txt";
+    private static final String testDir = "testForFileService";
 
     @Autowired
-    private FileService fileServerService;
+    private FileService fileService;
+    private FileServicePrx fileServicePrx = FileServiceImpl.getInstance();
+
+    private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
 
     /** FastFDS测试 */
-    @Test
-    public void testGetUploadRequestForFastFDS() throws Exception {
-        fileServerService.setFileServerType(FileServerConst.FILE_SERVER_TYPE_FASTFDS,null);
-        //testGetUploadRequest(new FileDTO("aaa","bbb"));
-    }
-
-    @Test
-    public void testGetDownloadRequestForFastFDS() throws Exception {
-        fileServerService.setFileServerType(FileServerConst.FILE_SERVER_TYPE_FASTFDS,null);
-        //testGetDownloadRequest(new FileDTO("group1","M00/00/72/rBAGSVny92OAGfC7AAABPZrEvHI093.txt"));
-    }
 
     /** Aliyun测试 */
-    @Test
-    public void testGetUploadRequestForAliyun() throws Exception {
-        fileServerService.setFileServerType(FileServerConst.FILE_SERVER_TYPE_ALIYUN,null);
-        //testGetUploadRequest(new FileDTO("aaa","bbb"));
-    }
-
-    @Test
-    public void testGetDownloadRequestForAliyun() throws Exception {
-        fileServerService.setFileServerType(FileServerConst.FILE_SERVER_TYPE_ALIYUN,null);
-        //testGetDownloadRequest(new FileDTO("testmaoding","063c27c4dbbb46369a97f8fbd0b6d8bc.txt"),"GBK");
+    @Test //上传
+    public void testUploadForAliyun() throws Exception{
+        fileServerType = FileServerConst.FILE_SERVER_TYPE_ALIYUN;
+        testUpload(FileServerConst.FILE_SERVER_MODE_LOCAL);
     }
 
     /** cifs测试 */
-    @Test
-    public void testGetUploadRequestForCifs() throws Exception {
-        fileServerService.setFileServerType(FileServerConst.FILE_SERVER_TYPE_FAKE_CIFS,null);
-        //testGetUploadRequest(new FileDTO("smb://192.168.33.103/Downloads","upload_test.txt"));
-
-    }
-
-    @Test
-    public void testUploadForCifs() throws Exception{
-        fileServerService.setFileServerType(FileServerConst.FILE_SERVER_TYPE_FAKE_CIFS,null);
-        //testUpload(new FileDTO("smb://192.168.33.103/Downloads","upload_test.txt"));
-    }
-
-    @Test
-    public void testGetDownloadRequestForCifs() throws Exception {
-        fileServerService.setFileServerType(FileServerConst.FILE_SERVER_TYPE_CIFS,null);
-        //testGetDownloadRequest(new FileDTO("testmaoding","063c27c4dbbb46369a97f8fbd0b6d8bc.txt"),"GBK");
-    }
 
     /** ftp测试 */
-
-    /** LocalServer测试 */
-    //上传
-    @Test
-    public void testUploadForLocal() throws Exception{
-        fileServerService.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,null);
-        //testUpload(new FileDTO("C:\\work\\file_server","upload_test.txt"));
+    @Test //上传
+    public void testUploadForFtp() throws Exception{
+        fileServerType = FileServerConst.FILE_SERVER_TYPE_FTP;
+        testUpload(FileServerConst.FILE_SERVER_MODE_LOCAL);
     }
 
-    @Test
-    public void testUploadByUrlForLocal() throws Exception {
+    /** LocalServer测试 */
+    @Test //上传
+    public void testUploadForLocal() throws Exception{
+        fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
+//        testUpload(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        testUpload(FileServerConst.FILE_SERVER_MODE_RPC);
+//        testUpload(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+    }
 
+    @Test //下载
+    public void testDownloadForLocal() throws Exception{
+        fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
+        testDownload(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        testDownload(FileServerConst.FILE_SERVER_MODE_RPC);
+        testDownload(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
     }
 
     /** 公共测试方法 */
-    public void testGetUploadRequest(FileDTO fileDTO) throws Exception {
-        testGetUploadRequest(fileDTO,null);
+    public void testUpload(Integer mode) throws Exception {
+        if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(mode)){
+            uploadByLocal();
+        } else if (FileServerConst.FILE_SERVER_MODE_RPC.equals(mode)){
+            uploadByRPC();
+        } else if (FileServerConst.FILE_SERVER_MODE_OSS.equals(mode)){
+            uploadByOSS();
+        } else if (FileServerConst.FILE_SERVER_MODE_HTTP_POST.equals(mode)) {
+            uploadByPost();
+        }
     }
 
-    public void testGetUploadRequest(FileDTO fileDTO,Integer mode) throws Exception {
-        testGetUploadRequest(fileDTO,mode,null);
+    public void testDownload(Integer mode) throws Exception {
+        if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(mode)) {
+            downloadByLocal();
+        } else if (FileServerConst.FILE_SERVER_MODE_RPC.equals(mode)){
+            downloadByRPC();
+        } else if (FileServerConst.FILE_SERVER_MODE_OSS.equals(mode)){
+            downloadByOSS();
+        } else if (FileServerConst.FILE_SERVER_MODE_HTTP_POST.equals(mode)) {
+            downloadByPost();
+        }
     }
 
-    public void testGetUploadRequest(FileDTO fileDTO,Integer mode,CallbackDTO callback) throws Exception {
-        FileRequestDTO request = fileServerService.getUploadRequest(fileDTO,mode,callback,null);
-        Assert.assertNotEquals(null,request);
-
-    }
-
-    public void testUpload(FileDTO fileDTO) throws Exception {
-        testUpload(fileDTO,null);
-    }
-
-    public void testUpload(FileDTO fileDTO,Integer mode) throws Exception {
-        testUpload(fileDTO,mode,null);
-    }
-
-    public void testUpload(FileDTO fileDTO,Integer mode,CallbackDTO callback) throws Exception {
-        //获取上传信息
-        FileRequestDTO requestInfo = fileServerService.getUploadRequest(fileDTO,mode,callback,null);
+    //建立上传申请
+    public UploadRequestDTO createUploadRequestDTO(FileDTO fileDTO,Map<String,String> params) throws Exception {
+        //补全参数
+        if (fileDTO == null) fileDTO = new FileDTO();
+        if (fileDTO.getScope() == null) fileDTO.setScope(testDir);
+        if (fileDTO.getKey() == null) fileDTO.setKey(StringUtils.getFileName(testLocalFile));
 
         //建立上传内容
-        FileMultipartDTO multipart = BeanUtils.createFrom(fileDTO,FileMultipartDTO.class);
-        byte[] bytes = new byte[chunkSize];
-        FileInputStream is = new FileInputStream(localPath + "\\" + fileDTO.getKey());
-        is.read(bytes);
-        is.close();
+        FileMultipartDTO multipart = BeanUtils.createFrom(params, FileMultipartDTO.class);
+        assert multipart != null;
+        File f = new File(testLocalFile);
+        FileInputStream is = null;
+        is = new FileInputStream(f);
+        byte[] bytes = new byte[(int)f.length()];
+        multipart.setScope(fileDTO.getScope());
+        multipart.setKey(fileDTO.getKey());
+        multipart.setPos(0L);
+        multipart.setSize(is.read(bytes));
         multipart.setData(bytes);
+        is.close();
+
         //建立上传申请对象
-        UploadRequestDTO request = BeanUtils.createFrom(requestInfo,UploadRequestDTO.class);
+        UploadRequestDTO request = BeanUtils.createFrom(params, UploadRequestDTO.class);
+        assert request != null;
+        request.setChunkCount(1);
+        request.setChunkId(0);
+        request.setChunkPerSize(multipart.getSize());
+        request.setChunkSize(multipart.getSize());
         request.setMultipart(multipart);
 
+        return request;
+    }
+    public UploadRequestDTO createUploadRequestDTO(FileDTO fileDTO) throws Exception {
+        return createUploadRequestDTO(fileDTO,null);
+    }
+    public UploadRequestDTO createUploadRequestDTO() throws Exception {
+        return createUploadRequestDTO(new FileDTO(testDir, StringUtils.getFileName(testLocalFile)));
+    }
+
+    //建立下载申请
+    public DownloadRequestDTO createDownloadRequestDTO(FileDTO fileDTO,Map<String,String> params) throws Exception {
+        //补全参数
+        if (fileDTO == null) fileDTO = new FileDTO();
+        if (fileDTO.getScope() == null) fileDTO.setScope(testDir);
+        if (fileDTO.getKey() == null) fileDTO.setKey(StringUtils.getFileName(testLocalFile));
+
+        //建立下载申请对象
+        DownloadRequestDTO request = BeanUtils.createFrom(params, DownloadRequestDTO.class);
+        assert request != null;
+        request.setChunkId(0);
+        request.setChunkSize(FileServerConst.DEFAULT_CHUNK_SIZE);
+        request.setScope(fileDTO.getScope());
+        request.setKey(fileDTO.getKey());
+
+        return request;
+    }
+    public DownloadRequestDTO createDownloadRequestDTO(FileDTO fileDTO) throws Exception {
+        return createDownloadRequestDTO(fileDTO,null);
+    }
+    public DownloadRequestDTO createDownloadRequestDTO() throws Exception {
+        return createDownloadRequestDTO(new FileDTO(testDir, StringUtils.getFileName(testLocalFile)));
+    }
+
+    public void uploadByLocal() throws Exception {
+        //选择文件服务器类型
+        fileService.setFileServerType(fileServerType,null);
+
+        //建立上传申请
+        UploadRequestDTO request = createUploadRequestDTO();
+
         //发送上传申请
-        UploadResultDTO result = fileServerService.upload(request,null);
+        UploadResultDTO result = fileService.upload(request,null);
         Assert.assertEquals(ApiResponseConst.SUCCESS, result.getStatus());
     }
 
-    public void testUploadByUrl(FileDTO fileDTO) throws Exception {
-        testUploadByUrl(fileDTO,null);
+    public void uploadByRPC() throws Exception {
+        //选择文件服务器类型
+        fileServicePrx.setFileServerType(fileServerType);
+
+        //建立上传申请
+        UploadRequestDTO request = createUploadRequestDTO();
+
+        //发送上传申请
+        UploadResultDTO result = fileServicePrx.upload(request);
+        Assert.assertEquals(ApiResponseConst.SUCCESS, result.getStatus());
     }
 
-    public void testUploadByUrl(FileDTO fileDTO,CallbackDTO callback) throws Exception {
-//        //建立http post申请参数
-//        // 设置HTTP POST请求参数必须用NameValuePair对象
-//        List<NameValuePair> params = new ArrayList<>();
-//        params.add(new BasicNameValuePair("multipart", JsonUtils.obj2Json(multipart)));
-//        UrlEncodedFormEntity entity = new UrlEncodedFormEntity(params, StandardCharsets.UTF_8);
-////        entity.setContentType("text/json");
-////        entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-//        // 发起Post请求
-//        CloseableHttpClient client = HttpClients.createDefault();
-//        HttpPost post = new HttpPost(request.getUrl());
-////        post.addHeader(HTTP.CONTENT_TYPE, "application/json");
-//        post.setEntity(entity);
-//        HttpResponse response = client.execute(post);
-//        System.out.println(response.toString());
+    public void downloadByLocal() throws Exception {
+        //选择文件服务器类型
+        fileService.setFileServerType(fileServerType,null);
+
+        //建立下载申请
+        DownloadRequestDTO request = createDownloadRequestDTO();
+
+        //发送下载申请
+        DownloadResultDTO result = fileService.download(request,null);
+        Assert.assertEquals(ApiResponseConst.SUCCESS, result.getStatus());
     }
 
+    public void uploadByOSS() throws Exception {
+        //选择文件服务器类型
+        fileServicePrx.setFileServerType(fileServerType);
 
-    /** for method: getDownloadRequest(String src, Current current) */
-    public void testGetDownloadRequest(FileDTO file) throws Exception {
-        testGetDownloadRequest(file,null);
+        //建立上传申请
+        UploadRequestDTO request = createUploadRequestDTO();
+
+        //发送上传申请
+        //TO DO 使用OSS发送上传申请
+        //TO DO 进行发送结果检测
     }
 
-    public void testGetDownloadRequest(FileDTO file,Integer mode) throws Exception {
-        testGetDownloadRequest(file,null,null);
+    public void downloadByOSS() throws Exception {
+        //选择文件服务器类型
+        fileService.setFileServerType(fileServerType,null);
+
+        //建立下载申请
+        DownloadRequestDTO request = createDownloadRequestDTO();
+
+        //发送下载申请
+        //TO DO 使用OSS发送下载申请
+        //TO DO 进行发送结果检测
     }
 
-    public void testGetDownloadRequest(FileDTO file,Integer mode,CallbackDTO callback) throws Exception {
-        FileRequestDTO request = fileServerService.getDownloadRequest(file,mode,callback,null);
-        Assert.assertNotEquals(null,request);
+    public void downloadByRPC() throws Exception {
+        //选择文件服务器类型
+        fileServicePrx.setFileServerType(fileServerType);
+
+        //建立下载申请
+        DownloadRequestDTO request = createDownloadRequestDTO();
+
+        //发送下载申请
+        DownloadResultDTO result = fileServicePrx.download(request);
+        Assert.assertEquals(ApiResponseConst.SUCCESS, result.getStatus());
     }
 
-    public void testDownload(FileDTO file) throws Exception {
-        testDownload(file,null);
+    public void uploadByPost() throws Exception {
+        final String setFileServerTypeUrl = "http://localhost:8087/FileServer/setFileServerType";
+        final String setFileServerTypeContentType = "application/x-www-form-urlencoded";
+        final String uploadUrl = "http://localhost:8087/FileServer/upload";
+        final String uploadContentType = "application/json";
+
+
+        CloseableHttpClient client = HttpClients.createDefault();
+
+        //选择文件服务器类型
+        Map<String,Integer> params = new HashMap<>();
+        params.put("type",fileServerType);
+        CloseableHttpResponse r1 = HttpUtils.postData(client,setFileServerTypeUrl,
+                setFileServerTypeContentType,params);
+        Assert.assertEquals(200,r1.getStatusLine().getStatusCode());
+        r1.close();
+
+        //建立上传申请
+        UploadRequestDTO request = createUploadRequestDTO();
+
+        //发送上传申请
+        CloseableHttpResponse r2 = HttpUtils.postData(client,uploadUrl,uploadContentType,request);
+        Assert.assertEquals(200,r2.getStatusLine().getStatusCode());
+        r2.close();
+
+        client.close();
     }
 
-    public void testDownload(FileDTO file, Integer mode) throws Exception {
-        testDownload(file,null,null);
+    public void downloadByPost() throws Exception {
+        final String setFileServerTypeUrl = "http://localhost:8087/FileServer/setFileServerType";
+        final String setFileServerTypeContentType = "application/x-www-form-urlencoded";
+        final String downloadUrl = "http://localhost:8087/FileServer/download";
+        final String downloadContentType = "application/json";
+        
+        CloseableHttpClient client = HttpClients.createDefault();
+        
+        //选择文件服务器类型
+        Map<String,Integer> params = new HashMap<>();
+        params.put("type",fileServerType);
+        CloseableHttpResponse r1 = HttpUtils.postData(client,setFileServerTypeUrl,
+                setFileServerTypeContentType,params);
+        Assert.assertEquals(200,r1.getStatusLine().getStatusCode());
+        r1.close();
+
+        //建立下载申请
+        DownloadRequestDTO request = createDownloadRequestDTO();
+
+        //发送下载申请
+        CloseableHttpResponse r2 = HttpUtils.postData(client,downloadUrl,downloadContentType,request);
+        Assert.assertEquals(200,r2.getStatusLine().getStatusCode());
+        r2.close();
+        
+        client.close();
     }
 
-    public void testDownload(FileDTO file, Integer mode,CallbackDTO callback) throws Exception {
-    }
-
-    public void testDownloadByUrl(FileDTO fileDTO) throws Exception {
-        testDownloadByUrl(fileDTO,null);
-    }
-
-    public void testDownloadByUrl(FileDTO fileDTO,Integer mode) throws Exception {
-        testDownloadByUrl(fileDTO,null,null);
-    }
-
-    public void testDownloadByUrl(FileDTO fileDTO, Integer mode, CallbackDTO callback) throws Exception {
-//        URL url = new URL(request.url);
-//        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//        con.setRequestProperty("contentType", contentType);
-//        BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(),contentType));
-//        String temp = br.readLine();
-//        while(temp != null) {
-//            System.out.println(temp);
-//            temp = br.readLine();
-//        }
-    }
-
-    /** for method: isExist(String src, Current current) */ 
-    public void testIsExist() throws Exception {
-        //TODO: Test goes here... 
-    } 
-    /** for method: duplicateFile(String src, Current current) */ 
-    public void testDuplicateFile() throws Exception {
-        //TODO: Test goes here... 
-    } 
-    /** for method: deleteFile(String src, Current current) */ 
-    public void testDeleteFile() throws Exception {
-        //TODO: Test goes here... 
-    } 
-    /** for method: listFile(String scope, Current current) */ 
-    public void testListFile() throws Exception {
-        //TODO: Test goes here... 
-    } 
-    /** for method: listScope(Current current) */ 
-    public void testListScope() throws Exception {
-        //TODO: Test goes here... 
-    } 
-    
     /** action before each test */
     @Before
     public void before() throws Exception { 

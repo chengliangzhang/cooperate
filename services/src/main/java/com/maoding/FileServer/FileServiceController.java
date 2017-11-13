@@ -2,12 +2,8 @@ package com.maoding.FileServer;
 
 import com.maoding.Base.BaseController;
 import com.maoding.Bean.ApiResponse;
-import com.maoding.FileServer.zeroc.FileServicePrx;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
+import com.maoding.FileServer.zeroc.*;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -18,16 +14,34 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/FileServer")
 public class FileServiceController extends BaseController {
+    @RequestMapping(value = "/setFileServerType", method = RequestMethod.POST)
+    public ApiResponse setFileServerType(@RequestParam Integer type) {
+        FileServicePrx prx = FileServiceImpl.getInstance();
+        assert prx != null;
+        assert type != null;
+        prx.setFileServerType(type);
+        return ApiResponse.success();
+    }
 
-    private FileServicePrx fileService = FileServiceImpl.getInstance();
+    @RequestMapping(value = "/getFileServerType", method = RequestMethod.POST)
+    public ApiResponse setFileServerType() {
+        FileServicePrx prx = FileServiceImpl.getInstance();
+        assert prx != null;
+        Integer type = prx.getFileServerType();
+        return ApiResponse.success(type);
+    }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public ApiResponse upload(HttpServletRequest request) {
-        return null;
+    public UploadResultDTO upload(@RequestBody UploadRequestDTO request) {
+        FileServicePrx prx = FileServiceImpl.getInstance();
+        assert prx != null;
+        return prx.upload(request);
     }
 
     @RequestMapping(value = "/download", method = RequestMethod.POST)
-    public ApiResponse download(HttpServletRequest request) {
-        return null;
+    public DownloadResultDTO download(@RequestBody DownloadRequestDTO request) {
+        FileServicePrx prx = FileServiceImpl.getInstance();
+        assert prx != null;
+        return prx.download(request);
     }
 }

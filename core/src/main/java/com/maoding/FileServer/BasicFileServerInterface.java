@@ -27,6 +27,9 @@ public interface BasicFileServerInterface {
     default BasicFileRequestDTO getDownloadRequest(BasicFileDTO src){
         return getDownloadRequest(src,null);
     }
+
+    /** 上传文件分片内容 */
+    default BasicUploadResultDTO multipartUpload(BasicUploadRequestDTO request) {return null ;}
     /** 上传文件分片内容 */
     BasicUploadResultDTO upload(BasicUploadRequestDTO request);
     /** 下载文件分片内容 */

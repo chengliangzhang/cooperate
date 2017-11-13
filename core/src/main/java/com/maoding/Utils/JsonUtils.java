@@ -25,13 +25,12 @@ public class JsonUtils {
     }
 
     /** 把java对象转换为json字符串 */
-    public static String obj2Json(Object obj) throws JsonProcessingException {
+    public static String obj2Json(Object obj){
         String json = null;
         try {
             json = objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
+            ExceptionUtils.logError(log,e);
             json = null;
         }
         return json;
@@ -43,8 +42,7 @@ public class JsonUtils {
         try {
             obj = objectMapper.readValue(json, clazz);
         } catch (IOException e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
+            ExceptionUtils.logError(log,e);
             obj = null;
         }
         return obj;

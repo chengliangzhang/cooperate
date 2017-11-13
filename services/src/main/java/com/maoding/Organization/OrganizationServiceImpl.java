@@ -25,15 +25,14 @@ import java.util.List;
 public class OrganizationServiceImpl extends BaseLocalService<OrganizationServicePrx> implements OrganizationService,OrganizationServicePrx {
     @Autowired
     OrganizationDao organizationDao;
-
+    
     /** 同步方式获取业务接口代理对象 */
-    private static volatile OrganizationServicePrx instance = null;
+    public static OrganizationServicePrx getInstance(String adapterName) {
+        OrganizationServiceImpl prx = new OrganizationServiceImpl();
+        return prx.getServicePrx("OrganizationService",adapterName,OrganizationServicePrx.class,_OrganizationServicePrxI.class);
+    }
     public static OrganizationServicePrx getInstance() {
-        if (instance == null){
-            OrganizationServiceImpl prx = new OrganizationServiceImpl();
-            instance = prx.getServicePrx("OrganizationService",OrganizationServicePrx.class,_OrganizationServicePrxI.class);
-        }
-        return instance;
+        return getInstance(null);
     }
 
     @Override
@@ -48,5 +47,4 @@ public class OrganizationServiceImpl extends BaseLocalService<OrganizationServic
         }
         return list;
     }
-
 }

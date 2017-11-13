@@ -12,10 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.*;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -34,6 +34,16 @@ public class LocalServer implements BasicFileServerInterface {
 
     private static final String FILE_SERVER_PATH = "\\\\idccapp25\\Downloads";
 
+    private static final Map<Integer,Integer> modeMapConst = new HashMap(){
+        {
+            put(FileServerConst.FILE_SERVER_MODE_DEFAULT, FileServerConst.FILE_SERVER_MODE_RPC);
+            put(FileServerConst.FILE_SERVER_MODE_DEFAULT_COM, FileServerConst.FILE_SERVER_MODE_RPC);
+            put(FileServerConst.FILE_SERVER_MODE_HTTP_GET, FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+            put(FileServerConst.FILE_SERVER_MODE_HTTP_POST, FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+            put(FileServerConst.FILE_SERVER_MODE_LOCAL, FileServerConst.FILE_SERVER_MODE_LOCAL);
+        }
+    };
+
     /**
      * 获取通过http方式上传文件数据库时的需要设置的部分参数
      *
@@ -51,10 +61,10 @@ public class LocalServer implements BasicFileServerInterface {
         requestDTO.setUrl("http://localhost:8087");
         requestDTO.putParam(BASE_DIR_NAME,src.getScope());
         requestDTO.putParam(PATH_NAME,src.getKey());
-        if (FileServerConst.FILE_SERVER_MODE_DEFAULT.equals(mode)){
-            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        if (modeMapConst.containsKey(mode)){
+            requestDTO.setMode(modeMapConst.get(mode));
         } else {
-            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_RPC);
         }
         requestDTO.putParam("uploadId",UUID.randomUUID().toString());
         return requestDTO;
@@ -80,10 +90,10 @@ public class LocalServer implements BasicFileServerInterface {
         requestDTO.setUrl("http://localhost:8087");
         requestDTO.putParam(BASE_DIR_NAME,src.getScope());
         requestDTO.putParam(PATH_NAME,src.getKey());
-        if (FileServerConst.FILE_SERVER_MODE_DEFAULT.equals(mode)){
-            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        if (modeMapConst.containsKey(mode)){
+            requestDTO.setMode(modeMapConst.get(mode));
         } else {
-            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_RPC);
         }
         File f = new File(FILE_SERVER_PATH + "/" + src.getKey());
         requestDTO.putParam("size",((Long)f.length()).toString());
@@ -105,12 +115,12 @@ public class LocalServer implements BasicFileServerInterface {
 
 
         //补全参数
-        if ((request.getChunkPerSize() == null) && (request.getChunkPerSize() <= 0)) request.setChunkPerSize(DEFAULT_CHUNK_PER_SIZE);
         BasicFileMultipartDTO fileDTO = request.getMultipart();
         if (StringUtils.isEmpty(fileDTO.getScope())) fileDTO.setScope("");
         if (StringUtils.isEmpty(fileDTO.getKey())) fileDTO.setKey(UUID.randomUUID().toString() + ".txt");
         if ((fileDTO.getPos() == null) || (fileDTO.getPos() < 0)) fileDTO.setPos((long)request.getChunkId() * request.getChunkPerSize());
         if ((fileDTO.getSize() == null) || (fileDTO.getSize() <= 0)) fileDTO.setSize(fileDTO.getData().length);
+        if ((request.getChunkPerSize() == null) && (request.getChunkPerSize() <= 0)) request.setChunkPerSize(DEFAULT_CHUNK_PER_SIZE);
         if ((request.getChunkSize() == null) || (request.getChunkSize() <= 0)) request.setChunkSize(fileDTO.getSize());
 
         //写入文件
@@ -164,7 +174,8 @@ public class LocalServer implements BasicFileServerInterface {
             rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + request.getScope() + "/" + request.getKey(),"r");
             //定位
             long pos = (long)request.getChunkId() * request.getChunkSize();
-            assert pos < rf.length();
+            long length = rf.length();
+            assert pos < length;
             rf.seek(pos);
             //读取文件内容
             byte[] bytes = new byte[request.getChunkSize()];
@@ -174,13 +185,14 @@ public class LocalServer implements BasicFileServerInterface {
             if (size < bytes.length) bytes = Arrays.copyOfRange(bytes,0,size);
 
             //设置返回参数
-            Integer chunckCount = ((int)(rf.length() - pos - size)) / request.getChunkSize() + 1;
+            pos += size;
+            Integer chunkCount = (pos < length) ? ((int)(((int)(length - pos)) / request.getChunkSize()) + 1) : 0;
             BasicFileMultipartDTO multipart = BeanUtils.createFrom(request,BasicFileMultipartDTO.class);
             multipart.setPos(pos);
             multipart.setSize(size);
             multipart.setData(bytes);
 
-            result.setChunkCount(chunckCount);
+            result.setChunkCount(chunkCount);
             result.setChunkSize(size);
             result.setData(multipart);
             result.setStatus(ApiResponseConst.SUCCESS);

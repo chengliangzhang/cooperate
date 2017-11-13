@@ -28,11 +28,26 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static String getParam(String str, String prefix, String sp){
         if ((str == null) || (!str.contains(prefix))) return null;
 
-        String r = str.substring(str.indexOf(prefix) + prefix.length());
-        return (str.contains(sp)) ? prefix + r.trim().substring(0,r.indexOf(sp)) : prefix + r.trim();
+        int pos1 = str.indexOf(prefix) + prefix.length();
+        String r = str.substring(pos1).trim();
+        int pos2 = r.indexOf(sp);
+        return prefix + ((pos2 > -1) ? r.substring(0,pos2) : r);
     }
     public static String getParam(String str, String prefix){
         return getParam(str,prefix," ");
+    }
+
+    /** 替换类似于-p 10000的参数值 */
+    public static String replaceParam(String str, String prefix, String sp,String replaceTo){
+        if ((str == null) || (!str.contains(prefix))) return str;
+
+        int pos1 = str.indexOf(prefix) + prefix.length();
+        String r = str.substring(pos1).trim();
+        int pos2 = r.indexOf(sp);
+        return str.substring(0,pos1) + replaceTo + ((pos2 > -1) ? str.substring(pos2) : "");
+    }
+    public static String replaceParam(String str, String prefix, String replaceTo){
+        return replaceParam(str,prefix," ",replaceTo);
     }
 
     /** 标准化路径（所有路径分隔都用"/"） */

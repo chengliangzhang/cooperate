@@ -18,18 +18,17 @@ import java.util.concurrent.CompletableFuture;
  */
 @Service("helloWorldRemote")
 public class HelloWorldRemote extends BaseRemoteService<HelloWorldServicePrx> implements HelloWorldServicePrx {
+    /** 异步方式获取业务接口代理对象 */
+    public static HelloWorldServicePrx getInstance(String adapterName) {
+        HelloWorldRemote prx = new HelloWorldRemote();
+        return prx.getServicePrx("HelloWorldService",adapterName,HelloWorldServicePrx.class,_HelloWorldServicePrxI.class,prx);
+    }
+    public static HelloWorldServicePrx getInstance(){
+        return getInstance(null);
+    }
+
     @Autowired
     private HelloWorldService localService;
-
-    /** 异步方式获取业务接口代理对象 */
-    private static volatile HelloWorldServicePrx instance = null;
-    public static HelloWorldServicePrx getInstance() {
-        if (instance == null){
-            HelloWorldRemote prx = new HelloWorldRemote();
-            instance = prx.getServicePrx("HelloWorldService",HelloWorldServicePrx.class,_HelloWorldServicePrxI.class,prx);
-        }
-        return instance;
-    }
 
     /** 远程服务调用接口，如果未启动远程服务，可以调用本地实现 */
     @Override

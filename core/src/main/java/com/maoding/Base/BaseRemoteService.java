@@ -19,13 +19,16 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
     /** 查找远程服务线程 */
     private class ConnectThread extends Thread {
         /** 配置环境 */
+        private static final String ADAPTER_ID_PREFIX = "@";
 
         private String serviceName;
+        private String adapterName;
         private Class<P> proxy;
         private Class<?> impl;
 
-        ConnectThread(String serviceName, Class<P> proxy, Class<?> impl) {
+        ConnectThread(String serviceName, String adapterName, Class<P> proxy, Class<?> impl) {
             this.serviceName = serviceName;
+            this.adapterName = adapterName;
             this.proxy = proxy;
             this.impl = impl;
         }
@@ -42,36 +45,34 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
                 if (gridLocation != null) log.info("IceGrid服务器切换到" + gridLocation);
             }
 
+            //补全代理地址参数
+            if (StringUtils.isEmpty(adapterName)){
+                if (communicator.getDefaultLocator() != null) {
+                    String adapterId = IceConfig.getProperty(serviceName + "." + ADAPTER_ID);
+                    if (!StringUtils.isEmpty(adapterId)) adapterName = "@" + adapterId;
+                }
+                if (StringUtils.isEmpty(adapterName)){
+                    String endPoints = IceConfig.getProperty(serviceName + "." + END_POINTS);
+                    if (!StringUtils.isEmpty(endPoints)) adapterName = ":" + endPoints;
+                }
+            } else if (!ADAPTER_ID_PREFIX.equals(adapterName.charAt(0))){
+                String endPoints = IceConfig.getProperty(serviceName + "." + END_POINTS);
+                adapterName = ":" + StringUtils.replaceParam(endPoints,"-h",adapterName);
+            }
+            assert (!StringUtils.isEmpty(adapterName));
             assert (!StringUtils.isEmpty(serviceName));
             assert (communicator != null);
 
+            //查找服务代理
             P prx = null;
-            //在IceGrid服务器上查找服务代理
-            String adapterId = IceConfig.getProperty(serviceName + "." + ADAPTER_ID);
-            if ((communicator.getDefaultLocator() != null) && (!StringUtils.isEmpty(adapterId))) {
-                String svr = serviceName + "@" + adapterId;
-                try {
-                    prx = ObjectPrx._checkedCast(communicator.stringToProxy(svr),
-                            P.ice_staticId(), proxy, impl);
-                    log.info("在" + communicator.getDefaultLocator().toString() + "找到" + svr + "服务");
-                } catch (ConnectionRefusedException e) {
-                    log.info("在" + communicator.getDefaultLocator().toString() + "无法找到" + svr + "服务");
-                    prx = null;
-                }
-            }
-
-            //直接查找服务代理
-            String endPoints = IceConfig.getProperty(serviceName + "." + END_POINTS);
-            if ((prx == null) && (!StringUtils.isEmpty(endPoints))){
-                String svr = serviceName + ":default " + StringUtils.getParam(endPoints,"-p ");
-                try {
-                    prx = ObjectPrx._checkedCast(communicator.stringToProxy(svr),
-                            P.ice_staticId(), proxy, impl);
-                    log.info("找到" + svr + "服务");
-                } catch (ConnectionRefusedException e) {
-                    log.info("无法找到" + svr + "服务");
-                    prx = null;
-                }
+            String svr = serviceName + adapterName;
+            try {
+                prx = ObjectPrx._checkedCast(communicator.stringToProxy(svr),
+                        P.ice_staticId(), proxy, impl);
+                log.info(((communicator.getDefaultLocator() != null) ? "在" + communicator.getDefaultLocator().toString() : "") + "找到" + svr + "服务");
+            } catch (ConnectionRefusedException e) {
+                log.info(((communicator.getDefaultLocator() != null) ? "在" + communicator.getDefaultLocator().toString() : "") + "无法找到" + svr + "服务");
+                prx = null;
             }
 
             remotePrx = prx;
@@ -97,12 +98,9 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
     /** 查找远程服务线程 */
     private volatile ConnectThread connectThread = null;
 
-    protected P getServicePrx(final String serviceName, final Class<P> proxy, final Class<?> impl, final P defaultPrx) {
-        assert !StringUtils.isEmpty(serviceName);
-        assert proxy != null;
-
+    protected P getServicePrx(String serviceName, String adapterName, Class<P> proxy, Class<?> impl, P defaultPrx) {
         if (connectThread == null){
-            connectThread = new ConnectThread(serviceName,proxy,((impl != null)?impl:proxy));
+            connectThread = new ConnectThread(serviceName,adapterName,proxy,impl);
             connectThread.start();
             //如果未配置默认服务代理等待连接动作完成，否则立即返回默认服务代理
             try {
@@ -138,7 +136,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
         }
         return prx;
     }
-    protected P getServicePrx(final String serviceName, final Class<P> proxy, final Class<?> impl) {
-        return getServicePrx(serviceName,proxy,impl,null);
+    protected P getServicePrx(String serviceName, String adapterName, Class<P> proxy, Class<?> impl) {
+        return getServicePrx(serviceName,adapterName,proxy,impl,null);
     }
 }
