@@ -34,6 +34,8 @@ public class LocalServer implements BasicFileServerInterface {
 
     private static final String FILE_SERVER_PATH = "C:\\work\\file_server";
 
+    private volatile boolean lockFile = false;
+
     private static final Map<Integer,Integer> modeMapConst = new HashMap(){
         {
             put(FileServerConst.FILE_SERVER_MODE_DEFAULT, FileServerConst.FILE_SERVER_MODE_RPC);
@@ -106,13 +108,15 @@ public class LocalServer implements BasicFileServerInterface {
      * @param request
      */
     @Override
-    public BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
+    public synchronized BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
+        final Integer MAX_TRY_TIMES = 5;
+        final Integer TRY_DELAY = 50;
+
         //检查参数
         assert request != null;
         assert request.getMultipart() != null;
         assert request.getMultipart().getData() != null;
         assert (request.getChunkId() != null) && (request.getChunkId() >= 0);
-
 
         //补全参数
         BasicFileMultipartDTO fileDTO = request.getMultipart();
@@ -126,26 +130,64 @@ public class LocalServer implements BasicFileServerInterface {
         //写入文件
         BasicUploadResultDTO result = new BasicUploadResultDTO();
         RandomAccessFile rf = null;
-        try {
-            byte[] data = fileDTO.getData();
-            assert data != null;
-            int off = 0;
-            int len = request.getChunkSize();
-            assert (len <= request.getChunkPerSize()) && (len <= data.length);
-            long pos = (long) request.getChunkId() * request.getChunkPerSize();
 
-            if (!((new File(FILE_SERVER_PATH + "/" + fileDTO.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +fileDTO.getScope())).mkdirs();
-            rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey(),"rw");
+        byte[] data = fileDTO.getData();
+        assert data != null;
+        int off = 0;
+        int len = request.getChunkSize();
+        assert (len <= request.getChunkPerSize()) && (len <= data.length);
+        long pos = (long) request.getChunkId() * request.getChunkPerSize();
+
+        if (!((new File(FILE_SERVER_PATH + "/" + fileDTO.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +fileDTO.getScope())).mkdirs();
+        for (Integer i=0; i<MAX_TRY_TIMES; i++) {
+            try {
+                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey(), "rw");
+                break;
+            } catch (IOException e) {
+                FileUtils.close(rf);
+                ExceptionUtils.logWarn(log,e,false,"打开文件" + FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey() + "出错");
+                try {
+                    Thread.sleep(TRY_DELAY);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                rf = null;
+            }
+        }
+
+        if (rf == null){
+            String msg = "打开文件" + FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey() + "出错";
+            result.setStatus(ApiResponseConst.FAILED);
+            result.setMsg(msg);
+            return result;
+        }
+
+        try {
             if (rf.length() < pos) rf.setLength(pos + len);
+        } catch (IOException e) {
+            FileUtils.close(rf);
+            String msg = "设置文件" + FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey() + "长度时出错";
+            ExceptionUtils.logWarn(log,e,false,msg);
+            result.setStatus(ApiResponseConst.FAILED);
+            result.setMsg(msg);
+            return result;
+        }
+
+        try {
             rf.seek(pos);
             rf.write(data,off,len);
-            result.setStatus(ApiResponseConst.SUCCESS);
         } catch (IOException e) {
-            ExceptionUtils.logError(log,e);
-            result.setStatus(ApiResponseConst.FAILED);
-        } finally {
             FileUtils.close(rf);
+            String msg = "写入文件" + FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey() + "内容时出错";
+            ExceptionUtils.logWarn(log,e,false,msg);
+            result.setStatus(ApiResponseConst.FAILED);
+            result.setMsg(msg);
+            return result;
         }
+        FileUtils.close(rf);
+        result.setStatus(ApiResponseConst.SUCCESS);
+
+        log.info(request.getChunkId() + "结束");
         return result;
     }
 
