@@ -32,7 +32,7 @@ public class LocalServer implements BasicFileServerInterface {
     public static final String PATH_NAME = "key";
     public static final Integer DEFAULT_CHUNK_PER_SIZE = 8192;
 
-    private static final String FILE_SERVER_PATH = "\\\\idccapp25\\Downloads";
+    private static final String FILE_SERVER_PATH = "C:\\work\\file_server";
 
     private static final Map<Integer,Integer> modeMapConst = new HashMap(){
         {

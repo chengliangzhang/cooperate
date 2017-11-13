@@ -22,10 +22,4 @@ public interface FileServerConst {
     final static Integer FILE_SERVER_MODE_RPC = 6;
 
     final static Integer DEFAULT_CHUNK_SIZE = 8192;
-
-    final static Integer FILE_SERVER_TYPE_FAKE_FASTFDS = -FILE_SERVER_TYPE_FASTFDS;
-    final static Integer FILE_SERVER_TYPE_FAKE_ALIYUN = -FILE_SERVER_TYPE_ALIYUN;
-    final static Integer FILE_SERVER_TYPE_FAKE_CIFS = -FILE_SERVER_TYPE_CIFS;
-    final static Integer FILE_SERVER_TYPE_FAKE_FTP = -FILE_SERVER_TYPE_FTP;
-    final static Integer FILE_SERVER_TYPE_FAKE_LOCAL = -FILE_SERVER_TYPE_LOCAL;
 }

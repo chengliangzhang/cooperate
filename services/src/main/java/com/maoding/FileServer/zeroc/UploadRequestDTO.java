@@ -23,14 +23,14 @@ package com.maoding.FileServer.zeroc;
 public class UploadRequestDTO implements java.lang.Cloneable,
                                          java.io.Serializable
 {
-    public java.lang.Integer requestId;
+    public int requestId;
 
-    public java.lang.Integer getRequestId()
+    public int getRequestId()
     {
         return requestId;
     }
 
-    public void setRequestId(java.lang.Integer requestId)
+    public void setRequestId(int requestId)
     {
         this.requestId = requestId;
     }
@@ -47,50 +47,50 @@ public class UploadRequestDTO implements java.lang.Cloneable,
         this.uploadId = uploadId;
     }
 
-    public java.lang.Integer chunkCount;
+    public int chunkCount;
 
-    public java.lang.Integer getChunkCount()
+    public int getChunkCount()
     {
         return chunkCount;
     }
 
-    public void setChunkCount(java.lang.Integer chunkCount)
+    public void setChunkCount(int chunkCount)
     {
         this.chunkCount = chunkCount;
     }
 
-    public java.lang.Integer chunkPerSize;
+    public int chunkPerSize;
 
-    public java.lang.Integer getChunkPerSize()
+    public int getChunkPerSize()
     {
         return chunkPerSize;
     }
 
-    public void setChunkPerSize(java.lang.Integer chunkPerSize)
+    public void setChunkPerSize(int chunkPerSize)
     {
         this.chunkPerSize = chunkPerSize;
     }
 
-    public java.lang.Integer chunkId;
+    public int chunkId;
 
-    public java.lang.Integer getChunkId()
+    public int getChunkId()
     {
         return chunkId;
     }
 
-    public void setChunkId(java.lang.Integer chunkId)
+    public void setChunkId(int chunkId)
     {
         this.chunkId = chunkId;
     }
 
-    public java.lang.Integer chunkSize;
+    public int chunkSize;
 
-    public java.lang.Integer getChunkSize()
+    public int getChunkSize()
     {
         return chunkSize;
     }
 
-    public void setChunkSize(java.lang.Integer chunkSize)
+    public void setChunkSize(int chunkSize)
     {
         this.chunkSize = chunkSize;
     }
@@ -125,7 +125,7 @@ public class UploadRequestDTO implements java.lang.Cloneable,
         this.multipart = new FileMultipartDTO();
     }
 
-    public UploadRequestDTO(java.lang.Integer requestId, String uploadId, java.lang.Integer chunkCount, java.lang.Integer chunkPerSize, java.lang.Integer chunkId, java.lang.Integer chunkSize, FileMultipartDTO multipart, java.util.Map<java.lang.String, java.lang.String> params)
+    public UploadRequestDTO(int requestId, String uploadId, int chunkCount, int chunkPerSize, int chunkId, int chunkSize, FileMultipartDTO multipart, java.util.Map<java.lang.String, java.lang.String> params)
     {
         this.requestId = requestId;
         this.uploadId = uploadId;
@@ -153,10 +153,7 @@ public class UploadRequestDTO implements java.lang.Cloneable,
         {
             if(this.requestId != r.requestId)
             {
-                if(this.requestId == null || r.requestId == null || !this.requestId.equals(r.requestId))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.uploadId != r.uploadId)
             {
@@ -167,31 +164,19 @@ public class UploadRequestDTO implements java.lang.Cloneable,
             }
             if(this.chunkCount != r.chunkCount)
             {
-                if(this.chunkCount == null || r.chunkCount == null || !this.chunkCount.equals(r.chunkCount))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.chunkPerSize != r.chunkPerSize)
             {
-                if(this.chunkPerSize == null || r.chunkPerSize == null || !this.chunkPerSize.equals(r.chunkPerSize))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.chunkId != r.chunkId)
             {
-                if(this.chunkId == null || r.chunkId == null || !this.chunkId.equals(r.chunkId))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.chunkSize != r.chunkSize)
             {
-                if(this.chunkSize == null || r.chunkSize == null || !this.chunkSize.equals(r.chunkSize))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.multipart != r.multipart)
             {
@@ -245,24 +230,24 @@ public class UploadRequestDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeSerializable(this.requestId);
+        ostr.writeInt(this.requestId);
         ostr.writeString(this.uploadId);
-        ostr.writeSerializable(this.chunkCount);
-        ostr.writeSerializable(this.chunkPerSize);
-        ostr.writeSerializable(this.chunkId);
-        ostr.writeSerializable(this.chunkSize);
+        ostr.writeInt(this.chunkCount);
+        ostr.writeInt(this.chunkPerSize);
+        ostr.writeInt(this.chunkId);
+        ostr.writeInt(this.chunkSize);
         FileMultipartDTO.ice_write(ostr, this.multipart);
         com.maoding.Common.zeroc.MapHelper.write(ostr, this.params);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.requestId = istr.readSerializable(java.lang.Integer.class);
+        this.requestId = istr.readInt();
         this.uploadId = istr.readString();
-        this.chunkCount = istr.readSerializable(java.lang.Integer.class);
-        this.chunkPerSize = istr.readSerializable(java.lang.Integer.class);
-        this.chunkId = istr.readSerializable(java.lang.Integer.class);
-        this.chunkSize = istr.readSerializable(java.lang.Integer.class);
+        this.chunkCount = istr.readInt();
+        this.chunkPerSize = istr.readInt();
+        this.chunkId = istr.readInt();
+        this.chunkSize = istr.readInt();
         this.multipart = FileMultipartDTO.ice_read(istr);
         this.params = com.maoding.Common.zeroc.MapHelper.read(istr);
     }

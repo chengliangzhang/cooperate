@@ -59,14 +59,14 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.dirName = dirName;
     }
 
-    public java.lang.Long fileLength;
+    public long fileLength;
 
-    public java.lang.Long getFileLength()
+    public long getFileLength()
     {
         return fileLength;
     }
 
-    public void setFileLength(java.lang.Long fileLength)
+    public void setFileLength(long fileLength)
     {
         this.fileLength = fileLength;
     }
@@ -131,28 +131,33 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.lastComputerIp = lastComputerIp;
     }
 
-    public java.lang.Short syncMode;
+    public short syncMode;
 
-    public java.lang.Short getSyncMode()
+    public short getSyncMode()
     {
         return syncMode;
     }
 
-    public void setSyncMode(java.lang.Short syncMode)
+    public void setSyncMode(short syncMode)
     {
         this.syncMode = syncMode;
     }
 
-    public java.lang.Boolean canBeModify;
+    public boolean canBeModify;
 
-    public java.lang.Boolean getCanBeModify()
+    public boolean getCanBeModify()
     {
         return canBeModify;
     }
 
-    public void setCanBeModify(java.lang.Boolean canBeModify)
+    public void setCanBeModify(boolean canBeModify)
     {
         this.canBeModify = canBeModify;
+    }
+
+    public boolean isCanBeModify()
+    {
+        return canBeModify;
     }
 
     public String localFile;
@@ -242,7 +247,7 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.lastId = "";
     }
 
-    public CooperateFileDTO(String id, String fileName, String dirName, java.lang.Long fileLength, String checksum, String version, String specialtyId, String lastAdapterId, String lastComputerIp, java.lang.Short syncMode, java.lang.Boolean canBeModify, String localFile, java.util.Map<java.lang.String, java.lang.String> referenceIdList, String creatorId, java.util.Date createTime, String lastId, java.util.Date lastTime)
+    public CooperateFileDTO(String id, String fileName, String dirName, long fileLength, String checksum, String version, String specialtyId, String lastAdapterId, String lastComputerIp, short syncMode, boolean canBeModify, String localFile, java.util.Map<java.lang.String, java.lang.String> referenceIdList, String creatorId, java.util.Date createTime, String lastId, java.util.Date lastTime)
     {
         this.id = id;
         this.fileName = fileName;
@@ -300,10 +305,7 @@ public class CooperateFileDTO implements java.lang.Cloneable,
             }
             if(this.fileLength != r.fileLength)
             {
-                if(this.fileLength == null || r.fileLength == null || !this.fileLength.equals(r.fileLength))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.checksum != r.checksum)
             {
@@ -342,17 +344,11 @@ public class CooperateFileDTO implements java.lang.Cloneable,
             }
             if(this.syncMode != r.syncMode)
             {
-                if(this.syncMode == null || r.syncMode == null || !this.syncMode.equals(r.syncMode))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.canBeModify != r.canBeModify)
             {
-                if(this.canBeModify == null || r.canBeModify == null || !this.canBeModify.equals(r.canBeModify))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.localFile != r.localFile)
             {
@@ -446,14 +442,14 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         ostr.writeString(this.id);
         ostr.writeString(this.fileName);
         ostr.writeString(this.dirName);
-        ostr.writeSerializable(this.fileLength);
+        ostr.writeLong(this.fileLength);
         ostr.writeString(this.checksum);
         ostr.writeString(this.version);
         ostr.writeString(this.specialtyId);
         ostr.writeString(this.lastAdapterId);
         ostr.writeString(this.lastComputerIp);
-        ostr.writeSerializable(this.syncMode);
-        ostr.writeSerializable(this.canBeModify);
+        ostr.writeShort(this.syncMode);
+        ostr.writeBool(this.canBeModify);
         ostr.writeString(this.localFile);
         com.maoding.Common.zeroc.MapHelper.write(ostr, this.referenceIdList);
         ostr.writeString(this.creatorId);
@@ -467,14 +463,14 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.id = istr.readString();
         this.fileName = istr.readString();
         this.dirName = istr.readString();
-        this.fileLength = istr.readSerializable(java.lang.Long.class);
+        this.fileLength = istr.readLong();
         this.checksum = istr.readString();
         this.version = istr.readString();
         this.specialtyId = istr.readString();
         this.lastAdapterId = istr.readString();
         this.lastComputerIp = istr.readString();
-        this.syncMode = istr.readSerializable(java.lang.Short.class);
-        this.canBeModify = istr.readSerializable(java.lang.Boolean.class);
+        this.syncMode = istr.readShort();
+        this.canBeModify = istr.readBool();
         this.localFile = istr.readString();
         this.referenceIdList = com.maoding.Common.zeroc.MapHelper.read(istr);
         this.creatorId = istr.readString();

@@ -22,13 +22,13 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileService extends com.zeroc.Ice.Object
 {
-    void setFileServerType(java.lang.Integer type, com.zeroc.Ice.Current current);
+    void setFileServerType(int type, com.zeroc.Ice.Current current);
 
-    java.lang.Integer getFileServerType(com.zeroc.Ice.Current current);
+    int getFileServerType(com.zeroc.Ice.Current current);
 
-    FileRequestDTO getUploadRequest(FileDTO src, java.lang.Integer mode, CallbackDTO callback, com.zeroc.Ice.Current current);
+    FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback, com.zeroc.Ice.Current current);
 
-    FileRequestDTO getDownloadRequest(FileDTO src, java.lang.Integer mode, CallbackDTO callback, com.zeroc.Ice.Current current);
+    FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback, com.zeroc.Ice.Current current);
 
     UploadResultDTO upload(UploadRequestDTO request, com.zeroc.Ice.Current current);
 
@@ -38,7 +38,7 @@ public interface FileService extends com.zeroc.Ice.Object
 
     void deleteFile(FileDTO src, com.zeroc.Ice.Current current);
 
-    java.lang.Boolean isExist(FileDTO src, com.zeroc.Ice.Current current);
+    boolean isExist(FileDTO src, com.zeroc.Ice.Current current);
 
     java.util.List<java.lang.String> listFile(String scope, com.zeroc.Ice.Current current);
 
@@ -71,8 +71,8 @@ public interface FileService extends com.zeroc.Ice.Object
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        java.lang.Integer iceP_type;
-        iceP_type = istr.readSerializable(java.lang.Integer.class);
+        int iceP_type;
+        iceP_type = istr.readInt();
         inS.endReadParams();
         obj.setFileServerType(iceP_type, current);
         return inS.setResult(inS.writeEmptyParams());
@@ -82,9 +82,9 @@ public interface FileService extends com.zeroc.Ice.Object
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         inS.readEmptyParams();
-        java.lang.Integer ret = obj.getFileServerType(current);
+        int ret = obj.getFileServerType(current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeSerializable(ret);
+        ostr.writeInt(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -94,10 +94,10 @@ public interface FileService extends com.zeroc.Ice.Object
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         FileDTO iceP_src;
-        java.lang.Integer iceP_mode;
+        int iceP_mode;
         CallbackDTO iceP_callback;
         iceP_src = FileDTO.ice_read(istr);
-        iceP_mode = istr.readSerializable(java.lang.Integer.class);
+        iceP_mode = istr.readInt();
         iceP_callback = CallbackDTO.ice_read(istr);
         inS.endReadParams();
         FileRequestDTO ret = obj.getUploadRequest(iceP_src, iceP_mode, iceP_callback, current);
@@ -112,10 +112,10 @@ public interface FileService extends com.zeroc.Ice.Object
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         FileDTO iceP_src;
-        java.lang.Integer iceP_mode;
+        int iceP_mode;
         CallbackDTO iceP_callback;
         iceP_src = FileDTO.ice_read(istr);
-        iceP_mode = istr.readSerializable(java.lang.Integer.class);
+        iceP_mode = istr.readInt();
         iceP_callback = CallbackDTO.ice_read(istr);
         inS.endReadParams();
         FileRequestDTO ret = obj.getDownloadRequest(iceP_src, iceP_mode, iceP_callback, current);
@@ -185,9 +185,9 @@ public interface FileService extends com.zeroc.Ice.Object
         FileDTO iceP_src;
         iceP_src = FileDTO.ice_read(istr);
         inS.endReadParams();
-        java.lang.Boolean ret = obj.isExist(iceP_src, current);
+        boolean ret = obj.isExist(iceP_src, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeSerializable(ret);
+        ostr.writeBool(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }

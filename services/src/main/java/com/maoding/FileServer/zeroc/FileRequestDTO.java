@@ -35,14 +35,14 @@ public class FileRequestDTO implements java.lang.Cloneable,
         this.url = url;
     }
 
-    public java.lang.Integer mode;
+    public int mode;
 
-    public java.lang.Integer getMode()
+    public int getMode()
     {
         return mode;
     }
 
-    public void setMode(java.lang.Integer mode)
+    public void setMode(int mode)
     {
         this.mode = mode;
     }
@@ -64,7 +64,7 @@ public class FileRequestDTO implements java.lang.Cloneable,
         this.url = "";
     }
 
-    public FileRequestDTO(String url, java.lang.Integer mode, java.util.Map<java.lang.String, java.lang.String> params)
+    public FileRequestDTO(String url, int mode, java.util.Map<java.lang.String, java.lang.String> params)
     {
         this.url = url;
         this.mode = mode;
@@ -94,10 +94,7 @@ public class FileRequestDTO implements java.lang.Cloneable,
             }
             if(this.mode != r.mode)
             {
-                if(this.mode == null || r.mode == null || !this.mode.equals(r.mode))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.params != r.params)
             {
@@ -140,14 +137,14 @@ public class FileRequestDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         ostr.writeString(this.url);
-        ostr.writeSerializable(this.mode);
+        ostr.writeInt(this.mode);
         com.maoding.Common.zeroc.MapHelper.write(ostr, this.params);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.url = istr.readString();
-        this.mode = istr.readSerializable(java.lang.Integer.class);
+        this.mode = istr.readInt();
         this.params = com.maoding.Common.zeroc.MapHelper.read(istr);
     }
 

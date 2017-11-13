@@ -9,14 +9,14 @@ module zeroc {
         string id; //协同文件id（针对每一个版本）
         string fileName; //协同文件名
         string dirName; //协同目录名
-        Long fileLength; //文件长度
+        long fileLength; //文件长度
         string checksum; //协同文件md5
         string version; //协同文件版本号
         string specialtyId; //专业id
         string lastAdapterId; //最近更改协同的下载服务的AdapterId
         string lastComputerIp; //最近更改协同的计算机的IP地址
-        Short syncMode; //同步模式，0-手动同步，1-自动下载最新版本，2-自动更新
-        Boolean canBeModify; //能否修改（服务器是否锁定）
+        short syncMode; //同步模式，0-手动同步，1-自动下载最新版本，2-自动更新
+        bool canBeModify; //能否修改（服务器是否锁定）
         string localFile; //本地文件路径
         Map referenceIdList; //参考协同文件id
 
@@ -27,7 +27,7 @@ module zeroc {
     };
 
     interface StorageService {
-        FileRequestDTO requestUpload(CooperateFileDTO fileInfo,Integer mode); //申请上传文件
-        FileRequestDTO requestDownload(CooperateFileDTO fileInfo,Integer mode); //申请下载文件
+        FileRequestDTO requestUpload(CooperateFileDTO fileInfo,int mode); //申请上传文件
+        FileRequestDTO requestDownload(CooperateFileDTO fileInfo,int mode); //申请下载文件
     };
 };

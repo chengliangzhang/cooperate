@@ -49,6 +49,6 @@ public class FileServerConfig {
             if (localServer == null) localServer = new LocalServer();
             return localServer;
         }
-        return null;
+        return localServer;
     }
 }

@@ -230,7 +230,7 @@ public class StorageServiceImplTest {
             if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(fileRequestDTO.getMode())) result = downloadContentByLocal(request);
             else if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode())) result = downloadContentByRPC(request);
             assert result != null;
-            Assert.assertEquals((Integer)0,result.getStatus());
+            Assert.assertEquals((Integer)0,(Integer)result.getStatus());
 
             FileMultipartDTO multipart = result.getData();
             assert (multipart != null);
@@ -276,7 +276,7 @@ public class StorageServiceImplTest {
             if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(fileRequestDTO.getMode())) result = uploadContentByLocal(request);
             else if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode())) result = uploadContentByRPC(request);
             assert result != null;
-            Assert.assertEquals((Integer)0,result.getStatus());
+            Assert.assertEquals((Integer)0,(Integer)result.getStatus());
         }       
     }
     

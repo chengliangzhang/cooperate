@@ -175,7 +175,7 @@ public class FileServiceLocalTest {
 
         //发送上传申请
         UploadResultDTO result = fileService.upload(request,null);
-        Assert.assertEquals(ApiResponseConst.SUCCESS, result.getStatus());
+        Assert.assertEquals(ApiResponseConst.SUCCESS, (Integer)result.getStatus());
     }
 
     public void uploadByRPC() throws Exception {
@@ -187,7 +187,7 @@ public class FileServiceLocalTest {
 
         //发送上传申请
         UploadResultDTO result = fileServicePrx.upload(request);
-        Assert.assertEquals(ApiResponseConst.SUCCESS, result.getStatus());
+        Assert.assertEquals(ApiResponseConst.SUCCESS, (Integer)result.getStatus());
     }
 
     public void downloadByLocal() throws Exception {
@@ -199,7 +199,7 @@ public class FileServiceLocalTest {
 
         //发送下载申请
         DownloadResultDTO result = fileService.download(request,null);
-        Assert.assertEquals(ApiResponseConst.SUCCESS, result.getStatus());
+        Assert.assertEquals(ApiResponseConst.SUCCESS, (Integer)result.getStatus());
     }
 
     public void uploadByOSS() throws Exception {
@@ -235,7 +235,7 @@ public class FileServiceLocalTest {
 
         //发送下载申请
         DownloadResultDTO result = fileServicePrx.download(request);
-        Assert.assertEquals(ApiResponseConst.SUCCESS, result.getStatus());
+        Assert.assertEquals(ApiResponseConst.SUCCESS, (Integer)result.getStatus());
     }
 
     public void uploadByPost() throws Exception {

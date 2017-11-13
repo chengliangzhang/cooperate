@@ -22,9 +22,9 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageService extends com.zeroc.Ice.Object
 {
-    com.maoding.FileServer.zeroc.FileRequestDTO requestUpload(CooperateFileDTO fileInfo, java.lang.Integer mode, com.zeroc.Ice.Current current);
+    com.maoding.FileServer.zeroc.FileRequestDTO requestUpload(CooperateFileDTO fileInfo, int mode, com.zeroc.Ice.Current current);
 
-    com.maoding.FileServer.zeroc.FileRequestDTO requestDownload(CooperateFileDTO fileInfo, java.lang.Integer mode, com.zeroc.Ice.Current current);
+    com.maoding.FileServer.zeroc.FileRequestDTO requestDownload(CooperateFileDTO fileInfo, int mode, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -54,9 +54,9 @@ public interface StorageService extends com.zeroc.Ice.Object
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         CooperateFileDTO iceP_fileInfo;
-        java.lang.Integer iceP_mode;
+        int iceP_mode;
         iceP_fileInfo = CooperateFileDTO.ice_read(istr);
-        iceP_mode = istr.readSerializable(java.lang.Integer.class);
+        iceP_mode = istr.readInt();
         inS.endReadParams();
         com.maoding.FileServer.zeroc.FileRequestDTO ret = obj.requestUpload(iceP_fileInfo, iceP_mode, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
@@ -70,9 +70,9 @@ public interface StorageService extends com.zeroc.Ice.Object
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         CooperateFileDTO iceP_fileInfo;
-        java.lang.Integer iceP_mode;
+        int iceP_mode;
         iceP_fileInfo = CooperateFileDTO.ice_read(istr);
-        iceP_mode = istr.readSerializable(java.lang.Integer.class);
+        iceP_mode = istr.readInt();
         inS.endReadParams();
         com.maoding.FileServer.zeroc.FileRequestDTO ret = obj.requestDownload(iceP_fileInfo, iceP_mode, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();

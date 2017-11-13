@@ -47,26 +47,26 @@ public class FileMultipartDTO implements java.lang.Cloneable,
         this.key = key;
     }
 
-    public java.lang.Long pos;
+    public long pos;
 
-    public java.lang.Long getPos()
+    public long getPos()
     {
         return pos;
     }
 
-    public void setPos(java.lang.Long pos)
+    public void setPos(long pos)
     {
         this.pos = pos;
     }
 
-    public java.lang.Integer size;
+    public int size;
 
-    public java.lang.Integer getSize()
+    public int getSize()
     {
         return size;
     }
 
-    public void setSize(java.lang.Integer size)
+    public void setSize(int size)
     {
         this.size = size;
     }
@@ -99,7 +99,7 @@ public class FileMultipartDTO implements java.lang.Cloneable,
         this.key = "";
     }
 
-    public FileMultipartDTO(String scope, String key, java.lang.Long pos, java.lang.Integer size, byte[] data)
+    public FileMultipartDTO(String scope, String key, long pos, int size, byte[] data)
     {
         this.scope = scope;
         this.key = key;
@@ -138,17 +138,11 @@ public class FileMultipartDTO implements java.lang.Cloneable,
             }
             if(this.pos != r.pos)
             {
-                if(this.pos == null || r.pos == null || !this.pos.equals(r.pos))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.size != r.size)
             {
-                if(this.size == null || r.size == null || !this.size.equals(r.size))
-                {
-                    return false;
-                }
+                return false;
             }
             if(!java.util.Arrays.equals(this.data, r.data))
             {
@@ -191,8 +185,8 @@ public class FileMultipartDTO implements java.lang.Cloneable,
     {
         ostr.writeString(this.scope);
         ostr.writeString(this.key);
-        ostr.writeSerializable(this.pos);
-        ostr.writeSerializable(this.size);
+        ostr.writeLong(this.pos);
+        ostr.writeInt(this.size);
         ostr.writeByteSeq(this.data);
     }
 
@@ -200,8 +194,8 @@ public class FileMultipartDTO implements java.lang.Cloneable,
     {
         this.scope = istr.readString();
         this.key = istr.readString();
-        this.pos = istr.readSerializable(java.lang.Long.class);
-        this.size = istr.readSerializable(java.lang.Integer.class);
+        this.pos = istr.readLong();
+        this.size = istr.readInt();
         this.data = istr.readByteSeq();
     }
 

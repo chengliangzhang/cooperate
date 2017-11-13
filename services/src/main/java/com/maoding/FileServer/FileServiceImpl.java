@@ -46,20 +46,20 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     }
 
     @Override
-    public void setFileServerType(Integer type, Current current) {
+    public void setFileServerType(int type, Current current) {
         assert fileServerSetting != null;
         fileServerSetting.setFileServerType(type);
         fileServer = fileServerSetting.getFileServer();
     }
 
     @Override
-    public Integer getFileServerType(Current current) {
+    public int getFileServerType(Current current) {
         assert fileServerSetting != null;
         return fileServerSetting.getFileServerType();
     }
 
     @Override
-    public FileRequestDTO getUploadRequest(FileDTO src, Integer mode, CallbackDTO callback, Current current) {
+    public FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback, Current current) {
         assert fileServer != null;
         BasicFileDTO basicSrc = BeanUtils.createFrom(src,BasicFileDTO.class);
         BasicCallbackDTO basicCallback = BeanUtils.createFrom(callback,BasicCallbackDTO.class,true);
@@ -68,7 +68,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     }
 
     @Override
-    public FileRequestDTO getDownloadRequest(FileDTO src, Integer mode, CallbackDTO callback, Current current) {
+    public FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback, Current current) {
         assert fileServer != null;
         BasicFileDTO basicSrc = BeanUtils.createFrom(src,BasicFileDTO.class);
         BasicCallbackDTO basicCallback = BeanUtils.createFrom(callback,BasicCallbackDTO.class,true);
@@ -78,7 +78,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
 
     @Override
-    public Boolean isExist(FileDTO src, Current current) {
+    public boolean isExist(FileDTO src, Current current) {
         BasicFileDTO fileDTO = BeanUtils.createFrom(src,BasicFileDTO.class);
         return fileServer.isExist(fileDTO);
     }

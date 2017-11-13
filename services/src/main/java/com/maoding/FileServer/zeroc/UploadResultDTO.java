@@ -23,14 +23,14 @@ package com.maoding.FileServer.zeroc;
 public class UploadResultDTO implements java.lang.Cloneable,
                                         java.io.Serializable
 {
-    public java.lang.Integer status;
+    public int status;
 
-    public java.lang.Integer getStatus()
+    public int getStatus()
     {
         return status;
     }
 
-    public void setStatus(java.lang.Integer status)
+    public void setStatus(int status)
     {
         this.status = status;
     }
@@ -59,14 +59,14 @@ public class UploadResultDTO implements java.lang.Cloneable,
         this.data = data;
     }
 
-    public java.lang.Integer requestId;
+    public int requestId;
 
-    public java.lang.Integer getRequestId()
+    public int getRequestId()
     {
         return requestId;
     }
 
-    public void setRequestId(java.lang.Integer requestId)
+    public void setRequestId(int requestId)
     {
         this.requestId = requestId;
     }
@@ -83,26 +83,26 @@ public class UploadResultDTO implements java.lang.Cloneable,
         this.uploadId = uploadId;
     }
 
-    public java.lang.Integer chunkId;
+    public int chunkId;
 
-    public java.lang.Integer getChunkId()
+    public int getChunkId()
     {
         return chunkId;
     }
 
-    public void setChunkId(java.lang.Integer chunkId)
+    public void setChunkId(int chunkId)
     {
         this.chunkId = chunkId;
     }
 
-    public java.lang.Integer chunkSize;
+    public int chunkSize;
 
-    public java.lang.Integer getChunkSize()
+    public int getChunkSize()
     {
         return chunkSize;
     }
 
-    public void setChunkSize(java.lang.Integer chunkSize)
+    public void setChunkSize(int chunkSize)
     {
         this.chunkSize = chunkSize;
     }
@@ -114,7 +114,7 @@ public class UploadResultDTO implements java.lang.Cloneable,
         this.uploadId = "";
     }
 
-    public UploadResultDTO(java.lang.Integer status, String msg, FileMultipartDTO data, java.lang.Integer requestId, String uploadId, java.lang.Integer chunkId, java.lang.Integer chunkSize)
+    public UploadResultDTO(int status, String msg, FileMultipartDTO data, int requestId, String uploadId, int chunkId, int chunkSize)
     {
         this.status = status;
         this.msg = msg;
@@ -141,10 +141,7 @@ public class UploadResultDTO implements java.lang.Cloneable,
         {
             if(this.status != r.status)
             {
-                if(this.status == null || r.status == null || !this.status.equals(r.status))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.msg != r.msg)
             {
@@ -162,10 +159,7 @@ public class UploadResultDTO implements java.lang.Cloneable,
             }
             if(this.requestId != r.requestId)
             {
-                if(this.requestId == null || r.requestId == null || !this.requestId.equals(r.requestId))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.uploadId != r.uploadId)
             {
@@ -176,17 +170,11 @@ public class UploadResultDTO implements java.lang.Cloneable,
             }
             if(this.chunkId != r.chunkId)
             {
-                if(this.chunkId == null || r.chunkId == null || !this.chunkId.equals(r.chunkId))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.chunkSize != r.chunkSize)
             {
-                if(this.chunkSize == null || r.chunkSize == null || !this.chunkSize.equals(r.chunkSize))
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
@@ -225,24 +213,24 @@ public class UploadResultDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeSerializable(this.status);
+        ostr.writeInt(this.status);
         ostr.writeString(this.msg);
         FileMultipartDTO.ice_write(ostr, this.data);
-        ostr.writeSerializable(this.requestId);
+        ostr.writeInt(this.requestId);
         ostr.writeString(this.uploadId);
-        ostr.writeSerializable(this.chunkId);
-        ostr.writeSerializable(this.chunkSize);
+        ostr.writeInt(this.chunkId);
+        ostr.writeInt(this.chunkSize);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.status = istr.readSerializable(java.lang.Integer.class);
+        this.status = istr.readInt();
         this.msg = istr.readString();
         this.data = FileMultipartDTO.ice_read(istr);
-        this.requestId = istr.readSerializable(java.lang.Integer.class);
+        this.requestId = istr.readInt();
         this.uploadId = istr.readString();
-        this.chunkId = istr.readSerializable(java.lang.Integer.class);
-        this.chunkSize = istr.readSerializable(java.lang.Integer.class);
+        this.chunkId = istr.readInt();
+        this.chunkSize = istr.readInt();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, UploadResultDTO v)

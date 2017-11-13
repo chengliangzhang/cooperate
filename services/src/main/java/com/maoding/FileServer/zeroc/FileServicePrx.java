@@ -22,41 +22,41 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 {
-    default void setFileServerType(java.lang.Integer type)
+    default void setFileServerType(int type)
     {
         setFileServerType(type, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void setFileServerType(java.lang.Integer type, java.util.Map<String, String> context)
+    default void setFileServerType(int type, java.util.Map<String, String> context)
     {
         _iceI_setFileServerTypeAsync(type, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> setFileServerTypeAsync(java.lang.Integer type)
+    default java.util.concurrent.CompletableFuture<Void> setFileServerTypeAsync(int type)
     {
         return _iceI_setFileServerTypeAsync(type, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> setFileServerTypeAsync(java.lang.Integer type, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> setFileServerTypeAsync(int type, java.util.Map<String, String> context)
     {
         return _iceI_setFileServerTypeAsync(type, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_setFileServerTypeAsync(java.lang.Integer iceP_type, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_setFileServerTypeAsync(int iceP_type, java.util.Map<String, String> context, boolean sync)
     {
         com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setFileServerType", null, sync, null);
         f.invoke(false, context, null, ostr -> {
-                     ostr.writeSerializable(iceP_type);
+                     ostr.writeInt(iceP_type);
                  }, null);
         return f;
     }
 
-    default java.lang.Integer getFileServerType()
+    default int getFileServerType()
     {
         return getFileServerType(com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default java.lang.Integer getFileServerType(java.util.Map<String, String> context)
+    default int getFileServerType(java.util.Map<String, String> context)
     {
         return _iceI_getFileServerTypeAsync(context, true).waitForResponse();
     }
@@ -75,39 +75,39 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     {
         com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFileServerType", null, sync, null);
         f.invoke(true, context, null, null, istr -> {
-                     java.lang.Integer ret;
-                     ret = istr.readSerializable(java.lang.Integer.class);
+                     int ret;
+                     ret = istr.readInt();
                      return ret;
                  });
         return f;
     }
 
-    default FileRequestDTO getUploadRequest(FileDTO src, java.lang.Integer mode, CallbackDTO callback)
+    default FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback)
     {
         return getUploadRequest(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default FileRequestDTO getUploadRequest(FileDTO src, java.lang.Integer mode, CallbackDTO callback, java.util.Map<String, String> context)
+    default FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
     {
         return _iceI_getUploadRequestAsync(src, mode, callback, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<FileRequestDTO> getUploadRequestAsync(FileDTO src, java.lang.Integer mode, CallbackDTO callback)
+    default java.util.concurrent.CompletableFuture<FileRequestDTO> getUploadRequestAsync(FileDTO src, int mode, CallbackDTO callback)
     {
         return _iceI_getUploadRequestAsync(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<FileRequestDTO> getUploadRequestAsync(FileDTO src, java.lang.Integer mode, CallbackDTO callback, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<FileRequestDTO> getUploadRequestAsync(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
     {
         return _iceI_getUploadRequestAsync(src, mode, callback, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> _iceI_getUploadRequestAsync(FileDTO iceP_src, java.lang.Integer iceP_mode, CallbackDTO iceP_callback, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> _iceI_getUploadRequestAsync(FileDTO iceP_src, int iceP_mode, CallbackDTO iceP_callback, java.util.Map<String, String> context, boolean sync)
     {
         com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getUploadRequest", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      FileDTO.ice_write(ostr, iceP_src);
-                     ostr.writeSerializable(iceP_mode);
+                     ostr.writeInt(iceP_mode);
                      CallbackDTO.ice_write(ostr, iceP_callback);
                  }, istr -> {
                      FileRequestDTO ret;
@@ -117,32 +117,32 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default FileRequestDTO getDownloadRequest(FileDTO src, java.lang.Integer mode, CallbackDTO callback)
+    default FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback)
     {
         return getDownloadRequest(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default FileRequestDTO getDownloadRequest(FileDTO src, java.lang.Integer mode, CallbackDTO callback, java.util.Map<String, String> context)
+    default FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
     {
         return _iceI_getDownloadRequestAsync(src, mode, callback, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<FileRequestDTO> getDownloadRequestAsync(FileDTO src, java.lang.Integer mode, CallbackDTO callback)
+    default java.util.concurrent.CompletableFuture<FileRequestDTO> getDownloadRequestAsync(FileDTO src, int mode, CallbackDTO callback)
     {
         return _iceI_getDownloadRequestAsync(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<FileRequestDTO> getDownloadRequestAsync(FileDTO src, java.lang.Integer mode, CallbackDTO callback, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<FileRequestDTO> getDownloadRequestAsync(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
     {
         return _iceI_getDownloadRequestAsync(src, mode, callback, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> _iceI_getDownloadRequestAsync(FileDTO iceP_src, java.lang.Integer iceP_mode, CallbackDTO iceP_callback, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> _iceI_getDownloadRequestAsync(FileDTO iceP_src, int iceP_mode, CallbackDTO iceP_callback, java.util.Map<String, String> context, boolean sync)
     {
         com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getDownloadRequest", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      FileDTO.ice_write(ostr, iceP_src);
-                     ostr.writeSerializable(iceP_mode);
+                     ostr.writeInt(iceP_mode);
                      CallbackDTO.ice_write(ostr, iceP_callback);
                  }, istr -> {
                      FileRequestDTO ret;
@@ -280,12 +280,12 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default java.lang.Boolean isExist(FileDTO src)
+    default boolean isExist(FileDTO src)
     {
         return isExist(src, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default java.lang.Boolean isExist(FileDTO src, java.util.Map<String, String> context)
+    default boolean isExist(FileDTO src, java.util.Map<String, String> context)
     {
         return _iceI_isExistAsync(src, context, true).waitForResponse();
     }
@@ -306,8 +306,8 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      FileDTO.ice_write(ostr, iceP_src);
                  }, istr -> {
-                     java.lang.Boolean ret;
-                     ret = istr.readSerializable(java.lang.Boolean.class);
+                     boolean ret;
+                     ret = istr.readBool();
                      return ret;
                  });
         return f;

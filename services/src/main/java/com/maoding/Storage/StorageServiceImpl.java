@@ -35,7 +35,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public FileRequestDTO requestUpload(CooperateFileDTO fileInfo, Integer mode, Current current) {
+    public FileRequestDTO requestUpload(CooperateFileDTO fileInfo, int mode, Current current) {
         //补全参数
         if (fileInfo.getFileName() == null) fileInfo.setFileName(StringUtils.getFileName(fileInfo.getLocalFile()));
 
@@ -51,7 +51,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public FileRequestDTO requestDownload(CooperateFileDTO fileInfo, Integer mode, Current current) {
+    public FileRequestDTO requestDownload(CooperateFileDTO fileInfo, int mode, Current current) {
         //建立获取下载参数的对象
         FileDTO fileDTO = new FileDTO();
         fileDTO.setScope(fileInfo.getDirName());
