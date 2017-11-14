@@ -28,13 +28,14 @@ public class LocalServer implements BasicFileServerInterface {
     /** 日志对象 */
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    private static final Integer MAX_TRY_TIMES = 5;
+    private static final Integer TRY_DELAY = 50;
+
     public static final String BASE_DIR_NAME = "scope";
     public static final String PATH_NAME = "key";
     public static final Integer DEFAULT_CHUNK_PER_SIZE = 8192;
 
     private static final String FILE_SERVER_PATH = "C:\\work\\file_server";
-
-    private volatile boolean lockFile = false;
 
     private static final Map<Integer,Integer> modeMapConst = new HashMap(){
         {
@@ -109,9 +110,6 @@ public class LocalServer implements BasicFileServerInterface {
      */
     @Override
     public synchronized BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
-        final Integer MAX_TRY_TIMES = 5;
-        final Integer TRY_DELAY = 50;
-
         //检查参数
         assert request != null;
         assert request.getMultipart() != null;
@@ -155,35 +153,20 @@ public class LocalServer implements BasicFileServerInterface {
             }
         }
 
-        if (rf == null){
-            String msg = "打开文件" + FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey() + "出错";
-            result.setStatus(ApiResponseConst.FAILED);
-            result.setMsg(msg);
-            return result;
-        }
-
         try {
+            if (rf == null) throw new IOException();
             if (rf.length() < pos) rf.setLength(pos + len);
-        } catch (IOException e) {
-            FileUtils.close(rf);
-            String msg = "设置文件" + FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey() + "长度时出错";
-            ExceptionUtils.logWarn(log,e,false,msg);
-            result.setStatus(ApiResponseConst.FAILED);
-            result.setMsg(msg);
-            return result;
-        }
-
-        try {
             rf.seek(pos);
             rf.write(data,off,len);
         } catch (IOException e) {
             FileUtils.close(rf);
-            String msg = "写入文件" + FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey() + "内容时出错";
+            String msg = "写入文件" + FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey() + "时出错";
             ExceptionUtils.logWarn(log,e,false,msg);
             result.setStatus(ApiResponseConst.FAILED);
             result.setMsg(msg);
             return result;
         }
+
         FileUtils.close(rf);
         result.setStatus(ApiResponseConst.SUCCESS);
 
@@ -211,9 +194,24 @@ public class LocalServer implements BasicFileServerInterface {
         //下载文件
         BasicDownloadResultDTO result = BeanUtils.createFrom(request,BasicDownloadResultDTO.class);
         RandomAccessFile rf = null;
+        //打开文件
+        for (Integer i=0; i<MAX_TRY_TIMES; i++) {
+            try {
+                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + request.getScope() + "/" + request.getKey(), "r");
+                break;
+            } catch (IOException e) {
+                ExceptionUtils.logWarn(log, e, false, "打开文件" + FILE_SERVER_PATH + "/" + request.getScope() + "/" + request.getKey() + "出错");
+                try {
+                    Thread.sleep(TRY_DELAY);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                rf = null;
+            }
+        }
+
         try {
-            //打开文件
-            rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + request.getScope() + "/" + request.getKey(),"r");
+            if (rf == null) throw new IOException("打开文件" + FILE_SERVER_PATH + "/" + request.getScope() + "/" + request.getKey() + "出错");
             //定位
             long pos = (long)request.getChunkId() * request.getChunkSize();
             long length = rf.length();
@@ -221,7 +219,6 @@ public class LocalServer implements BasicFileServerInterface {
             rf.seek(pos);
             //读取文件内容
             byte[] bytes = new byte[request.getChunkSize()];
-            assert bytes != null;
             int size = rf.read(bytes);
             assert size > 0;
             if (size < bytes.length) bytes = Arrays.copyOfRange(bytes,0,size);
