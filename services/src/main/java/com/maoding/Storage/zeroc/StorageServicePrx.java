@@ -22,6 +22,74 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default java.util.List<CooperateDirDTO> listCooperationDir(CooperationQueryDTO query)
+    {
+        return listCooperationDir(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<CooperateDirDTO> listCooperationDir(CooperationQueryDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listCooperationDirAsync(query, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<CooperateDirDTO>> listCooperationDirAsync(CooperationQueryDTO query)
+    {
+        return _iceI_listCooperationDirAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<CooperateDirDTO>> listCooperationDirAsync(CooperationQueryDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listCooperationDirAsync(query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<CooperateDirDTO>> _iceI_listCooperationDirAsync(CooperationQueryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<CooperateDirDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listCooperationDir", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperationQueryDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     java.util.List<CooperateDirDTO> ret;
+                     ret = CooperateDirListHelper.read(istr);
+                     istr.readPendingValues();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean modifyFileInfo(CooperateFileDTO fileInfo)
+    {
+        return modifyFileInfo(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean modifyFileInfo(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_modifyFileInfoAsync(fileInfo, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> modifyFileInfoAsync(CooperateFileDTO fileInfo)
+    {
+        return _iceI_modifyFileInfoAsync(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> modifyFileInfoAsync(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_modifyFileInfoAsync(fileInfo, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_modifyFileInfoAsync(CooperateFileDTO iceP_fileInfo, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "modifyFileInfo", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
     default com.maoding.FileServer.zeroc.FileRequestDTO requestUpload(CooperateFileDTO fileInfo, int mode)
     {
         return requestUpload(fileInfo, mode, com.zeroc.Ice.ObjectPrx.noExplicitContext);
@@ -48,6 +116,7 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
                      ostr.writeInt(iceP_mode);
+                     ostr.writePendingValues();
                  }, istr -> {
                      com.maoding.FileServer.zeroc.FileRequestDTO ret;
                      ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
@@ -82,9 +151,823 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
                      ostr.writeInt(iceP_mode);
+                     ostr.writePendingValues();
                  }, istr -> {
                      com.maoding.FileServer.zeroc.FileRequestDTO ret;
                      ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default com.maoding.FileServer.zeroc.DownloadResultDTO downloadFrom(com.maoding.FileServer.zeroc.DownloadRequestDTO request, String address, int mode)
+    {
+        return downloadFrom(request, address, mode, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.FileServer.zeroc.DownloadResultDTO downloadFrom(com.maoding.FileServer.zeroc.DownloadRequestDTO request, String address, int mode, java.util.Map<String, String> context)
+    {
+        return _iceI_downloadFromAsync(request, address, mode, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.DownloadResultDTO> downloadFromAsync(com.maoding.FileServer.zeroc.DownloadRequestDTO request, String address, int mode)
+    {
+        return _iceI_downloadFromAsync(request, address, mode, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.DownloadResultDTO> downloadFromAsync(com.maoding.FileServer.zeroc.DownloadRequestDTO request, String address, int mode, java.util.Map<String, String> context)
+    {
+        return _iceI_downloadFromAsync(request, address, mode, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.DownloadResultDTO> _iceI_downloadFromAsync(com.maoding.FileServer.zeroc.DownloadRequestDTO iceP_request, String iceP_address, int iceP_mode, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.DownloadResultDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "downloadFrom", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.FileServer.zeroc.DownloadRequestDTO.ice_write(ostr, iceP_request);
+                     ostr.writeString(iceP_address);
+                     ostr.writeInt(iceP_mode);
+                 }, istr -> {
+                     com.maoding.FileServer.zeroc.DownloadResultDTO ret;
+                     ret = com.maoding.FileServer.zeroc.DownloadResultDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default CooperateFileDTO uploadCallback(java.util.Map<java.lang.String, java.lang.String> params)
+    {
+        return uploadCallback(params, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default CooperateFileDTO uploadCallback(java.util.Map<java.lang.String, java.lang.String> params, java.util.Map<String, String> context)
+    {
+        return _iceI_uploadCallbackAsync(params, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> uploadCallbackAsync(java.util.Map<java.lang.String, java.lang.String> params)
+    {
+        return _iceI_uploadCallbackAsync(params, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> uploadCallbackAsync(java.util.Map<java.lang.String, java.lang.String> params, java.util.Map<String, String> context)
+    {
+        return _iceI_uploadCallbackAsync(params, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> _iceI_uploadCallbackAsync(java.util.Map<java.lang.String, java.lang.String> iceP_params, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "uploadCallback", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Common.zeroc.MapHelper.write(ostr, iceP_params);
+                 }, istr -> {
+                     CooperateFileDTO ret;
+                     ret = CooperateFileDTO.ice_read(istr);
+                     istr.readPendingValues();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default void downloadCallback(java.util.Map<java.lang.String, java.lang.String> params)
+    {
+        downloadCallback(params, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void downloadCallback(java.util.Map<java.lang.String, java.lang.String> params, java.util.Map<String, String> context)
+    {
+        _iceI_downloadCallbackAsync(params, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> downloadCallbackAsync(java.util.Map<java.lang.String, java.lang.String> params)
+    {
+        return _iceI_downloadCallbackAsync(params, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> downloadCallbackAsync(java.util.Map<java.lang.String, java.lang.String> params, java.util.Map<String, String> context)
+    {
+        return _iceI_downloadCallbackAsync(params, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_downloadCallbackAsync(java.util.Map<java.lang.String, java.lang.String> iceP_params, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "downloadCallback", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     com.maoding.Common.zeroc.MapHelper.write(ostr, iceP_params);
+                 }, null);
+        return f;
+    }
+
+    default CooperateFileDTO finishUpload(CooperateFileDTO fileInfo, com.maoding.FileServer.zeroc.FileDTO fileDTO)
+    {
+        return finishUpload(fileInfo, fileDTO, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default CooperateFileDTO finishUpload(CooperateFileDTO fileInfo, com.maoding.FileServer.zeroc.FileDTO fileDTO, java.util.Map<String, String> context)
+    {
+        return _iceI_finishUploadAsync(fileInfo, fileDTO, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> finishUploadAsync(CooperateFileDTO fileInfo, com.maoding.FileServer.zeroc.FileDTO fileDTO)
+    {
+        return _iceI_finishUploadAsync(fileInfo, fileDTO, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> finishUploadAsync(CooperateFileDTO fileInfo, com.maoding.FileServer.zeroc.FileDTO fileDTO, java.util.Map<String, String> context)
+    {
+        return _iceI_finishUploadAsync(fileInfo, fileDTO, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> _iceI_finishUploadAsync(CooperateFileDTO iceP_fileInfo, com.maoding.FileServer.zeroc.FileDTO iceP_fileDTO, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "finishUpload", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     com.maoding.FileServer.zeroc.FileDTO.ice_write(ostr, iceP_fileDTO);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     CooperateFileDTO ret;
+                     ret = CooperateFileDTO.ice_read(istr);
+                     istr.readPendingValues();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default void finishDownload(CooperateFileDTO fileInfo)
+    {
+        finishDownload(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void finishDownload(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        _iceI_finishDownloadAsync(fileInfo, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> finishDownloadAsync(CooperateFileDTO fileInfo)
+    {
+        return _iceI_finishDownloadAsync(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> finishDownloadAsync(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_finishDownloadAsync(fileInfo, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_finishDownloadAsync(CooperateFileDTO iceP_fileInfo, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "finishDownload", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writePendingValues();
+                 }, null);
+        return f;
+    }
+
+    default boolean replaceFile(CooperateFileDTO fileInfo, com.maoding.FileServer.zeroc.FileDTO fileDTO)
+    {
+        return replaceFile(fileInfo, fileDTO, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean replaceFile(CooperateFileDTO fileInfo, com.maoding.FileServer.zeroc.FileDTO fileDTO, java.util.Map<String, String> context)
+    {
+        return _iceI_replaceFileAsync(fileInfo, fileDTO, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> replaceFileAsync(CooperateFileDTO fileInfo, com.maoding.FileServer.zeroc.FileDTO fileDTO)
+    {
+        return _iceI_replaceFileAsync(fileInfo, fileDTO, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> replaceFileAsync(CooperateFileDTO fileInfo, com.maoding.FileServer.zeroc.FileDTO fileDTO, java.util.Map<String, String> context)
+    {
+        return _iceI_replaceFileAsync(fileInfo, fileDTO, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_replaceFileAsync(CooperateFileDTO iceP_fileInfo, com.maoding.FileServer.zeroc.FileDTO iceP_fileDTO, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "replaceFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     com.maoding.FileServer.zeroc.FileDTO.ice_write(ostr, iceP_fileDTO);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean deleteFile(CooperateFileDTO fileInfo)
+    {
+        return deleteFile(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean deleteFile(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_deleteFileAsync(fileInfo, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> deleteFileAsync(CooperateFileDTO fileInfo)
+    {
+        return _iceI_deleteFileAsync(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> deleteFileAsync(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_deleteFileAsync(fileInfo, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_deleteFileAsync(CooperateFileDTO iceP_fileInfo, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "deleteFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean createDirectory(String path)
+    {
+        return createDirectory(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean createDirectory(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_createDirectoryAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> createDirectoryAsync(String path)
+    {
+        return _iceI_createDirectoryAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> createDirectoryAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_createDirectoryAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_createDirectoryAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createDirectory", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean deleteDirectory(String path, boolean force)
+    {
+        return deleteDirectory(path, force, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean deleteDirectory(String path, boolean force, java.util.Map<String, String> context)
+    {
+        return _iceI_deleteDirectoryAsync(path, force, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> deleteDirectoryAsync(String path, boolean force)
+    {
+        return _iceI_deleteDirectoryAsync(path, force, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> deleteDirectoryAsync(String path, boolean force, java.util.Map<String, String> context)
+    {
+        return _iceI_deleteDirectoryAsync(path, force, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_deleteDirectoryAsync(String iceP_path, boolean iceP_force, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "deleteDirectory", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                     ostr.writeBool(iceP_force);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default CooperateFileDTO duplicateFile(CooperateFileDTO fileInfo, String path)
+    {
+        return duplicateFile(fileInfo, path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default CooperateFileDTO duplicateFile(CooperateFileDTO fileInfo, String path, java.util.Map<String, String> context)
+    {
+        return _iceI_duplicateFileAsync(fileInfo, path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> duplicateFileAsync(CooperateFileDTO fileInfo, String path)
+    {
+        return _iceI_duplicateFileAsync(fileInfo, path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> duplicateFileAsync(CooperateFileDTO fileInfo, String path, java.util.Map<String, String> context)
+    {
+        return _iceI_duplicateFileAsync(fileInfo, path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> _iceI_duplicateFileAsync(CooperateFileDTO iceP_fileInfo, String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "duplicateFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writeString(iceP_path);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     CooperateFileDTO ret;
+                     ret = CooperateFileDTO.ice_read(istr);
+                     istr.readPendingValues();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default CooperateFileDTO createFileLink(CooperateFileDTO fileInfo, String path)
+    {
+        return createFileLink(fileInfo, path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default CooperateFileDTO createFileLink(CooperateFileDTO fileInfo, String path, java.util.Map<String, String> context)
+    {
+        return _iceI_createFileLinkAsync(fileInfo, path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> createFileLinkAsync(CooperateFileDTO fileInfo, String path)
+    {
+        return _iceI_createFileLinkAsync(fileInfo, path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> createFileLinkAsync(CooperateFileDTO fileInfo, String path, java.util.Map<String, String> context)
+    {
+        return _iceI_createFileLinkAsync(fileInfo, path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> _iceI_createFileLinkAsync(CooperateFileDTO iceP_fileInfo, String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createFileLink", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writeString(iceP_path);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     CooperateFileDTO ret;
+                     ret = CooperateFileDTO.ice_read(istr);
+                     istr.readPendingValues();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean duplicateDirectory(String path, String parent)
+    {
+        return duplicateDirectory(path, parent, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean duplicateDirectory(String path, String parent, java.util.Map<String, String> context)
+    {
+        return _iceI_duplicateDirectoryAsync(path, parent, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> duplicateDirectoryAsync(String path, String parent)
+    {
+        return _iceI_duplicateDirectoryAsync(path, parent, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> duplicateDirectoryAsync(String path, String parent, java.util.Map<String, String> context)
+    {
+        return _iceI_duplicateDirectoryAsync(path, parent, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_duplicateDirectoryAsync(String iceP_path, String iceP_parent, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "duplicateDirectory", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                     ostr.writeString(iceP_parent);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default java.util.List<CooperateFileDTO> listFileLink(com.maoding.FileServer.zeroc.FileDTO fileDTO)
+    {
+        return listFileLink(fileDTO, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<CooperateFileDTO> listFileLink(com.maoding.FileServer.zeroc.FileDTO fileDTO, java.util.Map<String, String> context)
+    {
+        return _iceI_listFileLinkAsync(fileDTO, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<CooperateFileDTO>> listFileLinkAsync(com.maoding.FileServer.zeroc.FileDTO fileDTO)
+    {
+        return _iceI_listFileLinkAsync(fileDTO, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<CooperateFileDTO>> listFileLinkAsync(com.maoding.FileServer.zeroc.FileDTO fileDTO, java.util.Map<String, String> context)
+    {
+        return _iceI_listFileLinkAsync(fileDTO, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<CooperateFileDTO>> _iceI_listFileLinkAsync(com.maoding.FileServer.zeroc.FileDTO iceP_fileDTO, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<CooperateFileDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listFileLink", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.FileServer.zeroc.FileDTO.ice_write(ostr, iceP_fileDTO);
+                 }, istr -> {
+                     java.util.List<CooperateFileDTO> ret;
+                     ret = CooperateFileListHelper.read(istr);
+                     istr.readPendingValues();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean restoreFile(CooperateFileDTO fileInfo)
+    {
+        return restoreFile(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean restoreFile(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_restoreFileAsync(fileInfo, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> restoreFileAsync(CooperateFileDTO fileInfo)
+    {
+        return _iceI_restoreFileAsync(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> restoreFileAsync(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_restoreFileAsync(fileInfo, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_restoreFileAsync(CooperateFileDTO iceP_fileInfo, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "restoreFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean restoreDirectory(String path)
+    {
+        return restoreDirectory(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean restoreDirectory(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_restoreDirectoryAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> restoreDirectoryAsync(String path)
+    {
+        return _iceI_restoreDirectoryAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> restoreDirectoryAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_restoreDirectoryAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_restoreDirectoryAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "restoreDirectory", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean lockFile(CooperateFileDTO fileInfo)
+    {
+        return lockFile(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean lockFile(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_lockFileAsync(fileInfo, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> lockFileAsync(CooperateFileDTO fileInfo)
+    {
+        return _iceI_lockFileAsync(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> lockFileAsync(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_lockFileAsync(fileInfo, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_lockFileAsync(CooperateFileDTO iceP_fileInfo, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "lockFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean unlockFile(CooperateFileDTO fileInfo)
+    {
+        return unlockFile(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean unlockFile(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_unlockFileAsync(fileInfo, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> unlockFileAsync(CooperateFileDTO fileInfo)
+    {
+        return _iceI_unlockFileAsync(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> unlockFileAsync(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_unlockFileAsync(fileInfo, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_unlockFileAsync(CooperateFileDTO iceP_fileInfo, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unlockFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default long getFree(CooperationQueryDTO query)
+    {
+        return getFree(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default long getFree(CooperationQueryDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_getFreeAsync(query, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Long> getFreeAsync(CooperationQueryDTO query)
+    {
+        return _iceI_getFreeAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Long> getFreeAsync(CooperationQueryDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_getFreeAsync(query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Long> _iceI_getFreeAsync(CooperationQueryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Long> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFree", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperationQueryDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     long ret;
+                     ret = istr.readLong();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean isLock(CooperateFileDTO fileInfo)
+    {
+        return isLock(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean isLock(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_isLockAsync(fileInfo, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isLockAsync(CooperateFileDTO fileInfo)
+    {
+        return _iceI_isLockAsync(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isLockAsync(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_isLockAsync(fileInfo, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_isLockAsync(CooperateFileDTO iceP_fileInfo, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "isLock", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default CooperateFileDTO getFileInfo(String fileId)
+    {
+        return getFileInfo(fileId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default CooperateFileDTO getFileInfo(String fileId, java.util.Map<String, String> context)
+    {
+        return _iceI_getFileInfoAsync(fileId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> getFileInfoAsync(String fileId)
+    {
+        return _iceI_getFileInfoAsync(fileId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> getFileInfoAsync(String fileId, java.util.Map<String, String> context)
+    {
+        return _iceI_getFileInfoAsync(fileId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> _iceI_getFileInfoAsync(String iceP_fileId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFileInfo", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_fileId);
+                 }, istr -> {
+                     CooperateFileDTO ret;
+                     ret = CooperateFileDTO.ice_read(istr);
+                     istr.readPendingValues();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default int getLinkCount(com.maoding.FileServer.zeroc.FileDTO fileDTO)
+    {
+        return getLinkCount(fileDTO, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default int getLinkCount(com.maoding.FileServer.zeroc.FileDTO fileDTO, java.util.Map<String, String> context)
+    {
+        return _iceI_getLinkCountAsync(fileDTO, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> getLinkCountAsync(com.maoding.FileServer.zeroc.FileDTO fileDTO)
+    {
+        return _iceI_getLinkCountAsync(fileDTO, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> getLinkCountAsync(com.maoding.FileServer.zeroc.FileDTO fileDTO, java.util.Map<String, String> context)
+    {
+        return _iceI_getLinkCountAsync(fileDTO, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> _iceI_getLinkCountAsync(com.maoding.FileServer.zeroc.FileDTO iceP_fileDTO, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getLinkCount", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.FileServer.zeroc.FileDTO.ice_write(ostr, iceP_fileDTO);
+                 }, istr -> {
+                     int ret;
+                     ret = istr.readInt();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default CooperateFileDTO createVersion(CooperateFileDTO fileInfo, String version)
+    {
+        return createVersion(fileInfo, version, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default CooperateFileDTO createVersion(CooperateFileDTO fileInfo, String version, java.util.Map<String, String> context)
+    {
+        return _iceI_createVersionAsync(fileInfo, version, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> createVersionAsync(CooperateFileDTO fileInfo, String version)
+    {
+        return _iceI_createVersionAsync(fileInfo, version, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateFileDTO> createVersionAsync(CooperateFileDTO fileInfo, String version, java.util.Map<String, String> context)
+    {
+        return _iceI_createVersionAsync(fileInfo, version, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> _iceI_createVersionAsync(CooperateFileDTO iceP_fileInfo, String iceP_version, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createVersion", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writeString(iceP_version);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     CooperateFileDTO ret;
+                     ret = CooperateFileDTO.ice_read(istr);
+                     istr.readPendingValues();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean abortUpload(CooperateFileDTO fileInfo)
+    {
+        return abortUpload(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean abortUpload(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_abortUploadAsync(fileInfo, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> abortUploadAsync(CooperateFileDTO fileInfo)
+    {
+        return _iceI_abortUploadAsync(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> abortUploadAsync(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_abortUploadAsync(fileInfo, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_abortUploadAsync(CooperateFileDTO iceP_fileInfo, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "abortUpload", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean abortDownload(CooperateFileDTO fileInfo)
+    {
+        return abortDownload(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean abortDownload(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_abortDownloadAsync(fileInfo, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> abortDownloadAsync(CooperateFileDTO fileInfo)
+    {
+        return _iceI_abortDownloadAsync(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> abortDownloadAsync(CooperateFileDTO fileInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_abortDownloadAsync(fileInfo, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_abortDownloadAsync(CooperateFileDTO iceP_fileInfo, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "abortDownload", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
+                     ostr.writePendingValues();
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
                      return ret;
                  });
         return f;

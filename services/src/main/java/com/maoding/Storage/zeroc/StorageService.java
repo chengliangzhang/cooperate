@@ -22,9 +22,61 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageService extends com.zeroc.Ice.Object
 {
+    java.util.List<CooperateDirDTO> listCooperationDir(CooperationQueryDTO query, com.zeroc.Ice.Current current);
+
+    boolean modifyFileInfo(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
+
     com.maoding.FileServer.zeroc.FileRequestDTO requestUpload(CooperateFileDTO fileInfo, int mode, com.zeroc.Ice.Current current);
 
     com.maoding.FileServer.zeroc.FileRequestDTO requestDownload(CooperateFileDTO fileInfo, int mode, com.zeroc.Ice.Current current);
+
+    com.maoding.FileServer.zeroc.DownloadResultDTO downloadFrom(com.maoding.FileServer.zeroc.DownloadRequestDTO request, String address, int mode, com.zeroc.Ice.Current current);
+
+    CooperateFileDTO uploadCallback(java.util.Map<java.lang.String, java.lang.String> params, com.zeroc.Ice.Current current);
+
+    void downloadCallback(java.util.Map<java.lang.String, java.lang.String> params, com.zeroc.Ice.Current current);
+
+    CooperateFileDTO finishUpload(CooperateFileDTO fileInfo, com.maoding.FileServer.zeroc.FileDTO fileDTO, com.zeroc.Ice.Current current);
+
+    void finishDownload(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
+
+    boolean replaceFile(CooperateFileDTO fileInfo, com.maoding.FileServer.zeroc.FileDTO fileDTO, com.zeroc.Ice.Current current);
+
+    boolean deleteFile(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
+
+    boolean createDirectory(String path, com.zeroc.Ice.Current current);
+
+    boolean deleteDirectory(String path, boolean force, com.zeroc.Ice.Current current);
+
+    CooperateFileDTO duplicateFile(CooperateFileDTO fileInfo, String path, com.zeroc.Ice.Current current);
+
+    CooperateFileDTO createFileLink(CooperateFileDTO fileInfo, String path, com.zeroc.Ice.Current current);
+
+    boolean duplicateDirectory(String path, String parent, com.zeroc.Ice.Current current);
+
+    java.util.List<CooperateFileDTO> listFileLink(com.maoding.FileServer.zeroc.FileDTO fileDTO, com.zeroc.Ice.Current current);
+
+    boolean restoreFile(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
+
+    boolean restoreDirectory(String path, com.zeroc.Ice.Current current);
+
+    boolean lockFile(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
+
+    boolean unlockFile(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
+
+    long getFree(CooperationQueryDTO query, com.zeroc.Ice.Current current);
+
+    boolean isLock(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
+
+    CooperateFileDTO getFileInfo(String fileId, com.zeroc.Ice.Current current);
+
+    int getLinkCount(com.maoding.FileServer.zeroc.FileDTO fileDTO, com.zeroc.Ice.Current current);
+
+    CooperateFileDTO createVersion(CooperateFileDTO fileInfo, String version, com.zeroc.Ice.Current current);
+
+    boolean abortUpload(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
+
+    boolean abortDownload(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -49,6 +101,36 @@ public interface StorageService extends com.zeroc.Ice.Object
         return "::zeroc::StorageService";
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listCooperationDir(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperationQueryDTO iceP_query;
+        iceP_query = CooperationQueryDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<CooperateDirDTO> ret = obj.listCooperationDir(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CooperateDirListHelper.write(ostr, ret);
+        ostr.writePendingValues();
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_modifyFileInfo(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        boolean ret = obj.modifyFileInfo(iceP_fileInfo, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_requestUpload(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
@@ -57,6 +139,7 @@ public interface StorageService extends com.zeroc.Ice.Object
         int iceP_mode;
         iceP_fileInfo = CooperateFileDTO.ice_read(istr);
         iceP_mode = istr.readInt();
+        istr.readPendingValues();
         inS.endReadParams();
         com.maoding.FileServer.zeroc.FileRequestDTO ret = obj.requestUpload(iceP_fileInfo, iceP_mode, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
@@ -73,6 +156,7 @@ public interface StorageService extends com.zeroc.Ice.Object
         int iceP_mode;
         iceP_fileInfo = CooperateFileDTO.ice_read(istr);
         iceP_mode = istr.readInt();
+        istr.readPendingValues();
         inS.endReadParams();
         com.maoding.FileServer.zeroc.FileRequestDTO ret = obj.requestDownload(iceP_fileInfo, iceP_mode, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
@@ -81,14 +165,408 @@ public interface StorageService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_downloadFrom(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.FileServer.zeroc.DownloadRequestDTO iceP_request;
+        String iceP_address;
+        int iceP_mode;
+        iceP_request = com.maoding.FileServer.zeroc.DownloadRequestDTO.ice_read(istr);
+        iceP_address = istr.readString();
+        iceP_mode = istr.readInt();
+        inS.endReadParams();
+        com.maoding.FileServer.zeroc.DownloadResultDTO ret = obj.downloadFrom(iceP_request, iceP_address, iceP_mode, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.FileServer.zeroc.DownloadResultDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_uploadCallback(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.util.Map<java.lang.String, java.lang.String> iceP_params;
+        iceP_params = com.maoding.Common.zeroc.MapHelper.read(istr);
+        inS.endReadParams();
+        CooperateFileDTO ret = obj.uploadCallback(iceP_params, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CooperateFileDTO.ice_write(ostr, ret);
+        ostr.writePendingValues();
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_downloadCallback(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.util.Map<java.lang.String, java.lang.String> iceP_params;
+        iceP_params = com.maoding.Common.zeroc.MapHelper.read(istr);
+        inS.endReadParams();
+        obj.downloadCallback(iceP_params, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_finishUpload(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        com.maoding.FileServer.zeroc.FileDTO iceP_fileDTO;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        iceP_fileDTO = com.maoding.FileServer.zeroc.FileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        CooperateFileDTO ret = obj.finishUpload(iceP_fileInfo, iceP_fileDTO, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CooperateFileDTO.ice_write(ostr, ret);
+        ostr.writePendingValues();
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_finishDownload(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        obj.finishDownload(iceP_fileInfo, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_replaceFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        com.maoding.FileServer.zeroc.FileDTO iceP_fileDTO;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        iceP_fileDTO = com.maoding.FileServer.zeroc.FileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        boolean ret = obj.replaceFile(iceP_fileInfo, iceP_fileDTO, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_deleteFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        boolean ret = obj.deleteFile(iceP_fileInfo, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createDirectory(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        iceP_path = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.createDirectory(iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_deleteDirectory(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        boolean iceP_force;
+        iceP_path = istr.readString();
+        iceP_force = istr.readBool();
+        inS.endReadParams();
+        boolean ret = obj.deleteDirectory(iceP_path, iceP_force, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_duplicateFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        String iceP_path;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        iceP_path = istr.readString();
+        istr.readPendingValues();
+        inS.endReadParams();
+        CooperateFileDTO ret = obj.duplicateFile(iceP_fileInfo, iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CooperateFileDTO.ice_write(ostr, ret);
+        ostr.writePendingValues();
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createFileLink(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        String iceP_path;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        iceP_path = istr.readString();
+        istr.readPendingValues();
+        inS.endReadParams();
+        CooperateFileDTO ret = obj.createFileLink(iceP_fileInfo, iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CooperateFileDTO.ice_write(ostr, ret);
+        ostr.writePendingValues();
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_duplicateDirectory(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        String iceP_parent;
+        iceP_path = istr.readString();
+        iceP_parent = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.duplicateDirectory(iceP_path, iceP_parent, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listFileLink(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.FileServer.zeroc.FileDTO iceP_fileDTO;
+        iceP_fileDTO = com.maoding.FileServer.zeroc.FileDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<CooperateFileDTO> ret = obj.listFileLink(iceP_fileDTO, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CooperateFileListHelper.write(ostr, ret);
+        ostr.writePendingValues();
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_restoreFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        boolean ret = obj.restoreFile(iceP_fileInfo, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_restoreDirectory(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        iceP_path = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.restoreDirectory(iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_lockFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        boolean ret = obj.lockFile(iceP_fileInfo, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unlockFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        boolean ret = obj.unlockFile(iceP_fileInfo, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFree(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperationQueryDTO iceP_query;
+        iceP_query = CooperationQueryDTO.ice_read(istr);
+        inS.endReadParams();
+        long ret = obj.getFree(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeLong(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_isLock(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        boolean ret = obj.isLock(iceP_fileInfo, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFileInfo(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_fileId;
+        iceP_fileId = istr.readString();
+        inS.endReadParams();
+        CooperateFileDTO ret = obj.getFileInfo(iceP_fileId, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CooperateFileDTO.ice_write(ostr, ret);
+        ostr.writePendingValues();
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getLinkCount(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.FileServer.zeroc.FileDTO iceP_fileDTO;
+        iceP_fileDTO = com.maoding.FileServer.zeroc.FileDTO.ice_read(istr);
+        inS.endReadParams();
+        int ret = obj.getLinkCount(iceP_fileDTO, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeInt(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createVersion(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        String iceP_version;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        iceP_version = istr.readString();
+        istr.readPendingValues();
+        inS.endReadParams();
+        CooperateFileDTO ret = obj.createVersion(iceP_fileInfo, iceP_version, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CooperateFileDTO.ice_write(ostr, ret);
+        ostr.writePendingValues();
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_abortUpload(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        boolean ret = obj.abortUpload(iceP_fileInfo, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_abortDownload(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperateFileDTO iceP_fileInfo;
+        iceP_fileInfo = CooperateFileDTO.ice_read(istr);
+        istr.readPendingValues();
+        inS.endReadParams();
+        boolean ret = obj.abortDownload(iceP_fileInfo, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     final static String[] _iceOps =
     {
+        "abortDownload",
+        "abortUpload",
+        "createDirectory",
+        "createFileLink",
+        "createVersion",
+        "deleteDirectory",
+        "deleteFile",
+        "downloadCallback",
+        "downloadFrom",
+        "duplicateDirectory",
+        "duplicateFile",
+        "finishDownload",
+        "finishUpload",
+        "getFileInfo",
+        "getFree",
+        "getLinkCount",
         "ice_id",
         "ice_ids",
         "ice_isA",
         "ice_ping",
+        "isLock",
+        "listCooperationDir",
+        "listFileLink",
+        "lockFile",
+        "modifyFileInfo",
+        "replaceFile",
         "requestDownload",
-        "requestUpload"
+        "requestUpload",
+        "restoreDirectory",
+        "restoreFile",
+        "unlockFile",
+        "uploadCallback"
     };
 
     @Override
@@ -105,27 +583,131 @@ public interface StorageService extends com.zeroc.Ice.Object
         {
             case 0:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_abortDownload(this, in, current);
             }
             case 1:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return _iceD_abortUpload(this, in, current);
             }
             case 2:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return _iceD_createDirectory(this, in, current);
             }
             case 3:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return _iceD_createFileLink(this, in, current);
             }
             case 4:
             {
-                return _iceD_requestDownload(this, in, current);
+                return _iceD_createVersion(this, in, current);
             }
             case 5:
             {
+                return _iceD_deleteDirectory(this, in, current);
+            }
+            case 6:
+            {
+                return _iceD_deleteFile(this, in, current);
+            }
+            case 7:
+            {
+                return _iceD_downloadCallback(this, in, current);
+            }
+            case 8:
+            {
+                return _iceD_downloadFrom(this, in, current);
+            }
+            case 9:
+            {
+                return _iceD_duplicateDirectory(this, in, current);
+            }
+            case 10:
+            {
+                return _iceD_duplicateFile(this, in, current);
+            }
+            case 11:
+            {
+                return _iceD_finishDownload(this, in, current);
+            }
+            case 12:
+            {
+                return _iceD_finishUpload(this, in, current);
+            }
+            case 13:
+            {
+                return _iceD_getFileInfo(this, in, current);
+            }
+            case 14:
+            {
+                return _iceD_getFree(this, in, current);
+            }
+            case 15:
+            {
+                return _iceD_getLinkCount(this, in, current);
+            }
+            case 16:
+            {
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+            }
+            case 17:
+            {
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+            }
+            case 18:
+            {
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+            }
+            case 19:
+            {
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+            }
+            case 20:
+            {
+                return _iceD_isLock(this, in, current);
+            }
+            case 21:
+            {
+                return _iceD_listCooperationDir(this, in, current);
+            }
+            case 22:
+            {
+                return _iceD_listFileLink(this, in, current);
+            }
+            case 23:
+            {
+                return _iceD_lockFile(this, in, current);
+            }
+            case 24:
+            {
+                return _iceD_modifyFileInfo(this, in, current);
+            }
+            case 25:
+            {
+                return _iceD_replaceFile(this, in, current);
+            }
+            case 26:
+            {
+                return _iceD_requestDownload(this, in, current);
+            }
+            case 27:
+            {
                 return _iceD_requestUpload(this, in, current);
+            }
+            case 28:
+            {
+                return _iceD_restoreDirectory(this, in, current);
+            }
+            case 29:
+            {
+                return _iceD_restoreFile(this, in, current);
+            }
+            case 30:
+            {
+                return _iceD_unlockFile(this, in, current);
+            }
+            case 31:
+            {
+                return _iceD_uploadCallback(this, in, current);
             }
         }
 

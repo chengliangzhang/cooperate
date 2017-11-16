@@ -91,8 +91,7 @@ public class StorageServiceImplTest {
 
         CooperateFileDTO fileInfo = new CooperateFileDTO();
         fileInfo.setLocalFile(localFile);
-        fileInfo.setDirName(dirName);
-        fileInfo.setFileName(fileName);
+        fileInfo.setName(fileName);
         return fileInfo;
     }
     public CooperateFileDTO createCooperateFileDTO() throws Exception {

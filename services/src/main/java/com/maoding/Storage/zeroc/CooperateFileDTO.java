@@ -35,28 +35,28 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.id = id;
     }
 
-    public String fileName;
+    public String storageId;
 
-    public String getFileName()
+    public String getStorageId()
     {
-        return fileName;
+        return storageId;
     }
 
-    public void setFileName(String fileName)
+    public void setStorageId(String storageId)
     {
-        this.fileName = fileName;
+        this.storageId = storageId;
     }
 
-    public String dirName;
+    public String name;
 
-    public String getDirName()
+    public String getName()
     {
-        return dirName;
+        return name;
     }
 
-    public void setDirName(String dirName)
+    public void setName(String name)
     {
-        this.dirName = dirName;
+        this.name = name;
     }
 
     public long fileLength;
@@ -107,57 +107,93 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.specialtyId = specialtyId;
     }
 
-    public String lastAdapterId;
+    public String specialtyName;
 
-    public String getLastAdapterId()
+    public String getSpecialtyName()
     {
-        return lastAdapterId;
+        return specialtyName;
     }
 
-    public void setLastAdapterId(String lastAdapterId)
+    public void setSpecialtyName(String specialtyName)
     {
-        this.lastAdapterId = lastAdapterId;
+        this.specialtyName = specialtyName;
     }
 
-    public String lastComputerIp;
+    public String lastModifyAddress;
 
-    public String getLastComputerIp()
+    public String getLastModifyAddress()
     {
-        return lastComputerIp;
+        return lastModifyAddress;
     }
 
-    public void setLastComputerIp(String lastComputerIp)
+    public void setLastModifyAddress(String lastModifyAddress)
     {
-        this.lastComputerIp = lastComputerIp;
+        this.lastModifyAddress = lastModifyAddress;
     }
 
-    public short syncMode;
+    public short syncModeId;
 
-    public short getSyncMode()
+    public short getSyncModeId()
     {
-        return syncMode;
+        return syncModeId;
     }
 
-    public void setSyncMode(short syncMode)
+    public void setSyncModeId(short syncModeId)
     {
-        this.syncMode = syncMode;
+        this.syncModeId = syncModeId;
     }
 
-    public boolean canBeModify;
+    public String syncModeName;
 
-    public boolean getCanBeModify()
+    public String getSyncModeName()
     {
-        return canBeModify;
+        return syncModeName;
     }
 
-    public void setCanBeModify(boolean canBeModify)
+    public void setSyncModeName(String syncModeName)
     {
-        this.canBeModify = canBeModify;
+        this.syncModeName = syncModeName;
     }
 
-    public boolean isCanBeModify()
+    public int typeId;
+
+    public int getTypeId()
     {
-        return canBeModify;
+        return typeId;
+    }
+
+    public void setTypeId(int typeId)
+    {
+        this.typeId = typeId;
+    }
+
+    public String typeName;
+
+    public String getTypeName()
+    {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName)
+    {
+        this.typeName = typeName;
+    }
+
+    public boolean locking;
+
+    public boolean getLocking()
+    {
+        return locking;
+    }
+
+    public void setLocking(boolean locking)
+    {
+        this.locking = locking;
+    }
+
+    public boolean isLocking()
+    {
+        return locking;
     }
 
     public String localFile;
@@ -172,28 +208,28 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.localFile = localFile;
     }
 
-    public java.util.Map<java.lang.String, java.lang.String> referenceIdList;
+    public String creatorPostId;
 
-    public java.util.Map<java.lang.String, java.lang.String> getReferenceIdList()
+    public String getCreatorPostId()
     {
-        return referenceIdList;
+        return creatorPostId;
     }
 
-    public void setReferenceIdList(java.util.Map<java.lang.String, java.lang.String> referenceIdList)
+    public void setCreatorPostId(String creatorPostId)
     {
-        this.referenceIdList = referenceIdList;
+        this.creatorPostId = creatorPostId;
     }
 
-    public String creatorId;
+    public String creatorPostName;
 
-    public String getCreatorId()
+    public String getCreatorPostName()
     {
-        return creatorId;
+        return creatorPostName;
     }
 
-    public void setCreatorId(String creatorId)
+    public void setCreatorPostName(String creatorPostName)
     {
-        this.creatorId = creatorId;
+        this.creatorPostName = creatorPostName;
     }
 
     public java.util.Date createTime;
@@ -208,64 +244,110 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.createTime = createTime;
     }
 
-    public String lastId;
+    public String lastModifyPostId;
 
-    public String getLastId()
+    public String getLastModifyPostId()
     {
-        return lastId;
+        return lastModifyPostId;
     }
 
-    public void setLastId(String lastId)
+    public void setLastModifyPostId(String lastModifyPostId)
     {
-        this.lastId = lastId;
+        this.lastModifyPostId = lastModifyPostId;
     }
 
-    public java.util.Date lastTime;
+    public String lastModifyPostName;
 
-    public java.util.Date getLastTime()
+    public String getLastModifyPostName()
     {
-        return lastTime;
+        return lastModifyPostName;
     }
 
-    public void setLastTime(java.util.Date lastTime)
+    public void setLastModifyPostName(String lastModifyPostName)
     {
-        this.lastTime = lastTime;
+        this.lastModifyPostName = lastModifyPostName;
+    }
+
+    public java.util.Date lastModifyTime;
+
+    public java.util.Date getLastModifyTime()
+    {
+        return lastModifyTime;
+    }
+
+    public void setLastModifyTime(java.util.Date lastModifyTime)
+    {
+        this.lastModifyTime = lastModifyTime;
+    }
+
+    public int referenceFileCount;
+
+    public int getReferenceFileCount()
+    {
+        return referenceFileCount;
+    }
+
+    public void setReferenceFileCount(int referenceFileCount)
+    {
+        this.referenceFileCount = referenceFileCount;
+    }
+
+    public java.util.List<CooperateFileNodeDTO> referenceFileList;
+
+    public java.util.List<CooperateFileNodeDTO> getReferenceFileList()
+    {
+        return referenceFileList;
+    }
+
+    public void setReferenceFileList(java.util.List<CooperateFileNodeDTO> referenceFileList)
+    {
+        this.referenceFileList = referenceFileList;
     }
 
     public CooperateFileDTO()
     {
         this.id = "";
-        this.fileName = "";
-        this.dirName = "";
+        this.storageId = "";
+        this.name = "";
         this.checksum = "";
         this.version = "";
         this.specialtyId = "";
-        this.lastAdapterId = "";
-        this.lastComputerIp = "";
+        this.specialtyName = "";
+        this.lastModifyAddress = "";
+        this.syncModeName = "";
+        this.typeName = "";
         this.localFile = "";
-        this.creatorId = "";
-        this.lastId = "";
+        this.creatorPostId = "";
+        this.creatorPostName = "";
+        this.lastModifyPostId = "";
+        this.lastModifyPostName = "";
     }
 
-    public CooperateFileDTO(String id, String fileName, String dirName, long fileLength, String checksum, String version, String specialtyId, String lastAdapterId, String lastComputerIp, short syncMode, boolean canBeModify, String localFile, java.util.Map<java.lang.String, java.lang.String> referenceIdList, String creatorId, java.util.Date createTime, String lastId, java.util.Date lastTime)
+    public CooperateFileDTO(String id, String storageId, String name, long fileLength, String checksum, String version, String specialtyId, String specialtyName, String lastModifyAddress, short syncModeId, String syncModeName, int typeId, String typeName, boolean locking, String localFile, String creatorPostId, String creatorPostName, java.util.Date createTime, String lastModifyPostId, String lastModifyPostName, java.util.Date lastModifyTime, int referenceFileCount, java.util.List<CooperateFileNodeDTO> referenceFileList)
     {
         this.id = id;
-        this.fileName = fileName;
-        this.dirName = dirName;
+        this.storageId = storageId;
+        this.name = name;
         this.fileLength = fileLength;
         this.checksum = checksum;
         this.version = version;
         this.specialtyId = specialtyId;
-        this.lastAdapterId = lastAdapterId;
-        this.lastComputerIp = lastComputerIp;
-        this.syncMode = syncMode;
-        this.canBeModify = canBeModify;
+        this.specialtyName = specialtyName;
+        this.lastModifyAddress = lastModifyAddress;
+        this.syncModeId = syncModeId;
+        this.syncModeName = syncModeName;
+        this.typeId = typeId;
+        this.typeName = typeName;
+        this.locking = locking;
         this.localFile = localFile;
-        this.referenceIdList = referenceIdList;
-        this.creatorId = creatorId;
+        this.creatorPostId = creatorPostId;
+        this.creatorPostName = creatorPostName;
         this.createTime = createTime;
-        this.lastId = lastId;
-        this.lastTime = lastTime;
+        this.lastModifyPostId = lastModifyPostId;
+        this.lastModifyPostName = lastModifyPostName;
+        this.lastModifyTime = lastModifyTime;
+        this.referenceFileCount = referenceFileCount;
+        this.referenceFileList = referenceFileList;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -289,16 +371,16 @@ public class CooperateFileDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.fileName != r.fileName)
+            if(this.storageId != r.storageId)
             {
-                if(this.fileName == null || r.fileName == null || !this.fileName.equals(r.fileName))
+                if(this.storageId == null || r.storageId == null || !this.storageId.equals(r.storageId))
                 {
                     return false;
                 }
             }
-            if(this.dirName != r.dirName)
+            if(this.name != r.name)
             {
-                if(this.dirName == null || r.dirName == null || !this.dirName.equals(r.dirName))
+                if(this.name == null || r.name == null || !this.name.equals(r.name))
                 {
                     return false;
                 }
@@ -328,25 +410,43 @@ public class CooperateFileDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.lastAdapterId != r.lastAdapterId)
+            if(this.specialtyName != r.specialtyName)
             {
-                if(this.lastAdapterId == null || r.lastAdapterId == null || !this.lastAdapterId.equals(r.lastAdapterId))
+                if(this.specialtyName == null || r.specialtyName == null || !this.specialtyName.equals(r.specialtyName))
                 {
                     return false;
                 }
             }
-            if(this.lastComputerIp != r.lastComputerIp)
+            if(this.lastModifyAddress != r.lastModifyAddress)
             {
-                if(this.lastComputerIp == null || r.lastComputerIp == null || !this.lastComputerIp.equals(r.lastComputerIp))
+                if(this.lastModifyAddress == null || r.lastModifyAddress == null || !this.lastModifyAddress.equals(r.lastModifyAddress))
                 {
                     return false;
                 }
             }
-            if(this.syncMode != r.syncMode)
+            if(this.syncModeId != r.syncModeId)
             {
                 return false;
             }
-            if(this.canBeModify != r.canBeModify)
+            if(this.syncModeName != r.syncModeName)
+            {
+                if(this.syncModeName == null || r.syncModeName == null || !this.syncModeName.equals(r.syncModeName))
+                {
+                    return false;
+                }
+            }
+            if(this.typeId != r.typeId)
+            {
+                return false;
+            }
+            if(this.typeName != r.typeName)
+            {
+                if(this.typeName == null || r.typeName == null || !this.typeName.equals(r.typeName))
+                {
+                    return false;
+                }
+            }
+            if(this.locking != r.locking)
             {
                 return false;
             }
@@ -357,16 +457,16 @@ public class CooperateFileDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.referenceIdList != r.referenceIdList)
+            if(this.creatorPostId != r.creatorPostId)
             {
-                if(this.referenceIdList == null || r.referenceIdList == null || !this.referenceIdList.equals(r.referenceIdList))
+                if(this.creatorPostId == null || r.creatorPostId == null || !this.creatorPostId.equals(r.creatorPostId))
                 {
                     return false;
                 }
             }
-            if(this.creatorId != r.creatorId)
+            if(this.creatorPostName != r.creatorPostName)
             {
-                if(this.creatorId == null || r.creatorId == null || !this.creatorId.equals(r.creatorId))
+                if(this.creatorPostName == null || r.creatorPostName == null || !this.creatorPostName.equals(r.creatorPostName))
                 {
                     return false;
                 }
@@ -378,16 +478,34 @@ public class CooperateFileDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.lastId != r.lastId)
+            if(this.lastModifyPostId != r.lastModifyPostId)
             {
-                if(this.lastId == null || r.lastId == null || !this.lastId.equals(r.lastId))
+                if(this.lastModifyPostId == null || r.lastModifyPostId == null || !this.lastModifyPostId.equals(r.lastModifyPostId))
                 {
                     return false;
                 }
             }
-            if(this.lastTime != r.lastTime)
+            if(this.lastModifyPostName != r.lastModifyPostName)
             {
-                if(this.lastTime == null || r.lastTime == null || !this.lastTime.equals(r.lastTime))
+                if(this.lastModifyPostName == null || r.lastModifyPostName == null || !this.lastModifyPostName.equals(r.lastModifyPostName))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyTime != r.lastModifyTime)
+            {
+                if(this.lastModifyTime == null || r.lastModifyTime == null || !this.lastModifyTime.equals(r.lastModifyTime))
+                {
+                    return false;
+                }
+            }
+            if(this.referenceFileCount != r.referenceFileCount)
+            {
+                return false;
+            }
+            if(this.referenceFileList != r.referenceFileList)
+            {
+                if(this.referenceFileList == null || r.referenceFileList == null || !this.referenceFileList.equals(r.referenceFileList))
                 {
                     return false;
                 }
@@ -404,22 +522,28 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CooperateFileDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dirName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, storageId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, checksum);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, version);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, specialtyId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastAdapterId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastComputerIp);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, syncMode);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, canBeModify);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, specialtyName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyAddress);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, syncModeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, syncModeName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, locking);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, localFile);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, referenceIdList);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, creatorId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, creatorPostId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, creatorPostName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTime);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastTime);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyPostId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyPostName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTime);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, referenceFileCount);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, referenceFileList);
         return h_;
     }
 
@@ -440,43 +564,55 @@ public class CooperateFileDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         ostr.writeString(this.id);
-        ostr.writeString(this.fileName);
-        ostr.writeString(this.dirName);
+        ostr.writeString(this.storageId);
+        ostr.writeString(this.name);
         ostr.writeLong(this.fileLength);
         ostr.writeString(this.checksum);
         ostr.writeString(this.version);
         ostr.writeString(this.specialtyId);
-        ostr.writeString(this.lastAdapterId);
-        ostr.writeString(this.lastComputerIp);
-        ostr.writeShort(this.syncMode);
-        ostr.writeBool(this.canBeModify);
+        ostr.writeString(this.specialtyName);
+        ostr.writeString(this.lastModifyAddress);
+        ostr.writeShort(this.syncModeId);
+        ostr.writeString(this.syncModeName);
+        ostr.writeInt(this.typeId);
+        ostr.writeString(this.typeName);
+        ostr.writeBool(this.locking);
         ostr.writeString(this.localFile);
-        com.maoding.Common.zeroc.MapHelper.write(ostr, this.referenceIdList);
-        ostr.writeString(this.creatorId);
+        ostr.writeString(this.creatorPostId);
+        ostr.writeString(this.creatorPostName);
         ostr.writeSerializable(this.createTime);
-        ostr.writeString(this.lastId);
-        ostr.writeSerializable(this.lastTime);
+        ostr.writeString(this.lastModifyPostId);
+        ostr.writeString(this.lastModifyPostName);
+        ostr.writeSerializable(this.lastModifyTime);
+        ostr.writeInt(this.referenceFileCount);
+        CooperateRelatedFileListHelper.write(ostr, this.referenceFileList);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.id = istr.readString();
-        this.fileName = istr.readString();
-        this.dirName = istr.readString();
+        this.storageId = istr.readString();
+        this.name = istr.readString();
         this.fileLength = istr.readLong();
         this.checksum = istr.readString();
         this.version = istr.readString();
         this.specialtyId = istr.readString();
-        this.lastAdapterId = istr.readString();
-        this.lastComputerIp = istr.readString();
-        this.syncMode = istr.readShort();
-        this.canBeModify = istr.readBool();
+        this.specialtyName = istr.readString();
+        this.lastModifyAddress = istr.readString();
+        this.syncModeId = istr.readShort();
+        this.syncModeName = istr.readString();
+        this.typeId = istr.readInt();
+        this.typeName = istr.readString();
+        this.locking = istr.readBool();
         this.localFile = istr.readString();
-        this.referenceIdList = com.maoding.Common.zeroc.MapHelper.read(istr);
-        this.creatorId = istr.readString();
+        this.creatorPostId = istr.readString();
+        this.creatorPostName = istr.readString();
         this.createTime = istr.readSerializable(java.util.Date.class);
-        this.lastId = istr.readString();
-        this.lastTime = istr.readSerializable(java.util.Date.class);
+        this.lastModifyPostId = istr.readString();
+        this.lastModifyPostName = istr.readString();
+        this.lastModifyTime = istr.readSerializable(java.util.Date.class);
+        this.referenceFileCount = istr.readInt();
+        this.referenceFileList = CooperateRelatedFileListHelper.read(istr);
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CooperateFileDTO v)
@@ -531,5 +667,5 @@ public class CooperateFileDTO implements java.lang.Cloneable,
 
     private static final CooperateFileDTO _nullMarshalValue = new CooperateFileDTO();
 
-    public static final long serialVersionUID = 882232372L;
+    public static final long serialVersionUID = -62817270L;
 }

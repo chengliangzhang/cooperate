@@ -40,11 +40,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /** 替换类似于-p 10000的参数值 */
     public static String replaceParam(String str, String prefix, String sp,String replaceTo){
         if ((str == null) || (!str.contains(prefix))) return str;
+        if (isEmpty(sp)) sp = " ";
 
         int pos1 = str.indexOf(prefix) + prefix.length();
         String r = str.substring(pos1).trim();
-        int pos2 = r.indexOf(sp);
-        return str.substring(0,pos1) + replaceTo + ((pos2 > -1) ? str.substring(pos2) : "");
+        int pos2 = pos1 + r.indexOf(sp) + sp.length();
+        return str.substring(0,pos1) + " " + replaceTo + ((pos2 > -1) ? str.substring(pos2) : "");
     }
     public static String replaceParam(String str, String prefix, String replaceTo){
         return replaceParam(str,prefix," ",replaceTo);

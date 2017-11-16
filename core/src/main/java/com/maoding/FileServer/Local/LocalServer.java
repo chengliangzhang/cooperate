@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -46,6 +47,9 @@ public class LocalServer implements BasicFileServerInterface {
             put(FileServerConst.FILE_SERVER_MODE_LOCAL, FileServerConst.FILE_SERVER_MODE_LOCAL);
         }
     };
+
+    private static long t0 = 0;
+    private static long pos0 = 0;
 
     /**
      * 获取通过http方式上传文件数据库时的需要设置的部分参数
@@ -109,7 +113,7 @@ public class LocalServer implements BasicFileServerInterface {
      * @param request
      */
     @Override
-    public synchronized BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
+    public BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
         //检查参数
         assert request != null;
         assert request.getMultipart() != null;
@@ -126,7 +130,7 @@ public class LocalServer implements BasicFileServerInterface {
         if ((request.getChunkSize() == null) || (request.getChunkSize() <= 0)) request.setChunkSize(fileDTO.getSize());
 
         //写入文件
-        BasicUploadResultDTO result = new BasicUploadResultDTO();
+        BasicUploadResultDTO result = BeanUtils.createFrom(request,BasicUploadResultDTO.class);
         RandomAccessFile rf = null;
 
         byte[] data = fileDTO.getData();
@@ -135,6 +139,12 @@ public class LocalServer implements BasicFileServerInterface {
         int len = request.getChunkSize();
         assert (len <= request.getChunkPerSize()) && (len <= data.length);
         long pos = (long) request.getChunkId() * request.getChunkPerSize();
+
+        if (request.getChunkId() == 0) {
+            t0 = System.currentTimeMillis();
+            pos0 = pos + len;
+            log.info("=====>接收到第一个包:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t0)));
+        }
 
         if (!((new File(FILE_SERVER_PATH + "/" + fileDTO.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +fileDTO.getScope())).mkdirs();
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
@@ -170,7 +180,28 @@ public class LocalServer implements BasicFileServerInterface {
         FileUtils.close(rf);
         result.setStatus(ApiResponseConst.SUCCESS);
 
-        log.info(request.getChunkId() + "结束");
+        if (request.getChunkId() > 0) {
+            final int KILO_MS = 1000;
+            final int KILO_BYTE = 1024;
+            long t = (System.currentTimeMillis() - t0);
+            assert (t > 0);
+            long rev = pos + len;
+            float speed = ((rev - pos0) * KILO_MS) / t;
+            String unit = "B";
+            if (rev > KILO_BYTE){
+                if ((rev / KILO_BYTE) > KILO_BYTE) {
+                    speed = ((rev - pos0) * KILO_MS) / (KILO_BYTE * KILO_BYTE * t);
+                    rev /= (KILO_BYTE * KILO_BYTE);
+                    unit = "M";
+                } else {
+                    speed = ((rev - pos0) * KILO_MS) / (KILO_BYTE * t);
+                    rev /= KILO_BYTE;
+                    unit = "M";
+                    unit = "K";
+                }
+            }
+            log.info("第" + request.getChunkId() + "块处理结束:用时" + t + "ms,接收到" + rev + unit + "，速度" + speed + unit + "/s");
+        }
         return result;
     }
 

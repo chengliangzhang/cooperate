@@ -65,9 +65,9 @@ public class FileServiceLocalTest {
     @Test //上传
     public void testUploadForLocal() throws Exception{
         fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
-//        testUpload(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        testUpload(FileServerConst.FILE_SERVER_MODE_LOCAL);
         testUpload(FileServerConst.FILE_SERVER_MODE_RPC);
-//        testUpload(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+        testUpload(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
     }
 
     @Test //下载

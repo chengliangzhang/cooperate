@@ -25,7 +25,7 @@ import java.util.List;
 public class OrganizationServiceImpl extends BaseLocalService<OrganizationServicePrx> implements OrganizationService,OrganizationServicePrx {
     @Autowired
     OrganizationDao organizationDao;
-    
+
     /** 同步方式获取业务接口代理对象 */
     public static OrganizationServicePrx getInstance(String adapterName) {
         OrganizationServiceImpl prx = new OrganizationServiceImpl();
@@ -42,7 +42,6 @@ public class OrganizationServiceImpl extends BaseLocalService<OrganizationServic
         for (OrganizationEntity entity : entityList){
             CompanyDTO dto = new CompanyDTO();
             BeanUtils.copyProperties(entity,dto);
-            log.info(entity.getCreateDate().toString());
             list.add(dto);
         }
         return list;
