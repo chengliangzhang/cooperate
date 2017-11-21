@@ -69,9 +69,17 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
             try {
                 prx = ObjectPrx._checkedCast(communicator.stringToProxy(svr),
                         P.ice_staticId(), proxy, impl);
-                log.info(((communicator.getDefaultLocator() != null) ? "在" + communicator.getDefaultLocator().toString() : "") + "找到" + svr + "服务");
+                String serviceString = ((communicator.getDefaultLocator() != null) ? "在" + communicator.getDefaultLocator().toString() : "") + "找到" + svr + "服务";
+                if (!StringUtils.isSame(lastServiceString,serviceString)) {
+                    log.info(serviceString);
+                    lastServiceString = serviceString;
+                }
             } catch (ConnectionRefusedException e) {
-                log.info(((communicator.getDefaultLocator() != null) ? "在" + communicator.getDefaultLocator().toString() : "") + "无法找到" + svr + "服务");
+                String serviceString = ((communicator.getDefaultLocator() != null) ? "在" + communicator.getDefaultLocator().toString() : "") + "无法找到" + svr + "服务";
+                if (!StringUtils.isSame(lastServiceString,serviceString)) {
+                    log.info(serviceString);
+                    lastServiceString = serviceString;
+                }
                 prx = null;
             }
 
@@ -93,7 +101,8 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
     private volatile P remotePrx = null;
 
     /** 最后远程连接地址 */
-    private String lastConnect = null;
+    private static String lastConnect = null;
+    private static String lastServiceString = null;
 
     /** 查找远程服务线程 */
     private volatile ConnectThread connectThread = null;

@@ -23,6 +23,18 @@ package com.maoding.Storage.zeroc;
 public class CooperationQueryDTO implements java.lang.Cloneable,
                                             java.io.Serializable
 {
+    public String nodeId;
+
+    public String getNodeId()
+    {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId)
+    {
+        this.nodeId = nodeId;
+    }
+
     public String userId;
 
     public String getUserId()
@@ -35,16 +47,16 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         this.userId = userId;
     }
 
-    public String postId;
+    public String dutyId;
 
-    public String getPostId()
+    public String getDutyId()
     {
-        return postId;
+        return dutyId;
     }
 
-    public void setPostId(String postId)
+    public void setDutyId(String dutyId)
     {
-        this.postId = postId;
+        this.dutyId = dutyId;
     }
 
     public String orgId;
@@ -83,22 +95,52 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         this.taskId = taskId;
     }
 
+    public String scope;
+
+    public String getScope()
+    {
+        return scope;
+    }
+
+    public void setScope(String scope)
+    {
+        this.scope = scope;
+    }
+
+    public String key;
+
+    public String getKey()
+    {
+        return key;
+    }
+
+    public void setKey(String key)
+    {
+        this.key = key;
+    }
+
     public CooperationQueryDTO()
     {
+        this.nodeId = "";
         this.userId = "";
-        this.postId = "";
+        this.dutyId = "";
         this.orgId = "";
         this.projectId = "";
         this.taskId = "";
+        this.scope = "";
+        this.key = "";
     }
 
-    public CooperationQueryDTO(String userId, String postId, String orgId, String projectId, String taskId)
+    public CooperationQueryDTO(String nodeId, String userId, String dutyId, String orgId, String projectId, String taskId, String scope, String key)
     {
+        this.nodeId = nodeId;
         this.userId = userId;
-        this.postId = postId;
+        this.dutyId = dutyId;
         this.orgId = orgId;
         this.projectId = projectId;
         this.taskId = taskId;
+        this.scope = scope;
+        this.key = key;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -115,6 +157,13 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
+            if(this.nodeId != r.nodeId)
+            {
+                if(this.nodeId == null || r.nodeId == null || !this.nodeId.equals(r.nodeId))
+                {
+                    return false;
+                }
+            }
             if(this.userId != r.userId)
             {
                 if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
@@ -122,9 +171,9 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.postId != r.postId)
+            if(this.dutyId != r.dutyId)
             {
-                if(this.postId == null || r.postId == null || !this.postId.equals(r.postId))
+                if(this.dutyId == null || r.dutyId == null || !this.dutyId.equals(r.dutyId))
                 {
                     return false;
                 }
@@ -150,6 +199,20 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.scope != r.scope)
+            {
+                if(this.scope == null || r.scope == null || !this.scope.equals(r.scope))
+                {
+                    return false;
+                }
+            }
+            if(this.key != r.key)
+            {
+                if(this.key == null || r.key == null || !this.key.equals(r.key))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
@@ -161,11 +224,14 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CooperationQueryDTO");
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, nodeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, postId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dutyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, scope);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, key);
         return h_;
     }
 
@@ -185,20 +251,26 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
+        ostr.writeString(this.nodeId);
         ostr.writeString(this.userId);
-        ostr.writeString(this.postId);
+        ostr.writeString(this.dutyId);
         ostr.writeString(this.orgId);
         ostr.writeString(this.projectId);
         ostr.writeString(this.taskId);
+        ostr.writeString(this.scope);
+        ostr.writeString(this.key);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
+        this.nodeId = istr.readString();
         this.userId = istr.readString();
-        this.postId = istr.readString();
+        this.dutyId = istr.readString();
         this.orgId = istr.readString();
         this.projectId = istr.readString();
         this.taskId = istr.readString();
+        this.scope = istr.readString();
+        this.key = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CooperationQueryDTO v)
@@ -253,5 +325,5 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
 
     private static final CooperationQueryDTO _nullMarshalValue = new CooperationQueryDTO();
 
-    public static final long serialVersionUID = -1431464249L;
+    public static final long serialVersionUID = 1108762740L;
 }

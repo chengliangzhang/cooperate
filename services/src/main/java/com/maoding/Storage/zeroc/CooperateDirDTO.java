@@ -35,30 +35,6 @@ public class CooperateDirDTO implements java.lang.Cloneable,
         this.id = id;
     }
 
-    public String pid;
-
-    public String getPid()
-    {
-        return pid;
-    }
-
-    public void setPid(String pid)
-    {
-        this.pid = pid;
-    }
-
-    public String storageId;
-
-    public String getStorageId()
-    {
-        return storageId;
-    }
-
-    public void setStorageId(String storageId)
-    {
-        this.storageId = storageId;
-    }
-
     public String name;
 
     public String getName()
@@ -69,6 +45,42 @@ public class CooperateDirDTO implements java.lang.Cloneable,
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public String pNodeId;
+
+    public String getPNodeId()
+    {
+        return pNodeId;
+    }
+
+    public void setPNodeId(String pNodeId)
+    {
+        this.pNodeId = pNodeId;
+    }
+
+    public String detailId;
+
+    public String getDetailId()
+    {
+        return detailId;
+    }
+
+    public void setDetailId(String detailId)
+    {
+        this.detailId = detailId;
+    }
+
+    public String fullName;
+
+    public String getFullName()
+    {
+        return fullName;
+    }
+
+    public void setFullName(String fullName)
+    {
+        this.fullName = fullName;
     }
 
     public String userId;
@@ -83,28 +95,40 @@ public class CooperateDirDTO implements java.lang.Cloneable,
         this.userId = userId;
     }
 
-    public String postId;
+    public String dutyId;
 
-    public String getPostId()
+    public String getDutyId()
     {
-        return postId;
+        return dutyId;
     }
 
-    public void setPostId(String postId)
+    public void setDutyId(String dutyId)
     {
-        this.postId = postId;
+        this.dutyId = dutyId;
     }
 
-    public String postName;
+    public String userName;
 
-    public String getPostName()
+    public String getUserName()
     {
-        return postName;
+        return userName;
     }
 
-    public void setPostName(String postName)
+    public void setUserName(String userName)
     {
-        this.postName = postName;
+        this.userName = userName;
+    }
+
+    public String aliasName;
+
+    public String getAliasName()
+    {
+        return aliasName;
+    }
+
+    public void setAliasName(String aliasName)
+    {
+        this.aliasName = aliasName;
     }
 
     public String orgId;
@@ -266,12 +290,14 @@ public class CooperateDirDTO implements java.lang.Cloneable,
     public CooperateDirDTO()
     {
         this.id = "";
-        this.pid = "";
-        this.storageId = "";
         this.name = "";
+        this.pNodeId = "";
+        this.detailId = "";
+        this.fullName = "";
         this.userId = "";
-        this.postId = "";
-        this.postName = "";
+        this.dutyId = "";
+        this.userName = "";
+        this.aliasName = "";
         this.orgId = "";
         this.orgName = "";
         this.projectId = "";
@@ -281,15 +307,17 @@ public class CooperateDirDTO implements java.lang.Cloneable,
         this.typeName = "";
     }
 
-    public CooperateDirDTO(String id, String pid, String storageId, String name, String userId, String postId, String postName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName, int typeId, String typeName, java.util.Date createTime, int fileCount, java.util.List<CooperateFileDTO> fileList, int subDirCount, java.util.List<CooperateDirNodeDTO> subDirList)
+    public CooperateDirDTO(String id, String name, String pNodeId, String detailId, String fullName, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName, int typeId, String typeName, java.util.Date createTime, int fileCount, java.util.List<CooperateFileDTO> fileList, int subDirCount, java.util.List<CooperateDirNodeDTO> subDirList)
     {
         this.id = id;
-        this.pid = pid;
-        this.storageId = storageId;
         this.name = name;
+        this.pNodeId = pNodeId;
+        this.detailId = detailId;
+        this.fullName = fullName;
         this.userId = userId;
-        this.postId = postId;
-        this.postName = postName;
+        this.dutyId = dutyId;
+        this.userName = userName;
+        this.aliasName = aliasName;
         this.orgId = orgId;
         this.orgName = orgName;
         this.projectId = projectId;
@@ -326,23 +354,30 @@ public class CooperateDirDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.pid != r.pid)
-            {
-                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
-                {
-                    return false;
-                }
-            }
-            if(this.storageId != r.storageId)
-            {
-                if(this.storageId == null || r.storageId == null || !this.storageId.equals(r.storageId))
-                {
-                    return false;
-                }
-            }
             if(this.name != r.name)
             {
                 if(this.name == null || r.name == null || !this.name.equals(r.name))
+                {
+                    return false;
+                }
+            }
+            if(this.pNodeId != r.pNodeId)
+            {
+                if(this.pNodeId == null || r.pNodeId == null || !this.pNodeId.equals(r.pNodeId))
+                {
+                    return false;
+                }
+            }
+            if(this.detailId != r.detailId)
+            {
+                if(this.detailId == null || r.detailId == null || !this.detailId.equals(r.detailId))
+                {
+                    return false;
+                }
+            }
+            if(this.fullName != r.fullName)
+            {
+                if(this.fullName == null || r.fullName == null || !this.fullName.equals(r.fullName))
                 {
                     return false;
                 }
@@ -354,16 +389,23 @@ public class CooperateDirDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.postId != r.postId)
+            if(this.dutyId != r.dutyId)
             {
-                if(this.postId == null || r.postId == null || !this.postId.equals(r.postId))
+                if(this.dutyId == null || r.dutyId == null || !this.dutyId.equals(r.dutyId))
                 {
                     return false;
                 }
             }
-            if(this.postName != r.postName)
+            if(this.userName != r.userName)
             {
-                if(this.postName == null || r.postName == null || !this.postName.equals(r.postName))
+                if(this.userName == null || r.userName == null || !this.userName.equals(r.userName))
+                {
+                    return false;
+                }
+            }
+            if(this.aliasName != r.aliasName)
+            {
+                if(this.aliasName == null || r.aliasName == null || !this.aliasName.equals(r.aliasName))
                 {
                     return false;
                 }
@@ -462,12 +504,14 @@ public class CooperateDirDTO implements java.lang.Cloneable,
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CooperateDirDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, storageId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, detailId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, postId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, postName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dutyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, aliasName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
@@ -501,12 +545,14 @@ public class CooperateDirDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         ostr.writeString(this.id);
-        ostr.writeString(this.pid);
-        ostr.writeString(this.storageId);
         ostr.writeString(this.name);
+        ostr.writeString(this.pNodeId);
+        ostr.writeString(this.detailId);
+        ostr.writeString(this.fullName);
         ostr.writeString(this.userId);
-        ostr.writeString(this.postId);
-        ostr.writeString(this.postName);
+        ostr.writeString(this.dutyId);
+        ostr.writeString(this.userName);
+        ostr.writeString(this.aliasName);
         ostr.writeString(this.orgId);
         ostr.writeString(this.orgName);
         ostr.writeString(this.projectId);
@@ -525,12 +571,14 @@ public class CooperateDirDTO implements java.lang.Cloneable,
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.id = istr.readString();
-        this.pid = istr.readString();
-        this.storageId = istr.readString();
         this.name = istr.readString();
+        this.pNodeId = istr.readString();
+        this.detailId = istr.readString();
+        this.fullName = istr.readString();
         this.userId = istr.readString();
-        this.postId = istr.readString();
-        this.postName = istr.readString();
+        this.dutyId = istr.readString();
+        this.userName = istr.readString();
+        this.aliasName = istr.readString();
         this.orgId = istr.readString();
         this.orgName = istr.readString();
         this.projectId = istr.readString();
@@ -598,5 +646,5 @@ public class CooperateDirDTO implements java.lang.Cloneable,
 
     private static final CooperateDirDTO _nullMarshalValue = new CooperateDirDTO();
 
-    public static final long serialVersionUID = -117764678L;
+    public static final long serialVersionUID = -231111270L;
 }

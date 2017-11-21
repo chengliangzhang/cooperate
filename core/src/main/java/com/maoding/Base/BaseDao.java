@@ -12,7 +12,15 @@ import tk.mybatis.mapper.common.MySqlMapper;
  */
 public interface BaseDao<T extends BaseEntity> extends Mapper<T>, MySqlMapper<T>, CustomMapper<T> {
     //FIXME 特别注意，该接口不能被扫描到，否则会出错
-//    default T selectById(String id){
-//        return selectByPrimaryKey(id);
-//    }
+    default T selectById(String id){
+        return selectByPrimaryKey(id);
+    }
+
+    default int insert(T entity){
+        return insertSelective(entity);
+    }
+
+    default int updateById(T entity){
+        return updateByPrimaryKeySelective(entity);
+    }
 }

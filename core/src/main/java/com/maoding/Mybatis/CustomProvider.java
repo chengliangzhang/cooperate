@@ -44,12 +44,12 @@ public class CustomProvider extends MapperTemplate {
         for (EntityColumn column : columns) {
             if (!column.isUpdatable()) continue;
             if (column.isId()) {
-                sqlWhere.append(column.getColumn()).append("=#{id}"); //#{id}是从@Param中得到的字符串,id不会被更新
+                sqlWhere.append("`" + column.getColumn() + "`").append("=#{id}"); //#{id}是从@Param中得到的字符串,id不会被更新
             } else {
                 if (isIgnoreNull) {
                     sql.append("<if test=\"entity.").append(column.getProperty()).append("!=null\">");//entity是从@Param中得到的字符串
                 }
-                sql.append(column.getColumn()).append("=#{entity.").append(column.getProperty()).append("}").append(",");
+                sql.append("`" + column.getColumn() + "`").append("=#{entity.").append(column.getProperty()).append("}").append(",");
                 if (isIgnoreNull) {
                     sql.append("</if>");
                 }
@@ -76,21 +76,21 @@ public class CustomProvider extends MapperTemplate {
         for (EntityColumn column : columns) {
             if (!column.isUpdatable()) continue;
             if (column.isId()) {
-                sqlWhere.append(column.getColumn()).append("=#{id}"); //#{id}是从@Param中得到的字符串
+                sqlWhere.append("`" + column.getColumn() + "`").append("=#{id}"); //#{id}是从@Param中得到的字符串
             }
             if ("deleted".equals(column.getProperty())) {
-                sql.append(column.getColumn()).append("=1").append(",");
+                sql.append("`" + column.getColumn() + "`").append("=1").append(",");
             }
             if ("lastModifyUserId".equals(column.getProperty())) {
-                sql.append(column.getColumn()).append("=#{lastModifyUserId}").append(","); //#{lastModifyUserId}是从@Param中得到的字符串
+                sql.append("`" + column.getColumn() + "`").append("=#{lastModifyUserId}").append(","); //#{lastModifyUserId}是从@Param中得到的字符串
             }
             if ("lastModifyTime".equals(column.getProperty())) {
                 sql.append("<choose>");
                     sql.append("<when test=\"lastModifyTime!=null\">");
-                        sql.append(column.getColumn()).append("=#{lastModifyTime}").append(",");
+                        sql.append("`" + column.getColumn() + "`").append("=#{lastModifyTime}").append(",");
                     sql.append("</when>");
                     sql.append("<otherwise>");
-                        sql.append(column.getColumn()).append("=now()").append(",");
+                        sql.append("`" + column.getColumn() + "`").append("=now()").append(",");
                     sql.append("</otherwise>");
                 sql.append("</choose>");
             }

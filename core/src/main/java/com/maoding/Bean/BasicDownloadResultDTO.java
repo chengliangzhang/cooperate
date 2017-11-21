@@ -1,5 +1,7 @@
 package com.maoding.Bean;
 
+import com.maoding.Const.ApiResponseConst;
+
 /**
  * 深圳市卯丁技术有限公司
  * 作    者 : 张成亮
@@ -66,5 +68,12 @@ public class BasicDownloadResultDTO extends ApiResponse<BasicFileMultipartDTO>{
 
     public void setChunkSize(Integer chunkSize) {
         this.chunkSize = chunkSize;
+    }
+
+    public void setError(){
+        setChunkCount(0);
+        setChunkSize(0);
+        setData(null);
+        setStatus(ApiResponseConst.ERROR);
     }
 }

@@ -3,7 +3,7 @@ package com.maoding.Mybatis;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -22,5 +22,5 @@ public interface CustomMapper<T> {
 
     /** 按id删除 */
     @UpdateProvider(type = CustomProvider.class, method = "dynamicSQL")
-    int fakeDeleteById(@Param("id") String id, @Param("lastModifyUserId") String lastModifyUserId, @Param("lastModifyTime") LocalDateTime lastModifyTime);
+    int fakeDeleteById(@Param("id") String id, @Param("lastModifyUserId") String lastModifyUserId, @Param("lastModifyTime") Date lastModifyTime);
 }

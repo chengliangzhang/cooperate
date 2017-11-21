@@ -44,4 +44,6 @@ public interface BasicFileServerInterface {
     List<String> listScope();
     /** 在文件服务器上删除指定文件 */
     void deleteFile(BasicFileDTO src);
+    /** 通告文件服务器上传完毕 */
+    default void finishUpload(BasicFileRequestDTO request){}
 }

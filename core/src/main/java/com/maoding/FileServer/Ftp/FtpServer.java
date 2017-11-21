@@ -1,15 +1,17 @@
 package com.maoding.FileServer.Ftp;
 
-import com.maoding.Bean.*;
 import com.maoding.Const.ApiResponseConst;
+import com.maoding.Const.FileServerConst;
 import com.maoding.FileServer.BasicFileServerInterface;
+import com.maoding.Bean.*;
 import com.maoding.Utils.*;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.slf4j.Logger;
+import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -28,8 +30,18 @@ import java.util.UUID;
 public class FtpServer implements BasicFileServerInterface {
     protected static final Logger log = (Logger) LoggerFactory.getLogger(FtpServer.class);
     public FTPClient ftpClient = new FTPClient();
-    private static final String FILE_SERVER_PATH = "\\\\idccapp25\\Downloads";
+    private static final String FILE_SERVER_PATH = "c:\\";
+    public static final String BASE_DIR_NAME = "scope";
+    public static final String PATH_NAME = "key";
     public static final Integer DEFAULT_CHUNK_PER_SIZE = 8192;
+    private static final String HOST_NAME = "192.168.17.168";
+    private static final int PORT = 21;
+    private static final String USER_NAME = "anonymous";
+    private static final String PASSWORD = "abc@abc.com";
+//    private static final String HOST_NAME = "192.168.33.148";
+//    private static final int PORT = 2121;
+//    private static final String USER_NAME = "administrator";
+//    private static final String PASSWORD = "30116992";
 
     /**
      * 获取通过http方式上传文件数据库时的需要设置的部分参数
@@ -39,8 +51,22 @@ public class FtpServer implements BasicFileServerInterface {
      */
     @Override
     public BasicFileRequestDTO getUploadRequest(BasicFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
+        //补全参数
+        if (StringUtils.isEmpty(src.getScope())) src.setScope("");
+        if (StringUtils.isEmpty(src.getKey())) src.setKey(UUID.randomUUID().toString() + ".txt");
 
-        return null;
+        //建立申请上传参数对象
+        BasicFileRequestDTO requestDTO = new BasicFileRequestDTO();
+        requestDTO.setUrl("http://localhost:8087");
+        requestDTO.putParam(BASE_DIR_NAME, src.getScope());
+        requestDTO.putParam(PATH_NAME, src.getKey());
+        if (FileServerConst.FILE_SERVER_MODE_DEFAULT.equals(mode)) {
+            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        } else {
+            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+        }
+        requestDTO.putParam("uploadId", UUID.randomUUID().toString());
+        return requestDTO;
     }
 
     /**
@@ -51,7 +77,26 @@ public class FtpServer implements BasicFileServerInterface {
      */
     @Override
     public BasicFileRequestDTO getDownloadRequest(BasicFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
-        return null;
+        //检查参数
+        assert src != null;
+        assert src.getKey() != null;
+
+        //补全参数
+        if (StringUtils.isEmpty(src.getScope())) src.setScope("");
+
+        //建立申请下载参数对象
+        BasicFileRequestDTO requestDTO = new BasicFileRequestDTO();
+        requestDTO.setUrl("http://localhost:8087");
+        requestDTO.putParam(BASE_DIR_NAME, src.getScope());
+        requestDTO.putParam(PATH_NAME, src.getKey());
+        if (FileServerConst.FILE_SERVER_MODE_DEFAULT.equals(mode)) {
+            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        } else {
+            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+        }
+        File f = new File(FILE_SERVER_PATH + "/" + src.getKey());
+        requestDTO.putParam("size", ((Long) f.length()).toString());
+        return requestDTO;
     }
 
     /**
@@ -63,6 +108,7 @@ public class FtpServer implements BasicFileServerInterface {
     public BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
         BasicUploadResultDTO result = new BasicUploadResultDTO();
         //默认参数
+        request.setChunkId(1);
         result.setChunkId(request.getChunkId());
         result.setChunkSize(request.getChunkSize());
         //检查参数
@@ -71,44 +117,48 @@ public class FtpServer implements BasicFileServerInterface {
         assert request.getMultipart().getData() != null;
         assert (request.getChunkId() != null) && (request.getChunkId() >= 0);
         try {
-            //设置PassiveMode传输
-            ftpClient.enterLocalPassiveMode();
-            //设置以二进制流的方式传输
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            ftpClient.setControlEncoding("GBK");
-            //对远程目录的处理
-            String remoteFileName = new String(request.getMultipart().getKey().getBytes("GBK"), "iso-8859-1");
-            //补全参数
-            if ((request.getChunkPerSize() == null) && (request.getChunkPerSize() <= 0))
-                request.setChunkPerSize(DEFAULT_CHUNK_PER_SIZE);
-            BasicFileMultipartDTO fileDTO = request.getMultipart();
-            if (StringUtils.isEmpty(fileDTO.getScope())) fileDTO.setScope("");
-            if (StringUtils.isEmpty(remoteFileName)) fileDTO.setKey(UUID.randomUUID().toString() + ".txt");
-            if ((fileDTO.getPos() == null) || (fileDTO.getPos() < 0))
-                fileDTO.setPos((long) request.getChunkId() * request.getChunkPerSize());
-            if ((fileDTO.getSize() == null) || (fileDTO.getSize() <= 0)) fileDTO.setSize(fileDTO.getData().length);
-            if ((request.getChunkSize() == null) || (request.getChunkSize() <= 0))
-                request.setChunkSize(fileDTO.getSize());
-            //写入文件
-            RandomAccessFile rf = null;
-            byte[] data = fileDTO.getData();
-            assert data != null;
-            int off = 0;
-            int len = request.getChunkSize();
-            assert (len <= request.getChunkPerSize()) && (len <= data.length);
-            long pos = (long) request.getChunkId() * request.getChunkPerSize();
-            //创建文件夹
-            if (!ftpClient.changeWorkingDirectory(FILE_SERVER_PATH + "/" + fileDTO.getScope())) {
-                if (ftpClient.makeDirectory(FILE_SERVER_PATH + "/" + fileDTO.getScope())) {
-                    ftpClient.changeWorkingDirectory(FILE_SERVER_PATH + "/" + fileDTO.getScope());
+            if (connect()) {
+                //设置PassiveMode传输
+                ftpClient.enterLocalPassiveMode();
+                //设置以二进制流的方式传输
+                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                ftpClient.setControlEncoding("GBK");
+                //对远程目录的处理
+                String remoteFileName = new String(request.getMultipart().getKey().getBytes("GBK"), "iso-8859-1");
+                //补全参数
+                if ((request.getChunkPerSize() == null) && (request.getChunkPerSize() <= 0))
+                    request.setChunkPerSize(DEFAULT_CHUNK_PER_SIZE);
+                BasicFileMultipartDTO fileDTO = request.getMultipart();
+                if (StringUtils.isEmpty(fileDTO.getScope())) fileDTO.setScope("");
+                if (StringUtils.isEmpty(remoteFileName)) fileDTO.setKey(UUID.randomUUID().toString() + ".txt");
+                if ((fileDTO.getPos() == null) || (fileDTO.getPos() < 0))
+                    fileDTO.setPos((long) request.getChunkId() * request.getChunkPerSize());
+                if ((fileDTO.getSize() == null) || (fileDTO.getSize() <= 0)) fileDTO.setSize(fileDTO.getData().length);
+                if ((request.getChunkSize() == null) || (request.getChunkSize() <= 0))
+                    request.setChunkSize(fileDTO.getSize());
+                //写入文件
+                long remoteSize = 0L;
+                File f = new File(FILE_SERVER_PATH + fileDTO.getScope() + "/" + fileDTO.getKey());
+//                ftpClient.changeWorkingDirectory(fileDTO.getScope());
+                FTPFile[] files = ftpClient.listFiles(new String((fileDTO.getScope() + "/" + fileDTO.getKey()).getBytes("GBK"), "iso-8859-1"));
+                //创建服务器远程目录结构，创建失败直接返回
+                if (CreateDirecroty(fileDTO.getScope(), ftpClient) == true) {
+                    ftpClient.changeWorkingDirectory(new String(fileDTO.getScope().getBytes("GBK"), "iso-8859-1"));
+                }
+                if (files.length == 1) {
+                    remoteSize = files[0].getSize();
+                    long localSize = f.length();
+                    if (remoteFileName.contains("/")) {
+                        remoteFileName = remoteFileName.substring(remoteFileName.lastIndexOf("/") + 1);
+                    }
+                    //删除已有的
+//                    ftpClient.deleteFile(remoteFileName);
+                    uploadFile(remoteFileName, f, ftpClient, remoteSize, request);
+                    result.setStatus(ApiResponseConst.SUCCESS);
+                } else {
+                    uploadFile(remoteFileName, f, ftpClient, 0, request);
                 }
             }
-            rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey(), "rw");
-            if (rf.length() < pos) rf.setLength(pos + len);
-            rf.seek(pos);
-            rf.write(data, off, len);
-            result.setStatus(ApiResponseConst.SUCCESS);
-
         } catch (IOException e) {
             ExceptionUtils.logError(log, e);
             result.setStatus(ApiResponseConst.FAILED);
@@ -184,7 +234,7 @@ public class FtpServer implements BasicFileServerInterface {
             raf.seek(remoteSize);
             localreadbytes = remoteSize;
         }
-        byte[] bytes = new byte[1024];
+        byte[] bytes = new byte[request.getChunkSize()];
         int c;
         while ((c = raf.read(bytes)) != -1) {
             out.write(bytes, 0, c);
@@ -216,44 +266,49 @@ public class FtpServer implements BasicFileServerInterface {
         BasicDownloadResultDTO result = BeanUtils.createFrom(request, BasicDownloadResultDTO.class);
         RandomAccessFile rf = null;
         try {
-            //设置被动模式
-            ftpClient.enterLocalPassiveMode();
-            //设置以二进制方式传输
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            //对远程目录的处理
-            String remoteFileName = request.getKey();
-            if (request.getKey().contains("/")) {
-                remoteFileName = request.getKey().substring(request.getKey().lastIndexOf("/") + 1);
-            }
-            //检查远程文件是否存在
-            FTPFile[] files = ftpClient.listFiles(new String(remoteFileName.getBytes("GBK"), "iso-8859-1"));
-            if (files.length != 1) {
-                System.out.println("远程文件不存在");
-            }
-            rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + request.getScope() + "/" + remoteFileName, "r");
-            //定位
-            long pos = (long) request.getChunkId() * request.getChunkSize();
-            assert pos < rf.length();
-            rf.seek(pos);
-            //读取文件内容
-            byte[] bytes = new byte[request.getChunkSize()];
-            assert bytes != null;
-            int size = rf.read(bytes);
-            assert size > 0;
-            if (size < bytes.length) {
-                bytes = Arrays.copyOfRange(bytes, 0, size);
-            }
-            //设置返回参数
-            Integer chunckCount = ((int) (rf.length() - pos - size)) / request.getChunkSize() + 1;
-            BasicFileMultipartDTO multipart = BeanUtils.createFrom(request, BasicFileMultipartDTO.class);
-            multipart.setPos(pos);
-            multipart.setSize(size);
-            multipart.setData(bytes);
+            if (connect()) {
+                //设置被动模式
+                ftpClient.enterLocalPassiveMode();
+                //设置以二进制方式传输
+                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                //切换工作目录
+                ftpClient.changeWorkingDirectory(request.getScope());
+                //对远程目录的处理
+                String remoteFileName = request.getKey();
+                if (request.getKey().contains("/")) {
+                    remoteFileName = request.getKey().substring(request.getKey().lastIndexOf("/") + 1);
+                }
+                //检查远程文件是否存在
+                FTPFile[] files = ftpClient.listFiles(new String(remoteFileName.getBytes("GBK"), "iso-8859-1"));
+                if (files.length != 1) {
+                    log.error("远程文件不存在");
+                    return result;
+                }
+                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + request.getScope() + "/" + remoteFileName, "r");
+                //定位
+                long pos = (long) request.getChunkId() * request.getChunkSize();
+                assert pos < rf.length();
+                rf.seek(pos);
+                //读取文件内容
+                byte[] bytes = new byte[request.getChunkSize()];
+                assert bytes != null;
+                int size = rf.read(bytes);
+                assert size > 0;
+                if (size < bytes.length) {
+                    bytes = Arrays.copyOfRange(bytes, 0, size);
+                }
+                //设置返回参数
+                Integer chunckCount = ((int) (rf.length() - pos - size)) / request.getChunkSize() + 1;
+                BasicFileMultipartDTO multipart = BeanUtils.createFrom(request, BasicFileMultipartDTO.class);
+                multipart.setPos(pos);
+                multipart.setSize(size);
+                multipart.setData(bytes);
 
-            result.setChunkCount(chunckCount);
-            result.setChunkSize(size);
-            result.setData(multipart);
-            result.setStatus(ApiResponseConst.SUCCESS);
+                result.setChunkCount(chunckCount);
+                result.setChunkSize(size);
+                result.setData(multipart);
+                result.setStatus(ApiResponseConst.SUCCESS);
+            }
         } catch (IOException e) {
             ExceptionUtils.logError(log, e);
             result.setChunkCount(0);
@@ -394,5 +449,29 @@ public class FtpServer implements BasicFileServerInterface {
                 }
             }
         }
+    }
+
+    /**
+     * 连接到FTP服务器
+     *
+     * @param hostname 主机名
+     * @param port     端口
+     * @param username 用户名
+     * @param password 密码
+     * @return 是否连接成功
+     * @throws IOException
+     */
+    public boolean connect() throws IOException {
+        ftpClient.connect(HOST_NAME, PORT);
+        ftpClient.setControlEncoding("GBK");
+        if (FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
+            if (ftpClient.login(USER_NAME, PASSWORD)) {
+                return true;
+            }
+        }
+        if (ftpClient.isConnected()) {
+            return true;
+        }
+        return false;
     }
 }

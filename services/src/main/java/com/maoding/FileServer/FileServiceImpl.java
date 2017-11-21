@@ -65,11 +65,18 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         if (fileServer == null) {
             this.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,(Current)null);
         }
-        assert fileServer != null;
+        assert (fileServer != null);
         BasicFileDTO basicSrc = BeanUtils.createFrom(src,BasicFileDTO.class);
         BasicCallbackDTO basicCallback = BeanUtils.createFrom(callback,BasicCallbackDTO.class,true);
         BasicFileRequestDTO basicResult = fileServer.getUploadRequest(basicSrc,mode,basicCallback);
-        return BeanUtils.createFrom(basicResult,FileRequestDTO.class,true);
+        FileRequestDTO fileRequestDTO = BeanUtils.createFrom(basicResult,FileRequestDTO.class,true);
+
+        //补充缺失属性
+        assert (fileRequestDTO != null);
+        if ((fileRequestDTO.getScope() != null) && (fileRequestDTO.getParams() != null) && (fileRequestDTO.getParams().containsKey("scope"))) fileRequestDTO.setScope(fileRequestDTO.getParams().get("scope"));
+        if ((fileRequestDTO.getKey() != null) && (fileRequestDTO.getParams() != null) && (fileRequestDTO.getParams().containsKey("key"))) fileRequestDTO.setKey(fileRequestDTO.getParams().get("key"));
+
+        return fileRequestDTO;
     }
 
     @Override
@@ -134,4 +141,8 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         return fileServer.listScope();
     }
 
+    @Override
+    public void finishUpload(FileRequestDTO request, Current current) {
+
+    }
 }

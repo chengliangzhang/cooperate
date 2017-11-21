@@ -21,6 +21,31 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     private static final Logger log = LoggerFactory.getLogger(BeanUtils.class);
 
     /**
+     * 清理Bean内为空字符串的属性，将其替换为null
+     */
+    public static <T> T cleanProperties(T obj){
+        if (obj == null) return null;
+        assert isBean(obj.getClass());
+
+        try {
+            BeanInfo srcInfo = Introspector.getBeanInfo(obj.getClass(),Object.class);
+            PropertyDescriptor[] srcProperties = srcInfo.getPropertyDescriptors();
+
+            for (PropertyDescriptor srcPty : srcProperties) {
+                if (srcPty.getPropertyType() == String.class){
+                    String value = (String)srcPty.getReadMethod().invoke(obj);
+                    if (StringUtils.isEmpty(value)){
+                        srcPty.getWriteMethod().invoke(obj,(String)null);
+                    }
+                }
+            }
+        } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
+            ExceptionUtils.logError(log,e);
+        }
+        return obj;
+    }
+
+    /**
      * 根据某个Bean的属性创建另一个Bean
      */
     /** 根据Bean创建Map */

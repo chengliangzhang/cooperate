@@ -42,7 +42,7 @@ public final class CooperateDirListHelper
     {
         final java.util.List<CooperateDirDTO> v;
         v = new java.util.ArrayList<CooperateDirDTO>();
-        final int len0 = istr.readAndCheckSeqSize(29);
+        final int len0 = istr.readAndCheckSeqSize(31);
         for(int i0 = 0; i0 < len0; i0++)
         {
             CooperateDirDTO elem;

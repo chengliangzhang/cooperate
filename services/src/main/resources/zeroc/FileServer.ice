@@ -16,7 +16,11 @@ module zeroc {
 
     ["java:getset"]
     struct FileRequestDTO {
+        string id; //协同文件编号
+        string nodeId; //协同文件树节点编号
         string url; //文件服务的连接地址
+        string scope; //文件在文件服务器内的存储空间
+        string key; //文件在文件服务器内的存储名称
         int mode; //文件服务器连接方式，2-Http Get,3-Http Post,4-阿里云OSS,...
         Map params; //需要设置的参数（如OSSAccessKeyId等)
     };
@@ -92,5 +96,6 @@ module zeroc {
         bool isExist(FileDTO src); //在文件服务器内查找指定的文件
         FileList listFile(string scope); //从文件服务器获取某空间所有文件名
         ScopeList listScope(); //从文件服务器获取某空间所有文件名
+        void finishUpload(FileRequestDTO request); //结束上传过程
     };
 };

@@ -19,4 +19,5 @@ public class DigitUtils {
         Double d2 = Double.parseDouble(n2);
         return ((d2 - d1) < -LIMIT_0) || (LIMIT_0 < (d2 - d1));
     }
+    
 }

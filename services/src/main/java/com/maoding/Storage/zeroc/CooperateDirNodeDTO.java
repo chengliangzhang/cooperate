@@ -25,12 +25,14 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
     public CooperateDirNodeDTO()
     {
         this.id = "";
-        this.pid = "";
-        this.storageId = "";
         this.name = "";
+        this.pNodeId = "";
+        this.detailId = "";
+        this.fullName = "";
         this.userId = "";
-        this.postId = "";
-        this.postName = "";
+        this.dutyId = "";
+        this.userName = "";
+        this.aliasName = "";
         this.orgId = "";
         this.orgName = "";
         this.projectId = "";
@@ -40,15 +42,17 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         this.typeName = "";
     }
 
-    public CooperateDirNodeDTO(String id, String pid, String storageId, String name, String userId, String postId, String postName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName, int typeId, String typeName, java.util.Date createTime, int fileCount, java.util.List<CooperateFileDTO> fileList)
+    public CooperateDirNodeDTO(String id, String name, String pNodeId, String detailId, String fullName, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName, int typeId, String typeName, java.util.Date createTime, int fileCount, java.util.List<CooperateFileDTO> fileList)
     {
         this.id = id;
-        this.pid = pid;
-        this.storageId = storageId;
         this.name = name;
+        this.pNodeId = pNodeId;
+        this.detailId = detailId;
+        this.fullName = fullName;
         this.userId = userId;
-        this.postId = postId;
-        this.postName = postName;
+        this.dutyId = dutyId;
+        this.userName = userName;
+        this.aliasName = aliasName;
         this.orgId = orgId;
         this.orgName = orgName;
         this.projectId = projectId;
@@ -74,30 +78,6 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         this.id = id;
     }
 
-    public String pid;
-
-    public String getPid()
-    {
-        return pid;
-    }
-
-    public void setPid(String pid)
-    {
-        this.pid = pid;
-    }
-
-    public String storageId;
-
-    public String getStorageId()
-    {
-        return storageId;
-    }
-
-    public void setStorageId(String storageId)
-    {
-        this.storageId = storageId;
-    }
-
     public String name;
 
     public String getName()
@@ -108,6 +88,42 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public String pNodeId;
+
+    public String getPNodeId()
+    {
+        return pNodeId;
+    }
+
+    public void setPNodeId(String pNodeId)
+    {
+        this.pNodeId = pNodeId;
+    }
+
+    public String detailId;
+
+    public String getDetailId()
+    {
+        return detailId;
+    }
+
+    public void setDetailId(String detailId)
+    {
+        this.detailId = detailId;
+    }
+
+    public String fullName;
+
+    public String getFullName()
+    {
+        return fullName;
+    }
+
+    public void setFullName(String fullName)
+    {
+        this.fullName = fullName;
     }
 
     public String userId;
@@ -122,28 +138,40 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         this.userId = userId;
     }
 
-    public String postId;
+    public String dutyId;
 
-    public String getPostId()
+    public String getDutyId()
     {
-        return postId;
+        return dutyId;
     }
 
-    public void setPostId(String postId)
+    public void setDutyId(String dutyId)
     {
-        this.postId = postId;
+        this.dutyId = dutyId;
     }
 
-    public String postName;
+    public String userName;
 
-    public String getPostName()
+    public String getUserName()
     {
-        return postName;
+        return userName;
     }
 
-    public void setPostName(String postName)
+    public void setUserName(String userName)
     {
-        this.postName = postName;
+        this.userName = userName;
+    }
+
+    public String aliasName;
+
+    public String getAliasName()
+    {
+        return aliasName;
+    }
+
+    public void setAliasName(String aliasName)
+    {
+        this.aliasName = aliasName;
     }
 
     public String orgId;
@@ -294,19 +322,21 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         return ice_staticId();
     }
 
-    public static final long serialVersionUID = 323255841L;
+    public static final long serialVersionUID = -624606271L;
 
     @Override
     protected void _iceWriteImpl(com.zeroc.Ice.OutputStream ostr_)
     {
         ostr_.startSlice(ice_staticId(), -1, true);
         ostr_.writeString(id);
-        ostr_.writeString(pid);
-        ostr_.writeString(storageId);
         ostr_.writeString(name);
+        ostr_.writeString(pNodeId);
+        ostr_.writeString(detailId);
+        ostr_.writeString(fullName);
         ostr_.writeString(userId);
-        ostr_.writeString(postId);
-        ostr_.writeString(postName);
+        ostr_.writeString(dutyId);
+        ostr_.writeString(userName);
+        ostr_.writeString(aliasName);
         ostr_.writeString(orgId);
         ostr_.writeString(orgName);
         ostr_.writeString(projectId);
@@ -326,12 +356,14 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
     {
         istr_.startSlice();
         id = istr_.readString();
-        pid = istr_.readString();
-        storageId = istr_.readString();
         name = istr_.readString();
+        pNodeId = istr_.readString();
+        detailId = istr_.readString();
+        fullName = istr_.readString();
         userId = istr_.readString();
-        postId = istr_.readString();
-        postName = istr_.readString();
+        dutyId = istr_.readString();
+        userName = istr_.readString();
+        aliasName = istr_.readString();
         orgId = istr_.readString();
         orgName = istr_.readString();
         projectId = istr_.readString();

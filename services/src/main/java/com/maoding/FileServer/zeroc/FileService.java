@@ -44,6 +44,8 @@ public interface FileService extends com.zeroc.Ice.Object
 
     java.util.List<java.lang.String> listScope(com.zeroc.Ice.Current current);
 
+    void finishUpload(FileRequestDTO request, com.zeroc.Ice.Current current);
+
     static final String[] _iceIds =
     {
         "::Ice::Object",
@@ -217,11 +219,23 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_finishUpload(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        FileRequestDTO iceP_request;
+        iceP_request = FileRequestDTO.ice_read(istr);
+        inS.endReadParams();
+        obj.finishUpload(iceP_request, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
     final static String[] _iceOps =
     {
         "deleteFile",
         "download",
         "duplicateFile",
+        "finishUpload",
         "getDownloadRequest",
         "getFileServerType",
         "getUploadRequest",
@@ -262,49 +276,53 @@ public interface FileService extends com.zeroc.Ice.Object
             }
             case 3:
             {
-                return _iceD_getDownloadRequest(this, in, current);
+                return _iceD_finishUpload(this, in, current);
             }
             case 4:
             {
-                return _iceD_getFileServerType(this, in, current);
+                return _iceD_getDownloadRequest(this, in, current);
             }
             case 5:
             {
-                return _iceD_getUploadRequest(this, in, current);
+                return _iceD_getFileServerType(this, in, current);
             }
             case 6:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getUploadRequest(this, in, current);
             }
             case 7:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 8:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 9:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 10:
             {
-                return _iceD_isExist(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 11:
             {
-                return _iceD_listFile(this, in, current);
+                return _iceD_isExist(this, in, current);
             }
             case 12:
             {
-                return _iceD_listScope(this, in, current);
+                return _iceD_listFile(this, in, current);
             }
             case 13:
             {
-                return _iceD_setFileServerType(this, in, current);
+                return _iceD_listScope(this, in, current);
             }
             case 14:
+            {
+                return _iceD_setFileServerType(this, in, current);
+            }
+            case 15:
             {
                 return _iceD_upload(this, in, current);
             }

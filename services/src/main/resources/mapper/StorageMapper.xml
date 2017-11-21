@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maoding.Storage.Dao.StorageDao" >
+    <select id="listFileByScopeAndKey" resultType="com.maoding.Storage.zeroc.CooperateFileDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
+      select
+        b.id
+        ,b.file_name as name
+        ,a.id as node_id
+        ,a.pid as p_node_id
+        ,a.node_name
+        ,group_concat(ifnull(c.node_name,'') order by length(c.path) separator '/') as path_name
+        ,b.file_length
+        ,b.file_checksum
+        ,b.file_version
+        ,b.specialty_id
+        ,b.last_modify_address
+        ,b.sync_mode as sync_mode_id
+        ,b.type_id
+        ,b.locking
+        ,b.creator_duty_id
+        ,b.create_time
+        ,date_format(b.create_time,'%Y-%m-%d %T') as create_time_text
+        ,b.last_modify_duty_id
+        ,b.last_modify_time
+        ,date_format(b.create_time,'%Y-%m-%d %T') as last_modify_time_text
+      from maoding_storage a
+          inner join maoding_storage_file b on (a.detail_id = b.id)
+          inner join maoding_storage c on (find_in_set(c.id,a.path))
+      where (a.deleted = 0) and (b.deleted = 0)
+          <if test="scope != null">
+              and (b.file_scope like concat('%',#{scope}))
+          </if>
+          <if test="key != null">
+              and (b.file_key like concat('%',#{key}))
+          </if>
+      group by a.id
+    </select>
+
+</mapper>

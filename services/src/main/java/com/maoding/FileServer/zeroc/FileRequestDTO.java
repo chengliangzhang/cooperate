@@ -23,6 +23,30 @@ package com.maoding.FileServer.zeroc;
 public class FileRequestDTO implements java.lang.Cloneable,
                                        java.io.Serializable
 {
+    public String id;
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    public String nodeId;
+
+    public String getNodeId()
+    {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId)
+    {
+        this.nodeId = nodeId;
+    }
+
     public String url;
 
     public String getUrl()
@@ -33,6 +57,30 @@ public class FileRequestDTO implements java.lang.Cloneable,
     public void setUrl(String url)
     {
         this.url = url;
+    }
+
+    public String scope;
+
+    public String getScope()
+    {
+        return scope;
+    }
+
+    public void setScope(String scope)
+    {
+        this.scope = scope;
+    }
+
+    public String key;
+
+    public String getKey()
+    {
+        return key;
+    }
+
+    public void setKey(String key)
+    {
+        this.key = key;
     }
 
     public int mode;
@@ -61,12 +109,20 @@ public class FileRequestDTO implements java.lang.Cloneable,
 
     public FileRequestDTO()
     {
+        this.id = "";
+        this.nodeId = "";
         this.url = "";
+        this.scope = "";
+        this.key = "";
     }
 
-    public FileRequestDTO(String url, int mode, java.util.Map<java.lang.String, java.lang.String> params)
+    public FileRequestDTO(String id, String nodeId, String url, String scope, String key, int mode, java.util.Map<java.lang.String, java.lang.String> params)
     {
+        this.id = id;
+        this.nodeId = nodeId;
         this.url = url;
+        this.scope = scope;
+        this.key = key;
         this.mode = mode;
         this.params = params;
     }
@@ -85,9 +141,37 @@ public class FileRequestDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
+            if(this.id != r.id)
+            {
+                if(this.id == null || r.id == null || !this.id.equals(r.id))
+                {
+                    return false;
+                }
+            }
+            if(this.nodeId != r.nodeId)
+            {
+                if(this.nodeId == null || r.nodeId == null || !this.nodeId.equals(r.nodeId))
+                {
+                    return false;
+                }
+            }
             if(this.url != r.url)
             {
                 if(this.url == null || r.url == null || !this.url.equals(r.url))
+                {
+                    return false;
+                }
+            }
+            if(this.scope != r.scope)
+            {
+                if(this.scope == null || r.scope == null || !this.scope.equals(r.scope))
+                {
+                    return false;
+                }
+            }
+            if(this.key != r.key)
+            {
+                if(this.key == null || r.key == null || !this.key.equals(r.key))
                 {
                     return false;
                 }
@@ -114,7 +198,11 @@ public class FileRequestDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::FileRequestDTO");
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, nodeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, url);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, scope);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, key);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mode);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, params);
         return h_;
@@ -136,14 +224,22 @@ public class FileRequestDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
+        ostr.writeString(this.id);
+        ostr.writeString(this.nodeId);
         ostr.writeString(this.url);
+        ostr.writeString(this.scope);
+        ostr.writeString(this.key);
         ostr.writeInt(this.mode);
         com.maoding.Common.zeroc.MapHelper.write(ostr, this.params);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
+        this.id = istr.readString();
+        this.nodeId = istr.readString();
         this.url = istr.readString();
+        this.scope = istr.readString();
+        this.key = istr.readString();
         this.mode = istr.readInt();
         this.params = com.maoding.Common.zeroc.MapHelper.read(istr);
     }
@@ -200,5 +296,5 @@ public class FileRequestDTO implements java.lang.Cloneable,
 
     private static final FileRequestDTO _nullMarshalValue = new FileRequestDTO();
 
-    public static final long serialVersionUID = 2063970961L;
+    public static final long serialVersionUID = 754344876L;
 }

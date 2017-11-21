@@ -1,7 +1,11 @@
 package com.maoding.Utils;
 
+import com.zeroc.Ice.Current;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -12,6 +16,15 @@ import org.slf4j.LoggerFactory;
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /** 日志对象 */
     private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
+
+    public static final String FULL_STAMP_FORMAT = "yyyyMMddHHmmss";
+    public static final String DATA_STAMP_FORMAT = "yyyyMMdd";
+    public static final String TIME_STAMP_FORMAT = "yyyyMMddHHmmss";
+    public static final String MS_STAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.sss";
+    public static final String DEFAULT_STAMP_FORMAT = FULL_STAMP_FORMAT;
+
+    private static final int KILO_BYTE = 1024;
+    private static final int KILO_MS = 1000;
 
     /** 判断字符串是否为空，视null和""都为空 */
     public static Boolean isEmpty(String s){
@@ -69,5 +82,63 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         if (path == null) return null;
         path = formatPath(path);
         return path.substring(0,path.lastIndexOf("/"));
+    }
+
+    //带单位计算字节数
+    public static String calBytes(long length){
+        String unit = "B";
+        if (length > KILO_BYTE){
+            if ((length / KILO_BYTE) > KILO_BYTE) {
+                length /= (KILO_BYTE * KILO_BYTE);
+                unit = "M";
+            } else {
+                length /= KILO_BYTE;
+                unit = "K";
+            }
+        }
+        return length + unit;
+    }
+
+    //带单位计算字节传送速度
+    public static String calSpeed(long length,long t,int digit){
+        double speed = (length * KILO_MS) / t;
+        String unit = "B/s";
+        if (speed > KILO_BYTE){
+            if ((speed / KILO_BYTE) > KILO_BYTE) {
+                speed /= (KILO_BYTE * KILO_BYTE);
+                unit = "M/s";
+            } else {
+                speed /= KILO_BYTE;
+                unit = "K/s";
+            }
+        }
+        return String.format("%." + digit + "f",speed) + unit;
+    }
+    public static String calSpeed(long length,long t){
+        return calSpeed(length,t,1);
+    }
+
+    public static String getTimeStamp(Date date, String stampFormat){
+        final String DEFAULT_STAMP_FORMAT = "yyyyMMddHHmmss";
+        if (date == null) date = new Date();
+        if (stampFormat == null) stampFormat = DEFAULT_STAMP_FORMAT;
+        SimpleDateFormat fmt = new SimpleDateFormat(stampFormat);
+        return fmt.format(date);
+    }
+    public static String getTimeStamp(Date date){
+        return getTimeStamp(date,null);
+    }
+    public static String getTimeStamp(String stampFormat){
+        return getTimeStamp(null,stampFormat);
+    }
+    public static String getTimeStamp(){
+        return getTimeStamp(null,null);
+    }
+
+    public static String getRemoteIp(Current current){
+        if (current == null) return null;
+        String address = current.con.toString();
+        assert (address != null);
+        return address.substring(address.lastIndexOf("=")+1,address.lastIndexOf(":"));
     }
 }
