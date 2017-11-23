@@ -40,9 +40,10 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         this.taskId = "";
         this.taskName = "";
         this.typeName = "";
+        this.createTimeText = "";
     }
 
-    public CooperateDirNodeDTO(String id, String name, String pNodeId, String detailId, String fullName, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName, int typeId, String typeName, java.util.Date createTime, int fileCount, java.util.List<CooperateFileDTO> fileList)
+    public CooperateDirNodeDTO(String id, String name, String pNodeId, String detailId, String fullName, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName, int typeId, String typeName, long createTimeStamp, String createTimeText)
     {
         this.id = id;
         this.name = name;
@@ -61,9 +62,8 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         this.taskName = taskName;
         this.typeId = typeId;
         this.typeName = typeName;
-        this.createTime = createTime;
-        this.fileCount = fileCount;
-        this.fileList = fileList;
+        this.createTimeStamp = createTimeStamp;
+        this.createTimeText = createTimeText;
     }
 
     public String id;
@@ -270,40 +270,28 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         this.typeName = typeName;
     }
 
-    public java.util.Date createTime;
+    public long createTimeStamp;
 
-    public java.util.Date getCreateTime()
+    public long getCreateTimeStamp()
     {
-        return createTime;
+        return createTimeStamp;
     }
 
-    public void setCreateTime(java.util.Date createTime)
+    public void setCreateTimeStamp(long createTimeStamp)
     {
-        this.createTime = createTime;
+        this.createTimeStamp = createTimeStamp;
     }
 
-    public int fileCount;
+    public String createTimeText;
 
-    public int getFileCount()
+    public String getCreateTimeText()
     {
-        return fileCount;
+        return createTimeText;
     }
 
-    public void setFileCount(int fileCount)
+    public void setCreateTimeText(String createTimeText)
     {
-        this.fileCount = fileCount;
-    }
-
-    public java.util.List<CooperateFileDTO> fileList;
-
-    public java.util.List<CooperateFileDTO> getFileList()
-    {
-        return fileList;
-    }
-
-    public void setFileList(java.util.List<CooperateFileDTO> fileList)
-    {
-        this.fileList = fileList;
+        this.createTimeText = createTimeText;
     }
 
     public CooperateDirNodeDTO clone()
@@ -322,7 +310,7 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         return ice_staticId();
     }
 
-    public static final long serialVersionUID = -624606271L;
+    public static final long serialVersionUID = -1568157328L;
 
     @Override
     protected void _iceWriteImpl(com.zeroc.Ice.OutputStream ostr_)
@@ -345,9 +333,8 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         ostr_.writeString(taskName);
         ostr_.writeInt(typeId);
         ostr_.writeString(typeName);
-        ostr_.writeSerializable(createTime);
-        ostr_.writeInt(fileCount);
-        CooperateFileListHelper.write(ostr_, fileList);
+        ostr_.writeLong(createTimeStamp);
+        ostr_.writeString(createTimeText);
         ostr_.endSlice();
     }
 
@@ -372,9 +359,8 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         taskName = istr_.readString();
         typeId = istr_.readInt();
         typeName = istr_.readString();
-        createTime = istr_.readSerializable(java.util.Date.class);
-        fileCount = istr_.readInt();
-        fileList = CooperateFileListHelper.read(istr_);
+        createTimeStamp = istr_.readLong();
+        createTimeText = istr_.readString();
         istr_.endSlice();
     }
 }

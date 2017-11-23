@@ -3,9 +3,7 @@ package com.maoding.Storage;
 import com.maoding.Const.FileServerConst;
 import com.maoding.FileServer.FileServiceImpl;
 import com.maoding.FileServer.zeroc.*;
-import com.maoding.Storage.zeroc.CooperateFileDTO;
-import com.maoding.Storage.zeroc.StorageService;
-import com.maoding.Storage.zeroc.StorageServicePrx;
+import com.maoding.Storage.zeroc.*;
 import com.maoding.Utils.BeanUtils;
 import com.maoding.Utils.HttpUtils;
 import com.maoding.Utils.JsonUtils;
@@ -20,7 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
@@ -38,8 +38,8 @@ import java.util.Map;
 */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-//@SpringBootConfiguration //only enable when target module hasn't @SpringBootApplication
-//@ComponentScan(basePackages = {"com.maoding"}) //only enable when target module hasn't @SpringBootApplication
+@SpringBootConfiguration //only enable when target module hasn't @SpringBootApplication
+@ComponentScan(basePackages = {"com.maoding"}) //only enable when target module hasn't @SpringBootApplication
 
 public class StorageServiceImplTest {
     private static final String testUploadLocalFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer\\upload_test.txt";
@@ -55,12 +55,39 @@ public class StorageServiceImplTest {
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
 
+    /** 获取目录文件列表 */
+    @Test
+    public void testGetCooperateDirInfo() throws Exception {
+        CooperationQueryDTO query = new CooperationQueryDTO();
+        CooperateDirDTO dirInfo = storageService.getCooperateDirInfo(query,null);
+        Assert.assertNotNull(dirInfo);
+        List<CooperateDirNodeDTO> subDirList = dirInfo.getSubDirList();
+        Assert.assertNotNull(subDirList);
+        Assert.assertTrue(subDirList.size() > 0);
+        query.setNodeId(subDirList.get(0).getId());
+        dirInfo = storageService.getCooperateDirInfo(query,null);
+        Assert.assertNotNull(dirInfo);
+    }
+
+    @Test
+    public void testGetNodeInfo() throws Exception {
+        CooperationQueryDTO query = new CooperationQueryDTO();
+        NodeDTO nodeInfo = storageService.getNodeInfo(query,null);
+        Assert.assertNotNull(nodeInfo);
+        List<SimpleNodeDTO> subNodeList = nodeInfo.getSubNodeList();
+        Assert.assertNotNull(subNodeList);
+        Assert.assertTrue(subNodeList.size() > 0);
+        query.setNodeId(subNodeList.get(0).getId());
+        nodeInfo = storageService.getNodeInfo(query,null);
+        Assert.assertNotNull(nodeInfo);
+    }
+
     /** 文件服务器使用LocalServer,使用多个调用文件服务器接口 */
     @Test
     public void testUploadForLocal() throws Exception {
         fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
-//        upload(FileServerConst.FILE_SERVER_MODE_LOCAL);
-        upload(FileServerConst.FILE_SERVER_MODE_RPC);
+        upload(FileServerConst.FILE_SERVER_MODE_LOCAL);
+//        upload(FileServerConst.FILE_SERVER_MODE_RPC);
 //        upload(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
     }
 
@@ -76,13 +103,15 @@ public class StorageServiceImplTest {
     @Test
     public void testUploadForAliyun() throws Exception {
         fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
-        upload(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+//        upload(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+        upload(FileServerConst.FILE_SERVER_MODE_DEFAULT_COM);
     }
 
     @Test
     public void testDownloadForAliyun() throws Exception {
         fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
-        download(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+//        download(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+        download(FileServerConst.FILE_SERVER_MODE_DEFAULT_COM);
     }
 
     /** 通用测试接口 */
@@ -113,10 +142,9 @@ public class StorageServiceImplTest {
         assert ((fileRequestDTO != null) && (fileRequestDTO.getParams() != null));
         if (chunkId == null) chunkId = 0;
         if (chunkSize == null) chunkSize = FileServerConst.DEFAULT_CHUNK_SIZE;
-        Map<String,String> requestParams = fileRequestDTO.getParams();
-        assert ((requestParams.containsKey(SCOPE_KEY)) && (requestParams.containsKey(KEY_KEY)));
 
         //建立上传内容
+        Map<String,String> requestParams = fileRequestDTO.getParams();
         FileMultipartDTO multipart = BeanUtils.createFrom(requestParams, FileMultipartDTO.class);
         assert multipart != null;
         long pos = (long)chunkId * chunkSize;
@@ -241,9 +269,10 @@ public class StorageServiceImplTest {
 
             //发送下载申请
             DownloadResultDTO result = null;
-            if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(fileRequestDTO.getMode())) result = downloadContentByLocal(request);
-            else if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode())) result = downloadContentByRPC(request);
+            if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(fileRequestDTO.getMode())) result = downloadContentByLocal(fileRequestDTO,request);
+            else if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode())) result = downloadContentByRPC(fileRequestDTO,request);
             else if (FileServerConst.FILE_SERVER_MODE_HTTP_POST.equals(fileRequestDTO.getMode())) result = downloadContentByPost(fileRequestDTO,request);
+            else if (FileServerConst.FILE_SERVER_MODE_OSS.equals(fileRequestDTO.getMode())) result = downloadContentByOSS(fileRequestDTO,request);
             assert result != null;
             Assert.assertEquals((Integer)0,(Integer)result.getStatus());
 
@@ -267,20 +296,30 @@ public class StorageServiceImplTest {
     }
     
     
-    public DownloadResultDTO downloadContentByLocal(DownloadRequestDTO request) throws Exception {
+    public DownloadResultDTO downloadContentByLocal(FileRequestDTO fileRequestDTO,DownloadRequestDTO request) throws Exception {
+        //补全DownloadRequestDTO参数
+        //发送下载申请
         fileService.setFileServerType(fileServerType,null);
         return fileService.download(request,null);
     }
 
-    public DownloadResultDTO downloadContentByRPC(DownloadRequestDTO request) throws Exception {
+    public DownloadResultDTO downloadContentByRPC(FileRequestDTO fileRequestDTO,DownloadRequestDTO request) throws Exception {
+        //补全DownloadRequestDTO参数
+        //发送下载申请
         fileServicePrx.setFileServerType(fileServerType);
         return fileServicePrx.download(request);
     }
 
+    public DownloadResultDTO downloadContentByOSS(FileRequestDTO fileRequestDTO,DownloadRequestDTO request) throws Exception {
+        //补全DownloadRequestDTO参数
+        //发送下载申请
+        return null;
+    }
+
     public DownloadResultDTO downloadContentByPost(FileRequestDTO fileRequestDTO,DownloadRequestDTO request) throws Exception {
-        //补全参数
         if (fileRequestDTO == null) fileRequestDTO = new FileRequestDTO();
         if (fileRequestDTO.getUrl() == null) fileRequestDTO.setUrl("http://localhost:8087/FileServer/download");
+        //补全DownloadRequestDTO参数
         Map<String,String> requestParams = fileRequestDTO.getParams();
         String downloadContentType = ((requestParams != null) && (requestParams.containsKey("contentType"))) ? downloadContentType = requestParams.get("contentType") : "application/json";
         String setFileServerTypeUrl = ((requestParams != null) && (requestParams.containsKey("fileServerTypeUrl"))) ? downloadContentType = requestParams.get("fileServerTypeUrl") : "http://localhost:8087/FileServer/setFileServerType";
@@ -320,29 +359,41 @@ public class StorageServiceImplTest {
             UploadRequestDTO request = createUploadRequestDTO(f, fileRequestDTO, chunkId, chunkSize, chunkCount);
             //发送上传申请
             UploadResultDTO result = null;
-            if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(fileRequestDTO.getMode())) result = uploadContentByLocal(request);
-            else if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode())) result = uploadContentByRPC(request);
+            if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(fileRequestDTO.getMode())) result = uploadContentByLocal(fileRequestDTO,request);
+            else if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode())) result = uploadContentByRPC(fileRequestDTO,request);
             else if (FileServerConst.FILE_SERVER_MODE_HTTP_POST.equals(fileRequestDTO.getMode())) result = uploadContentByPost(fileRequestDTO,request);
+            else if (FileServerConst.FILE_SERVER_MODE_OSS.equals(fileRequestDTO.getMode())) result = uploadContentByOSS(fileRequestDTO,request);
             assert result != null;
             Assert.assertEquals((Integer)0,(Integer)result.getStatus());
         }
     }
     
     
-    public UploadResultDTO uploadContentByLocal(UploadRequestDTO request) throws Exception {
+    public UploadResultDTO uploadContentByLocal(FileRequestDTO fileRequestDTO,UploadRequestDTO request) throws Exception {
+        //补全UploadRequestDTO参数
+        //发送上传申请
         fileService.setFileServerType(fileServerType,null);
         return fileService.upload(request,null);
     }
 
-    public UploadResultDTO uploadContentByRPC(UploadRequestDTO request) throws Exception {
+    public UploadResultDTO uploadContentByRPC(FileRequestDTO fileRequestDTO,UploadRequestDTO request) throws Exception {
+        //补全UploadRequestDTO参数
+        //发送上传申请
         fileServicePrx.setFileServerType(fileServerType);
         return fileServicePrx.upload(request);
     }
 
+    public UploadResultDTO uploadContentByOSS(FileRequestDTO fileRequestDTO, UploadRequestDTO request) throws Exception {
+        //补全UploadRequestDTO参数
+        //发送上传申请
+        return null;
+    }
+
     public UploadResultDTO uploadContentByPost(FileRequestDTO fileRequestDTO, UploadRequestDTO request) throws Exception {
-        //补全参数
         if (fileRequestDTO == null) fileRequestDTO = new FileRequestDTO();
         if (fileRequestDTO.getUrl() == null) fileRequestDTO.setUrl("http://localhost:8087/FileServer/upload");
+
+        //补全UploadRequestDTO参数
         Map<String,String> requestParams = fileRequestDTO.getParams();
         String uploadContentType = ((requestParams != null) && (requestParams.containsKey("contentType"))) ? uploadContentType = requestParams.get("contentType") : "application/json";
         String setFileServerTypeUrl = ((requestParams != null) && (requestParams.containsKey("fileServerTypeUrl"))) ? uploadContentType = requestParams.get("fileServerTypeUrl") : "http://localhost:8087/FileServer/setFileServerType";

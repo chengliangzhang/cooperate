@@ -20,9 +20,9 @@
 
 package com.maoding.Storage.zeroc;
 
-public class CooperateFileNodeDTO extends com.zeroc.Ice.Value
+public class FileNodeDTO extends com.zeroc.Ice.Value
 {
-    public CooperateFileNodeDTO()
+    public FileNodeDTO()
     {
         this.id = "";
         this.name = "";
@@ -45,7 +45,7 @@ public class CooperateFileNodeDTO extends com.zeroc.Ice.Value
         this.lastModifyTimeText = "";
     }
 
-    public CooperateFileNodeDTO(String id, String name, String nodeId, String pNodeId, String pathName, long fileLength, String fileChecksum, String fileVersion, String specialtyId, String specialtyName, String lastModifyAddress, short syncModeId, String syncModeName, int typeId, String typeName, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, java.util.Date createTime, String createTimeText, String lastModifyDutyId, String lastModifyDutyName, java.util.Date lastModifyTime, String lastModifyTimeText)
+    public FileNodeDTO(String id, String name, String nodeId, String pNodeId, String pathName, long fileLength, String fileChecksum, String fileVersion, String specialtyId, String specialtyName, String lastModifyAddress, short syncModeId, String syncModeName, int typeId, String typeName, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, long createTimeStamp, String createTimeText, String lastModifyDutyId, String lastModifyDutyName, long lastModifyTimeStamp, String lastModifyTimeText)
     {
         this.id = id;
         this.name = name;
@@ -66,11 +66,11 @@ public class CooperateFileNodeDTO extends com.zeroc.Ice.Value
         this.localFile = localFile;
         this.creatorDutyId = creatorDutyId;
         this.creatorDutyName = creatorDutyName;
-        this.createTime = createTime;
+        this.createTimeStamp = createTimeStamp;
         this.createTimeText = createTimeText;
         this.lastModifyDutyId = lastModifyDutyId;
         this.lastModifyDutyName = lastModifyDutyName;
-        this.lastModifyTime = lastModifyTime;
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
         this.lastModifyTimeText = lastModifyTimeText;
     }
 
@@ -307,16 +307,16 @@ public class CooperateFileNodeDTO extends com.zeroc.Ice.Value
         this.creatorDutyName = creatorDutyName;
     }
 
-    public java.util.Date createTime;
+    public long createTimeStamp;
 
-    public java.util.Date getCreateTime()
+    public long getCreateTimeStamp()
     {
-        return createTime;
+        return createTimeStamp;
     }
 
-    public void setCreateTime(java.util.Date createTime)
+    public void setCreateTimeStamp(long createTimeStamp)
     {
-        this.createTime = createTime;
+        this.createTimeStamp = createTimeStamp;
     }
 
     public String createTimeText;
@@ -355,16 +355,16 @@ public class CooperateFileNodeDTO extends com.zeroc.Ice.Value
         this.lastModifyDutyName = lastModifyDutyName;
     }
 
-    public java.util.Date lastModifyTime;
+    public long lastModifyTimeStamp;
 
-    public java.util.Date getLastModifyTime()
+    public long getLastModifyTimeStamp()
     {
-        return lastModifyTime;
+        return lastModifyTimeStamp;
     }
 
-    public void setLastModifyTime(java.util.Date lastModifyTime)
+    public void setLastModifyTimeStamp(long lastModifyTimeStamp)
     {
-        this.lastModifyTime = lastModifyTime;
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
     }
 
     public String lastModifyTimeText;
@@ -379,14 +379,14 @@ public class CooperateFileNodeDTO extends com.zeroc.Ice.Value
         this.lastModifyTimeText = lastModifyTimeText;
     }
 
-    public CooperateFileNodeDTO clone()
+    public FileNodeDTO clone()
     {
-        return (CooperateFileNodeDTO)super.clone();
+        return (FileNodeDTO)super.clone();
     }
 
     public static String ice_staticId()
     {
-        return "::zeroc::CooperateFileNodeDTO";
+        return "::zeroc::FileNodeDTO";
     }
 
     @Override
@@ -395,7 +395,7 @@ public class CooperateFileNodeDTO extends com.zeroc.Ice.Value
         return ice_staticId();
     }
 
-    public static final long serialVersionUID = 1321368577L;
+    public static final long serialVersionUID = 1015856917L;
 
     @Override
     protected void _iceWriteImpl(com.zeroc.Ice.OutputStream ostr_)
@@ -420,11 +420,11 @@ public class CooperateFileNodeDTO extends com.zeroc.Ice.Value
         ostr_.writeString(localFile);
         ostr_.writeString(creatorDutyId);
         ostr_.writeString(creatorDutyName);
-        ostr_.writeSerializable(createTime);
+        ostr_.writeLong(createTimeStamp);
         ostr_.writeString(createTimeText);
         ostr_.writeString(lastModifyDutyId);
         ostr_.writeString(lastModifyDutyName);
-        ostr_.writeSerializable(lastModifyTime);
+        ostr_.writeLong(lastModifyTimeStamp);
         ostr_.writeString(lastModifyTimeText);
         ostr_.endSlice();
     }
@@ -452,11 +452,11 @@ public class CooperateFileNodeDTO extends com.zeroc.Ice.Value
         localFile = istr_.readString();
         creatorDutyId = istr_.readString();
         creatorDutyName = istr_.readString();
-        createTime = istr_.readSerializable(java.util.Date.class);
+        createTimeStamp = istr_.readLong();
         createTimeText = istr_.readString();
         lastModifyDutyId = istr_.readString();
         lastModifyDutyName = istr_.readString();
-        lastModifyTime = istr_.readSerializable(java.util.Date.class);
+        lastModifyTimeStamp = istr_.readLong();
         lastModifyTimeText = istr_.readString();
         istr_.endSlice();
     }

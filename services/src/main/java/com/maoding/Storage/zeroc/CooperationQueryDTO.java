@@ -119,6 +119,18 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         this.key = key;
     }
 
+    public int level;
+
+    public int getLevel()
+    {
+        return level;
+    }
+
+    public void setLevel(int level)
+    {
+        this.level = level;
+    }
+
     public CooperationQueryDTO()
     {
         this.nodeId = "";
@@ -131,7 +143,7 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         this.key = "";
     }
 
-    public CooperationQueryDTO(String nodeId, String userId, String dutyId, String orgId, String projectId, String taskId, String scope, String key)
+    public CooperationQueryDTO(String nodeId, String userId, String dutyId, String orgId, String projectId, String taskId, String scope, String key, int level)
     {
         this.nodeId = nodeId;
         this.userId = userId;
@@ -141,6 +153,7 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         this.taskId = taskId;
         this.scope = scope;
         this.key = key;
+        this.level = level;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -213,6 +226,10 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.level != r.level)
+            {
+                return false;
+            }
 
             return true;
         }
@@ -232,6 +249,7 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, scope);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, key);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, level);
         return h_;
     }
 
@@ -259,6 +277,7 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         ostr.writeString(this.taskId);
         ostr.writeString(this.scope);
         ostr.writeString(this.key);
+        ostr.writeInt(this.level);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -271,6 +290,7 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         this.taskId = istr.readString();
         this.scope = istr.readString();
         this.key = istr.readString();
+        this.level = istr.readInt();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CooperationQueryDTO v)
@@ -325,5 +345,5 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
 
     private static final CooperationQueryDTO _nullMarshalValue = new CooperationQueryDTO();
 
-    public static final long serialVersionUID = 1108762740L;
+    public static final long serialVersionUID = -1149094459L;
 }

@@ -22,34 +22,67 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
 {
-    default java.util.List<CooperateDirDTO> listCooperationDir(CooperationQueryDTO query)
+    default NodeDTO getNodeInfo(CooperationQueryDTO query)
     {
-        return listCooperationDir(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return getNodeInfo(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default java.util.List<CooperateDirDTO> listCooperationDir(CooperationQueryDTO query, java.util.Map<String, String> context)
+    default NodeDTO getNodeInfo(CooperationQueryDTO query, java.util.Map<String, String> context)
     {
-        return _iceI_listCooperationDirAsync(query, context, true).waitForResponse();
+        return _iceI_getNodeInfoAsync(query, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.util.List<CooperateDirDTO>> listCooperationDirAsync(CooperationQueryDTO query)
+    default java.util.concurrent.CompletableFuture<NodeDTO> getNodeInfoAsync(CooperationQueryDTO query)
     {
-        return _iceI_listCooperationDirAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_getNodeInfoAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.util.List<CooperateDirDTO>> listCooperationDirAsync(CooperationQueryDTO query, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<NodeDTO> getNodeInfoAsync(CooperationQueryDTO query, java.util.Map<String, String> context)
     {
-        return _iceI_listCooperationDirAsync(query, context, false);
+        return _iceI_getNodeInfoAsync(query, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<CooperateDirDTO>> _iceI_listCooperationDirAsync(CooperationQueryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<NodeDTO> _iceI_getNodeInfoAsync(CooperationQueryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.util.List<CooperateDirDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listCooperationDir", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<NodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getNodeInfo", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      CooperationQueryDTO.ice_write(ostr, iceP_query);
                  }, istr -> {
-                     java.util.List<CooperateDirDTO> ret;
-                     ret = CooperateDirListHelper.read(istr);
+                     NodeDTO ret;
+                     ret = NodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query)
+    {
+        return getCooperateDirInfo(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_getCooperateDirInfoAsync(query, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateDirDTO> getCooperateDirInfoAsync(CooperationQueryDTO query)
+    {
+        return _iceI_getCooperateDirInfoAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<CooperateDirDTO> getCooperateDirInfoAsync(CooperationQueryDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_getCooperateDirInfoAsync(query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<CooperateDirDTO> _iceI_getCooperateDirInfoAsync(CooperationQueryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<CooperateDirDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getCooperateDirInfo", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CooperationQueryDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     CooperateDirDTO ret;
+                     ret = CooperateDirDTO.ice_read(istr);
                      istr.readPendingValues();
                      return ret;
                  });

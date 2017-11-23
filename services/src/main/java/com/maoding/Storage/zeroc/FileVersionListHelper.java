@@ -20,9 +20,9 @@
 
 package com.maoding.Storage.zeroc;
 
-public final class CooperateSubDirListHelper
+public final class FileVersionListHelper
 {
-    public static void write(com.zeroc.Ice.OutputStream ostr, java.util.List<CooperateDirNodeDTO> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, java.util.List<FileVersionDTO> v)
     {
         if(v == null)
         {
@@ -31,28 +31,28 @@ public final class CooperateSubDirListHelper
         else
         {
             ostr.writeSize(v.size());
-            for(CooperateDirNodeDTO elem : v)
+            for(FileVersionDTO elem : v)
             {
                 ostr.writeValue(elem);
             }
         }
     }
 
-    public static java.util.List<CooperateDirNodeDTO> read(com.zeroc.Ice.InputStream istr)
+    public static java.util.List<FileVersionDTO> read(com.zeroc.Ice.InputStream istr)
     {
-        final java.util.List<CooperateDirNodeDTO> v;
-        v = new java.util.ArrayList<CooperateDirNodeDTO>();
+        final java.util.List<FileVersionDTO> v;
+        v = new java.util.ArrayList<FileVersionDTO>();
         final int len0 = istr.readAndCheckSeqSize(1);
         for(int i0 = 0; i0 < len0; i0++)
         {
             v.add(null);
             final int fi0 = i0;
-            istr.readValue(value -> v.set(fi0, value), CooperateDirNodeDTO.class);
+            istr.readValue(value -> v.set(fi0, value), FileVersionDTO.class);
         }
         return v;
     }
 
-    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<java.util.List<CooperateDirNodeDTO>> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<java.util.List<FileVersionDTO>> v)
     {
         if(v != null && v.isPresent())
         {
@@ -60,23 +60,23 @@ public final class CooperateSubDirListHelper
         }
     }
 
-    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.List<CooperateDirNodeDTO> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.List<FileVersionDTO> v)
     {
         if(ostr.writeOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
             int pos = ostr.startSize();
-            CooperateSubDirListHelper.write(ostr, v);
+            FileVersionListHelper.write(ostr, v);
             ostr.endSize(pos);
         }
     }
 
-    public static java.util.Optional<java.util.List<CooperateDirNodeDTO>> read(com.zeroc.Ice.InputStream istr, int tag)
+    public static java.util.Optional<java.util.List<FileVersionDTO>> read(com.zeroc.Ice.InputStream istr, int tag)
     {
         if(istr.readOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
             istr.skip(4);
-            java.util.List<CooperateDirNodeDTO> v;
-            v = CooperateSubDirListHelper.read(istr);
+            java.util.List<FileVersionDTO> v;
+            v = FileVersionListHelper.read(istr);
             return java.util.Optional.of(v);
         }
         else

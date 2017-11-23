@@ -20,9 +20,9 @@
 
 package com.maoding.Storage.zeroc;
 
-public final class CooperateRelatedFileListHelper
+public final class RelatedFileListHelper
 {
-    public static void write(com.zeroc.Ice.OutputStream ostr, java.util.List<CooperateFileNodeDTO> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, java.util.List<FileNodeDTO> v)
     {
         if(v == null)
         {
@@ -31,28 +31,28 @@ public final class CooperateRelatedFileListHelper
         else
         {
             ostr.writeSize(v.size());
-            for(CooperateFileNodeDTO elem : v)
+            for(FileNodeDTO elem : v)
             {
                 ostr.writeValue(elem);
             }
         }
     }
 
-    public static java.util.List<CooperateFileNodeDTO> read(com.zeroc.Ice.InputStream istr)
+    public static java.util.List<FileNodeDTO> read(com.zeroc.Ice.InputStream istr)
     {
-        final java.util.List<CooperateFileNodeDTO> v;
-        v = new java.util.ArrayList<CooperateFileNodeDTO>();
+        final java.util.List<FileNodeDTO> v;
+        v = new java.util.ArrayList<FileNodeDTO>();
         final int len0 = istr.readAndCheckSeqSize(1);
         for(int i0 = 0; i0 < len0; i0++)
         {
             v.add(null);
             final int fi0 = i0;
-            istr.readValue(value -> v.set(fi0, value), CooperateFileNodeDTO.class);
+            istr.readValue(value -> v.set(fi0, value), FileNodeDTO.class);
         }
         return v;
     }
 
-    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<java.util.List<CooperateFileNodeDTO>> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<java.util.List<FileNodeDTO>> v)
     {
         if(v != null && v.isPresent())
         {
@@ -60,23 +60,23 @@ public final class CooperateRelatedFileListHelper
         }
     }
 
-    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.List<CooperateFileNodeDTO> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.List<FileNodeDTO> v)
     {
         if(ostr.writeOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
             int pos = ostr.startSize();
-            CooperateRelatedFileListHelper.write(ostr, v);
+            RelatedFileListHelper.write(ostr, v);
             ostr.endSize(pos);
         }
     }
 
-    public static java.util.Optional<java.util.List<CooperateFileNodeDTO>> read(com.zeroc.Ice.InputStream istr, int tag)
+    public static java.util.Optional<java.util.List<FileNodeDTO>> read(com.zeroc.Ice.InputStream istr, int tag)
     {
         if(istr.readOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
             istr.skip(4);
-            java.util.List<CooperateFileNodeDTO> v;
-            v = CooperateRelatedFileListHelper.read(istr);
+            java.util.List<FileNodeDTO> v;
+            v = RelatedFileListHelper.read(istr);
             return java.util.Optional.of(v);
         }
         else

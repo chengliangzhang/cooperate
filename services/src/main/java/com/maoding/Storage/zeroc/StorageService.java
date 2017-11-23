@@ -22,7 +22,9 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageService extends com.zeroc.Ice.Object
 {
-    java.util.List<CooperateDirDTO> listCooperationDir(CooperationQueryDTO query, com.zeroc.Ice.Current current);
+    NodeDTO getNodeInfo(CooperationQueryDTO query, com.zeroc.Ice.Current current);
+
+    CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query, com.zeroc.Ice.Current current);
 
     boolean modifyFileInfo(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
 
@@ -97,16 +99,30 @@ public interface StorageService extends com.zeroc.Ice.Object
         return "::zeroc::StorageService";
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listCooperationDir(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getNodeInfo(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         CooperationQueryDTO iceP_query;
         iceP_query = CooperationQueryDTO.ice_read(istr);
         inS.endReadParams();
-        java.util.List<CooperateDirDTO> ret = obj.listCooperationDir(iceP_query, current);
+        NodeDTO ret = obj.getNodeInfo(iceP_query, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        CooperateDirListHelper.write(ostr, ret);
+        NodeDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getCooperateDirInfo(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CooperationQueryDTO iceP_query;
+        iceP_query = CooperationQueryDTO.ice_read(istr);
+        inS.endReadParams();
+        CooperateDirDTO ret = obj.getCooperateDirInfo(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CooperateDirDTO.ice_write(ostr, ret);
         ostr.writePendingValues();
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
@@ -505,15 +521,16 @@ public interface StorageService extends com.zeroc.Ice.Object
         "duplicateFile",
         "finishDownload",
         "finishUpload",
+        "getCooperateDirInfo",
         "getFileInfo",
         "getFree",
         "getLinkCount",
+        "getNodeInfo",
         "ice_id",
         "ice_ids",
         "ice_isA",
         "ice_ping",
         "isFileLocking",
-        "listCooperationDir",
         "listFileLink",
         "lockFile",
         "modifyFileInfo",
@@ -581,81 +598,85 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 10:
             {
-                return _iceD_getFileInfo(this, in, current);
+                return _iceD_getCooperateDirInfo(this, in, current);
             }
             case 11:
             {
-                return _iceD_getFree(this, in, current);
+                return _iceD_getFileInfo(this, in, current);
             }
             case 12:
             {
-                return _iceD_getLinkCount(this, in, current);
+                return _iceD_getFree(this, in, current);
             }
             case 13:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getLinkCount(this, in, current);
             }
             case 14:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return _iceD_getNodeInfo(this, in, current);
             }
             case 15:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 16:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 17:
             {
-                return _iceD_isFileLocking(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 18:
             {
-                return _iceD_listCooperationDir(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 19:
             {
-                return _iceD_listFileLink(this, in, current);
+                return _iceD_isFileLocking(this, in, current);
             }
             case 20:
             {
-                return _iceD_lockFile(this, in, current);
+                return _iceD_listFileLink(this, in, current);
             }
             case 21:
             {
-                return _iceD_modifyFileInfo(this, in, current);
+                return _iceD_lockFile(this, in, current);
             }
             case 22:
             {
-                return _iceD_replaceFile(this, in, current);
+                return _iceD_modifyFileInfo(this, in, current);
             }
             case 23:
             {
-                return _iceD_requestDownload(this, in, current);
+                return _iceD_replaceFile(this, in, current);
             }
             case 24:
             {
-                return _iceD_requestDownloadFromLast(this, in, current);
+                return _iceD_requestDownload(this, in, current);
             }
             case 25:
             {
-                return _iceD_requestUpload(this, in, current);
+                return _iceD_requestDownloadFromLast(this, in, current);
             }
             case 26:
             {
-                return _iceD_restoreDirectory(this, in, current);
+                return _iceD_requestUpload(this, in, current);
             }
             case 27:
             {
-                return _iceD_restoreFile(this, in, current);
+                return _iceD_restoreDirectory(this, in, current);
             }
             case 28:
             {
-                return _iceD_unlockFile(this, in, current);
+                return _iceD_restoreFile(this, in, current);
             }
             case 29:
+            {
+                return _iceD_unlockFile(this, in, current);
+            }
+            case 30:
             {
                 return _iceD_uploadCallback(this, in, current);
             }

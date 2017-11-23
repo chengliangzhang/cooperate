@@ -6,7 +6,7 @@
 module zeroc {
 
     ["java:getset"]
-    class CooperateFileNodeDTO {
+    class FileNodeDTO { //协同文件信息
         string id; //协同文件编号
         string name; //协同文件名
         string nodeId; //协同文件树节点编号
@@ -26,18 +26,34 @@ module zeroc {
         string localFile; //本地文件路径，包含文件名
         string creatorDutyId; //协同创建者的用户职责id
         string creatorDutyName; //协同创建者名字
-        Date createTime; //协同建立时间
+        long createTimeStamp; //协同建立时间
         string createTimeText; //协同建立时间文字
         string lastModifyDutyId; //最近更改协同的用户职责id
         string lastModifyDutyName; //最近更改协同的用户名字
-        Date lastModifyTime; //最近更改协同的时间
+        long lastModifyTimeStamp; //最近更改协同的时间
         string lastModifyTimeText; //最近更改协同的时间文字
     };
-    ["java:type:java.util.ArrayList<CooperateFileNodeDTO>"] sequence<CooperateFileNodeDTO> CooperateRelatedFileList;
+    ["java:type:java.util.ArrayList<FileNodeDTO>"] sequence<FileNodeDTO> RelatedFileList;
+
+    class FileVersionDTO { //版本信息
+        string id; //协同文件编号
+        string nodeId; //协同文件树节点编号
+        string fileVersion; //协同文件版本号
+        string lastModifyAddress; //最后上传的地址
+        bool locking; //是否锁定，false-不锁定，true-锁定
+        long createTimeStamp; //版本建立时间
+        string createTimeText; //版本建立时间文字
+        string lastModifyDutyId; //最近更改此版本的用户职责id
+        string lastModifyDutyName; //最近更改此版本的用户名字
+        long lastModifyTimeStamp; //最近更改此版本的时间
+        string lastModifyTimeText; //最近更改此版本的时间文字
+    };
+    ["java:type:java.util.ArrayList<FileVersionDTO>"] sequence<FileVersionDTO> FileVersionList;
 
     ["java:getset"]
-    struct CooperateFileDTO {
+    struct CooperateFileDTO { //主协同文件信息
         //本节点信息
+        FileNodeDTO node; //本协同文件信息
         string id; //协同文件编号
         string name; //协同文件名
         string nodeId; //协同文件树节点编号
@@ -57,16 +73,16 @@ module zeroc {
         string localFile; //本地文件路径，包含文件名
         string creatorDutyId; //协同创建者的用户职责id
         string creatorDutyName; //协同创建者名字
-        Date createTime; //协同建立时间
+        long createTimeStamp; //协同建立时间
         string createTimeText; //协同建立时间文字
         string lastModifyDutyId; //最近更改协同的用户职责id
         string lastModifyDutyName; //最近更改协同的用户名字
-        Date lastModifyTime; //最近更改协同的时间
+        long lastModifyTimeStamp; //最近更改协同的时间
         string lastModifyTimeText; //最近更改协同的时间文字
 
         //子节点信息
-        int referenceFileCount; //参考文件数量
-        CooperateRelatedFileList referenceFileList; //参考文件列表
+        RelatedFileList referenceFileList; //参考文件列表
+        FileVersionList versionList; //历史版本列表
     };
     ["java:type:java.util.ArrayList<CooperateFileDTO>"] sequence<CooperateFileDTO> CooperateFileList;
 
@@ -89,44 +105,36 @@ module zeroc {
         string taskName; //所属任务名字
         int typeId; //目录特殊类别编号
         string typeName; //目录类别名字
-        Date createTime; //目录建立时间
-
-        int fileCount; //文件数量
-        CooperateFileList fileList; //本目录文件列表
+        long createTimeStamp; //目录建立时间
+        string createTimeText; //目录建立时间文字
     };
-    ["java:type:java.util.ArrayList<CooperateDirNodeDTO>"] sequence<CooperateDirNodeDTO> CooperateSubDirList;
+    ["java:type:java.util.ArrayList<CooperateDirNodeDTO>"] sequence<CooperateDirNodeDTO> CooperateDirList;
 
     ["java:getset"]
-    struct CooperateDirDTO {
-        //本节点信息
-        string id; //协同目录编号（树节点编号）
-        string name; //协同目录名（树节点名）
-        string pNodeId; //父节点编号
-        string detailId; //目录细节信息编号
-        string fullName; //目录全路径
-        string userId; //协同目录所属用户id
-        string dutyId; //协同目录所属用户的职责id
-        string userName; //所属用户名字
-        string aliasName; //所属用户别名
-        string orgId; //所属组织id
-        string orgName; //所属组织名字
-        string projectId; //所属项目id
-        string projectName; //所属项目名字
-        string taskId; //所属任务id
-        string taskName; //所属任务名字
-        int typeId; //目录特殊类别编号
-        string typeName; //目录类别名字
-        Date createTime; //目录建立时间
-
-        int fileCount; //文件数量
-        CooperateFileList fileList; //本目录文件列表
-
-        //子节点信息
-        int subDirCount; //子目录数量
-        CooperateSubDirList subDirList; //子目录列表
+    struct CooperateDirDTO { //目录内容
+        CooperateDirNodeDTO node; //本目录信息
+        CooperateDirList subDirList; //子目录列表
+        CooperateFileList fileList; //文件列表（包含子目录内的文件）
     };
-    ["java:type:java.util.ArrayList<CooperateDirDTO>"] sequence<CooperateDirDTO> CooperateDirList;
 
+    ["java:getset"]
+    struct SimpleNodeDTO { //节点信息简化版（统一目录和文件信息）
+        string id; //节点编号（树节点编号）
+        string name; //节点名称（树节点名称或文件名称）
+        string pNodeId; //父节点编号
+        int typeId; //节点类别编号
+        string typeName; //节点类别名字
+        long createTimeStamp; //节点建立时间
+        string createTimeText; //节点建立时间文字
+        long fileLength; //文件长度
+    };
+    ["java:type:java.util.ArrayList<SimpleNodeDTO>"] sequence<SimpleNodeDTO> SimpleNodeList;
+
+    ["java:getset"]
+    struct NodeDTO { //节点内容
+        SimpleNodeDTO node; //本节点信息
+        SimpleNodeList subNodeList; //子节点列表
+    };
 
     ["java:getset"]
     struct CooperationQueryDTO {
@@ -136,19 +144,21 @@ module zeroc {
         string orgId; //所属组织id
         string projectId; //所属项目id
         string taskId; //所属任务id
-        string scope; //要查找的范围
-        string key; //要查找的文件编号
+        string scope; //要查找的文件在文件服务器上的域
+        string key; //要查找的文件在文件服务器上的标识
+        int level; //要从树节点向下查找多少层
     };
 
     interface StorageService {
-        CooperateDirList listCooperationDir(CooperationQueryDTO query); //获取文件目录列表-4
+        NodeDTO getNodeInfo(CooperationQueryDTO query); //获取节点简单信息
+        CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool modifyFileInfo(CooperateFileDTO fileInfo); //更改文件信息-?
         FileRequestDTO requestUpload(CooperateFileDTO fileInfo,int mode); //申请上传文件
         FileRequestDTO requestDownload(CooperateFileDTO fileInfo,int mode); //申请下载文件
         FileRequestDTO requestDownloadFromLast(CooperateFileDTO fileInfo,int mode); //申请从最后上传者那里下载文件
-        CooperateFileDTO uploadCallback(Map params); //文件服务器上传时上传完毕后的回调函数-2
+        CooperateFileDTO uploadCallback(Map params); //文件服务器上传时上传完毕后的回调函数-?
         void downloadCallback(Map params); //文件服务器下载时下载完毕后的回调函数-?
-        void finishUpload(FileRequestDTO request,bool succeeded); //客户端通知结束或取消上传文件-1
+        void finishUpload(FileRequestDTO request,bool succeeded); //客户端通知结束或取消上传文件
         void finishDownload(FileRequestDTO request,bool succeeded); //客户端通知结束或取消下载文件-?
         bool replaceFile(CooperateFileDTO fileInfo,FileDTO fileDTO); //替换实体文件-?
         bool deleteFile(CooperateFileDTO fileInfo); //删除文件-?
@@ -160,9 +170,9 @@ module zeroc {
         CooperateFileList listFileLink(FileDTO fileDTO); //查找文件记录-?
         bool restoreFile(CooperateFileDTO fileInfo); //恢复删除的文件-?
         bool restoreDirectory(string path); //恢复删除的目录-?
-        bool lockFile(string fileId,string address); //锁定文件-?
-        bool unlockFile(string fileId); //解锁文件-?
-        bool isFileLocking(string fileId); //获取文件锁定状态-?
+        bool lockFile(string fileId,string address); //锁定文件
+        bool unlockFile(string fileId); //解锁文件
+        bool isFileLocking(string fileId); //获取文件锁定状态
         long getFree(CooperationQueryDTO query); //获取剩余空间-?
         CooperateFileDTO getFileInfo(string nodeId); //获取文件信息-?
         int getLinkCount(FileDTO fileDTO); //获取文件使用数量-?

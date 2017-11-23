@@ -22,7 +22,7 @@ package com.maoding.Storage.zeroc;
 
 public final class CooperateDirListHelper
 {
-    public static void write(com.zeroc.Ice.OutputStream ostr, java.util.List<CooperateDirDTO> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, java.util.List<CooperateDirNodeDTO> v)
     {
         if(v == null)
         {
@@ -31,28 +31,28 @@ public final class CooperateDirListHelper
         else
         {
             ostr.writeSize(v.size());
-            for(CooperateDirDTO elem : v)
+            for(CooperateDirNodeDTO elem : v)
             {
-                CooperateDirDTO.ice_write(ostr, elem);
+                ostr.writeValue(elem);
             }
         }
     }
 
-    public static java.util.List<CooperateDirDTO> read(com.zeroc.Ice.InputStream istr)
+    public static java.util.List<CooperateDirNodeDTO> read(com.zeroc.Ice.InputStream istr)
     {
-        final java.util.List<CooperateDirDTO> v;
-        v = new java.util.ArrayList<CooperateDirDTO>();
-        final int len0 = istr.readAndCheckSeqSize(31);
+        final java.util.List<CooperateDirNodeDTO> v;
+        v = new java.util.ArrayList<CooperateDirNodeDTO>();
+        final int len0 = istr.readAndCheckSeqSize(1);
         for(int i0 = 0; i0 < len0; i0++)
         {
-            CooperateDirDTO elem;
-            elem = CooperateDirDTO.ice_read(istr);
-            v.add(elem);
+            v.add(null);
+            final int fi0 = i0;
+            istr.readValue(value -> v.set(fi0, value), CooperateDirNodeDTO.class);
         }
         return v;
     }
 
-    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<java.util.List<CooperateDirDTO>> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<java.util.List<CooperateDirNodeDTO>> v)
     {
         if(v != null && v.isPresent())
         {
@@ -60,7 +60,7 @@ public final class CooperateDirListHelper
         }
     }
 
-    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.List<CooperateDirDTO> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.List<CooperateDirNodeDTO> v)
     {
         if(ostr.writeOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
@@ -70,12 +70,12 @@ public final class CooperateDirListHelper
         }
     }
 
-    public static java.util.Optional<java.util.List<CooperateDirDTO>> read(com.zeroc.Ice.InputStream istr, int tag)
+    public static java.util.Optional<java.util.List<CooperateDirNodeDTO>> read(com.zeroc.Ice.InputStream istr, int tag)
     {
         if(istr.readOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
             istr.skip(4);
-            java.util.List<CooperateDirDTO> v;
+            java.util.List<CooperateDirNodeDTO> v;
             v = CooperateDirListHelper.read(istr);
             return java.util.Optional.of(v);
         }

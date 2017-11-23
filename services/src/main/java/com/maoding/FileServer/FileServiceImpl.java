@@ -48,20 +48,17 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public void setFileServerType(int type, Current current) {
-        assert fileServerSetting != null;
         fileServerSetting.setFileServerType(type);
         fileServer = fileServerSetting.getFileServer();
     }
 
     @Override
     public int getFileServerType(Current current) {
-        assert fileServerSetting != null;
         return fileServerSetting.getFileServerType();
     }
 
     @Override
     public FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback, Current current) {
-        assert fileServerSetting != null;
         if (fileServer == null) {
             this.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,(Current)null);
         }
@@ -81,7 +78,6 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback, Current current) {
-        assert fileServerSetting != null;
         if (fileServer == null) {
             this.setFileServerType(FileServerConst.FILE_SERVER_TYPE_LOCAL,(Current)null);
         }

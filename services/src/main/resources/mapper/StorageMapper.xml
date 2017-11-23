@@ -3,37 +3,262 @@
 <mapper namespace="com.maoding.Storage.Dao.StorageDao" >
     <select id="listFileByScopeAndKey" resultType="com.maoding.Storage.zeroc.CooperateFileDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
       select
-        b.id
-        ,b.file_name as name
+        c.id
+        ,c.file_name as name
         ,a.id as node_id
         ,a.pid as p_node_id
         ,a.node_name
-        ,group_concat(ifnull(c.node_name,'') order by length(c.path) separator '/') as path_name
-        ,b.file_length
-        ,b.file_checksum
-        ,b.file_version
-        ,b.specialty_id
-        ,b.last_modify_address
-        ,b.sync_mode as sync_mode_id
-        ,b.type_id
-        ,b.locking
-        ,b.creator_duty_id
-        ,b.create_time
-        ,date_format(b.create_time,'%Y-%m-%d %T') as create_time_text
-        ,b.last_modify_duty_id
-        ,b.last_modify_time
-        ,date_format(b.create_time,'%Y-%m-%d %T') as last_modify_time_text
+        ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
+        ,c.file_length
+        ,c.file_checksum
+        ,c.file_version
+        ,c.specialty_id
+        ,c.last_modify_address
+        ,c.sync_mode as sync_mode_id
+        ,c.type_id
+        ,c.locking
+        ,c.creator_duty_id
+        ,c.create_time
+        ,date_format(c.create_time,'%Y-%m-%d %T') as create_time_text
+        ,c.last_modify_duty_id
+        ,c.last_modify_time
+        ,date_format(c.create_time,'%Y-%m-%d %T') as last_modify_time_text
       from maoding_storage a
-          inner join maoding_storage_file b on (a.detail_id = b.id)
-          inner join maoding_storage c on (find_in_set(c.id,a.path))
-      where (a.deleted = 0) and (b.deleted = 0)
+          inner join maoding_storage b on (find_in_set(b.id,a.path))
+          inner join maoding_storage_file c on (a.detail_id = c.id)
+      where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
           <if test="scope != null">
-              and (b.file_scope like concat('%',#{scope}))
+              and (c.file_scope like concat('%',#{scope}))
           </if>
           <if test="key != null">
-              and (b.file_key like concat('%',#{key}))
+              and (c.file_key like concat('%',#{key}))
           </if>
       group by a.id
+    </select>
+
+    <select id="getDirNodeInfo" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="java.lang.String">
+        select
+            a.id
+            ,a.node_name as name
+            ,a.pid as p_node_id
+            ,a.detail_id
+            ,ifnull(c.full_name,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '')) as full_name
+            ,c.user_id
+            ,c.duty_id
+            ,c.org_id
+            ,c.project_id
+            ,c.task_id
+            ,a.type_id
+            ,d.content as type_name
+            ,unix_timestamp(a.create_time) as create_time_stamp
+            ,date_format(a.create_time,'%Y-%m-%d %T') as create_time_text
+        from
+            maoding_storage a
+            inner join maoding_storage b on (find_in_set(b.id,a.path))
+            inner join maoding_storage_dir c on (a.detail_id = c.id)
+            inner join maoding_const d on (a.type_id = d.value_id)
+        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
+            and (d.classic_id = 14)
+            <if test="_parameter != null">
+                and (a.id = #{_parameter})
+            </if>
+        group by a.id
+    </select>
+
+    <select id="getFileNodeInfo" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="java.lang.String">
+        select
+            c.id
+            ,c.file_name as name
+            ,a.id as node_id
+            ,a.pid as p_node_id
+            ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
+            ,c.file_length
+            ,c.file_checksum
+            ,c.file_version
+            ,c.specialty_id
+            ,d.content as specialty_name
+            ,c.last_modify_address
+            ,c.sync_mode_id
+            ,e.content as sync_mode_name
+            ,c.type_id
+            ,f.content as type_name
+            ,c.locking
+            ,c.creator_duty_id
+            ,unix_timestamp(c.create_time) as create_time_stamp
+            ,date_format(c.create_time,'%Y-%m-%d %T') as create_time_text
+            ,c.last_modify_duty_id
+            ,unix_timestamp(c.last_modify_time) as last_modify_time_stamp
+            ,date_format(c.last_modify_time,'%Y-%m-%d %T') as last_modify_time_text
+        from
+            maoding_storage a
+            inner join maoding_storage b on (find_in_set(b.id,a.path))
+            inner join maoding_storage_file c on (a.detail_id = c.id)
+            inner join maoding_const d on (c.specialty_id = d.value_id)
+            inner join maoding_const e on (c.sync_mode_id = e.value_id)
+            inner join maoding_const f on (c.type_id = f.value_id)
+        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
+            and (d.classic_id = 18) and (e.classic_id = 16) and (f.classic_id = 5)
+            and (a.type_id = 0)
+            <if test="_parameter != null">
+                and (a.id = #{_parameter})
+            </if>
+        group by a.id
+    </select>
+
+    <select id="listSubDir" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
+        select
+            a.id
+            ,a.node_name as name
+            ,a.pid as p_node_id
+            ,a.detail_id
+            ,ifnull(c.full_name,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '')) as full_name
+            ,c.user_id
+            ,c.duty_id
+            ,c.org_id
+            ,c.project_id
+            ,c.task_id
+            ,a.type_id
+            ,d.content as type_name
+            ,unix_timestamp(a.create_time) as create_time_stamp
+            ,date_format(a.create_time,'%Y-%m-%d %T') as create_time_text
+        from
+            maoding_storage a
+            inner join maoding_storage b on (find_in_set(b.id,a.path))
+            inner join maoding_storage_dir c on (a.detail_id = c.id)
+            inner join maoding_const d on (a.type_id = d.value_id)
+        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
+            and (d.classic_id = 14)
+            <if test="nodeId != null">
+                and (a.id != #{nodeId})
+                and find_in_set(#{nodeId},a.path)
+            </if>
+            <if test="userId != null">
+                and (c.last_modify_user_id = #{userId})
+            </if>
+            <if test="dutyId != null">
+                and (c.last_modify_duty_id = #{dutyId})
+            </if>
+            <if test="orgId != null">
+                and (c.org_id = #{orgId})
+            </if>
+            <if test="projectId != null">
+                and (c.project_id = #{projectId})
+            </if>
+            <if test="taskId != null">
+                and (c.task_id = #{taskId})
+            </if>
+            <if test="level > 0">
+                and (33 * (level + 1)) > length(a.path)
+            </if>
+        group by a.id
+    </select>
+
+    <select id="listMainFile" resultType="com.maoding.Storage.zeroc.CooperateFileDTO" parameterType="java.util.List">
+        select
+            c.id
+            ,c.file_name as name
+            ,a.id as node_id
+            ,a.pid as p_node_id
+            ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
+            ,c.file_length
+            ,c.file_checksum
+            ,c.file_version
+            ,c.specialty_id
+            ,d.content as specialty_name
+            ,c.last_modify_address
+            ,c.sync_mode_id
+            ,e.content as sync_mode_name
+            ,c.type_id
+            ,f.content as type_name
+            ,c.locking
+            ,c.creator_duty_id
+            ,unix_timestamp(c.create_time) as create_time_stamp
+            ,date_format(c.create_time,'%Y-%m-%d %T') as create_time_text
+            ,c.last_modify_duty_id
+            ,unix_timestamp(c.last_modify_time) as last_modify_time_stamp
+            ,date_format(c.last_modify_time,'%Y-%m-%d %T') as last_modify_time_text
+        from
+            maoding_storage a
+            inner join maoding_storage b on (find_in_set(b.id,a.path))
+            inner join maoding_storage_file c on (a.detail_id = c.id)
+            inner join maoding_const d on (c.specialty_id = d.value_id)
+            inner join maoding_const e on (c.sync_mode_id = e.value_id)
+            inner join maoding_const f on (c.type_id = f.value_id)
+        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
+            and (d.classic_id = 18) and (e.classic_id = 16) and (f.classic_id = 5)
+            and (a.type_id = 0)
+            <if test="list != null and list.size() > 0">
+                and a.pid in
+                <foreach collection="list" item="dirId" open="(" separator="," close=")">
+                    #{dirId}
+                </foreach>
+            </if>
+        group by a.id
+    </select>
+
+    <select id="listRelatedFile" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="java.lang.String">
+        select
+            d.id
+            ,d.file_name as name
+            ,b.id as node_id
+            ,b.pid as p_node_id
+            ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
+            ,d.file_length
+            ,d.file_checksum
+            ,d.file_version
+            ,d.specialty_id
+            ,e.content as specialty_name
+            ,d.last_modify_address
+            ,d.sync_mode_id
+            ,f.content as sync_mode_name
+            ,d.type_id
+            ,g.content as type_name
+            ,d.locking
+            ,d.creator_duty_id
+            ,unix_timestamp(d.create_time) as create_time_stamp
+            ,date_format(d.create_time,'%Y-%m-%d %T') as create_time_text
+            ,d.last_modify_duty_id
+            ,unix_timestamp(d.last_modify_time) as last_modify_time_stamp
+            ,date_format(d.last_modify_time,'%Y-%m-%d %T') as last_modify_time_text
+        from
+            maoding_storage a
+            inner join maoding_storage b on (a.detail_id = b.id)
+            inner join maoding_storage c on (find_in_set(c.id,b.path))
+            inner join maoding_storage_file d on (b.detail_id = d.id)
+            inner join maoding_const e on (d.specialty_id = e.value_id)
+            inner join maoding_const f on (d.sync_mode_id = f.value_id)
+            inner join maoding_const g on (d.type_id = g.value_id)
+        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0) and (d.deleted = 0)
+            and (e.classic_id = 18) and (f.classic_id = 16) and (g.classic_id = 5)
+            and (a.type_id = 1)
+            <if test="_parameter != null">
+                and a.pid = #{_parameter}
+            </if>
+        group by b.id
+    </select>
+
+    <select id="listVersion" resultType="com.maoding.Storage.zeroc.FileVersionDTO" parameterType="java.lang.String">
+        select
+            c.id
+            ,b.id as node_id
+            ,c.file_version
+            ,c.last_modify_address
+            ,c.locking
+            ,unix_timestamp(c.create_time) as create_time_stamp
+            ,date_format(c.create_time,'%Y-%m-%d %T') as create_time_text
+            ,c.last_modify_duty_id
+            ,unix_timestamp(c.last_modify_time) as last_modify_time_stamp
+            ,date_format(c.last_modify_time,'%Y-%m-%d %T') as last_modify_time_text
+        from
+            maoding_storage a
+            inner join maoding_storage b on (find_in_set(b.id,a.path))
+            inner join maoding_storage_file c on (b.detail_id = c.id)
+        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
+            and ((b.type_id = 0) or (b.type_id = 2))
+            <if test="_parameter != null">
+                and a.id = #{_parameter}
+            </if>
+        group by b.id
     </select>
 
 </mapper>

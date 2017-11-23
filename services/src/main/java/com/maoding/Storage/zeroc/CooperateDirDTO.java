@@ -23,256 +23,16 @@ package com.maoding.Storage.zeroc;
 public class CooperateDirDTO implements java.lang.Cloneable,
                                         java.io.Serializable
 {
-    public String id;
+    public CooperateDirNodeDTO node;
 
-    public String getId()
+    public CooperateDirNodeDTO getNode()
     {
-        return id;
+        return node;
     }
 
-    public void setId(String id)
+    public void setNode(CooperateDirNodeDTO node)
     {
-        this.id = id;
-    }
-
-    public String name;
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public String pNodeId;
-
-    public String getPNodeId()
-    {
-        return pNodeId;
-    }
-
-    public void setPNodeId(String pNodeId)
-    {
-        this.pNodeId = pNodeId;
-    }
-
-    public String detailId;
-
-    public String getDetailId()
-    {
-        return detailId;
-    }
-
-    public void setDetailId(String detailId)
-    {
-        this.detailId = detailId;
-    }
-
-    public String fullName;
-
-    public String getFullName()
-    {
-        return fullName;
-    }
-
-    public void setFullName(String fullName)
-    {
-        this.fullName = fullName;
-    }
-
-    public String userId;
-
-    public String getUserId()
-    {
-        return userId;
-    }
-
-    public void setUserId(String userId)
-    {
-        this.userId = userId;
-    }
-
-    public String dutyId;
-
-    public String getDutyId()
-    {
-        return dutyId;
-    }
-
-    public void setDutyId(String dutyId)
-    {
-        this.dutyId = dutyId;
-    }
-
-    public String userName;
-
-    public String getUserName()
-    {
-        return userName;
-    }
-
-    public void setUserName(String userName)
-    {
-        this.userName = userName;
-    }
-
-    public String aliasName;
-
-    public String getAliasName()
-    {
-        return aliasName;
-    }
-
-    public void setAliasName(String aliasName)
-    {
-        this.aliasName = aliasName;
-    }
-
-    public String orgId;
-
-    public String getOrgId()
-    {
-        return orgId;
-    }
-
-    public void setOrgId(String orgId)
-    {
-        this.orgId = orgId;
-    }
-
-    public String orgName;
-
-    public String getOrgName()
-    {
-        return orgName;
-    }
-
-    public void setOrgName(String orgName)
-    {
-        this.orgName = orgName;
-    }
-
-    public String projectId;
-
-    public String getProjectId()
-    {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId)
-    {
-        this.projectId = projectId;
-    }
-
-    public String projectName;
-
-    public String getProjectName()
-    {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName)
-    {
-        this.projectName = projectName;
-    }
-
-    public String taskId;
-
-    public String getTaskId()
-    {
-        return taskId;
-    }
-
-    public void setTaskId(String taskId)
-    {
-        this.taskId = taskId;
-    }
-
-    public String taskName;
-
-    public String getTaskName()
-    {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName)
-    {
-        this.taskName = taskName;
-    }
-
-    public int typeId;
-
-    public int getTypeId()
-    {
-        return typeId;
-    }
-
-    public void setTypeId(int typeId)
-    {
-        this.typeId = typeId;
-    }
-
-    public String typeName;
-
-    public String getTypeName()
-    {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName)
-    {
-        this.typeName = typeName;
-    }
-
-    public java.util.Date createTime;
-
-    public java.util.Date getCreateTime()
-    {
-        return createTime;
-    }
-
-    public void setCreateTime(java.util.Date createTime)
-    {
-        this.createTime = createTime;
-    }
-
-    public int fileCount;
-
-    public int getFileCount()
-    {
-        return fileCount;
-    }
-
-    public void setFileCount(int fileCount)
-    {
-        this.fileCount = fileCount;
-    }
-
-    public java.util.List<CooperateFileDTO> fileList;
-
-    public java.util.List<CooperateFileDTO> getFileList()
-    {
-        return fileList;
-    }
-
-    public void setFileList(java.util.List<CooperateFileDTO> fileList)
-    {
-        this.fileList = fileList;
-    }
-
-    public int subDirCount;
-
-    public int getSubDirCount()
-    {
-        return subDirCount;
-    }
-
-    public void setSubDirCount(int subDirCount)
-    {
-        this.subDirCount = subDirCount;
+        this.node = node;
     }
 
     public java.util.List<CooperateDirNodeDTO> subDirList;
@@ -287,50 +47,27 @@ public class CooperateDirDTO implements java.lang.Cloneable,
         this.subDirList = subDirList;
     }
 
-    public CooperateDirDTO()
+    public java.util.List<CooperateFileDTO> fileList;
+
+    public java.util.List<CooperateFileDTO> getFileList()
     {
-        this.id = "";
-        this.name = "";
-        this.pNodeId = "";
-        this.detailId = "";
-        this.fullName = "";
-        this.userId = "";
-        this.dutyId = "";
-        this.userName = "";
-        this.aliasName = "";
-        this.orgId = "";
-        this.orgName = "";
-        this.projectId = "";
-        this.projectName = "";
-        this.taskId = "";
-        this.taskName = "";
-        this.typeName = "";
+        return fileList;
     }
 
-    public CooperateDirDTO(String id, String name, String pNodeId, String detailId, String fullName, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName, int typeId, String typeName, java.util.Date createTime, int fileCount, java.util.List<CooperateFileDTO> fileList, int subDirCount, java.util.List<CooperateDirNodeDTO> subDirList)
+    public void setFileList(java.util.List<CooperateFileDTO> fileList)
     {
-        this.id = id;
-        this.name = name;
-        this.pNodeId = pNodeId;
-        this.detailId = detailId;
-        this.fullName = fullName;
-        this.userId = userId;
-        this.dutyId = dutyId;
-        this.userName = userName;
-        this.aliasName = aliasName;
-        this.orgId = orgId;
-        this.orgName = orgName;
-        this.projectId = projectId;
-        this.projectName = projectName;
-        this.taskId = taskId;
-        this.taskName = taskName;
-        this.typeId = typeId;
-        this.typeName = typeName;
-        this.createTime = createTime;
-        this.fileCount = fileCount;
         this.fileList = fileList;
-        this.subDirCount = subDirCount;
+    }
+
+    public CooperateDirDTO()
+    {
+    }
+
+    public CooperateDirDTO(CooperateDirNodeDTO node, java.util.List<CooperateDirNodeDTO> subDirList, java.util.List<CooperateFileDTO> fileList)
+    {
+        this.node = node;
         this.subDirList = subDirList;
+        this.fileList = fileList;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -347,147 +84,23 @@ public class CooperateDirDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
-            if(this.id != r.id)
+            if(this.node != r.node)
             {
-                if(this.id == null || r.id == null || !this.id.equals(r.id))
+                if(this.node == null || r.node == null || !this.node.equals(r.node))
                 {
                     return false;
                 }
-            }
-            if(this.name != r.name)
-            {
-                if(this.name == null || r.name == null || !this.name.equals(r.name))
-                {
-                    return false;
-                }
-            }
-            if(this.pNodeId != r.pNodeId)
-            {
-                if(this.pNodeId == null || r.pNodeId == null || !this.pNodeId.equals(r.pNodeId))
-                {
-                    return false;
-                }
-            }
-            if(this.detailId != r.detailId)
-            {
-                if(this.detailId == null || r.detailId == null || !this.detailId.equals(r.detailId))
-                {
-                    return false;
-                }
-            }
-            if(this.fullName != r.fullName)
-            {
-                if(this.fullName == null || r.fullName == null || !this.fullName.equals(r.fullName))
-                {
-                    return false;
-                }
-            }
-            if(this.userId != r.userId)
-            {
-                if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
-                {
-                    return false;
-                }
-            }
-            if(this.dutyId != r.dutyId)
-            {
-                if(this.dutyId == null || r.dutyId == null || !this.dutyId.equals(r.dutyId))
-                {
-                    return false;
-                }
-            }
-            if(this.userName != r.userName)
-            {
-                if(this.userName == null || r.userName == null || !this.userName.equals(r.userName))
-                {
-                    return false;
-                }
-            }
-            if(this.aliasName != r.aliasName)
-            {
-                if(this.aliasName == null || r.aliasName == null || !this.aliasName.equals(r.aliasName))
-                {
-                    return false;
-                }
-            }
-            if(this.orgId != r.orgId)
-            {
-                if(this.orgId == null || r.orgId == null || !this.orgId.equals(r.orgId))
-                {
-                    return false;
-                }
-            }
-            if(this.orgName != r.orgName)
-            {
-                if(this.orgName == null || r.orgName == null || !this.orgName.equals(r.orgName))
-                {
-                    return false;
-                }
-            }
-            if(this.projectId != r.projectId)
-            {
-                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
-                {
-                    return false;
-                }
-            }
-            if(this.projectName != r.projectName)
-            {
-                if(this.projectName == null || r.projectName == null || !this.projectName.equals(r.projectName))
-                {
-                    return false;
-                }
-            }
-            if(this.taskId != r.taskId)
-            {
-                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
-                {
-                    return false;
-                }
-            }
-            if(this.taskName != r.taskName)
-            {
-                if(this.taskName == null || r.taskName == null || !this.taskName.equals(r.taskName))
-                {
-                    return false;
-                }
-            }
-            if(this.typeId != r.typeId)
-            {
-                return false;
-            }
-            if(this.typeName != r.typeName)
-            {
-                if(this.typeName == null || r.typeName == null || !this.typeName.equals(r.typeName))
-                {
-                    return false;
-                }
-            }
-            if(this.createTime != r.createTime)
-            {
-                if(this.createTime == null || r.createTime == null || !this.createTime.equals(r.createTime))
-                {
-                    return false;
-                }
-            }
-            if(this.fileCount != r.fileCount)
-            {
-                return false;
-            }
-            if(this.fileList != r.fileList)
-            {
-                if(this.fileList == null || r.fileList == null || !this.fileList.equals(r.fileList))
-                {
-                    return false;
-                }
-            }
-            if(this.subDirCount != r.subDirCount)
-            {
-                return false;
             }
             if(this.subDirList != r.subDirList)
             {
                 if(this.subDirList == null || r.subDirList == null || !this.subDirList.equals(r.subDirList))
+                {
+                    return false;
+                }
+            }
+            if(this.fileList != r.fileList)
+            {
+                if(this.fileList == null || r.fileList == null || !this.fileList.equals(r.fileList))
                 {
                     return false;
                 }
@@ -503,28 +116,9 @@ public class CooperateDirDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CooperateDirDTO");
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, detailId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dutyId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, aliasName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTime);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileCount);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileList);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, subDirCount);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, node);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, subDirList);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileList);
         return h_;
     }
 
@@ -544,54 +138,16 @@ public class CooperateDirDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeString(this.id);
-        ostr.writeString(this.name);
-        ostr.writeString(this.pNodeId);
-        ostr.writeString(this.detailId);
-        ostr.writeString(this.fullName);
-        ostr.writeString(this.userId);
-        ostr.writeString(this.dutyId);
-        ostr.writeString(this.userName);
-        ostr.writeString(this.aliasName);
-        ostr.writeString(this.orgId);
-        ostr.writeString(this.orgName);
-        ostr.writeString(this.projectId);
-        ostr.writeString(this.projectName);
-        ostr.writeString(this.taskId);
-        ostr.writeString(this.taskName);
-        ostr.writeInt(this.typeId);
-        ostr.writeString(this.typeName);
-        ostr.writeSerializable(this.createTime);
-        ostr.writeInt(this.fileCount);
+        ostr.writeValue(this.node);
+        CooperateDirListHelper.write(ostr, this.subDirList);
         CooperateFileListHelper.write(ostr, this.fileList);
-        ostr.writeInt(this.subDirCount);
-        CooperateSubDirListHelper.write(ostr, this.subDirList);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.id = istr.readString();
-        this.name = istr.readString();
-        this.pNodeId = istr.readString();
-        this.detailId = istr.readString();
-        this.fullName = istr.readString();
-        this.userId = istr.readString();
-        this.dutyId = istr.readString();
-        this.userName = istr.readString();
-        this.aliasName = istr.readString();
-        this.orgId = istr.readString();
-        this.orgName = istr.readString();
-        this.projectId = istr.readString();
-        this.projectName = istr.readString();
-        this.taskId = istr.readString();
-        this.taskName = istr.readString();
-        this.typeId = istr.readInt();
-        this.typeName = istr.readString();
-        this.createTime = istr.readSerializable(java.util.Date.class);
-        this.fileCount = istr.readInt();
+        istr.readValue(v -> node = v, CooperateDirNodeDTO.class);
+        this.subDirList = CooperateDirListHelper.read(istr);
         this.fileList = CooperateFileListHelper.read(istr);
-        this.subDirCount = istr.readInt();
-        this.subDirList = CooperateSubDirListHelper.read(istr);
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CooperateDirDTO v)
@@ -646,5 +202,5 @@ public class CooperateDirDTO implements java.lang.Cloneable,
 
     private static final CooperateDirDTO _nullMarshalValue = new CooperateDirDTO();
 
-    public static final long serialVersionUID = -231111270L;
+    public static final long serialVersionUID = -160017372L;
 }

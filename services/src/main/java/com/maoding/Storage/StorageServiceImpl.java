@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,9 +72,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             fileEntity = storageFileDao.selectById(fileInfo.getId());
             assert (fileEntity != null);
             //锁定记录
-            if (!fileEntity.getLocking()) {
-                lockFile(fileEntity,current);
-            }
+            lockFile(fileEntity,current);
             //如果树节点缺失增加树节点
             if (StringUtils.isEmpty(fileInfo.getNodeId())){
                 nodeEntity = new StorageEntity();
@@ -93,9 +92,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             assert (fileEntity != null);
             fileInfo.setId(fileEntity.getId());
             //锁定记录
-            if (!fileEntity.getLocking()) {
-                lockFile(fileEntity,current);
-            }
+            lockFile(fileEntity,current);
             //设置fileServer功能调用参数
             fileDTO.setScope(((fileEntity.getFileScope() != null) ? fileEntity.getFileScope() : StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT)));
             fileDTO.setKey(((fileEntity.getFileKey() != null) ? fileEntity.getFileKey() : StringUtils.getTimeStamp(StringUtils.TIME_STAMP_FORMAT) + "_" + fileInfo.getName()));
@@ -103,7 +100,6 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             fileEntity = new StorageFileEntity();
             fileEntity.setFileName(fileInfo.getName());
             fileEntity.setLocking(true);
-            fileEntity.setLastModifyAddress(StringUtils.getRemoteIp(current));
             storageFileDao.insert(fileEntity);
             fileInfo.setId(fileEntity.getId());
             nodeEntity = new StorageEntity();
@@ -156,8 +152,69 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public List<CooperateDirDTO> listCooperationDir(CooperationQueryDTO query, Current current) {
-        return null;
+    public NodeDTO getNodeInfo(CooperationQueryDTO query, Current current) {
+        return getNodeInfo(getCooperateDirInfo(query,current));
+    }
+    private NodeDTO getNodeInfo(CooperateDirDTO dirInfo) {
+        NodeDTO nodeDTO = new NodeDTO();
+        nodeDTO.setNode(BeanUtils.createFrom(dirInfo.getNode(),SimpleNodeDTO.class));
+        List<SimpleNodeDTO> nodeList = new ArrayList<>();
+        if (dirInfo.getSubDirList() != null) {
+            for (CooperateDirNodeDTO dirNodeDTO : dirInfo.getSubDirList()) {
+                SimpleNodeDTO node = BeanUtils.createFrom(dirNodeDTO, SimpleNodeDTO.class);
+                nodeList.add(node);
+            }
+        }
+        if (dirInfo.getFileList() != null){
+            for (CooperateFileDTO fileNodeDTO : dirInfo.getFileList()) {
+                SimpleNodeDTO node = BeanUtils.createFrom(fileNodeDTO, SimpleNodeDTO.class);
+                nodeList.add(node);
+            }
+        }
+        nodeDTO.setSubNodeList(nodeList);
+        return nodeDTO;
+    }
+
+    @Override
+    public CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query, Current current) {
+        assert (query != null);
+        query = BeanUtils.cleanProperties(query);
+
+        CooperateDirDTO dir = new CooperateDirDTO();
+        //获取根目录信息
+        if (query.getNodeId() == null){
+            CooperateDirNodeDTO root = BeanUtils.cleanProperties(new CooperateDirNodeDTO());
+            root.setName("/");
+            root.setAliasName("/");
+            dir.setNode(root);
+        } else {
+            dir.setNode(storageDao.getDirNodeInfo(query.getNodeId()));
+        }
+
+        //获取子目录信息
+        dir.setSubDirList(storageDao.listSubDir(query));
+
+        //获取文件信息
+        List<String> dirIdList = new ArrayList<>();
+        assert (dir.getNode() != null);
+        String rootId = dir.getNode().getId();
+        if (rootId != null){
+            dirIdList.add(rootId);
+        }
+        for (CooperateDirNodeDTO subDir : dir.getSubDirList()){
+            if (subDir.getId() != null){
+                dirIdList.add(subDir.getId());
+            }
+        }
+        dir.setFileList(storageDao.listMainFile(dirIdList));
+
+        //补充文件信息
+        for (CooperateFileDTO file : dir.getFileList()){
+            file.setNode(storageDao.getFileNodeInfo(file.getNodeId()));
+            file.setReferenceFileList(storageDao.listRelatedFile(file.getNodeId()));
+            file.setVersionList(storageDao.listVersion(file.getNodeId()));
+        }
+        return dir;
     }
 
     @Override
@@ -198,10 +255,12 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             if (fileEntity.getDownloading() <= 0) {
                 fileEntity.setFileScope(request.getScope());
                 fileEntity.setFileKey(request.getKey());
+                fileEntity.setLastModifyAddress(StringUtils.getRemoteIp(current));
                 fileEntity.setLocking(false);
             } else {
                 fileEntity.setUploadedScope(request.getScope());
                 fileEntity.setUploadedKey(request.getKey());
+                fileEntity.setLastModifyAddress(StringUtils.getRemoteIp(current));
             }
             storageFileDao.updateById(fileEntity,fileEntity.getId());
         } else { //如果上传失败，删除已上传的文件，并解锁文件
@@ -263,32 +322,35 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public boolean lockFile(String fileId, String address, Current current) {
-        return setFileLock(storageFileDao.selectById(fileId),address);
+        return setFileLock(storageFileDao.selectById(fileId),true,address);
+    }
+    private void lockFile(StorageFileEntity fileEntity, Current current) {
+        if (!fileEntity.getLocking()) {
+            setFileLock(fileEntity, true);
+        }
     }
 
     @Override
     public boolean unlockFile(String fileId, Current current) {
-        return setFileLock(storageFileDao.selectById(fileId),"");
+        return setFileLock(storageFileDao.selectById(fileId),false);
+    }
+    private void unlockFile(StorageFileEntity fileEntity, Current current) {
+        assert (current != null);
+        String address = StringUtils.getRemoteIp(current);
+        setFileLock(fileEntity,false,address);
     }
 
-    private boolean setFileLock(StorageFileEntity fileEntity,String address){
+    private boolean setFileLock(StorageFileEntity fileEntity,Boolean locking,String address){
         assert ((fileEntity != null) && (!StringUtils.isEmpty(fileEntity.getId())));
-        Boolean locking = !StringUtils.isEmpty(address);
         fileEntity.setLocking(locking);
-        if (locking) {
+        if (!StringUtils.isEmpty(address)) {
             fileEntity.setLastModifyAddress(address);
         }
         int i = storageFileDao.updateById(fileEntity,fileEntity.getId());
         return (i > 0);
     }
-
-    private void lockFile(StorageFileEntity fileEntity, Current current) {
-        if (current == null) return;
-        assert ((fileEntity != null) && (!StringUtils.isEmpty(fileEntity.getId())));
-        String address = StringUtils.getRemoteIp(current);
-        if (!StringUtils.isEmpty(address)) {
-            setFileLock(fileEntity, address);
-        }
+    private boolean setFileLock(StorageFileEntity fileEntity, Boolean locking){
+        return setFileLock(fileEntity, locking, null);
     }
 
     @Override
