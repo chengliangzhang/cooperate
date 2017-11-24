@@ -20,7 +20,7 @@ module zeroc {
         string lastModifyAddress; //最后上传的地址
         short syncModeId; //同步模式，0-手动同步，1-自动更新
         string syncModeName; //同步模式文字说明
-        int typeId; //文件类型
+        short typeId; //文件类型
         string typeName; //文件类型文字说明
         bool locking; //是否锁定，false-不锁定，true-锁定
         string localFile; //本地文件路径，包含文件名
@@ -67,7 +67,7 @@ module zeroc {
         string lastModifyAddress; //最后上传的地址
         short syncModeId; //同步模式，0-手动同步，1-自动更新
         string syncModeName; //同步模式文字说明
-        int typeId; //文件类型
+        short typeId; //文件类型
         string typeName; //文件类型文字说明
         bool locking; //是否锁定，false-不锁定，true-锁定
         string localFile; //本地文件路径，包含文件名
@@ -103,7 +103,7 @@ module zeroc {
         string projectName; //所属项目名字
         string taskId; //所属任务id
         string taskName; //所属任务名字
-        int typeId; //目录特殊类别编号
+        short typeId; //目录特殊类别编号
         string typeName; //目录类别名字
         long createTimeStamp; //目录建立时间
         string createTimeText; //目录建立时间文字
@@ -118,11 +118,24 @@ module zeroc {
     };
 
     ["java:getset"]
+    struct CreateNodeRequestDTO { //创建节点时的参数
+        string pNodeId; //父节点编号
+        string fullName; //创建节点相对于父节点的全路径
+        string userId; //创建者的userId
+        string dutyId; //创建者的dutyId
+        string orgId; //创建组织的orgId
+        string projectId; //项目Id
+        string taskId; //任务Id
+        short typeId; //目标节点类型Id
+        short dirTypeId; //如果需要创建中间目录，中间目录的节点类型Id
+    };
+
+    ["java:getset"]
     struct SimpleNodeDTO { //节点信息简化版（统一目录和文件信息）
         string id; //节点编号（树节点编号）
         string name; //节点名称（树节点名称或文件名称）
         string pNodeId; //父节点编号
-        int typeId; //节点类别编号
+        short typeId; //节点类别编号
         string typeName; //节点类别名字
         long createTimeStamp; //节点建立时间
         string createTimeText; //节点建立时间文字
@@ -139,6 +152,8 @@ module zeroc {
     ["java:getset"]
     struct CooperationQueryDTO {
         string nodeId; //协同树节点id
+        string pNodeId; //协同父节点id
+        string nodeName; //协同节点名称
         string userId; //协同目录所属用户id
         string dutyId; //协同目录所属用户的职责id
         string orgId; //所属组织id
@@ -162,19 +177,20 @@ module zeroc {
         void finishDownload(FileRequestDTO request,bool succeeded); //客户端通知结束或取消下载文件-?
         bool replaceFile(CooperateFileDTO fileInfo,FileDTO fileDTO); //替换实体文件-?
         bool deleteFile(CooperateFileDTO fileInfo); //删除文件-?
-        bool createDirectory(string path); //创建目录-?
-        bool deleteDirectory(string path,bool force); //删除目录-?
+        string createDirectory(CreateNodeRequestDTO request); //创建目录,返回目录树节点ID
+        bool deleteDirectory(string nodeId,bool force); //删除目录
+        string createFile(CreateNodeRequestDTO request); //创建文件，返回文件树节点ID
         CooperateFileDTO duplicateFile(CooperateFileDTO fileInfo,string path); //复制文件-?
         CooperateFileDTO createFileLink(CooperateFileDTO fileInfo, string path); //创建文件链接-?
         bool duplicateDirectory(string path,string parent); //复制目录-?
-        CooperateFileList listFileLink(FileDTO fileDTO); //查找文件记录-?
+        CooperateFileList listFileLink(FileDTO fileDTO); //查找文件记录
         bool restoreFile(CooperateFileDTO fileInfo); //恢复删除的文件-?
         bool restoreDirectory(string path); //恢复删除的目录-?
         bool lockFile(string fileId,string address); //锁定文件
         bool unlockFile(string fileId); //解锁文件
         bool isFileLocking(string fileId); //获取文件锁定状态
         long getFree(CooperationQueryDTO query); //获取剩余空间-?
-        CooperateFileDTO getFileInfo(string nodeId); //获取文件信息-?
+        CooperateFileDTO getFileInfo(string nodeId); //获取文件信息
         int getLinkCount(FileDTO fileDTO); //获取文件使用数量-?
         CooperateFileDTO createVersion(CooperateFileDTO fileInfo,string version); //添加文件版本-?
     };

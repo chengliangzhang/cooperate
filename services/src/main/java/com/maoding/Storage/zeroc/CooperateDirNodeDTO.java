@@ -43,7 +43,7 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         this.createTimeText = "";
     }
 
-    public CooperateDirNodeDTO(String id, String name, String pNodeId, String detailId, String fullName, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName, int typeId, String typeName, long createTimeStamp, String createTimeText)
+    public CooperateDirNodeDTO(String id, String name, String pNodeId, String detailId, String fullName, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName, short typeId, String typeName, long createTimeStamp, String createTimeText)
     {
         this.id = id;
         this.name = name;
@@ -246,14 +246,14 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         this.taskName = taskName;
     }
 
-    public int typeId;
+    public short typeId;
 
-    public int getTypeId()
+    public short getTypeId()
     {
         return typeId;
     }
 
-    public void setTypeId(int typeId)
+    public void setTypeId(short typeId)
     {
         this.typeId = typeId;
     }
@@ -331,7 +331,7 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         ostr_.writeString(projectName);
         ostr_.writeString(taskId);
         ostr_.writeString(taskName);
-        ostr_.writeInt(typeId);
+        ostr_.writeShort(typeId);
         ostr_.writeString(typeName);
         ostr_.writeLong(createTimeStamp);
         ostr_.writeString(createTimeText);
@@ -357,7 +357,7 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         projectName = istr_.readString();
         taskId = istr_.readString();
         taskName = istr_.readString();
-        typeId = istr_.readInt();
+        typeId = istr_.readShort();
         typeName = istr_.readString();
         createTimeStamp = istr_.readLong();
         createTimeText = istr_.readString();

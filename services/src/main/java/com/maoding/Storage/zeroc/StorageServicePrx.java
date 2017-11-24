@@ -420,31 +420,65 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default boolean createDirectory(String path)
+    default String createDirectory(CreateNodeRequestDTO request)
     {
-        return createDirectory(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return createDirectory(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default boolean createDirectory(String path, java.util.Map<String, String> context)
+    default String createDirectory(CreateNodeRequestDTO request, java.util.Map<String, String> context)
     {
-        return _iceI_createDirectoryAsync(path, context, true).waitForResponse();
+        return _iceI_createDirectoryAsync(request, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> createDirectoryAsync(String path)
+    default java.util.concurrent.CompletableFuture<java.lang.String> createDirectoryAsync(CreateNodeRequestDTO request)
     {
-        return _iceI_createDirectoryAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_createDirectoryAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> createDirectoryAsync(String path, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.lang.String> createDirectoryAsync(CreateNodeRequestDTO request, java.util.Map<String, String> context)
     {
-        return _iceI_createDirectoryAsync(path, context, false);
+        return _iceI_createDirectoryAsync(request, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_createDirectoryAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_createDirectoryAsync(CreateNodeRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createDirectory", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createDirectory", null, sync, null);
         f.invoke(true, context, null, ostr -> {
-                     ostr.writeString(iceP_path);
+                     CreateNodeRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     String ret;
+                     ret = istr.readString();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean deleteDirectory(String nodeId, boolean force)
+    {
+        return deleteDirectory(nodeId, force, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean deleteDirectory(String nodeId, boolean force, java.util.Map<String, String> context)
+    {
+        return _iceI_deleteDirectoryAsync(nodeId, force, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> deleteDirectoryAsync(String nodeId, boolean force)
+    {
+        return _iceI_deleteDirectoryAsync(nodeId, force, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> deleteDirectoryAsync(String nodeId, boolean force, java.util.Map<String, String> context)
+    {
+        return _iceI_deleteDirectoryAsync(nodeId, force, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_deleteDirectoryAsync(String iceP_nodeId, boolean iceP_force, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "deleteDirectory", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_nodeId);
+                     ostr.writeBool(iceP_force);
                  }, istr -> {
                      boolean ret;
                      ret = istr.readBool();
@@ -453,35 +487,34 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default boolean deleteDirectory(String path, boolean force)
+    default String createFile(CreateNodeRequestDTO request)
     {
-        return deleteDirectory(path, force, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return createFile(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default boolean deleteDirectory(String path, boolean force, java.util.Map<String, String> context)
+    default String createFile(CreateNodeRequestDTO request, java.util.Map<String, String> context)
     {
-        return _iceI_deleteDirectoryAsync(path, force, context, true).waitForResponse();
+        return _iceI_createFileAsync(request, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> deleteDirectoryAsync(String path, boolean force)
+    default java.util.concurrent.CompletableFuture<java.lang.String> createFileAsync(CreateNodeRequestDTO request)
     {
-        return _iceI_deleteDirectoryAsync(path, force, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_createFileAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> deleteDirectoryAsync(String path, boolean force, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.lang.String> createFileAsync(CreateNodeRequestDTO request, java.util.Map<String, String> context)
     {
-        return _iceI_deleteDirectoryAsync(path, force, context, false);
+        return _iceI_createFileAsync(request, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_deleteDirectoryAsync(String iceP_path, boolean iceP_force, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_createFileAsync(CreateNodeRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "deleteDirectory", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createFile", null, sync, null);
         f.invoke(true, context, null, ostr -> {
-                     ostr.writeString(iceP_path);
-                     ostr.writeBool(iceP_force);
+                     CreateNodeRequestDTO.ice_write(ostr, iceP_request);
                  }, istr -> {
-                     boolean ret;
-                     ret = istr.readBool();
+                     String ret;
+                     ret = istr.readString();
                      return ret;
                  });
         return f;

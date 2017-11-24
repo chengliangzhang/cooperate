@@ -20,21 +20,9 @@
 
 package com.maoding.Storage.zeroc;
 
-public class CooperationQueryDTO implements java.lang.Cloneable,
-                                            java.io.Serializable
+public class CreateNodeRequestDTO implements java.lang.Cloneable,
+                                             java.io.Serializable
 {
-    public String nodeId;
-
-    public String getNodeId()
-    {
-        return nodeId;
-    }
-
-    public void setNodeId(String nodeId)
-    {
-        this.nodeId = nodeId;
-    }
-
     public String pNodeId;
 
     public String getPNodeId()
@@ -47,16 +35,16 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         this.pNodeId = pNodeId;
     }
 
-    public String nodeName;
+    public String fullName;
 
-    public String getNodeName()
+    public String getFullName()
     {
-        return nodeName;
+        return fullName;
     }
 
-    public void setNodeName(String nodeName)
+    public void setFullName(String fullName)
     {
-        this.nodeName = nodeName;
+        this.fullName = fullName;
     }
 
     public String userId;
@@ -119,69 +107,52 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         this.taskId = taskId;
     }
 
-    public String scope;
+    public short typeId;
 
-    public String getScope()
+    public short getTypeId()
     {
-        return scope;
+        return typeId;
     }
 
-    public void setScope(String scope)
+    public void setTypeId(short typeId)
     {
-        this.scope = scope;
+        this.typeId = typeId;
     }
 
-    public String key;
+    public short dirTypeId;
 
-    public String getKey()
+    public short getDirTypeId()
     {
-        return key;
+        return dirTypeId;
     }
 
-    public void setKey(String key)
+    public void setDirTypeId(short dirTypeId)
     {
-        this.key = key;
+        this.dirTypeId = dirTypeId;
     }
 
-    public int level;
-
-    public int getLevel()
+    public CreateNodeRequestDTO()
     {
-        return level;
-    }
-
-    public void setLevel(int level)
-    {
-        this.level = level;
-    }
-
-    public CooperationQueryDTO()
-    {
-        this.nodeId = "";
         this.pNodeId = "";
-        this.nodeName = "";
+        this.fullName = "";
         this.userId = "";
         this.dutyId = "";
         this.orgId = "";
         this.projectId = "";
         this.taskId = "";
-        this.scope = "";
-        this.key = "";
     }
 
-    public CooperationQueryDTO(String nodeId, String pNodeId, String nodeName, String userId, String dutyId, String orgId, String projectId, String taskId, String scope, String key, int level)
+    public CreateNodeRequestDTO(String pNodeId, String fullName, String userId, String dutyId, String orgId, String projectId, String taskId, short typeId, short dirTypeId)
     {
-        this.nodeId = nodeId;
         this.pNodeId = pNodeId;
-        this.nodeName = nodeName;
+        this.fullName = fullName;
         this.userId = userId;
         this.dutyId = dutyId;
         this.orgId = orgId;
         this.projectId = projectId;
         this.taskId = taskId;
-        this.scope = scope;
-        this.key = key;
-        this.level = level;
+        this.typeId = typeId;
+        this.dirTypeId = dirTypeId;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -190,21 +161,14 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         {
             return true;
         }
-        CooperationQueryDTO r = null;
-        if(rhs instanceof CooperationQueryDTO)
+        CreateNodeRequestDTO r = null;
+        if(rhs instanceof CreateNodeRequestDTO)
         {
-            r = (CooperationQueryDTO)rhs;
+            r = (CreateNodeRequestDTO)rhs;
         }
 
         if(r != null)
         {
-            if(this.nodeId != r.nodeId)
-            {
-                if(this.nodeId == null || r.nodeId == null || !this.nodeId.equals(r.nodeId))
-                {
-                    return false;
-                }
-            }
             if(this.pNodeId != r.pNodeId)
             {
                 if(this.pNodeId == null || r.pNodeId == null || !this.pNodeId.equals(r.pNodeId))
@@ -212,9 +176,9 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.nodeName != r.nodeName)
+            if(this.fullName != r.fullName)
             {
-                if(this.nodeName == null || r.nodeName == null || !this.nodeName.equals(r.nodeName))
+                if(this.fullName == null || r.fullName == null || !this.fullName.equals(r.fullName))
                 {
                     return false;
                 }
@@ -254,21 +218,11 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.scope != r.scope)
+            if(this.typeId != r.typeId)
             {
-                if(this.scope == null || r.scope == null || !this.scope.equals(r.scope))
-                {
-                    return false;
-                }
+                return false;
             }
-            if(this.key != r.key)
-            {
-                if(this.key == null || r.key == null || !this.key.equals(r.key))
-                {
-                    return false;
-                }
-            }
-            if(this.level != r.level)
+            if(this.dirTypeId != r.dirTypeId)
             {
                 return false;
             }
@@ -282,27 +236,25 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
     public int hashCode()
     {
         int h_ = 5381;
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CooperationQueryDTO");
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, nodeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CreateNodeRequestDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, nodeName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dutyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, scope);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, key);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, level);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dirTypeId);
         return h_;
     }
 
-    public CooperationQueryDTO clone()
+    public CreateNodeRequestDTO clone()
     {
-        CooperationQueryDTO c = null;
+        CreateNodeRequestDTO c = null;
         try
         {
-            c = (CooperationQueryDTO)super.clone();
+            c = (CreateNodeRequestDTO)super.clone();
         }
         catch(CloneNotSupportedException ex)
         {
@@ -313,35 +265,31 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeString(this.nodeId);
         ostr.writeString(this.pNodeId);
-        ostr.writeString(this.nodeName);
+        ostr.writeString(this.fullName);
         ostr.writeString(this.userId);
         ostr.writeString(this.dutyId);
         ostr.writeString(this.orgId);
         ostr.writeString(this.projectId);
         ostr.writeString(this.taskId);
-        ostr.writeString(this.scope);
-        ostr.writeString(this.key);
-        ostr.writeInt(this.level);
+        ostr.writeShort(this.typeId);
+        ostr.writeShort(this.dirTypeId);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.nodeId = istr.readString();
         this.pNodeId = istr.readString();
-        this.nodeName = istr.readString();
+        this.fullName = istr.readString();
         this.userId = istr.readString();
         this.dutyId = istr.readString();
         this.orgId = istr.readString();
         this.projectId = istr.readString();
         this.taskId = istr.readString();
-        this.scope = istr.readString();
-        this.key = istr.readString();
-        this.level = istr.readInt();
+        this.typeId = istr.readShort();
+        this.dirTypeId = istr.readShort();
     }
 
-    static public void ice_write(com.zeroc.Ice.OutputStream ostr, CooperationQueryDTO v)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, CreateNodeRequestDTO v)
     {
         if(v == null)
         {
@@ -353,14 +301,14 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         }
     }
 
-    static public CooperationQueryDTO ice_read(com.zeroc.Ice.InputStream istr)
+    static public CreateNodeRequestDTO ice_read(com.zeroc.Ice.InputStream istr)
     {
-        CooperationQueryDTO v = new CooperationQueryDTO();
+        CreateNodeRequestDTO v = new CreateNodeRequestDTO();
         v.ice_readMembers(istr);
         return v;
     }
 
-    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<CooperationQueryDTO> v)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<CreateNodeRequestDTO> v)
     {
         if(v != null && v.isPresent())
         {
@@ -368,7 +316,7 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         }
     }
 
-    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, CooperationQueryDTO v)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, CreateNodeRequestDTO v)
     {
         if(ostr.writeOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
@@ -378,12 +326,12 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         }
     }
 
-    static public java.util.Optional<CooperationQueryDTO> ice_read(com.zeroc.Ice.InputStream istr, int tag)
+    static public java.util.Optional<CreateNodeRequestDTO> ice_read(com.zeroc.Ice.InputStream istr, int tag)
     {
         if(istr.readOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
             istr.skip(4);
-            return java.util.Optional.of(CooperationQueryDTO.ice_read(istr));
+            return java.util.Optional.of(CreateNodeRequestDTO.ice_read(istr));
         }
         else
         {
@@ -391,7 +339,7 @@ public class CooperationQueryDTO implements java.lang.Cloneable,
         }
     }
 
-    private static final CooperationQueryDTO _nullMarshalValue = new CooperationQueryDTO();
+    private static final CreateNodeRequestDTO _nullMarshalValue = new CreateNodeRequestDTO();
 
-    public static final long serialVersionUID = -1876730753L;
+    public static final long serialVersionUID = -162789293L;
 }

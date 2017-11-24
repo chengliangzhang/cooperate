@@ -8,6 +8,7 @@ import com.maoding.FileServer.zeroc.FileService;
 import com.maoding.Storage.Dao.StorageDao;
 import com.maoding.Storage.Dao.StorageDirDao;
 import com.maoding.Storage.Dao.StorageFileDao;
+import com.maoding.Storage.Entity.StorageDirEntity;
 import com.maoding.Storage.Entity.StorageEntity;
 import com.maoding.Storage.Entity.StorageFileEntity;
 import com.maoding.Storage.zeroc.*;
@@ -188,32 +189,38 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             root.setAliasName("/");
             dir.setNode(root);
         } else {
-            dir.setNode(storageDao.getDirNodeInfo(query.getNodeId()));
+            dir.setNode(storageDao.getDirNodeInfoByNodeId(query.getNodeId()));
         }
 
-        //获取子目录信息
-        dir.setSubDirList(storageDao.listSubDir(query));
-
-        //获取文件信息
+        //获取子目录信息并填充子目录ID到查找目录列表
         List<String> dirIdList = new ArrayList<>();
+        List<CooperateDirNodeDTO> subDirList = storageDao.listSubDir(query);
+        if ((subDirList != null) && (!subDirList.isEmpty())) {
+            dir.setSubDirList(subDirList);
+            for (CooperateDirNodeDTO subDir : dir.getSubDirList()){
+                if (subDir.getId() != null){
+                    dirIdList.add(subDir.getId());
+                }
+            }
+        }
+
+        //添加根目录ID到查找目录列表并获取文件信息
         assert (dir.getNode() != null);
         String rootId = dir.getNode().getId();
         if (rootId != null){
             dirIdList.add(rootId);
         }
-        for (CooperateDirNodeDTO subDir : dir.getSubDirList()){
-            if (subDir.getId() != null){
-                dirIdList.add(subDir.getId());
+        List<CooperateFileDTO> mainFileList = storageDao.listMainFile(dirIdList);
+        if ((mainFileList != null) && (!mainFileList.isEmpty())) {
+            dir.setFileList(mainFileList);
+            //补充文件信息
+            for (CooperateFileDTO file : dir.getFileList()){
+                file.setNode(storageDao.getFileNodeInfoByNodeId(file.getNodeId()));
+                file.setReferenceFileList(storageDao.listRelatedFile(file.getNodeId()));
+                file.setVersionList(storageDao.listVersion(file.getNodeId()));
             }
         }
-        dir.setFileList(storageDao.listMainFile(dirIdList));
 
-        //补充文件信息
-        for (CooperateFileDTO file : dir.getFileList()){
-            file.setNode(storageDao.getFileNodeInfo(file.getNodeId()));
-            file.setReferenceFileList(storageDao.listRelatedFile(file.getNodeId()));
-            file.setVersionList(storageDao.listVersion(file.getNodeId()));
-        }
         return dir;
     }
 
@@ -286,13 +293,119 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public boolean createDirectory(String path, Current current) {
-        return false;
+    public String createFile(CreateNodeRequestDTO request, Current current) {
+        assert (request != null);
+        assert (request.getFullName() != null);
+
+        StorageFileEntity fileEntity = BeanUtils.createFrom(request,StorageFileEntity.class);
+        fileEntity.reset();
+        fileEntity.setFileName(StringUtils.getFileName(request.getFullName()));
+        fileEntity.setLastModifyAddress(StringUtils.getRemoteIp(current));
+        fileEntity.setTypeId(request.getTypeId());
+        storageFileDao.insert(fileEntity);
+        String pNodeId = request.getPNodeId();
+        StorageEntity pNodeEntity = null;
+        if (!StringUtils.isEmpty(request.getPNodeId())) pNodeEntity = storageDao.selectById(pNodeId);
+        String pathName = StringUtils.getDirName(request.getFullName());
+        if (!StringUtils.isEmpty(pathName)) {
+            if (pNodeEntity == null) pNodeEntity = new StorageEntity();
+            request.setFullName(pathName);
+            request.setTypeId(request.getDirTypeId());
+            pNodeId = createDirectory(request, pNodeEntity, current);
+        }
+        StorageEntity nodeEntity = new StorageEntity();
+        nodeEntity.setPid(pNodeId);
+        nodeEntity.setDetailId(fileEntity.getId());
+        nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        nodeEntity.setPath((pNodeEntity != null) ? (pNodeEntity.getPath() + "," + nodeEntity.getId()) : nodeEntity.getId());
+        storageDao.insert(nodeEntity);
+        return nodeEntity.getId();
+    }
+
+    private String createDirectory(CreateNodeRequestDTO request, StorageEntity nodeEntity, Current current) {
+        assert (request != null);
+        assert (request.getFullName() != null);
+
+        String[] pathNodeArray = request.getFullName().replaceAll("\\\\","/").split("/");
+        String pNodeId = request.getPNodeId();
+        StringBuilder fullName = new StringBuilder();
+        StringBuilder pathField = new StringBuilder();
+        if (pNodeId != null) {
+            StorageEntity node = storageDao.selectById(pNodeId);
+            pathField.append(node.getPath());
+            StorageDirEntity dir = storageDirDao.selectById(node.getDetailId());
+            fullName.append(dir.getFullName());
+        }
+
+        CooperationQueryDTO query = BeanUtils.cleanProperties(new CooperationQueryDTO());
+        for (int i=0; i<pathNodeArray.length; i++){
+            query.setNodeName(pathNodeArray[i]);
+            query.setPNodeId(pNodeId);
+            CooperateDirNodeDTO dirNode = storageDao.getDirNodeInfo(query);
+            if (dirNode == null) {
+                for (int j=i; j<pathNodeArray.length; j++) {
+                    if (fullName.length() > 0) fullName.append("/");
+                    fullName.append(pathNodeArray[j]);
+                    StorageDirEntity dir = BeanUtils.createFrom(request,StorageDirEntity.class);
+                    dir.reset();
+                    if (j < (pathNodeArray.length - 1)){
+                        dir.setTypeId(request.getDirTypeId());
+                    }
+                    dir.setFullName(fullName.toString());
+                    storageDirDao.insert(dir);
+                    if (nodeEntity == null) nodeEntity = new StorageEntity();
+                    nodeEntity.reset();
+                    nodeEntity.setDetailId(dir.getId());
+                    nodeEntity.setNodeName(pathNodeArray[j]);
+                    nodeEntity.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+                    nodeEntity.setPid(pNodeId);
+                    if (pathField.length() > 0) pathField.append(",");
+                    pathField.append(nodeEntity.getId());
+                    nodeEntity.setPath(pathField.toString());
+                    storageDao.insert(nodeEntity);
+                    pNodeId = nodeEntity.getId();
+                }
+                break;
+            } else {
+                pNodeId = dirNode.getId();
+                if (fullName.length() > 0) fullName.append("/");
+                fullName.append(pathNodeArray[i]);
+                if (pathField.length() > 0) pathField.append(",");
+                pathField.append(dirNode.getId());
+            }
+        }
+        return pNodeId;
+    }
+    @Override
+    public String createDirectory(CreateNodeRequestDTO request, Current current) {
+        return createDirectory(request,null,current);
     }
 
     @Override
-    public boolean deleteDirectory(String path, boolean force, Current current) {
-        return false;
+    public boolean deleteDirectory(String nodeId, boolean force, Current current) {
+        CooperationQueryDTO query = BeanUtils.cleanProperties(new CooperationQueryDTO());
+        query.setNodeId(nodeId);
+        CooperateDirDTO dirInfo = getCooperateDirInfo(query,current);
+        List<String> idList = new ArrayList<>();
+        if ((dirInfo.getSubDirList() != null) && (!dirInfo.getSubDirList().isEmpty())){
+            if (!force) return false;
+            for (CooperateDirNodeDTO dirNode : dirInfo.getSubDirList()){
+                if (dirNode.getId() != null){
+                    idList.add(dirNode.getId());
+                }
+            }
+        }
+        if ((dirInfo.getFileList() != null) && (!dirInfo.getFileList().isEmpty())){
+            if (!force) return false;
+            for (CooperateFileDTO fileNode : dirInfo.getFileList()){
+                if (fileNode.getNodeId() != null){
+                    idList.add(fileNode.getNodeId());
+                }
+            }
+        }
+        idList.add(nodeId);
+        int i = storageDao.fakeDeleteById(idList);
+        return (i > 0);
     }
 
     @Override
@@ -368,8 +481,13 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public CooperateFileDTO getFileInfo(String fileId, Current current) {
-        return null;
+    public CooperateFileDTO getFileInfo(String nodeId, Current current) {
+        CooperateFileDTO fileInfo = new CooperateFileDTO();
+        fileInfo.setNode(storageDao.getFileNodeInfoByNodeId(fileInfo.getNodeId()));
+        fileInfo.setReferenceFileList(storageDao.listRelatedFile(fileInfo.getNodeId()));
+        fileInfo.setVersionList(storageDao.listVersion(fileInfo.getNodeId()));
+        BeanUtils.copyProperties(fileInfo.getNode(),fileInfo);
+        return fileInfo;
     }
 
     @Override

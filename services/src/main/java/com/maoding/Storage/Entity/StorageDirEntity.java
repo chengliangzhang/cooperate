@@ -3,6 +3,7 @@ package com.maoding.Storage.Entity;
 import com.maoding.Base.BaseEntity;
 
 import javax.persistence.Column;
+import javax.persistence.Table;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -10,6 +11,7 @@ import javax.persistence.Column;
  * 日    期 : 2017/11/20 11:33
  * 描    述 :
  */
+@Table(name = "maoding_storage_dir")
 public class StorageDirEntity extends BaseEntity {
     /** 目录名 */
     @Column
@@ -31,7 +33,7 @@ public class StorageDirEntity extends BaseEntity {
     private String taskId;
     /** 目录类别，如：系统默认目录、用户添加目录 */
     @Column
-    private Integer typeId;
+    private Short typeId;
 
     public String getFullName() {
         return fullName;
@@ -81,11 +83,11 @@ public class StorageDirEntity extends BaseEntity {
         this.taskId = taskId;
     }
 
-    public Integer getTypeId() {
+    public Short getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(Integer typeId) {
+    public void setTypeId(Short typeId) {
         this.typeId = typeId;
     }
 }

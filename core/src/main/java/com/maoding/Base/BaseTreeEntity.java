@@ -23,7 +23,7 @@ public class BaseTreeEntity extends BaseEntity{
 
     /** 对应节点实体的类型 */
     @Column
-    private Integer typeId;
+    private Short typeId;
 
     /** 节点名称 */
     @Column
@@ -53,11 +53,11 @@ public class BaseTreeEntity extends BaseEntity{
         this.detailId = detailId;
     }
 
-    public Integer getTypeId() {
+    public Short getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(Integer typeId) {
+    public void setTypeId(Short typeId) {
         this.typeId = typeId;
     }
 

@@ -4,6 +4,10 @@ import com.maoding.Mybatis.CustomMapper;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.MySqlMapper;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * 深圳市卯丁技术有限公司
  * 作    者 : 张成亮
@@ -22,5 +26,17 @@ public interface BaseDao<T extends BaseEntity> extends Mapper<T>, MySqlMapper<T>
 
     default int updateById(T entity){
         return updateByPrimaryKeySelective(entity);
+    }
+
+    default int fakeDeleteById(String id, String lastModifyUserId, Date lastModifyTime){
+        List<String> idList = new ArrayList<>();
+        idList.add(id);
+        return fakeDeleteById(idList,lastModifyUserId,lastModifyTime);
+    }
+    default int fakeDeleteById(String id){
+        return fakeDeleteById(id,null,null);
+    }
+    default int fakeDeleteById(List<String> idList){
+        return fakeDeleteById(idList,null,null);
     }
 }

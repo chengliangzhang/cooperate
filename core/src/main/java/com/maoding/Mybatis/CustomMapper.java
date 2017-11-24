@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -22,5 +23,5 @@ public interface CustomMapper<T> {
 
     /** 按id删除 */
     @UpdateProvider(type = CustomProvider.class, method = "dynamicSQL")
-    int fakeDeleteById(@Param("id") String id, @Param("lastModifyUserId") String lastModifyUserId, @Param("lastModifyTime") Date lastModifyTime);
+    int fakeDeleteById(@Param("idList") List<String> idList, @Param("lastModifyUserId") String lastModifyUserId, @Param("lastModifyTime") Date lastModifyTime);
 }

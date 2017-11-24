@@ -59,14 +59,14 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.pNodeId = pNodeId;
     }
 
-    public int typeId;
+    public short typeId;
 
-    public int getTypeId()
+    public short getTypeId()
     {
         return typeId;
     }
 
-    public void setTypeId(int typeId)
+    public void setTypeId(short typeId)
     {
         this.typeId = typeId;
     }
@@ -128,7 +128,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.createTimeText = "";
     }
 
-    public SimpleNodeDTO(String id, String name, String pNodeId, int typeId, String typeName, long createTimeStamp, String createTimeText, long fileLength)
+    public SimpleNodeDTO(String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long fileLength)
     {
         this.id = id;
         this.name = name;
@@ -242,7 +242,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.id);
         ostr.writeString(this.name);
         ostr.writeString(this.pNodeId);
-        ostr.writeInt(this.typeId);
+        ostr.writeShort(this.typeId);
         ostr.writeString(this.typeName);
         ostr.writeLong(this.createTimeStamp);
         ostr.writeString(this.createTimeText);
@@ -254,7 +254,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.id = istr.readString();
         this.name = istr.readString();
         this.pNodeId = istr.readString();
-        this.typeId = istr.readInt();
+        this.typeId = istr.readShort();
         this.typeName = istr.readString();
         this.createTimeStamp = istr.readLong();
         this.createTimeText = istr.readString();

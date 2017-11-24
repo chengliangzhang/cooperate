@@ -1,6 +1,7 @@
 package com.maoding.Storage;
 
 import com.maoding.Const.FileServerConst;
+import com.maoding.Const.StorageConst;
 import com.maoding.FileServer.FileServiceImpl;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Storage.zeroc.*;
@@ -54,6 +55,40 @@ public class StorageServiceImplTest {
     private FileServicePrx fileServicePrx = FileServiceImpl.getInstance();
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
+
+    /** 创建文件 */
+    @Test
+    public void testCreateFile() throws Exception {
+        CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
+        request.setFullName("r/s/t");
+        request.setTypeId((short)0);
+        request.setDirTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        String nodeId = storageService.createFile(request,null);
+        Assert.assertNotNull(nodeId);
+    }
+
+    /** 创建目录 */
+    @Test
+    public void testCreateDirectory() throws Exception {
+        CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
+        request.setFullName("a/b/c");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_SYS);
+        String nodeId = storageService.createDirectory(request,null);
+        request.setPNodeId(nodeId);
+        request.setFullName("x/y/z");
+        storageService.createDirectory(request,null);
+    }
+
+    /** 删除目录 */
+    @Test
+    public void testDeleteDirectory() throws Exception {
+        CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
+        request.setFullName("m/n");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        String nodeId = storageService.createDirectory(request,null);
+        boolean b = storageService.deleteDirectory(nodeId,true,null);
+        Assert.assertTrue(b);
+    }
 
     /** 获取目录文件列表 */
     @Test

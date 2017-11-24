@@ -191,14 +191,14 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.syncModeName = syncModeName;
     }
 
-    public int typeId;
+    public short typeId;
 
-    public int getTypeId()
+    public short getTypeId()
     {
         return typeId;
     }
 
-    public void setTypeId(int typeId)
+    public void setTypeId(short typeId)
     {
         this.typeId = typeId;
     }
@@ -387,7 +387,7 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = "";
     }
 
-    public CooperateFileDTO(FileNodeDTO node, String id, String name, String nodeId, String pNodeId, String pathName, long fileLength, String fileChecksum, String fileVersion, String specialtyId, String specialtyName, String lastModifyAddress, short syncModeId, String syncModeName, int typeId, String typeName, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, long createTimeStamp, String createTimeText, String lastModifyDutyId, String lastModifyDutyName, long lastModifyTimeStamp, String lastModifyTimeText, java.util.List<FileNodeDTO> referenceFileList, java.util.List<FileVersionDTO> versionList)
+    public CooperateFileDTO(FileNodeDTO node, String id, String name, String nodeId, String pNodeId, String pathName, long fileLength, String fileChecksum, String fileVersion, String specialtyId, String specialtyName, String lastModifyAddress, short syncModeId, String syncModeName, short typeId, String typeName, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, long createTimeStamp, String createTimeText, String lastModifyDutyId, String lastModifyDutyName, long lastModifyTimeStamp, String lastModifyTimeText, java.util.List<FileNodeDTO> referenceFileList, java.util.List<FileVersionDTO> versionList)
     {
         this.node = node;
         this.id = id;
@@ -683,7 +683,7 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         ostr.writeString(this.lastModifyAddress);
         ostr.writeShort(this.syncModeId);
         ostr.writeString(this.syncModeName);
-        ostr.writeInt(this.typeId);
+        ostr.writeShort(this.typeId);
         ostr.writeString(this.typeName);
         ostr.writeBool(this.locking);
         ostr.writeString(this.localFile);
@@ -715,7 +715,7 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.lastModifyAddress = istr.readString();
         this.syncModeId = istr.readShort();
         this.syncModeName = istr.readString();
-        this.typeId = istr.readInt();
+        this.typeId = istr.readShort();
         this.typeName = istr.readString();
         this.locking = istr.readBool();
         this.localFile = istr.readString();

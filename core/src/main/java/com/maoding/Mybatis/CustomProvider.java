@@ -76,10 +76,26 @@ public class CustomProvider extends MapperTemplate {
         for (EntityColumn column : columns) {
             if (!column.isUpdatable()) continue;
             if (column.isId()) {
-                sqlWhere.append("`" + column.getColumn() + "`").append("=#{id}"); //#{id}是从@Param中得到的字符串
+                /**
+                 *   <if test="idList != null and idList.size() > 0">
+                 *       and id in
+                 *       <foreach collection="idList" item="id" open="(" separator="," close=")">
+                 *          #{id}
+                 *       </foreach>
+                 *   </if>
+                 */
+                sqlWhere.append("<if test=\"idList != null and idList.size() > 0\">");
+                sqlWhere.append(" and `" + column.getColumn() + "` in ");
+                sqlWhere.append("<foreach collection=\"idList\" item=\"id\" open=\"(\" separator=\",\" close=\")\">");
+                sqlWhere.append("#{id}");
+                sqlWhere.append("</foreach>");
+                sqlWhere.append("</if>");
             }
             if ("deleted".equals(column.getProperty())) {
+                /** set deleted=1 */
                 sql.append("`" + column.getColumn() + "`").append("=1").append(",");
+                /** and deleted=0 */
+                sqlWhere.append(" and `" + column.getColumn() + "`").append("=0");
             }
             if ("lastModifyUserId".equals(column.getProperty())) {
                 sql.append("`" + column.getColumn() + "`").append("=#{lastModifyUserId}").append(","); //#{lastModifyUserId}是从@Param中得到的字符串

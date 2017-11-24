@@ -45,7 +45,7 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
         this.lastModifyTimeText = "";
     }
 
-    public FileNodeDTO(String id, String name, String nodeId, String pNodeId, String pathName, long fileLength, String fileChecksum, String fileVersion, String specialtyId, String specialtyName, String lastModifyAddress, short syncModeId, String syncModeName, int typeId, String typeName, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, long createTimeStamp, String createTimeText, String lastModifyDutyId, String lastModifyDutyName, long lastModifyTimeStamp, String lastModifyTimeText)
+    public FileNodeDTO(String id, String name, String nodeId, String pNodeId, String pathName, long fileLength, String fileChecksum, String fileVersion, String specialtyId, String specialtyName, String lastModifyAddress, short syncModeId, String syncModeName, short typeId, String typeName, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, long createTimeStamp, String createTimeText, String lastModifyDutyId, String lastModifyDutyName, long lastModifyTimeStamp, String lastModifyTimeText)
     {
         this.id = id;
         this.name = name;
@@ -230,14 +230,14 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
         this.syncModeName = syncModeName;
     }
 
-    public int typeId;
+    public short typeId;
 
-    public int getTypeId()
+    public short getTypeId()
     {
         return typeId;
     }
 
-    public void setTypeId(int typeId)
+    public void setTypeId(short typeId)
     {
         this.typeId = typeId;
     }
@@ -414,7 +414,7 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
         ostr_.writeString(lastModifyAddress);
         ostr_.writeShort(syncModeId);
         ostr_.writeString(syncModeName);
-        ostr_.writeInt(typeId);
+        ostr_.writeShort(typeId);
         ostr_.writeString(typeName);
         ostr_.writeBool(locking);
         ostr_.writeString(localFile);
@@ -446,7 +446,7 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
         lastModifyAddress = istr_.readString();
         syncModeId = istr_.readShort();
         syncModeName = istr_.readString();
-        typeId = istr_.readInt();
+        typeId = istr_.readShort();
         typeName = istr_.readString();
         locking = istr_.readBool();
         localFile = istr_.readString();
