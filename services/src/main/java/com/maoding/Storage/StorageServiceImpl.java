@@ -189,7 +189,8 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             root.setAliasName("/");
             dir.setNode(root);
         } else {
-            dir.setNode(storageDao.getDirNodeInfoByNodeId(query.getNodeId()));
+            String nodeId = query.getNodeId();
+            dir.setNode(storageDao.getDirNodeInfoByNodeId(nodeId));
         }
 
         //获取子目录信息并填充子目录ID到查找目录列表
@@ -197,11 +198,12 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         List<CooperateDirNodeDTO> subDirList = storageDao.listSubDir(query);
         if ((subDirList != null) && (!subDirList.isEmpty())) {
             dir.setSubDirList(subDirList);
-            for (CooperateDirNodeDTO subDir : dir.getSubDirList()){
-                if (subDir.getId() != null){
-                    dirIdList.add(subDir.getId());
-                }
-            }
+            //暂时只获取本目录文件
+//            for (CooperateDirNodeDTO subDir : dir.getSubDirList()) {
+//                if (subDir.getId() != null) {
+//                    dirIdList.add(subDir.getId());
+//                }
+//            }
         }
 
         //添加根目录ID到查找目录列表并获取文件信息
@@ -289,7 +291,12 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public boolean deleteFile(CooperateFileDTO fileInfo, Current current) {
-        return false;
+        //检查参数
+        assert ((fileInfo != null) && !StringUtils.isEmpty(fileInfo.getNodeId()));
+
+        //删除文件记录
+        int i = storageDao.fakeDeleteById(fileInfo.getNodeId());
+        return (i > 0);
     }
 
     @Override
@@ -297,39 +304,47 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         assert (request != null);
         assert (request.getFullName() != null);
 
+        //把空字符串格式化为null
+        request = BeanUtils.cleanProperties(request);
+
+        //建立文件记录
         StorageFileEntity fileEntity = BeanUtils.createFrom(request,StorageFileEntity.class);
         fileEntity.reset();
-        fileEntity.setFileName(StringUtils.getFileName(request.getFullName()));
+        fileEntity.setFileName(request.getFullName());
         fileEntity.setLastModifyAddress(StringUtils.getRemoteIp(current));
         fileEntity.setTypeId(request.getTypeId());
         storageFileDao.insert(fileEntity);
-        String pNodeId = request.getPNodeId();
-        StorageEntity pNodeEntity = null;
-        if (!StringUtils.isEmpty(request.getPNodeId())) pNodeEntity = storageDao.selectById(pNodeId);
-        String pathName = StringUtils.getDirName(request.getFullName());
-        if (!StringUtils.isEmpty(pathName)) {
-            if (pNodeEntity == null) pNodeEntity = new StorageEntity();
-            request.setFullName(pathName);
-            request.setTypeId(request.getDirTypeId());
-            pNodeId = createDirectory(request, pNodeEntity, current);
-        }
+
+        //建立树节点记录
         StorageEntity nodeEntity = new StorageEntity();
-        nodeEntity.setPid(pNodeId);
+        nodeEntity.setPid(request.getPNodeId());
         nodeEntity.setDetailId(fileEntity.getId());
         nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
-        nodeEntity.setPath((pNodeEntity != null) ? (pNodeEntity.getPath() + "," + nodeEntity.getId()) : nodeEntity.getId());
+        String pNodePath = nodeEntity.getId();
+        if (request.getPNodeId() != null) {
+            //如果指定了父节点，添加父节点路径
+            StorageEntity pNodeEntity = storageDao.selectById(request.getPNodeId());
+            pNodePath = pNodeEntity.getPath() + StringUtils.SPLIT_ID + pNodePath;
+        }
+        nodeEntity.setPath(pNodePath);
         storageDao.insert(nodeEntity);
-        return nodeEntity.getId();
+        return nodeEntity.getPath();
     }
 
     private String createDirectory(CreateNodeRequestDTO request, StorageEntity nodeEntity, Current current) {
         assert (request != null);
         assert (request.getFullName() != null);
 
+        //把空字符串格式化为null
+        request = BeanUtils.cleanProperties(request);
+
+        //分离路径和pNodeId
         String[] pathNodeArray = request.getFullName().replaceAll("\\\\","/").split("/");
-        String pNodeId = request.getPNodeId();
+
+        //查找根目录
         StringBuilder fullName = new StringBuilder();
         StringBuilder pathField = new StringBuilder();
+        String pNodeId = request.getPNodeId();
         if (pNodeId != null) {
             StorageEntity node = storageDao.selectById(pNodeId);
             pathField.append(node.getPath());
@@ -337,27 +352,26 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             fullName.append(dir.getFullName());
         }
 
+        //查找已有目录
         CooperationQueryDTO query = BeanUtils.cleanProperties(new CooperationQueryDTO());
         for (int i=0; i<pathNodeArray.length; i++){
             query.setNodeName(pathNodeArray[i]);
             query.setPNodeId(pNodeId);
             CooperateDirNodeDTO dirNode = storageDao.getDirNodeInfo(query);
             if (dirNode == null) {
+                //创建子目录
                 for (int j=i; j<pathNodeArray.length; j++) {
                     if (fullName.length() > 0) fullName.append("/");
                     fullName.append(pathNodeArray[j]);
                     StorageDirEntity dir = BeanUtils.createFrom(request,StorageDirEntity.class);
                     dir.reset();
-                    if (j < (pathNodeArray.length - 1)){
-                        dir.setTypeId(request.getDirTypeId());
-                    }
                     dir.setFullName(fullName.toString());
                     storageDirDao.insert(dir);
                     if (nodeEntity == null) nodeEntity = new StorageEntity();
                     nodeEntity.reset();
                     nodeEntity.setDetailId(dir.getId());
                     nodeEntity.setNodeName(pathNodeArray[j]);
-                    nodeEntity.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+                    nodeEntity.setTypeId(request.getTypeId());
                     nodeEntity.setPid(pNodeId);
                     if (pathField.length() > 0) pathField.append(",");
                     pathField.append(nodeEntity.getId());
@@ -374,7 +388,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                 pathField.append(dirNode.getId());
             }
         }
-        return pNodeId;
+        return pathField.toString();
     }
     @Override
     public String createDirectory(CreateNodeRequestDTO request, Current current) {
@@ -383,6 +397,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public boolean deleteDirectory(String nodeId, boolean force, Current current) {
+        assert (nodeId != null);
         CooperationQueryDTO query = BeanUtils.cleanProperties(new CooperationQueryDTO());
         query.setNodeId(nodeId);
         CooperateDirDTO dirInfo = getCooperateDirInfo(query,current);
@@ -496,8 +511,37 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public CooperateFileDTO createVersion(CooperateFileDTO fileInfo, String version, Current current) {
-        return null;
+    public String createVersion(CooperateFileDTO fileInfo, String version, Current current) {
+        //检查参数
+        assert ((fileInfo != null) && !StringUtils.isEmpty(fileInfo.getNodeId()));
+
+        //补充参数
+        String nodeId = fileInfo.getNodeId();
+        if (StringUtils.isEmpty(fileInfo.getId())) {
+            StorageEntity nodeEntity = storageDao.selectById(nodeId);
+            fileInfo.setId(nodeEntity.getDetailId());
+        }
+
+        //复制实体文件
+        StorageFileEntity fileEntity = storageFileDao.selectById(fileInfo.getId());
+        FileDTO fileDTO = BeanUtils.createFrom(fileEntity,FileDTO.class);
+        String verKey = fileService.duplicateFile(fileDTO,current);
+        fileEntity.reset();
+        fileEntity.setFileKey(verKey);
+        fileEntity.setFileVersion(version);
+        storageFileDao.insert(fileEntity);
+        StorageEntity nodeEntity = new StorageEntity();
+        nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_HIS_FILE);
+        nodeEntity.setDetailId(fileEntity.getId());
+        nodeEntity.setPid(nodeId);
+        String nodePath = nodeEntity.getId();
+        if (nodeId != null){
+            StorageEntity pNodeEntity = storageDao.selectById(nodeId);
+            nodePath = pNodeEntity.getPath() + StringUtils.SPLIT_ID + nodePath;
+        }
+        nodeEntity.setPath(nodePath);
+        storageDao.insert(nodeEntity);
+        return nodeEntity.getPath();
     }
 
 }

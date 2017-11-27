@@ -38,7 +38,7 @@
 
     <select id="getDirNodeInfo" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
         select
-            a.id
+            a.id as id
             ,a.node_name as name
             ,a.pid as p_node_id
             ,a.detail_id
@@ -82,7 +82,7 @@
 
     <select id="getDirNodeInfoByNodeId" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="java.lang.String">
         select
-            a.id
+            a.id as id
             ,a.node_name as name
             ,a.pid as p_node_id
             ,a.detail_id
@@ -113,7 +113,7 @@
         select
             c.id
             ,c.file_name as name
-            ,a.id as node_id
+            ,a.path as node_id
             ,a.pid as p_node_id
             ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
             ,c.file_length
@@ -168,7 +168,7 @@
         select
             c.id
             ,c.file_name as name
-            ,a.id as node_id
+            ,a.path as node_id
             ,a.pid as p_node_id
             ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
             ,c.file_length
@@ -206,7 +206,7 @@
 
     <select id="listSubDir" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
         select
-            a.id
+            a.id as id
             ,a.node_name as name
             ,a.pid as p_node_id
             ,a.detail_id
@@ -247,7 +247,14 @@
                 and (c.task_id = #{taskId})
             </if>
             <if test="level > 0">
-                and (33 * (level + 1)) > length(a.path)
+                <choose>
+                    <when test="nodeId != null">
+                        and (((select length(path) from maoding_storage where id=#{nodeId} limit 1) + (33 * #{level}) + 1) > length(a.path))
+                    </when>
+                    <otherwise>
+                        and ((33 * #{level}) > length(a.path))
+                    </otherwise>
+                </choose>
             </if>
         group by a.id
     </select>
@@ -256,7 +263,7 @@
         select
             c.id
             ,c.file_name as name
-            ,a.id as node_id
+            ,a.path as node_id
             ,a.pid as p_node_id
             ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
             ,c.file_length
@@ -299,7 +306,7 @@
         select
             d.id
             ,d.file_name as name
-            ,b.id as node_id
+            ,b.path as node_id
             ,b.pid as p_node_id
             ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
             ,d.file_length
@@ -339,7 +346,7 @@
     <select id="listVersion" resultType="com.maoding.Storage.zeroc.FileVersionDTO" parameterType="java.lang.String">
         select
             c.id
-            ,b.id as node_id
+            ,b.path as node_id
             ,c.file_version
             ,c.last_modify_address
             ,c.locking

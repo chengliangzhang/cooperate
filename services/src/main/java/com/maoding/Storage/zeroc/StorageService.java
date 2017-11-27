@@ -76,7 +76,7 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     int getLinkCount(com.maoding.FileServer.zeroc.FileDTO fileDTO, com.zeroc.Ice.Current current);
 
-    CooperateFileDTO createVersion(CooperateFileDTO fileInfo, String version, com.zeroc.Ice.Current current);
+    String createVersion(CooperateFileDTO fileInfo, String version, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -517,10 +517,9 @@ public interface StorageService extends com.zeroc.Ice.Object
         iceP_version = istr.readString();
         istr.readPendingValues();
         inS.endReadParams();
-        CooperateFileDTO ret = obj.createVersion(iceP_fileInfo, iceP_version, current);
+        String ret = obj.createVersion(iceP_fileInfo, iceP_version, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        CooperateFileDTO.ice_write(ostr, ret);
-        ostr.writePendingValues();
+        ostr.writeString(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }

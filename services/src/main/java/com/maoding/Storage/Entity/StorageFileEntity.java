@@ -48,10 +48,10 @@ public class StorageFileEntity extends BaseEntity {
     private Boolean locking;
     /** 同步模式，0-手动同步，1-自动更新 */
     @Column
-    private Short syncMode;
+    private Short syncModeId;
     /** 当前有多少用户正在下载 */
     @Column
-    private Short downloading;
+    private Integer downloading;
     /** 已上传到文件服务器的新scope值 */
     @Column
     private String uploadedScope;
@@ -147,19 +147,19 @@ public class StorageFileEntity extends BaseEntity {
         this.locking = locking;
     }
 
-    public Short getSyncMode() {
-        return syncMode;
+    public Short getSyncModeId() {
+        return syncModeId;
     }
 
-    public void setSyncMode(Short syncMode) {
-        this.syncMode = syncMode;
+    public void setSyncModeId(Short syncModeId) {
+        this.syncModeId = syncModeId;
     }
 
-    public Short getDownloading() {
+    public Integer getDownloading() {
         return downloading;
     }
 
-    public void setDownloading(Short downloading) {
+    public void setDownloading(Integer downloading) {
         this.downloading = downloading;
     }
 
@@ -177,5 +177,13 @@ public class StorageFileEntity extends BaseEntity {
 
     public void setUploadedKey(String uploadedKey) {
         this.uploadedKey = uploadedKey;
+    }
+
+    public void reset(){
+        super.reset();
+        setUploadedScope("");
+        setUploadedKey("");
+        setLocking(false);
+        setDownloading(0);
     }
 }

@@ -176,7 +176,7 @@ module zeroc {
         void finishUpload(FileRequestDTO request,bool succeeded); //客户端通知结束或取消上传文件
         void finishDownload(FileRequestDTO request,bool succeeded); //客户端通知结束或取消下载文件-?
         bool replaceFile(CooperateFileDTO fileInfo,FileDTO fileDTO); //替换实体文件-?
-        bool deleteFile(CooperateFileDTO fileInfo); //删除文件-?
+        bool deleteFile(CooperateFileDTO fileInfo); //删除文件
         string createDirectory(CreateNodeRequestDTO request); //创建目录,返回目录树节点ID
         bool deleteDirectory(string nodeId,bool force); //删除目录
         string createFile(CreateNodeRequestDTO request); //创建文件，返回文件树节点ID
@@ -192,6 +192,6 @@ module zeroc {
         long getFree(CooperationQueryDTO query); //获取剩余空间-?
         CooperateFileDTO getFileInfo(string nodeId); //获取文件信息
         int getLinkCount(FileDTO fileDTO); //获取文件使用数量-?
-        CooperateFileDTO createVersion(CooperateFileDTO fileInfo,string version); //添加文件版本-?
+        string createVersion(CooperateFileDTO fileInfo,string version); //添加文件版本
     };
 };

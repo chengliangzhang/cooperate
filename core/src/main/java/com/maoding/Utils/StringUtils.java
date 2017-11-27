@@ -17,11 +17,14 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /** 日志对象 */
     private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
 
-    public static final String FULL_STAMP_FORMAT = "yyyyMMddHHmmss";
+    public static final String STAMP_FORMAT_FULL = "yyyyMMddHHmmss";
     public static final String DATA_STAMP_FORMAT = "yyyyMMdd";
     public static final String TIME_STAMP_FORMAT = "yyyyMMddHHmmss";
     public static final String MS_STAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.sss";
-    public static final String DEFAULT_STAMP_FORMAT = FULL_STAMP_FORMAT;
+    public static final String DEFAULT_STAMP_FORMAT = STAMP_FORMAT_FULL;
+
+    public static final String SPLIT_ID = ",";
+    public static final String SPLIT_PATH = "/";
 
     private static final int KILO_BYTE = 1024;
     private static final int KILO_MS = 1000;
@@ -70,18 +73,25 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return path.replaceAll("\\\\", "/").trim();
     }
 
+    /** 获取分隔符分隔的最后一个字符串 */
+    public static String getLastSplit(String str,String split){
+        if ((str == null) || (split == null)) return str;
+        int pos = str.lastIndexOf(split);
+        return (pos > 0) ? str.substring(pos+split.length()) : str;
+    }
+
     /** 获取文件名 */
     public static String getFileName(String path){
         if (path == null) return null;
         path = formatPath(path);
-        return path.substring(path.lastIndexOf("/")+1);
+        return getLastSplit(path, SPLIT_PATH);
     }
 
     /** 获取路径名 */
     public static String getDirName(String path){
         if (path == null) return null;
         path = formatPath(path);
-        return path.substring(0,path.lastIndexOf("/"));
+        return path.substring(0,path.lastIndexOf(SPLIT_PATH));
     }
 
     //带单位计算字节数

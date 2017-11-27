@@ -927,37 +927,36 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default CooperateFileDTO createVersion(CooperateFileDTO fileInfo, String version)
+    default String createVersion(CooperateFileDTO fileInfo, String version)
     {
         return createVersion(fileInfo, version, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default CooperateFileDTO createVersion(CooperateFileDTO fileInfo, String version, java.util.Map<String, String> context)
+    default String createVersion(CooperateFileDTO fileInfo, String version, java.util.Map<String, String> context)
     {
         return _iceI_createVersionAsync(fileInfo, version, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<CooperateFileDTO> createVersionAsync(CooperateFileDTO fileInfo, String version)
+    default java.util.concurrent.CompletableFuture<java.lang.String> createVersionAsync(CooperateFileDTO fileInfo, String version)
     {
         return _iceI_createVersionAsync(fileInfo, version, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<CooperateFileDTO> createVersionAsync(CooperateFileDTO fileInfo, String version, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.lang.String> createVersionAsync(CooperateFileDTO fileInfo, String version, java.util.Map<String, String> context)
     {
         return _iceI_createVersionAsync(fileInfo, version, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> _iceI_createVersionAsync(CooperateFileDTO iceP_fileInfo, String iceP_version, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_createVersionAsync(CooperateFileDTO iceP_fileInfo, String iceP_version, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<CooperateFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createVersion", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createVersion", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
                      ostr.writeString(iceP_version);
                      ostr.writePendingValues();
                  }, istr -> {
-                     CooperateFileDTO ret;
-                     ret = CooperateFileDTO.ice_read(istr);
-                     istr.readPendingValues();
+                     String ret;
+                     ret = istr.readString();
                      return ret;
                  });
         return f;

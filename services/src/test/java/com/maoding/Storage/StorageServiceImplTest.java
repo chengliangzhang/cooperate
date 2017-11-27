@@ -56,6 +56,19 @@ public class StorageServiceImplTest {
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
 
+    /** 创建版本 */
+    @Test
+    public void testCreateVersion() throws Exception {
+        CooperationQueryDTO query = new CooperationQueryDTO();
+        CooperateDirDTO dirInfo = storageService.getCooperateDirInfo(query,null);
+        Assert.assertNotNull(dirInfo);
+        List<CooperateFileDTO> fileList = dirInfo.getFileList();
+        Assert.assertNotNull(fileList);
+        CooperateFileDTO file = fileList.get(0);
+        String nodeId = storageService.createVersion(file,"v1.0",null);
+        Assert.assertNotEquals(file.getNodeId(),nodeId);
+    }
+
     /** 创建文件 */
     @Test
     public void testCreateFile() throws Exception {
@@ -63,7 +76,8 @@ public class StorageServiceImplTest {
         request.setFullName("r/s/t");
         request.setTypeId((short)0);
         request.setDirTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
-        String nodeId = storageService.createFile(request,null);
+        String fullPath = storageService.createFile(request,null);
+        String nodeId = StringUtils.getLastSplit(fullPath,StringUtils.SPLIT_ID);
         Assert.assertNotNull(nodeId);
     }
 
@@ -73,7 +87,8 @@ public class StorageServiceImplTest {
         CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
         request.setFullName("a/b/c");
         request.setTypeId(StorageConst.STORAGE_DIR_TYPE_SYS);
-        String nodeId = storageService.createDirectory(request,null);
+        String fullPath = storageService.createDirectory(request,null);
+        String nodeId = StringUtils.getLastSplit(fullPath,StringUtils.SPLIT_ID);
         request.setPNodeId(nodeId);
         request.setFullName("x/y/z");
         storageService.createDirectory(request,null);
@@ -85,7 +100,8 @@ public class StorageServiceImplTest {
         CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
         request.setFullName("m/n");
         request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
-        String nodeId = storageService.createDirectory(request,null);
+        String fullPath = storageService.createDirectory(request,null);
+        String nodeId = StringUtils.getLastSplit(fullPath,StringUtils.SPLIT_ID);
         boolean b = storageService.deleteDirectory(nodeId,true,null);
         Assert.assertTrue(b);
     }
@@ -100,6 +116,8 @@ public class StorageServiceImplTest {
         Assert.assertNotNull(subDirList);
         Assert.assertTrue(subDirList.size() > 0);
         query.setNodeId(subDirList.get(0).getId());
+        query.setNodeId("93FA51B7883E4F1BB1D5AC7DE9EE9E97");
+        query.setLevel(2);
         dirInfo = storageService.getCooperateDirInfo(query,null);
         Assert.assertNotNull(dirInfo);
     }
