@@ -89,6 +89,40 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default boolean changeNodeInfo(NodeModifyRequestDTO request, String nodeId)
+    {
+        return changeNodeInfo(request, nodeId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean changeNodeInfo(NodeModifyRequestDTO request, String nodeId, java.util.Map<String, String> context)
+    {
+        return _iceI_changeNodeInfoAsync(request, nodeId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> changeNodeInfoAsync(NodeModifyRequestDTO request, String nodeId)
+    {
+        return _iceI_changeNodeInfoAsync(request, nodeId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> changeNodeInfoAsync(NodeModifyRequestDTO request, String nodeId, java.util.Map<String, String> context)
+    {
+        return _iceI_changeNodeInfoAsync(request, nodeId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_changeNodeInfoAsync(NodeModifyRequestDTO iceP_request, String iceP_nodeId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "changeNodeInfo", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     NodeModifyRequestDTO.ice_write(ostr, iceP_request);
+                     ostr.writeString(iceP_nodeId);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
     default boolean modifyFileInfo(CooperateFileDTO fileInfo)
     {
         return modifyFileInfo(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);

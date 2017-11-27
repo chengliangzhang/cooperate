@@ -267,7 +267,7 @@
         select
             c.id
             ,c.file_name as name
-            ,a.path as node_id
+            ,a.id as node_id
             ,a.pid as p_node_id
             ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
             ,c.file_length
@@ -312,7 +312,7 @@
         select
             d.id
             ,d.file_name as name
-            ,b.path as node_id
+            ,b.id as node_id
             ,b.pid as p_node_id
             ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
             ,d.file_length
@@ -354,7 +354,7 @@
     <select id="listVersion" resultType="com.maoding.Storage.zeroc.FileVersionDTO" parameterType="java.lang.String">
         select
             c.id
-            ,b.path as node_id
+            ,b.id as node_id
             ,c.file_version
             ,c.last_modify_address
             ,c.locking

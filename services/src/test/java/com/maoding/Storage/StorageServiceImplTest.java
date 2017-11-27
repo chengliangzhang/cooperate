@@ -106,6 +106,27 @@ public class StorageServiceImplTest {
         Assert.assertTrue(b);
     }
 
+    /** 删除文件 */
+    @Test
+    public void testDeleteFile() throws Exception {
+        CooperationQueryDTO query = new CooperationQueryDTO();
+        CooperateDirDTO dirInfo = storageService.getCooperateDirInfo(query,null);
+        List<CooperateFileDTO> fileDTOList = dirInfo.getFileList();
+        storageService.deleteFile(fileDTOList.get(0),null);
+    }
+
+    /** 更改树节点 */
+    @Test
+    public void testChangeNodeInfo() throws Exception {
+        String nodeId = "8B72A79C4CE84BACB2F2D89862BBA4C7";
+        NodeModifyRequestDTO request = new NodeModifyRequestDTO();
+        request.setName("changed");
+        storageService.changeNodeInfo(request,nodeId,null);
+        nodeId = "FCBF333A8A67467BBFBC26E1ED6CC5A4";
+        request.setName("zzzzz");
+        storageService.changeNodeInfo(request,nodeId,null);
+    }
+
     /** 获取目录文件列表 */
     @Test
     public void testGetCooperateDirInfo() throws Exception {

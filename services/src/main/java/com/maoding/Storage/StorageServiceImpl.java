@@ -55,6 +55,43 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
+    public boolean changeNodeInfo(NodeModifyRequestDTO request, String nodeId, Current current) {
+        assert (request != null);
+        request = BeanUtils.cleanProperties(request);
+
+        StorageEntity nodeEntity = storageDao.selectById(nodeId);
+        int i = 0;
+        if (nodeEntity.getTypeId() >= StorageConst.STORAGE_DIR_TYPE_MIN){
+            if (request.getName() != null) nodeEntity.setNodeName(request.getName());
+            if (request.getPNodeId() != null) {
+                StorageEntity pNodeEntity = storageDao.selectById(request.getPNodeId());
+                if (pNodeEntity != null) {
+                    nodeEntity.setPid(request.getPNodeId());
+                    nodeEntity.setPath(pNodeEntity.getPath() + StringUtils.SPLIT_ID + nodeEntity.getId());
+                    StorageDirEntity pdir = storageDirDao.selectById(pNodeEntity.getDetailId());
+                    StorageDirEntity dir = storageDirDao.selectById(nodeEntity.getDetailId());
+                    String path = (request.getName() != null) ? pdir.getFullName() + StringUtils.SPLIT_PATH + request.getName()
+                            : pdir.getFullName() + StringUtils.SPLIT_PATH + nodeEntity.getNodeName();
+                    dir.setFullName(path);
+                    i += storageDirDao.updateById(dir, dir.getId());
+                }
+            }
+            i += storageDao.updateById(nodeEntity,nodeEntity.getId());
+        } else {
+            if (request.getName() != null){
+                StorageFileEntity file = storageFileDao.selectById(nodeEntity.getDetailId());
+                file.setFileName(request.getName());
+                i += storageFileDao.updateById(file,file.getId());
+            }
+            if (request.getPNodeId() != null) {
+                nodeEntity.setPid(request.getPNodeId());
+                i += storageDao.updateById(nodeEntity, nodeEntity.getId());
+            }
+        }
+        return (i > 0);
+    }
+
+    @Override
     public FileRequestDTO requestUpload(CooperateFileDTO fileInfo, int mode, Current current) {
         assert (fileInfo != null);
 
@@ -292,10 +329,15 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public boolean deleteFile(CooperateFileDTO fileInfo, Current current) {
         //检查参数
-        assert ((fileInfo != null) && !StringUtils.isEmpty(fileInfo.getNodeId()));
+        assert (fileInfo != null);
 
-        //删除文件记录
-        int i = storageDao.fakeDeleteById(fileInfo.getNodeId());
+        //删除文件树节点记录
+        int i = 0;
+        if (fileInfo.getNodeId() != null) {
+            i = storageDao.fakeDeleteById(fileInfo.getNodeId());
+        } else if (fileInfo.getId() != null) {
+            //todo 删除所有detailId为fileInfo.id的树节点
+        }
         return (i > 0);
     }
 

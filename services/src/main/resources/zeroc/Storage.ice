@@ -150,6 +150,12 @@ module zeroc {
     };
 
     ["java:getset"]
+    struct NodeModifyRequestDTO { //节点更改申请
+        string name; //节点名称（树节点名称或文件名称）
+        string pNodeId; //父节点编号
+    };
+
+    ["java:getset"]
     struct CooperationQueryDTO {
         string nodeId; //协同树节点id
         string pNodeId; //协同父节点id
@@ -167,6 +173,7 @@ module zeroc {
     interface StorageService {
         NodeDTO getNodeInfo(CooperationQueryDTO query); //获取节点简单信息
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
+        bool changeNodeInfo(NodeModifyRequestDTO request,string nodeId); //更改节点信息
         bool modifyFileInfo(CooperateFileDTO fileInfo); //更改文件信息-?
         FileRequestDTO requestUpload(CooperateFileDTO fileInfo,int mode); //申请上传文件
         FileRequestDTO requestDownload(CooperateFileDTO fileInfo,int mode); //申请下载文件

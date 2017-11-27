@@ -26,6 +26,8 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query, com.zeroc.Ice.Current current);
 
+    boolean changeNodeInfo(NodeModifyRequestDTO request, String nodeId, com.zeroc.Ice.Current current);
+
     boolean modifyFileInfo(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
 
     com.maoding.FileServer.zeroc.FileRequestDTO requestUpload(CooperateFileDTO fileInfo, int mode, com.zeroc.Ice.Current current);
@@ -126,6 +128,22 @@ public interface StorageService extends com.zeroc.Ice.Object
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         CooperateDirDTO.ice_write(ostr, ret);
         ostr.writePendingValues();
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_changeNodeInfo(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        NodeModifyRequestDTO iceP_request;
+        String iceP_nodeId;
+        iceP_request = NodeModifyRequestDTO.ice_read(istr);
+        iceP_nodeId = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.changeNodeInfo(iceP_request, iceP_nodeId, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -526,6 +544,7 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     final static String[] _iceOps =
     {
+        "changeNodeInfo",
         "createDirectory",
         "createFile",
         "createFileLink",
@@ -574,129 +593,133 @@ public interface StorageService extends com.zeroc.Ice.Object
         {
             case 0:
             {
-                return _iceD_createDirectory(this, in, current);
+                return _iceD_changeNodeInfo(this, in, current);
             }
             case 1:
             {
-                return _iceD_createFile(this, in, current);
+                return _iceD_createDirectory(this, in, current);
             }
             case 2:
             {
-                return _iceD_createFileLink(this, in, current);
+                return _iceD_createFile(this, in, current);
             }
             case 3:
             {
-                return _iceD_createVersion(this, in, current);
+                return _iceD_createFileLink(this, in, current);
             }
             case 4:
             {
-                return _iceD_deleteDirectory(this, in, current);
+                return _iceD_createVersion(this, in, current);
             }
             case 5:
             {
-                return _iceD_deleteFile(this, in, current);
+                return _iceD_deleteDirectory(this, in, current);
             }
             case 6:
             {
-                return _iceD_downloadCallback(this, in, current);
+                return _iceD_deleteFile(this, in, current);
             }
             case 7:
             {
-                return _iceD_duplicateDirectory(this, in, current);
+                return _iceD_downloadCallback(this, in, current);
             }
             case 8:
             {
-                return _iceD_duplicateFile(this, in, current);
+                return _iceD_duplicateDirectory(this, in, current);
             }
             case 9:
             {
-                return _iceD_finishDownload(this, in, current);
+                return _iceD_duplicateFile(this, in, current);
             }
             case 10:
             {
-                return _iceD_finishUpload(this, in, current);
+                return _iceD_finishDownload(this, in, current);
             }
             case 11:
             {
-                return _iceD_getCooperateDirInfo(this, in, current);
+                return _iceD_finishUpload(this, in, current);
             }
             case 12:
             {
-                return _iceD_getFileInfo(this, in, current);
+                return _iceD_getCooperateDirInfo(this, in, current);
             }
             case 13:
             {
-                return _iceD_getFree(this, in, current);
+                return _iceD_getFileInfo(this, in, current);
             }
             case 14:
             {
-                return _iceD_getLinkCount(this, in, current);
+                return _iceD_getFree(this, in, current);
             }
             case 15:
             {
-                return _iceD_getNodeInfo(this, in, current);
+                return _iceD_getLinkCount(this, in, current);
             }
             case 16:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getNodeInfo(this, in, current);
             }
             case 17:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 18:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 19:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 20:
             {
-                return _iceD_isFileLocking(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 21:
             {
-                return _iceD_listFileLink(this, in, current);
+                return _iceD_isFileLocking(this, in, current);
             }
             case 22:
             {
-                return _iceD_lockFile(this, in, current);
+                return _iceD_listFileLink(this, in, current);
             }
             case 23:
             {
-                return _iceD_modifyFileInfo(this, in, current);
+                return _iceD_lockFile(this, in, current);
             }
             case 24:
             {
-                return _iceD_replaceFile(this, in, current);
+                return _iceD_modifyFileInfo(this, in, current);
             }
             case 25:
             {
-                return _iceD_requestDownload(this, in, current);
+                return _iceD_replaceFile(this, in, current);
             }
             case 26:
             {
-                return _iceD_requestDownloadFromLast(this, in, current);
+                return _iceD_requestDownload(this, in, current);
             }
             case 27:
             {
-                return _iceD_requestUpload(this, in, current);
+                return _iceD_requestDownloadFromLast(this, in, current);
             }
             case 28:
             {
-                return _iceD_restoreDirectory(this, in, current);
+                return _iceD_requestUpload(this, in, current);
             }
             case 29:
             {
-                return _iceD_restoreFile(this, in, current);
+                return _iceD_restoreDirectory(this, in, current);
             }
             case 30:
             {
-                return _iceD_unlockFile(this, in, current);
+                return _iceD_restoreFile(this, in, current);
             }
             case 31:
+            {
+                return _iceD_unlockFile(this, in, current);
+            }
+            case 32:
             {
                 return _iceD_uploadCallback(this, in, current);
             }
