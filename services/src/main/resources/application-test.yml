@@ -1,9 +1,14 @@
 # ===================================================================
 #
-#                         测试环境配置文件
+#                         开发环境配置文件
 #
 # ===================================================================
+server:
+   port: 8088
+   context-path:
 spring:
+   mvc:
+     throw-exception-if-no-handler-found: true
    resources:
      add-mappings: true
 
@@ -11,7 +16,7 @@ spring:
 # Druid
 # ===================================================================
 druid:
-    url: jdbc:mysql://172.16.6.71:3306/maoding_test
+    url: jdbc:mysql://172.16.6.71:3306/test
     username: idccapp
     password: idccapp
     driverClassName: com.mysql.jdbc.Driver
@@ -46,7 +51,7 @@ mybatis:
 
 mapper:
     mappers:
-        - com.org1.core.base.BaseDao
+        - com.maoding.Base.BaseDao
     not-empty: false
     identity: MYSQL
 

@@ -33,6 +33,8 @@ public class Application extends SpringApplication {
     @Autowired
     private OrganizationService organizationService;
 
+
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
         List<String> params = new ArrayList<>();

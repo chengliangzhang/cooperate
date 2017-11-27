@@ -73,7 +73,7 @@ public class StorageServiceImplTest {
     @Test
     public void testCreateFile() throws Exception {
         CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
-        request.setFullName("r/s/t");
+        request.setFullName("t");
         request.setTypeId((short)0);
         request.setDirTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
         String fullPath = storageService.createFile(request,null);
