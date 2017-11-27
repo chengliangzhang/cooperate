@@ -137,11 +137,13 @@
             maoding_storage a
             inner join maoding_storage b on (find_in_set(b.id,a.path))
             inner join maoding_storage_file c on (a.detail_id = c.id)
-            inner join maoding_const d on (c.specialty_id = d.value_id)
-            inner join maoding_const e on (c.sync_mode_id = e.value_id)
-            inner join maoding_const f on (c.type_id = f.value_id)
+            left join maoding_const d on (c.specialty_id = d.value_id)
+            left join maoding_const e on (c.sync_mode_id = e.value_id)
+            left join maoding_const f on (c.type_id = f.value_id)
         where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
-            and (d.classic_id = 18) and (e.classic_id = 16) and (f.classic_id = 5)
+            and ((d.classic_id = 18) or (d.classic_id is null))
+            and ((e.classic_id = 16) or (e.classic_id is null))
+            and ((f.classic_id = 5) or (f.classic_id))
             and (a.type_id = 0)
             <choose>
                 <when test="nodeId != null">
@@ -192,11 +194,13 @@
             maoding_storage a
             inner join maoding_storage b on (find_in_set(b.id,a.path))
             inner join maoding_storage_file c on (a.detail_id = c.id)
-            inner join maoding_const d on (c.specialty_id = d.value_id)
-            inner join maoding_const e on (c.sync_mode_id = e.value_id)
-            inner join maoding_const f on (c.type_id = f.value_id)
+            left join maoding_const d on (c.specialty_id = d.value_id)
+            left join maoding_const e on (c.sync_mode_id = e.value_id)
+            left join maoding_const f on (c.type_id = f.value_id)
         where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
-            and (d.classic_id = 18) and (e.classic_id = 16) and (f.classic_id = 5)
+            and ((d.classic_id = 18) or (d.classic_id is null))
+            and ((e.classic_id = 16) or (e.classic_id is null))
+            and ((f.classic_id = 5) or (f.classic_id is null))
             and (a.type_id = 0)
             <if test="_parameter != null">
                 and (a.id = #{_parameter})
