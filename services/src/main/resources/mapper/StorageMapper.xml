@@ -113,7 +113,7 @@
         select
             c.id
             ,c.file_name as name
-            ,a.path as node_id
+            ,a.id as node_id
             ,a.pid as p_node_id
             ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
             ,c.file_length
