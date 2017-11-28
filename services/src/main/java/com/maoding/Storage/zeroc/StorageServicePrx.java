@@ -123,6 +123,39 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default boolean initNodeInfo(CreateNodeRequestDTO request)
+    {
+        return initNodeInfo(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean initNodeInfo(CreateNodeRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_initNodeInfoAsync(request, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> initNodeInfoAsync(CreateNodeRequestDTO request)
+    {
+        return _iceI_initNodeInfoAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> initNodeInfoAsync(CreateNodeRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_initNodeInfoAsync(request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_initNodeInfoAsync(CreateNodeRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "initNodeInfo", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CreateNodeRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
     default boolean modifyFileInfo(CooperateFileDTO fileInfo)
     {
         return modifyFileInfo(fileInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);

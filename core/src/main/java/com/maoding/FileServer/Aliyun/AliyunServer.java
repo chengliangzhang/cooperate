@@ -8,7 +8,6 @@ import com.aliyun.oss.model.*;
 import com.maoding.Bean.*;
 import com.maoding.Const.ApiResponseConst;
 import com.maoding.FileServer.BasicFileServerInterface;
-import com.maoding.FileServer.Ftp.FtpServer;
 import com.maoding.Utils.ExceptionUtils;
 import com.maoding.Utils.OSSClientUtils;
 import com.maoding.Utils.StringUtils;
@@ -31,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service("aliyunServer")
 public class AliyunServer implements BasicFileServerInterface {
-    protected static final Logger log = (Logger) LoggerFactory.getLogger(FtpServer.class);
+    protected static final Logger log = (Logger) LoggerFactory.getLogger(AliyunServer.class);
 
     /**
      * 获取通过http方式上传文件数据库时的需要设置的部分参数
@@ -48,9 +47,11 @@ public class AliyunServer implements BasicFileServerInterface {
         } else {
             dir = System.currentTimeMillis() + "";
         }
-
+        dto.setKey(src.getKey());
+        dto.setScope(src.getScope());
         OSSClient client = OSSClientUtils.getInstance();
-        String bucketName = src.getScope();
+        String bucketName = "publicmaoding";
+        Map<String, String> paramsMap = new HashMap<String, String>();
         try {
             //设置超时时间，可以设置为常量，根据需求设置时长
             long expireTime = 30;
@@ -64,20 +65,22 @@ public class AliyunServer implements BasicFileServerInterface {
             String encodedPolicy = BinaryUtil.toBase64String(binaryData);
             String postSignature = client.calculatePostSignature(postPolicy);
             //上传所要的权限验证信息
-            dto.getParams().put("accessid", client.getCredentialsProvider().getCredentials().getAccessKeyId());
-            dto.getParams().put("policy", encodedPolicy);
-            dto.getParams().put("signature", postSignature);
-            dto.getParams().put("dir", dir);
-            dto.getParams().put("expire", String.valueOf(expireEndTime / 1000));
+            paramsMap.put("accessid", client.getCredentialsProvider().getCredentials().getAccessKeyId());
+            paramsMap.put("policy", encodedPolicy);
+            paramsMap.put("signature", postSignature);
+            paramsMap.put("dir", dir);
+            paramsMap.put("expire", String.valueOf(expireEndTime / 1000));
+            dto.setParams(paramsMap);
             //设置callback
             Map<String, Object> callback = new HashMap<>();
-            callback.put("callbackUrl", callbackSetting.getUrl());
-            callback.put("callbackHost", callbackSetting.getName());
-            callback.put("callbackBodyType", "application/json");
-            if (callbackSetting != null) {
+            if (null != callbackSetting) {
+                callback.put("callbackUrl", callbackSetting.getUrl());
+                callback.put("callbackHost", callbackSetting.getName());
+                callback.put("callbackBodyType", "application/json");
                 callback.put("callbackBody", getCallbackBody(callbackSetting.getParams()));
                 byte[] callbackBytes = JSONUtils.toJSONString(callback).getBytes();
-                dto.getParams().put("callback", BinaryUtil.toBase64String(callbackBytes));
+                paramsMap.put("callback", BinaryUtil.toBase64String(callbackBytes));
+                dto.setParams(paramsMap);
             }
             //上传地址
             dto.setUrl("http://" + bucketName + "." + client.getEndpoint().getHost());
@@ -87,7 +90,7 @@ public class AliyunServer implements BasicFileServerInterface {
             ExceptionUtils.logError(log, e);
         }
 
-        return null;
+        return dto;
     }
 
 
@@ -125,15 +128,18 @@ public class AliyunServer implements BasicFileServerInterface {
      */
     @Override
     public BasicFileRequestDTO getDownloadRequest(BasicFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
+        BasicFileRequestDTO dto = new BasicFileRequestDTO();
         OSSClient ossClient = OSSClientUtils.getInstance();
         Date expiration = new Date(System.currentTimeMillis() + 3600);
-        URL url = ossClient.generatePresignedUrl(src.getScope(), src.getKey(), expiration);
+        String scope = "publicmaoding";
+        dto.setScope(src.getScope());
+        dto.setKey(src.getKey());
+        URL url = ossClient.generatePresignedUrl(scope, src.getKey(), expiration);
         if (url != null) {
-            BasicFileRequestDTO dto = new BasicFileRequestDTO();
             dto.setUrl(url.toString());
             return dto;
         }
-        return null;
+        return dto;
     }
 
 
@@ -150,7 +156,7 @@ public class AliyunServer implements BasicFileServerInterface {
         result.setChunkSize(request.getChunkSize());
         OSSClient client = OSSClientUtils.getInstance();
         List<PartETag> partETags = Collections.synchronizedList(new ArrayList<PartETag>());
-        String bucketName = "publicmaoding";// request.getMultipart().getScope();  publicmaoding
+        String bucketName = request.getMultipart().getScope();// request.getMultipart().getScope();  publicmaoding
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         try {
             String uploadId = claimUploadId(client, bucketName, request.getMultipart().getKey());
@@ -224,8 +230,8 @@ public class AliyunServer implements BasicFileServerInterface {
         OSSClient client = OSSClientUtils.getInstance();
         // 下载请求，10个任务并发下载，启动断点续传
         // 测试使用：publicmaoding，正式使用：request.getScope();
-        DownloadFileRequest downloadFileRequest = new DownloadFileRequest("publicmaoding", request.getKey());
-        downloadFileRequest.setDownloadFile("downloadFile");
+        DownloadFileRequest downloadFileRequest = new DownloadFileRequest(request.getScope(), request.getKey());
+        downloadFileRequest.setDownloadFile(request.getKey());
         downloadFileRequest.setTaskNum(10);//开起10个任务下载
         downloadFileRequest.setEnableCheckpoint(true);
         DownloadFileResult downloadRes = null;
@@ -240,7 +246,6 @@ public class AliyunServer implements BasicFileServerInterface {
             } else {
                 result.setStatus(ApiResponseConst.SUCCESS);
             }
-
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         } finally {

@@ -83,6 +83,30 @@ public class DownloadRequestDTO implements java.lang.Cloneable,
         this.chunkSize = chunkSize;
     }
 
+    public long pos;
+
+    public long getPos()
+    {
+        return pos;
+    }
+
+    public void setPos(long pos)
+    {
+        this.pos = pos;
+    }
+
+    public int size;
+
+    public int getSize()
+    {
+        return size;
+    }
+
+    public void setSize(int size)
+    {
+        this.size = size;
+    }
+
     public java.util.Map<java.lang.String, java.lang.String> params;
 
     public java.util.Map<java.lang.String, java.lang.String> getParams()
@@ -101,13 +125,15 @@ public class DownloadRequestDTO implements java.lang.Cloneable,
         this.key = "";
     }
 
-    public DownloadRequestDTO(int requestId, String scope, String key, int chunkId, int chunkSize, java.util.Map<java.lang.String, java.lang.String> params)
+    public DownloadRequestDTO(int requestId, String scope, String key, int chunkId, int chunkSize, long pos, int size, java.util.Map<java.lang.String, java.lang.String> params)
     {
         this.requestId = requestId;
         this.scope = scope;
         this.key = key;
         this.chunkId = chunkId;
         this.chunkSize = chunkSize;
+        this.pos = pos;
+        this.size = size;
         this.params = params;
     }
 
@@ -151,6 +177,14 @@ public class DownloadRequestDTO implements java.lang.Cloneable,
             {
                 return false;
             }
+            if(this.pos != r.pos)
+            {
+                return false;
+            }
+            if(this.size != r.size)
+            {
+                return false;
+            }
             if(this.params != r.params)
             {
                 if(this.params == null || r.params == null || !this.params.equals(r.params))
@@ -174,6 +208,8 @@ public class DownloadRequestDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, key);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, chunkId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, chunkSize);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pos);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, size);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, params);
         return h_;
     }
@@ -199,6 +235,8 @@ public class DownloadRequestDTO implements java.lang.Cloneable,
         ostr.writeString(this.key);
         ostr.writeInt(this.chunkId);
         ostr.writeInt(this.chunkSize);
+        ostr.writeLong(this.pos);
+        ostr.writeInt(this.size);
         com.maoding.Common.zeroc.MapHelper.write(ostr, this.params);
     }
 
@@ -209,6 +247,8 @@ public class DownloadRequestDTO implements java.lang.Cloneable,
         this.key = istr.readString();
         this.chunkId = istr.readInt();
         this.chunkSize = istr.readInt();
+        this.pos = istr.readLong();
+        this.size = istr.readInt();
         this.params = com.maoding.Common.zeroc.MapHelper.read(istr);
     }
 
@@ -264,5 +304,5 @@ public class DownloadRequestDTO implements java.lang.Cloneable,
 
     private static final DownloadRequestDTO _nullMarshalValue = new DownloadRequestDTO();
 
-    public static final long serialVersionUID = 2099540293L;
+    public static final long serialVersionUID = 804526508L;
 }

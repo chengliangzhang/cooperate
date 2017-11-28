@@ -91,7 +91,9 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static String getDirName(String path){
         if (path == null) return null;
         path = formatPath(path);
-        return path.substring(0,path.lastIndexOf(SPLIT_PATH));
+        int pos = path.lastIndexOf(SPLIT_PATH);
+        if (pos < 0) return "";
+        return path.substring(0,pos);
     }
 
     //带单位计算字节数

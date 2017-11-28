@@ -28,6 +28,8 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     boolean changeNodeInfo(NodeModifyRequestDTO request, String nodeId, com.zeroc.Ice.Current current);
 
+    boolean initNodeInfo(CreateNodeRequestDTO request, com.zeroc.Ice.Current current);
+
     boolean modifyFileInfo(CooperateFileDTO fileInfo, com.zeroc.Ice.Current current);
 
     com.maoding.FileServer.zeroc.FileRequestDTO requestUpload(CooperateFileDTO fileInfo, int mode, com.zeroc.Ice.Current current);
@@ -142,6 +144,20 @@ public interface StorageService extends com.zeroc.Ice.Object
         iceP_nodeId = istr.readString();
         inS.endReadParams();
         boolean ret = obj.changeNodeInfo(iceP_request, iceP_nodeId, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_initNodeInfo(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CreateNodeRequestDTO iceP_request;
+        iceP_request = CreateNodeRequestDTO.ice_read(istr);
+        inS.endReadParams();
+        boolean ret = obj.initNodeInfo(iceP_request, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         ostr.writeBool(ret);
         inS.endWriteParams(ostr);
@@ -565,6 +581,7 @@ public interface StorageService extends com.zeroc.Ice.Object
         "ice_ids",
         "ice_isA",
         "ice_ping",
+        "initNodeInfo",
         "isFileLocking",
         "listFileLink",
         "lockFile",
@@ -677,49 +694,53 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 21:
             {
-                return _iceD_isFileLocking(this, in, current);
+                return _iceD_initNodeInfo(this, in, current);
             }
             case 22:
             {
-                return _iceD_listFileLink(this, in, current);
+                return _iceD_isFileLocking(this, in, current);
             }
             case 23:
             {
-                return _iceD_lockFile(this, in, current);
+                return _iceD_listFileLink(this, in, current);
             }
             case 24:
             {
-                return _iceD_modifyFileInfo(this, in, current);
+                return _iceD_lockFile(this, in, current);
             }
             case 25:
             {
-                return _iceD_replaceFile(this, in, current);
+                return _iceD_modifyFileInfo(this, in, current);
             }
             case 26:
             {
-                return _iceD_requestDownload(this, in, current);
+                return _iceD_replaceFile(this, in, current);
             }
             case 27:
             {
-                return _iceD_requestDownloadFromLast(this, in, current);
+                return _iceD_requestDownload(this, in, current);
             }
             case 28:
             {
-                return _iceD_requestUpload(this, in, current);
+                return _iceD_requestDownloadFromLast(this, in, current);
             }
             case 29:
             {
-                return _iceD_restoreDirectory(this, in, current);
+                return _iceD_requestUpload(this, in, current);
             }
             case 30:
             {
-                return _iceD_restoreFile(this, in, current);
+                return _iceD_restoreDirectory(this, in, current);
             }
             case 31:
             {
-                return _iceD_unlockFile(this, in, current);
+                return _iceD_restoreFile(this, in, current);
             }
             case 32:
+            {
+                return _iceD_unlockFile(this, in, current);
+            }
+            case 33:
             {
                 return _iceD_uploadCallback(this, in, current);
             }

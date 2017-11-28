@@ -127,7 +127,6 @@ module zeroc {
         string projectId; //项目Id
         string taskId; //任务Id
         short typeId; //目标节点类型Id
-        short dirTypeId; //如果需要创建中间目录，中间目录的节点类型Id
     };
 
     ["java:getset"]
@@ -174,6 +173,7 @@ module zeroc {
         NodeDTO getNodeInfo(CooperationQueryDTO query); //获取节点简单信息
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool changeNodeInfo(NodeModifyRequestDTO request,string nodeId); //更改节点信息
+        bool initNodeInfo(CreateNodeRequestDTO request); //初始化树节点信息
         bool modifyFileInfo(CooperateFileDTO fileInfo); //更改文件信息-?
         FileRequestDTO requestUpload(CooperateFileDTO fileInfo,int mode); //申请上传文件
         FileRequestDTO requestDownload(CooperateFileDTO fileInfo,int mode); //申请下载文件
@@ -184,9 +184,9 @@ module zeroc {
         void finishDownload(FileRequestDTO request,bool succeeded); //客户端通知结束或取消下载文件-?
         bool replaceFile(CooperateFileDTO fileInfo,FileDTO fileDTO); //替换实体文件-?
         bool deleteFile(CooperateFileDTO fileInfo); //删除文件
-        string createDirectory(CreateNodeRequestDTO request); //创建目录,返回目录树节点ID
+        string createDirectory(CreateNodeRequestDTO request); //创建目录,返回目录树节点路径
         bool deleteDirectory(string nodeId,bool force); //删除目录
-        string createFile(CreateNodeRequestDTO request); //创建文件，返回文件树节点ID
+        string createFile(CreateNodeRequestDTO request); //创建文件，返回文件树节点路径
         CooperateFileDTO duplicateFile(CooperateFileDTO fileInfo,string path); //复制文件-?
         CooperateFileDTO createFileLink(CooperateFileDTO fileInfo, string path); //创建文件链接-?
         bool duplicateDirectory(string path,string parent); //复制目录-?

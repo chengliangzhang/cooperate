@@ -70,6 +70,8 @@ module zeroc {
         string key; //文件id(key或path)
         int chunkId; //申请下载的分片序号，与分片大小相乘计算出文件起始位置
         int chunkSize; //申请下载的分片大小，如果为0则chunkId失效，下载文件所有内容
+        long pos; //申请下载的文件内起始地址
+        int size; //申请下载的大小
         Map params; //其他下载参数
     };
 

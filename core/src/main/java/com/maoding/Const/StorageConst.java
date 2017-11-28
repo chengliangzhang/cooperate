@@ -12,5 +12,7 @@ public interface StorageConst {
     final static Short STORAGE_NODE_TYPE_HIS_FILE = 2;
     final static Short STORAGE_DIR_TYPE_SYS = 3;
     final static Short STORAGE_DIR_TYPE_USER = 4;
-    final static Short STORAGE_DIR_TYPE_MIN = STORAGE_DIR_TYPE_SYS;
+    final static Short STORAGE_UNKNOWN_TYPE = 99;
+    final static Short STORAGE_FILE_TYPE_MAX = STORAGE_NODE_TYPE_HIS_FILE;
+    final static Short STORAGE_DIR_TYPE_MAX = STORAGE_DIR_TYPE_USER;
 }

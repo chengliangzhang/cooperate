@@ -66,14 +66,24 @@ public class LocalServer implements BasicFileServerInterface {
     @Override
     public BasicFileRequestDTO getUploadRequest(BasicFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
         //补全参数
-        if (StringUtils.isEmpty(src.getScope())) src.setScope("");
-        if (StringUtils.isEmpty(src.getKey())) src.setKey(UUID.randomUUID().toString() + ".txt");
 
         //建立申请上传参数对象
         BasicFileRequestDTO requestDTO = new BasicFileRequestDTO();
         requestDTO.setUrl(FILE_UPLOAD_URL);
-        requestDTO.putParam(BASE_DIR_NAME,src.getScope());
-        requestDTO.putParam(PATH_NAME,src.getKey());
+        if (src.getScope() == null){
+            String scope = StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT);
+            requestDTO.setScope(scope);
+        } else {
+            requestDTO.setScope(src.getScope());
+        }
+        if (StringUtils.isEmpty(src.getKey())) {
+            String key = UUID.randomUUID().toString() + ".txt";
+            requestDTO.setKey(key);
+        } else {
+            requestDTO.setKey(src.getKey());
+        }
+        requestDTO.putParam(BASE_DIR_NAME,requestDTO.getScope());
+        requestDTO.putParam(PATH_NAME,requestDTO.getKey());
         if (modeMapConst.containsKey(mode)){
             requestDTO.setMode(modeMapConst.get(mode));
         } else {
@@ -121,45 +131,39 @@ public class LocalServer implements BasicFileServerInterface {
     @Override
     public BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
         //检查参数
-        assert request != null;
-        assert request.getMultipart() != null;
-        assert request.getMultipart().getData() != null;
-        assert (request.getChunkId() != null) && (request.getChunkId() >= 0);
+        assert (request != null);
+        assert (request.getMultipart() != null);
+        assert ((request.getMultipart().getPos() != null) && (request.getMultipart().getPos() >= 0));
+        assert ((request.getMultipart().getSize() != null) && (request.getMultipart().getSize() > 0));
+        assert (request.getMultipart().getData() != null);
 
         //补全参数
-        BasicFileMultipartDTO fileDTO = request.getMultipart();
-        if (StringUtils.isEmpty(fileDTO.getScope())) fileDTO.setScope("");
-        if (StringUtils.isEmpty(fileDTO.getKey())) fileDTO.setKey(UUID.randomUUID().toString() + ".txt");
-        if ((fileDTO.getPos() == null) || (fileDTO.getPos() < 0)) fileDTO.setPos((long)request.getChunkId() * request.getChunkPerSize());
-        if ((fileDTO.getSize() == null) || (fileDTO.getSize() <= 0)) fileDTO.setSize(fileDTO.getData().length);
-        if ((request.getChunkPerSize() == null) && (request.getChunkPerSize() <= 0)) request.setChunkPerSize(DEFAULT_CHUNK_PER_SIZE);
-        if ((request.getChunkSize() == null) || (request.getChunkSize() <= 0)) request.setChunkSize(fileDTO.getSize());
+        BasicFileMultipartDTO multipart = request.getMultipart();
+        if (StringUtils.isEmpty(multipart.getScope())) multipart.setScope("");
+        if (StringUtils.isEmpty(multipart.getKey())) multipart.setKey(UUID.randomUUID().toString() + ".txt");
 
         //写入文件
         BasicUploadResultDTO result = BeanUtils.createFrom(request,BasicUploadResultDTO.class);
         RandomAccessFile rf = null;
 
-        byte[] data = fileDTO.getData();
-        assert data != null;
+        byte[] data = multipart.getData();
         int off = 0;
-        int len = request.getChunkSize();
-        assert (len <= request.getChunkPerSize()) && (len <= data.length);
-        long pos = (long) request.getChunkId() * request.getChunkPerSize();
+        int len = multipart.getSize();
+        long pos = multipart.getPos();
 
-        if (request.getChunkId() == 0) {
+        if (pos == 0) {
             t0 = System.currentTimeMillis();
             pos0 = pos + len;
-            log.info("=====>接收到第一个包:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t0)));
+            log.info("=====>接收到第一个数据包:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t0)));
         }
 
-        if (!((new File(FILE_SERVER_PATH + "/" + fileDTO.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +fileDTO.getScope())).mkdirs();
+        if (!((new File(FILE_SERVER_PATH + "/" + multipart.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +multipart.getScope())).mkdirs();
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
-                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey(), "rw");
+                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rw");
                 break;
             } catch (IOException e) {
-                FileUtils.close(rf);
-                ExceptionUtils.logWarn(log,e,false,"打开文件" + FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey() + "出错");
+                ExceptionUtils.logWarn(log,e,false,"打开文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "出错");
                 try {
                     Thread.sleep(TRY_DELAY);
                 } catch (InterruptedException e1) {
@@ -171,12 +175,13 @@ public class LocalServer implements BasicFileServerInterface {
 
         try {
             if (rf == null) throw new IOException();
+            assert ((pos >= 0) && (len > 0) && (data != null) && (len <= data.length));
             if (rf.length() < pos) rf.setLength(pos + len);
             rf.seek(pos);
             rf.write(data,off,len);
         } catch (IOException e) {
             FileUtils.close(rf);
-            String msg = "写入文件" + FILE_SERVER_PATH + "/" + fileDTO.getScope() + "/" + fileDTO.getKey() + "时出错";
+            String msg = "写入文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "时出错";
             ExceptionUtils.logWarn(log,e,false,msg);
             result.setStatus(ApiResponseConst.FAILED);
             result.setMsg(msg);
@@ -186,13 +191,13 @@ public class LocalServer implements BasicFileServerInterface {
         FileUtils.close(rf);
         result.setStatus(ApiResponseConst.SUCCESS);
 
-        if (request.getChunkId() > 0) {
+        if (pos > 0) {
             long t = (System.currentTimeMillis() - t0);
             assert (t > 0);
             long rev = pos + len;
             long cal = rev - pos0;
-            log.info("已写入第" + request.getChunkId() + "块:用时" + t + "ms,共接收到"
-                    + StringUtils.calBytes(rev)  + "，速度" + StringUtils.calSpeed(cal,t));
+            log.info("已写入" + StringUtils.calBytes(rev) + ":用时" + t + "ms，速度"
+                    + StringUtils.calSpeed(cal,t));
         }
         return result;
     }
@@ -205,23 +210,26 @@ public class LocalServer implements BasicFileServerInterface {
     @Override
     public BasicDownloadResultDTO download(BasicDownloadRequestDTO request) {
         //检查参数
-        assert request != null;
-        assert request.getKey() != null;
-        assert (request.getChunkId() != null) && (request.getChunkId() >= 0);
-
+        assert (request != null);
+        assert (request.getKey() != null);
+        assert ((request.getPos() != null) && (request.getPos() >= 0));
 
         //补全参数
         if (StringUtils.isEmpty(request.getScope())) request.setScope("");
         if ((request.getChunkSize() == null) || (request.getChunkSize() <= 0)) request.setChunkSize(DEFAULT_CHUNK_PER_SIZE);
-
-        if (request.getChunkId() == 0) {
-            t1 = System.currentTimeMillis();
-            log.info("=====>接收到下载请求:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t1)));
-        }
+        if ((request.getSize() == null) || (request.getSize() <= 0)) request.setSize(DEFAULT_CHUNK_PER_SIZE);
 
         //下载文件
         BasicDownloadResultDTO result = BeanUtils.createFrom(request,BasicDownloadResultDTO.class);
         RandomAccessFile rf = null;
+
+        long pos = request.getPos();
+        int size = request.getSize();
+        if (pos == 0) {
+            t1 = System.currentTimeMillis();
+            log.info("=====>接收到下载请求:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t1)));
+        }
+
         //打开文件
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
@@ -241,15 +249,15 @@ public class LocalServer implements BasicFileServerInterface {
         try {
             if (rf == null) throw new IOException("打开文件" + FILE_SERVER_PATH + "/" + request.getScope() + "/" + request.getKey() + "出错");
             //定位
-            long pos = (long)request.getChunkId() * request.getChunkSize();
             long length = rf.length();
-            assert pos < length;
+            assert (pos >= 0) && (pos < length) && (size > 0);
             rf.seek(pos);
             //读取文件内容
-            byte[] bytes = new byte[request.getChunkSize()];
-            int size = rf.read(bytes);
-            assert size > 0;
-            if (size < bytes.length) bytes = Arrays.copyOfRange(bytes,0,size);
+            byte[] bytes = new byte[size];
+            int n = rf.read(bytes);
+            assert (n > 0) && (n <= size);
+            bytes = Arrays.copyOfRange(bytes,0,n);
+            size = n;
 
             //设置返回参数
             long posLast = pos + size;
@@ -274,8 +282,7 @@ public class LocalServer implements BasicFileServerInterface {
             long t = (System.currentTimeMillis() - t1);
             assert (t > 0);
             long c = result.getData().getPos() + result.getData().getSize();
-            log.info("第" + request.getChunkId() + "块已准备好:用时" + t + "ms,共准备了"
-                    + StringUtils.calBytes(c) + "，速度" + StringUtils.calSpeed(c,t));
+            log.info("已准备好" + StringUtils.calBytes(c) + "数据，用时" + t + "ms,速度" + StringUtils.calSpeed(c,t));
         }
         return result;
     }

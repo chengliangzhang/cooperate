@@ -3,35 +3,36 @@
 <mapper namespace="com.maoding.Storage.Dao.StorageDao" >
     <select id="listFileByScopeAndKey" resultType="com.maoding.Storage.zeroc.CooperateFileDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
       select
-        c.id
-        ,c.file_name as name
-        ,a.id as node_id
-        ,a.pid as p_node_id
-        ,a.node_name
-        ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
-        ,c.file_length
-        ,c.file_checksum
-        ,c.file_version
-        ,c.specialty_id
-        ,c.last_modify_address
-        ,c.sync_mode as sync_mode_id
-        ,c.type_id
-        ,c.locking
-        ,c.creator_duty_id
-        ,c.create_time
-        ,date_format(c.create_time,'%Y-%m-%d %T') as create_time_text
-        ,c.last_modify_duty_id
-        ,c.last_modify_time
-        ,date_format(c.create_time,'%Y-%m-%d %T') as last_modify_time_text
-      from maoding_storage a
-          inner join maoding_storage b on (find_in_set(b.id,a.path))
-          inner join maoding_storage_file c on (a.detail_id = c.id)
-      where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
+        a.id
+        ,a.file_name as name
+        ,b.id as node_id
+        ,b.pid as p_node_id
+        ,b.node_name
+        ,group_concat(if(c.node_name is null,'',concat(c.node_name,'/')) order by length(c.path) separator '') as path_name
+        ,a.file_length
+        ,a.file_checksum
+        ,a.file_version
+        ,a.specialty_id
+        ,a.last_modify_address
+        ,a.sync_mode_id as sync_mode_id
+        ,a.type_id
+        ,a.locking
+        ,a.creator_duty_id
+        ,a.create_time
+        ,date_format(a.create_time,'%Y-%m-%a %T') as create_time_text
+        ,a.last_modify_duty_id
+        ,a.last_modify_time
+        ,date_format(a.create_time,'%Y-%m-%a %T') as last_modify_time_text
+      from
+          maoding_storage_file a
+          left join maoding_storage b on (b.detail_id = a.id)
+          left join maoding_storage c on (find_in_set(c.id,b.path))
+      where (a.deleted = 0)
           <if test="scope != null">
-              and (c.file_scope like concat('%',#{scope}))
+              and (a.file_scope = #{scope})
           </if>
           <if test="key != null">
-              and (c.file_key like concat('%',#{key}))
+              and (a.file_key like concat('%',#{key}))
           </if>
       group by a.id
     </select>
@@ -375,4 +376,15 @@
         group by b.id
     </select>
 
+    <select id="selectByPIdAndName" resultType="com.maoding.Storage.Entity.StorageEntity" parameterType="com.maoding.Storage.Dto.QueryByPidAndNameDTO">
+        select * from maoding_storage a
+        where (a.deleted = 0)
+            <if test="pid != null">
+                and (a.pid = #{pid})
+            </if>
+            <if test="name != null">
+                and (a.node_name = #{name})
+            </if>
+        limit 1
+    </select>
 </mapper>

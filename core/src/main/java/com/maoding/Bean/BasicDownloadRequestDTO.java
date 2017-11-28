@@ -23,6 +23,10 @@ public class BasicDownloadRequestDTO {
     private Integer chunkSize;
     /** 分片的约定大小，如果为0则下载后续所有内容（与chunkSize重复，将被取消） */
     private Integer chunkPerSize; //与chunkSize重复，将被取消
+    /** 下载的起始位置 */
+    private Long pos;
+    /** 下载的大小 */
+    private Integer size;
     /** 其他下载参数 */
     private Map<String,String> params;
 
@@ -80,6 +84,22 @@ public class BasicDownloadRequestDTO {
 
     public void setChunkPerSize(Integer chunkPerSize) {
         this.chunkPerSize = chunkPerSize;
+    }
+
+    public Long getPos() {
+        return pos;
+    }
+
+    public void setPos(Long pos) {
+        this.pos = pos;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
     }
 
     public Map<String, String> getParams() {

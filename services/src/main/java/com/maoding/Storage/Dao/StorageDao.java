@@ -1,6 +1,7 @@
 package com.maoding.Storage.Dao;
 
 import com.maoding.Base.BaseDao;
+import com.maoding.Storage.Dto.QueryByPidAndNameDTO;
 import com.maoding.Storage.Entity.StorageEntity;
 import com.maoding.Storage.zeroc.*;
 import org.springframework.stereotype.Repository;
@@ -31,4 +32,6 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     List<FileNodeDTO> listRelatedFile(String nodeId);
     /** 查找协同文件版本 */
     List<FileVersionDTO> listVersion(String nodeId);
+    /** 使用pid和name查找树节点记录 */
+    StorageEntity selectByPIdAndName(QueryByPidAndNameDTO query);
 }

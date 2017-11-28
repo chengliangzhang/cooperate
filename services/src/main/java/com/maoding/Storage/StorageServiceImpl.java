@@ -8,6 +8,7 @@ import com.maoding.FileServer.zeroc.FileService;
 import com.maoding.Storage.Dao.StorageDao;
 import com.maoding.Storage.Dao.StorageDirDao;
 import com.maoding.Storage.Dao.StorageFileDao;
+import com.maoding.Storage.Dto.QueryByPidAndNameDTO;
 import com.maoding.Storage.Entity.StorageDirEntity;
 import com.maoding.Storage.Entity.StorageEntity;
 import com.maoding.Storage.Entity.StorageFileEntity;
@@ -61,7 +62,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
         StorageEntity nodeEntity = storageDao.selectById(nodeId);
         int i = 0;
-        if (nodeEntity.getTypeId() >= StorageConst.STORAGE_DIR_TYPE_MIN){
+        if (nodeEntity.getTypeId() >= StorageConst.STORAGE_FILE_TYPE_MAX){
             if (request.getName() != null) nodeEntity.setNodeName(request.getName());
             if (request.getPNodeId() != null) {
                 StorageEntity pNodeEntity = storageDao.selectById(request.getPNodeId());
@@ -343,64 +344,59 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public String createFile(CreateNodeRequestDTO request, Current current) {
-        assert (request != null);
-        assert (request.getFullName() != null);
-
-        //把空字符串格式化为null
-        request = BeanUtils.cleanProperties(request);
-
-        //建立文件记录
-        StorageFileEntity fileEntity = BeanUtils.createFrom(request,StorageFileEntity.class);
-        fileEntity.reset();
-        fileEntity.setFileName(request.getFullName());
-        fileEntity.setLastModifyAddress(StringUtils.getRemoteIp(current));
-        fileEntity.setTypeId(request.getTypeId());
-        storageFileDao.insert(fileEntity);
-
-        //建立树节点记录
-        StorageEntity nodeEntity = new StorageEntity();
-        nodeEntity.setPid(request.getPNodeId());
-        nodeEntity.setDetailId(fileEntity.getId());
-        nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
-        String pNodePath = nodeEntity.getId();
-        if (request.getPNodeId() != null) {
-            //如果指定了父节点，添加父节点路径
-            StorageEntity pNodeEntity = storageDao.selectById(request.getPNodeId());
-            pNodePath = pNodeEntity.getPath() + StringUtils.SPLIT_ID + pNodePath;
-        }
-        nodeEntity.setPath(pNodePath);
-        storageDao.insert(nodeEntity);
-        return nodeEntity.getPath();
+        return createNodeInfo(request);
+//        assert (request != null);
+//        assert (request.getFullName() != null);
+//
+//        //把空字符串格式化为null
+//        request = BeanUtils.cleanProperties(request);
+//
+//        //建立文件记录
+//        StorageFileEntity fileEntity = BeanUtils.createFrom(request,StorageFileEntity.class);
+//        fileEntity.reset();
+//        fileEntity.setFileName(request.getFullName());
+//        fileEntity.setLastModifyAddress(StringUtils.getRemoteIp(current));
+//        fileEntity.setTypeId(request.getTypeId());
+//        storageFileDao.insert(fileEntity);
+//
+//        //建立树节点记录
+//        StorageEntity nodeEntity = new StorageEntity();
+//        nodeEntity.setPid(request.getPNodeId());
+//        nodeEntity.setDetailId(fileEntity.getId());
+//        nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+//        String pNodePath = nodeEntity.getId();
+//        if (request.getPNodeId() != null) {
+//            //如果指定了父节点，添加父节点路径
+//            StorageEntity pNodeEntity = storageDao.selectById(request.getPNodeId());
+//            pNodePath = pNodeEntity.getPath() + StringUtils.SPLIT_ID + pNodePath;
+//        }
+//        nodeEntity.setPath(pNodePath);
+//        storageDao.insert(nodeEntity);
+//        return nodeEntity.getPath();
     }
 
-    private String createDirectory(CreateNodeRequestDTO request, StorageEntity nodeEntity, Current current) {
+    private String createNodeInfo(CreateNodeRequestDTO request){
         assert (request != null);
         assert (request.getFullName() != null);
 
         //把空字符串格式化为null
         request = BeanUtils.cleanProperties(request);
 
-        //分离路径和pNodeId
-        String[] pathNodeArray = request.getFullName().replaceAll("\\\\","/").split("/");
+        //分离路径
+        String nodeName = StringUtils.getFileName(request.getFullName());
+        String pathName = StringUtils.getDirName(request.getFullName());
+        String[] pathNodeArray = pathName.split(StringUtils.SPLIT_PATH);
 
-        //查找根目录
+        //查找目录，如果是预建的更改类型为已建立
         StringBuilder fullName = new StringBuilder();
         StringBuilder pathField = new StringBuilder();
         String pNodeId = request.getPNodeId();
-        if (pNodeId != null) {
-            StorageEntity node = storageDao.selectById(pNodeId);
-            pathField.append(node.getPath());
-            StorageDirEntity dir = storageDirDao.selectById(node.getDetailId());
-            fullName.append(dir.getFullName());
-        }
-
-        //查找已有目录
-        CooperationQueryDTO query = BeanUtils.cleanProperties(new CooperationQueryDTO());
         for (int i=0; i<pathNodeArray.length; i++){
-            query.setNodeName(pathNodeArray[i]);
-            query.setPNodeId(pNodeId);
-            CooperateDirNodeDTO dirNode = storageDao.getDirNodeInfo(query);
-            if (dirNode == null) {
+            QueryByPidAndNameDTO query = new QueryByPidAndNameDTO();
+            query.setName(pathNodeArray[i]);
+            query.setPid(pNodeId);
+            StorageEntity pathNode = storageDao.selectByPIdAndName(query);
+            if (pathNode == null) {
                 //创建子目录
                 for (int j=i; j<pathNodeArray.length; j++) {
                     if (fullName.length() > 0) fullName.append("/");
@@ -408,33 +404,260 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                     StorageDirEntity dir = BeanUtils.createFrom(request,StorageDirEntity.class);
                     dir.reset();
                     dir.setFullName(fullName.toString());
+                    if (StorageConst.STORAGE_FILE_TYPE_MAX >= request.getTypeId()){
+                        dir.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+                    } else {
+                        dir.setTypeId(request.getTypeId());
+                    }
                     storageDirDao.insert(dir);
-                    if (nodeEntity == null) nodeEntity = new StorageEntity();
-                    nodeEntity.reset();
-                    nodeEntity.setDetailId(dir.getId());
-                    nodeEntity.setNodeName(pathNodeArray[j]);
-                    nodeEntity.setTypeId(request.getTypeId());
-                    nodeEntity.setPid(pNodeId);
+                    pathNode = new StorageEntity();
+                    pathNode.setDetailId(dir.getId());
+                    pathNode.setNodeName(pathNodeArray[j]);
+                    if (StorageConst.STORAGE_FILE_TYPE_MAX >= request.getTypeId()){
+                        pathNode.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+                    } else {
+                        pathNode.setTypeId(request.getTypeId());
+                    }
+                    pathNode.setPid(pNodeId);
                     if (pathField.length() > 0) pathField.append(",");
-                    pathField.append(nodeEntity.getId());
-                    nodeEntity.setPath(pathField.toString());
-                    storageDao.insert(nodeEntity);
-                    pNodeId = nodeEntity.getId();
+                    pathField.append(pathNode.getId());
+                    pathNode.setPath(pathField.toString());
+                    storageDao.insert(pathNode);
+                    pNodeId = pathNode.getId();
                 }
                 break;
             } else {
-                pNodeId = dirNode.getId();
+                pNodeId = pathNode.getId();
                 if (fullName.length() > 0) fullName.append("/");
                 fullName.append(pathNodeArray[i]);
                 if (pathField.length() > 0) pathField.append(",");
-                pathField.append(dirNode.getId());
+                pathField.append(pathNode.getId());
             }
         }
-        return pathField.toString();
+
+        //插入叶节点
+        int n = 0;
+        QueryByPidAndNameDTO query = new QueryByPidAndNameDTO();
+        query.setName(nodeName);
+        query.setPid(pNodeId);
+        StorageEntity node = storageDao.selectByPIdAndName(query);
+        if (node == null){
+            String detailId = null;
+            if (request.getTypeId() <= StorageConst.STORAGE_FILE_TYPE_MAX) {
+                StorageFileEntity fileEntity = BeanUtils.createFrom(request,StorageFileEntity.class);
+                fileEntity.reset();
+                fileEntity.setFileName(nodeName);
+                fileEntity.setTypeId((short)0);
+                n += storageFileDao.insert(fileEntity);
+                detailId = fileEntity.getId();
+            } else if (request.getTypeId() <= StorageConst.STORAGE_DIR_TYPE_MAX) {
+                if (fullName.length() > 0) fullName.append("/");
+                fullName.append(nodeName);
+                StorageDirEntity dirEntity = BeanUtils.createFrom(request,StorageDirEntity.class);
+                dirEntity.reset();
+                dirEntity.setFullName(fullName.toString());
+                dirEntity.setTypeId((short)0);
+                n += storageDirDao.insert(dirEntity);
+                detailId = dirEntity.getId();
+            }
+            node = new StorageEntity();
+            node.setNodeName(nodeName);
+            node.setTypeId(request.getTypeId());
+            node.setDetailId(detailId);
+            if (pathField.length() > 0) pathField.append(",");
+            pathField.append(node.getId());
+            node.setPath(pathField.toString());
+            n += storageDao.insert(node);
+        } else {
+            node.setTypeId(request.getTypeId());
+            if (node.getDetailId() != null){
+                if (request.getTypeId() <= StorageConst.STORAGE_FILE_TYPE_MAX) {
+                    StorageFileEntity fileEntity = storageFileDao.selectById(node.getDetailId());
+                    if (fileEntity == null){
+                        fileEntity = BeanUtils.createFrom(request,StorageFileEntity.class);
+                        fileEntity.reset();
+                        fileEntity.setFileName(nodeName);
+                        storageFileDao.insert(fileEntity);
+                    } else if (fileEntity.getTypeId() > StorageConst.STORAGE_FILE_TYPE_MAX) {
+                        fileEntity.setTypeId((short)0); //fileEntity.setTypeId(request.getTypeId());
+                        storageFileDao.updateById(fileEntity,fileEntity.getId());
+                    }
+                } else if (request.getTypeId() <= StorageConst.STORAGE_DIR_TYPE_MAX) {
+                    StorageDirEntity dirEntity = storageDirDao.selectById(node.getDetailId());
+                    if (dirEntity == null) {
+                        dirEntity = BeanUtils.createFrom(request,StorageDirEntity.class);
+                        dirEntity.reset();
+                        storageDirDao.insert(dirEntity);
+                    } else if (dirEntity.getTypeId() > StorageConst.STORAGE_DIR_TYPE_MAX){
+                        dirEntity.setTypeId(request.getTypeId());
+                        storageDirDao.updateById(dirEntity,dirEntity.getId());
+                    }
+                }
+            }
+        }
+        return node.getPath();
+    }
+
+    private String createDirectory(CreateNodeRequestDTO request, StorageEntity nodeEntity, Current current) {
+//        assert (request != null);
+//        assert (request.getFullName() != null);
+//
+//        //把空字符串格式化为null
+//        request = BeanUtils.cleanProperties(request);
+//
+//        //分离路径和pNodeId
+//        String[] pathNodeArray = request.getFullName().replaceAll("\\\\","/").split("/");
+//
+//        //查找根目录
+//        StringBuilder fullName = new StringBuilder();
+//        StringBuilder pathField = new StringBuilder();
+//        String pNodeId = request.getPNodeId();
+//        if (pNodeId != null) {
+//            StorageEntity node = storageDao.selectById(pNodeId);
+//            pathField.append(node.getPath());
+//            StorageDirEntity dir = storageDirDao.selectById(node.getDetailId());
+//            fullName.append(dir.getFullName());
+//        }
+//
+//        //查找已有目录
+//        CooperationQueryDTO query = BeanUtils.cleanProperties(new CooperationQueryDTO());
+//        for (int i=0; i<pathNodeArray.length; i++){
+//            query.setNodeName(pathNodeArray[i]);
+//            query.setPNodeId(pNodeId);
+//            CooperateDirNodeDTO dirNode = storageDao.getDirNodeInfo(query);
+//            if (dirNode == null) {
+//                //创建子目录
+//                for (int j=i; j<pathNodeArray.length; j++) {
+//                    if (fullName.length() > 0) fullName.append("/");
+//                    fullName.append(pathNodeArray[j]);
+//                    StorageDirEntity dir = BeanUtils.createFrom(request,StorageDirEntity.class);
+//                    dir.reset();
+//                    dir.setFullName(fullName.toString());
+//                    storageDirDao.insert(dir);
+//                    if (nodeEntity == null) nodeEntity = new StorageEntity();
+//                    nodeEntity.reset();
+//                    nodeEntity.setDetailId(dir.getId());
+//                    nodeEntity.setNodeName(pathNodeArray[j]);
+//                    nodeEntity.setTypeId(request.getTypeId());
+//                    nodeEntity.setPid(pNodeId);
+//                    if (pathField.length() > 0) pathField.append(",");
+//                    pathField.append(nodeEntity.getId());
+//                    nodeEntity.setPath(pathField.toString());
+//                    storageDao.insert(nodeEntity);
+//                    pNodeId = nodeEntity.getId();
+//                }
+//                break;
+//            } else {
+//                pNodeId = dirNode.getId();
+//                if (fullName.length() > 0) fullName.append("/");
+//                fullName.append(pathNodeArray[i]);
+//                if (pathField.length() > 0) pathField.append(",");
+//                pathField.append(dirNode.getId());
+//            }
+//        }
+//        return pathField.toString();
+        return createNodeInfo(request);
     }
     @Override
     public String createDirectory(CreateNodeRequestDTO request, Current current) {
         return createDirectory(request,null,current);
+    }
+
+    @Override
+    public boolean initNodeInfo(CreateNodeRequestDTO request, Current current) {
+        assert (request != null);
+        assert (request.getFullName() != null);
+
+        //把空字符串格式化为null
+        request = BeanUtils.cleanProperties(request);
+
+        //分离路径
+        String nodeName = StringUtils.getFileName(request.getFullName());
+        String pathName = StringUtils.getDirName(request.getFullName());
+        String[] pathNodeArray = pathName.split(StringUtils.SPLIT_PATH);
+
+        //查找目录，没有则创建
+        StringBuilder fullName = new StringBuilder();
+        StringBuilder pathField = new StringBuilder();
+        String pNodeId = request.getPNodeId();
+        if (pNodeId != null) {
+            StorageEntity pNode = storageDao.selectById(pNodeId);
+            pathField.append(pNode.getPath());
+            StorageDirEntity dir = storageDirDao.selectById(pNode.getDetailId());
+            fullName.append(dir.getFullName());
+        }
+
+        for (int i=0; i<pathNodeArray.length; i++){
+            QueryByPidAndNameDTO query = new QueryByPidAndNameDTO();
+            query.setName(pathNodeArray[i]);
+            query.setPid(pNodeId);
+            StorageEntity pathNode = storageDao.selectByPIdAndName(query);
+            if (pathNode == null) {
+                //创建子目录
+                for (int j=i; j<pathNodeArray.length; j++) {
+                    if (fullName.length() > 0) fullName.append("/");
+                    fullName.append(pathNodeArray[j]);
+                    StorageDirEntity dir = BeanUtils.createFrom(request,StorageDirEntity.class);
+                    dir.reset();
+                    dir.setFullName(fullName.toString());
+                    dir.setTypeId(StorageConst.STORAGE_UNKNOWN_TYPE);
+                    storageDirDao.insert(dir);
+                    pathNode = new StorageEntity();
+                    pathNode.setDetailId(dir.getId());
+                    pathNode.setNodeName(pathNodeArray[j]);
+                    pathNode.setTypeId(StorageConst.STORAGE_UNKNOWN_TYPE);
+                    pathNode.setPid(pNodeId);
+                    if (pathField.length() > 0) pathField.append(",");
+                    pathField.append(pathNode.getId());
+                    pathNode.setPath(pathField.toString());
+                    storageDao.insert(pathNode);
+                    pNodeId = pathNode.getId();
+                }
+                break;
+            } else {
+                pNodeId = pathNode.getId();
+                if (fullName.length() > 0) fullName.append("/");
+                fullName.append(pathNodeArray[i]);
+                if (pathField.length() > 0) pathField.append(",");
+                pathField.append(pathNode.getId());
+            }
+        }
+
+        //插入叶节点
+        int n = 0;
+        QueryByPidAndNameDTO query = new QueryByPidAndNameDTO();
+        query.setName(nodeName);
+        query.setPid(pNodeId);
+        StorageEntity node = storageDao.selectByPIdAndName(query);
+        if (node == null){
+            String detailId = null;
+            if (request.getTypeId() <= StorageConst.STORAGE_FILE_TYPE_MAX) {
+                StorageFileEntity fileEntity = BeanUtils.createFrom(request,StorageFileEntity.class);
+                fileEntity.reset();
+                fileEntity.setFileName(nodeName);
+                fileEntity.setTypeId(StorageConst.STORAGE_UNKNOWN_TYPE);
+                n += storageFileDao.insert(fileEntity);
+                detailId = fileEntity.getId();
+            } else if (request.getTypeId() <= StorageConst.STORAGE_DIR_TYPE_MAX) {
+                if (fullName.length() > 0) fullName.append("/");
+                fullName.append(nodeName);
+                StorageDirEntity dirEntity = BeanUtils.createFrom(request,StorageDirEntity.class);
+                dirEntity.reset();
+                dirEntity.setFullName(fullName.toString());
+                dirEntity.setTypeId(StorageConst.STORAGE_UNKNOWN_TYPE);
+                n += storageDirDao.insert(dirEntity);
+                detailId = dirEntity.getId();
+            }
+            node = new StorageEntity();
+            node.setNodeName(nodeName);
+            node.setTypeId(StorageConst.STORAGE_UNKNOWN_TYPE);
+            node.setDetailId(detailId);
+            if (pathField.length() > 0) pathField.append(",");
+            pathField.append(node.getId());
+            node.setPath(pathField.toString());
+            n += storageDao.insert(node);
+        }
+        return (n > 0);
     }
 
     @Override
