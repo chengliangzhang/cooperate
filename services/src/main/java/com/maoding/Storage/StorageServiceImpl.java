@@ -391,6 +391,13 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         StringBuilder fullName = new StringBuilder();
         StringBuilder pathField = new StringBuilder();
         String pNodeId = request.getPNodeId();
+        if (pNodeId != null) {
+            StorageEntity pNode = storageDao.selectById(pNodeId);
+            pathField.append(pNode.getPath());
+            StorageDirEntity dir = storageDirDao.selectById(pNode.getDetailId());
+            fullName.append(dir.getFullName());
+        }
+
         for (int i=0; i<pathNodeArray.length; i++){
             QueryByPidAndNameDTO query = new QueryByPidAndNameDTO();
             query.setName(pathNodeArray[i]);
