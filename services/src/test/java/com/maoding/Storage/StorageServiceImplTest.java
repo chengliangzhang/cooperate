@@ -94,12 +94,12 @@ public class StorageServiceImplTest {
     @Test
     public void testCreateDirectory() throws Exception {
         CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
-        request.setFullName("a/b/c");
+        request.setFullName("a");
         request.setTypeId(StorageConst.STORAGE_DIR_TYPE_SYS);
         String fullPath = storageService.createDirectory(request,null);
         String nodeId = StringUtils.getLastSplit(fullPath,StringUtils.SPLIT_ID);
         request.setPNodeId(nodeId);
-        request.setFullName("x/y/z");
+        request.setFullName("b");
         storageService.createDirectory(request,null);
     }
 

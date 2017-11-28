@@ -399,6 +399,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         }
 
         for (int i=0; i<pathNodeArray.length; i++){
+            if (StringUtils.isEmpty(pathNodeArray[i])) continue;
             QueryByPidAndNameDTO query = new QueryByPidAndNameDTO();
             query.setName(pathNodeArray[i]);
             query.setPid(pNodeId);
@@ -469,6 +470,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             }
             node = new StorageEntity();
             node.setNodeName(nodeName);
+            node.setPid(pNodeId);
             node.setTypeId(request.getTypeId());
             node.setDetailId(detailId);
             if (pathField.length() > 0) pathField.append(",");
@@ -535,6 +537,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         }
 
         for (int i=0; i<pathNodeArray.length; i++){
+            if (StringUtils.isEmpty(pathNodeArray[i])) continue;
             QueryByPidAndNameDTO query = new QueryByPidAndNameDTO();
             query.setName(pathNodeArray[i]);
             query.setPid(pNodeId);
@@ -596,6 +599,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                 detailId = dirEntity.getId();
             }
             node = new StorageEntity();
+            node.setPid(pNodeId);
             node.setNodeName(nodeName);
             node.setTypeId(StorageConst.STORAGE_UNKNOWN_TYPE);
             node.setDetailId(detailId);
