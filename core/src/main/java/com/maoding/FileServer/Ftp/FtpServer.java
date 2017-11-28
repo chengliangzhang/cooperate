@@ -108,14 +108,16 @@ public class FtpServer implements BasicFileServerInterface {
     public BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
         BasicUploadResultDTO result = new BasicUploadResultDTO();
         //默认参数
+        Integer chunkId = null != request.getChunkId() ? request.getChunkId() : request.getMultipart().getPos().intValue();
+        Integer chunkSize = null != request.getChunkSize() ? request.getChunkSize() : request.getMultipart().getSize();
         request.setChunkId(1);
-        result.setChunkId(request.getChunkId());
-        result.setChunkSize(request.getChunkSize());
+        result.setChunkId(chunkId);
+        result.setChunkSize(chunkSize);
         //检查参数
         assert request != null;
         assert request.getMultipart() != null;
         assert request.getMultipart().getData() != null;
-        assert (request.getChunkId() != null) && (request.getChunkId() >= 0);
+        assert (chunkId != null) && (chunkId >= 0);
         try {
             if (connect()) {
                 //设置PassiveMode传输
@@ -132,9 +134,9 @@ public class FtpServer implements BasicFileServerInterface {
                 if (StringUtils.isEmpty(fileDTO.getScope())) fileDTO.setScope("");
                 if (StringUtils.isEmpty(remoteFileName)) fileDTO.setKey(UUID.randomUUID().toString() + ".txt");
                 if ((fileDTO.getPos() == null) || (fileDTO.getPos() < 0))
-                    fileDTO.setPos((long) request.getChunkId() * request.getChunkPerSize());
+                    fileDTO.setPos((long) chunkId * request.getChunkPerSize());
                 if ((fileDTO.getSize() == null) || (fileDTO.getSize() <= 0)) fileDTO.setSize(fileDTO.getData().length);
-                if ((request.getChunkSize() == null) || (request.getChunkSize() <= 0))
+                if ((chunkSize == null) || (chunkSize <= 0))
                     request.setChunkSize(fileDTO.getSize());
                 //写入文件
                 long remoteSize = 0L;
@@ -234,7 +236,8 @@ public class FtpServer implements BasicFileServerInterface {
             raf.seek(remoteSize);
             localreadbytes = remoteSize;
         }
-        byte[] bytes = new byte[request.getChunkSize()];
+        Integer chunkSize = null != request.getChunkSize() ? request.getChunkSize() : request.getMultipart().getSize();
+        byte[] bytes = new byte[chunkSize];
         int c;
         while ((c = raf.read(bytes)) != -1) {
             out.write(bytes, 0, c);

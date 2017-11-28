@@ -48,9 +48,9 @@ public class AliyunServer implements BasicFileServerInterface {
             dir = System.currentTimeMillis() + "";
         }
         dto.setKey(src.getKey());
-        dto.setScope(src.getScope());
         OSSClient client = OSSClientUtils.getInstance();
         String bucketName = "publicmaoding";
+        if (dto.getScope() == null) dto.setScope(bucketName);
         Map<String, String> paramsMap = new HashMap<String, String>();
         try {
             //设置超时时间，可以设置为常量，根据需求设置时长
@@ -152,8 +152,9 @@ public class AliyunServer implements BasicFileServerInterface {
     @Override
     public BasicUploadResultDTO multipartUpload(BasicUploadRequestDTO request) {
         BasicUploadResultDTO result = new BasicUploadResultDTO();
-        result.setChunkId(request.getChunkId());
-        result.setChunkSize(request.getChunkSize());
+        Integer chunkSize = null != request.getChunkSize() ? request.getChunkSize() : request.getMultipart().getSize();
+        result.setChunkId(null != request.getChunkId() ? request.getChunkId() : request.getMultipart().getPos().intValue());
+        result.setChunkSize(chunkSize);
         OSSClient client = OSSClientUtils.getInstance();
         List<PartETag> partETags = Collections.synchronizedList(new ArrayList<PartETag>());
         String bucketName = request.getMultipart().getScope();// request.getMultipart().getScope();  publicmaoding
@@ -163,7 +164,7 @@ public class AliyunServer implements BasicFileServerInterface {
             final long partSize = request.getChunkPerSize();
             for (int i = 0; i < request.getChunkCount(); i++) {
                 long startPos = i * partSize;
-                long curPartSize = (i + 1 == request.getChunkCount()) ? (request.getChunkSize() - startPos) : partSize;
+                long curPartSize = (i + 1 == request.getChunkCount()) ? (chunkSize - startPos) : partSize;
                 executorService.execute(new PartUploader(new ByteArrayInputStream(request.getMultipart().getData()),
                         startPos, curPartSize, i + 1, uploadId, bucketName, request.getMultipart().getKey(), partETags, client));
             }

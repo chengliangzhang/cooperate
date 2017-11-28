@@ -344,7 +344,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public String createFile(CreateNodeRequestDTO request, Current current) {
-        return createNodeInfo(request);
+        return StringUtils.getLastSplit(createNodeInfo(request), StringUtils.SPLIT_ID);
 //        assert (request != null);
 //        assert (request.getFullName() != null);
 //
@@ -498,69 +498,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return node.getPath();
     }
 
-    private String createDirectory(CreateNodeRequestDTO request, StorageEntity nodeEntity, Current current) {
-//        assert (request != null);
-//        assert (request.getFullName() != null);
-//
-//        //把空字符串格式化为null
-//        request = BeanUtils.cleanProperties(request);
-//
-//        //分离路径和pNodeId
-//        String[] pathNodeArray = request.getFullName().replaceAll("\\\\","/").split("/");
-//
-//        //查找根目录
-//        StringBuilder fullName = new StringBuilder();
-//        StringBuilder pathField = new StringBuilder();
-//        String pNodeId = request.getPNodeId();
-//        if (pNodeId != null) {
-//            StorageEntity node = storageDao.selectById(pNodeId);
-//            pathField.append(node.getPath());
-//            StorageDirEntity dir = storageDirDao.selectById(node.getDetailId());
-//            fullName.append(dir.getFullName());
-//        }
-//
-//        //查找已有目录
-//        CooperationQueryDTO query = BeanUtils.cleanProperties(new CooperationQueryDTO());
-//        for (int i=0; i<pathNodeArray.length; i++){
-//            query.setNodeName(pathNodeArray[i]);
-//            query.setPNodeId(pNodeId);
-//            CooperateDirNodeDTO dirNode = storageDao.getDirNodeInfo(query);
-//            if (dirNode == null) {
-//                //创建子目录
-//                for (int j=i; j<pathNodeArray.length; j++) {
-//                    if (fullName.length() > 0) fullName.append("/");
-//                    fullName.append(pathNodeArray[j]);
-//                    StorageDirEntity dir = BeanUtils.createFrom(request,StorageDirEntity.class);
-//                    dir.reset();
-//                    dir.setFullName(fullName.toString());
-//                    storageDirDao.insert(dir);
-//                    if (nodeEntity == null) nodeEntity = new StorageEntity();
-//                    nodeEntity.reset();
-//                    nodeEntity.setDetailId(dir.getId());
-//                    nodeEntity.setNodeName(pathNodeArray[j]);
-//                    nodeEntity.setTypeId(request.getTypeId());
-//                    nodeEntity.setPid(pNodeId);
-//                    if (pathField.length() > 0) pathField.append(",");
-//                    pathField.append(nodeEntity.getId());
-//                    nodeEntity.setPath(pathField.toString());
-//                    storageDao.insert(nodeEntity);
-//                    pNodeId = nodeEntity.getId();
-//                }
-//                break;
-//            } else {
-//                pNodeId = dirNode.getId();
-//                if (fullName.length() > 0) fullName.append("/");
-//                fullName.append(pathNodeArray[i]);
-//                if (pathField.length() > 0) pathField.append(",");
-//                pathField.append(dirNode.getId());
-//            }
-//        }
-//        return pathField.toString();
-        return createNodeInfo(request);
-    }
     @Override
     public String createDirectory(CreateNodeRequestDTO request, Current current) {
-        return createDirectory(request,null,current);
+        return StringUtils.getLastSplit(createNodeInfo(request), StringUtils.SPLIT_ID);
     }
 
     @Override
