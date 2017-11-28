@@ -98,9 +98,19 @@ public class BaseEntity implements Serializable,Cloneable {
     }
 
     /** 重新初始化 */
-    public void reset() {
+    public BaseEntity reset() {
         resetId();
         resetTime();
+        return this;
+    }
+
+    /** 清理被初始化的字段 */
+    public BaseEntity clear() {
+        setId(null);
+        setDeleted(null);
+        setCreateTime(null);
+        setLastModifyTime(null);
+        return this;
     }
 
     /** 重新初始化状态 */

@@ -22,6 +22,26 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageService extends com.zeroc.Ice.Object
 {
+    SimpleNodeDTO getSimpleNodeInfo(String path, com.zeroc.Ice.Current current);
+
+    String createNode(CreateNodeRequestDTO request, com.zeroc.Ice.Current current);
+
+    boolean isDirectoryEmpty(String path, com.zeroc.Ice.Current current);
+
+    boolean setFileLength(String path, long fileLength, com.zeroc.Ice.Current current);
+
+    boolean canBeDeleted(String path, com.zeroc.Ice.Current current);
+
+    long getFree(StorageQueryDTO query, com.zeroc.Ice.Current current);
+
+    boolean lockNode(String path, String userId, com.zeroc.Ice.Current current);
+
+    boolean unlockNode(String path, String userId, com.zeroc.Ice.Current current);
+
+    boolean isLocking(String path, com.zeroc.Ice.Current current);
+
+    boolean lockFile(String fileId, String address, com.zeroc.Ice.Current current);
+
     NodeDTO getNodeInfo(CooperationQueryDTO query, com.zeroc.Ice.Current current);
 
     CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query, com.zeroc.Ice.Current current);
@@ -68,13 +88,9 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     boolean restoreDirectory(String path, com.zeroc.Ice.Current current);
 
-    boolean lockFile(String fileId, String address, com.zeroc.Ice.Current current);
-
     boolean unlockFile(String fileId, com.zeroc.Ice.Current current);
 
     boolean isFileLocking(String fileId, com.zeroc.Ice.Current current);
-
-    long getFree(CooperationQueryDTO query, com.zeroc.Ice.Current current);
 
     CooperateFileDTO getFileInfo(String nodeId, com.zeroc.Ice.Current current);
 
@@ -103,6 +119,154 @@ public interface StorageService extends com.zeroc.Ice.Object
     static String ice_staticId()
     {
         return "::zeroc::StorageService";
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getSimpleNodeInfo(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        iceP_path = istr.readString();
+        inS.endReadParams();
+        SimpleNodeDTO ret = obj.getSimpleNodeInfo(iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SimpleNodeDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createNode(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        CreateNodeRequestDTO iceP_request;
+        iceP_request = CreateNodeRequestDTO.ice_read(istr);
+        inS.endReadParams();
+        String ret = obj.createNode(iceP_request, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeString(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_isDirectoryEmpty(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        iceP_path = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.isDirectoryEmpty(iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setFileLength(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        long iceP_fileLength;
+        iceP_path = istr.readString();
+        iceP_fileLength = istr.readLong();
+        inS.endReadParams();
+        boolean ret = obj.setFileLength(iceP_path, iceP_fileLength, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_canBeDeleted(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        iceP_path = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.canBeDeleted(iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFree(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        StorageQueryDTO iceP_query;
+        iceP_query = StorageQueryDTO.ice_read(istr);
+        inS.endReadParams();
+        long ret = obj.getFree(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeLong(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_lockNode(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        String iceP_userId;
+        iceP_path = istr.readString();
+        iceP_userId = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.lockNode(iceP_path, iceP_userId, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unlockNode(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        String iceP_userId;
+        iceP_path = istr.readString();
+        iceP_userId = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.unlockNode(iceP_path, iceP_userId, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_isLocking(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        iceP_path = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.isLocking(iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_lockFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_fileId;
+        String iceP_address;
+        iceP_fileId = istr.readString();
+        iceP_address = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.lockFile(iceP_fileId, iceP_address, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getNodeInfo(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -454,22 +618,6 @@ public interface StorageService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_lockFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        String iceP_fileId;
-        String iceP_address;
-        iceP_fileId = istr.readString();
-        iceP_address = istr.readString();
-        inS.endReadParams();
-        boolean ret = obj.lockFile(iceP_fileId, iceP_address, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unlockFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
@@ -494,20 +642,6 @@ public interface StorageService extends com.zeroc.Ice.Object
         boolean ret = obj.isFileLocking(iceP_fileId, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFree(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        CooperationQueryDTO iceP_query;
-        iceP_query = CooperationQueryDTO.ice_read(istr);
-        inS.endReadParams();
-        long ret = obj.getFree(iceP_query, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeLong(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -560,10 +694,12 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     final static String[] _iceOps =
     {
+        "canBeDeleted",
         "changeNodeInfo",
         "createDirectory",
         "createFile",
         "createFileLink",
+        "createNode",
         "createVersion",
         "deleteDirectory",
         "deleteFile",
@@ -577,14 +713,18 @@ public interface StorageService extends com.zeroc.Ice.Object
         "getFree",
         "getLinkCount",
         "getNodeInfo",
+        "getSimpleNodeInfo",
         "ice_id",
         "ice_ids",
         "ice_isA",
         "ice_ping",
         "initNodeInfo",
+        "isDirectoryEmpty",
         "isFileLocking",
+        "isLocking",
         "listFileLink",
         "lockFile",
+        "lockNode",
         "modifyFileInfo",
         "replaceFile",
         "requestDownload",
@@ -592,7 +732,9 @@ public interface StorageService extends com.zeroc.Ice.Object
         "requestUpload",
         "restoreDirectory",
         "restoreFile",
+        "setFileLength",
         "unlockFile",
+        "unlockNode",
         "uploadCallback"
     };
 
@@ -610,137 +752,169 @@ public interface StorageService extends com.zeroc.Ice.Object
         {
             case 0:
             {
-                return _iceD_changeNodeInfo(this, in, current);
+                return _iceD_canBeDeleted(this, in, current);
             }
             case 1:
             {
-                return _iceD_createDirectory(this, in, current);
+                return _iceD_changeNodeInfo(this, in, current);
             }
             case 2:
             {
-                return _iceD_createFile(this, in, current);
+                return _iceD_createDirectory(this, in, current);
             }
             case 3:
             {
-                return _iceD_createFileLink(this, in, current);
+                return _iceD_createFile(this, in, current);
             }
             case 4:
             {
-                return _iceD_createVersion(this, in, current);
+                return _iceD_createFileLink(this, in, current);
             }
             case 5:
             {
-                return _iceD_deleteDirectory(this, in, current);
+                return _iceD_createNode(this, in, current);
             }
             case 6:
             {
-                return _iceD_deleteFile(this, in, current);
+                return _iceD_createVersion(this, in, current);
             }
             case 7:
             {
-                return _iceD_downloadCallback(this, in, current);
+                return _iceD_deleteDirectory(this, in, current);
             }
             case 8:
             {
-                return _iceD_duplicateDirectory(this, in, current);
+                return _iceD_deleteFile(this, in, current);
             }
             case 9:
             {
-                return _iceD_duplicateFile(this, in, current);
+                return _iceD_downloadCallback(this, in, current);
             }
             case 10:
             {
-                return _iceD_finishDownload(this, in, current);
+                return _iceD_duplicateDirectory(this, in, current);
             }
             case 11:
             {
-                return _iceD_finishUpload(this, in, current);
+                return _iceD_duplicateFile(this, in, current);
             }
             case 12:
             {
-                return _iceD_getCooperateDirInfo(this, in, current);
+                return _iceD_finishDownload(this, in, current);
             }
             case 13:
             {
-                return _iceD_getFileInfo(this, in, current);
+                return _iceD_finishUpload(this, in, current);
             }
             case 14:
             {
-                return _iceD_getFree(this, in, current);
+                return _iceD_getCooperateDirInfo(this, in, current);
             }
             case 15:
             {
-                return _iceD_getLinkCount(this, in, current);
+                return _iceD_getFileInfo(this, in, current);
             }
             case 16:
             {
-                return _iceD_getNodeInfo(this, in, current);
+                return _iceD_getFree(this, in, current);
             }
             case 17:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getLinkCount(this, in, current);
             }
             case 18:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return _iceD_getNodeInfo(this, in, current);
             }
             case 19:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return _iceD_getSimpleNodeInfo(this, in, current);
             }
             case 20:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 21:
             {
-                return _iceD_initNodeInfo(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 22:
             {
-                return _iceD_isFileLocking(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 23:
             {
-                return _iceD_listFileLink(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 24:
             {
-                return _iceD_lockFile(this, in, current);
+                return _iceD_initNodeInfo(this, in, current);
             }
             case 25:
             {
-                return _iceD_modifyFileInfo(this, in, current);
+                return _iceD_isDirectoryEmpty(this, in, current);
             }
             case 26:
             {
-                return _iceD_replaceFile(this, in, current);
+                return _iceD_isFileLocking(this, in, current);
             }
             case 27:
             {
-                return _iceD_requestDownload(this, in, current);
+                return _iceD_isLocking(this, in, current);
             }
             case 28:
             {
-                return _iceD_requestDownloadFromLast(this, in, current);
+                return _iceD_listFileLink(this, in, current);
             }
             case 29:
             {
-                return _iceD_requestUpload(this, in, current);
+                return _iceD_lockFile(this, in, current);
             }
             case 30:
             {
-                return _iceD_restoreDirectory(this, in, current);
+                return _iceD_lockNode(this, in, current);
             }
             case 31:
             {
-                return _iceD_restoreFile(this, in, current);
+                return _iceD_modifyFileInfo(this, in, current);
             }
             case 32:
             {
-                return _iceD_unlockFile(this, in, current);
+                return _iceD_replaceFile(this, in, current);
             }
             case 33:
+            {
+                return _iceD_requestDownload(this, in, current);
+            }
+            case 34:
+            {
+                return _iceD_requestDownloadFromLast(this, in, current);
+            }
+            case 35:
+            {
+                return _iceD_requestUpload(this, in, current);
+            }
+            case 36:
+            {
+                return _iceD_restoreDirectory(this, in, current);
+            }
+            case 37:
+            {
+                return _iceD_restoreFile(this, in, current);
+            }
+            case 38:
+            {
+                return _iceD_setFileLength(this, in, current);
+            }
+            case 39:
+            {
+                return _iceD_unlockFile(this, in, current);
+            }
+            case 40:
+            {
+                return _iceD_unlockNode(this, in, current);
+            }
+            case 41:
             {
                 return _iceD_uploadCallback(this, in, current);
             }

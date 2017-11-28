@@ -169,7 +169,29 @@ module zeroc {
         int level; //要从树节点向下查找多少层
     };
 
+    ["java:getset"]
+    struct StorageQueryDTO {
+        string nodeId; //所要查询的协同树节点id
+        string fullName; //所要查询协同树节点全路径名
+        string userId; //所要查询的用户id
+        string dutyId; //所要查询的的用户职责id
+        string orgId; //所要查询的组织id
+        string projectId; //所要查询的项目id
+        string taskId; //所要查询的任务id
+    };
+
     interface StorageService {
+        SimpleNodeDTO getSimpleNodeInfo(string path); //根据路径获取单节点简单信息
+        string createNode(CreateNodeRequestDTO request); //创建树节点,返回目录树节点id
+        bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
+        bool setFileLength(string path,long fileLength); //调整文件大小
+        bool canBeDeleted(string path); //判断节点是否可被删除
+        long getFree(StorageQueryDTO query); //获取剩余空间
+        bool lockNode(string path,string userId); //通过路径锁定树节点
+        bool unlockNode(string path,string userId); //通过路径解锁树节点
+        bool isLocking(string path); //通过路径判断树节点是否被锁
+
+        bool lockFile(string fileId,string address); //锁定文件
         NodeDTO getNodeInfo(CooperationQueryDTO query); //获取节点简单信息
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool changeNodeInfo(NodeModifyRequestDTO request,string nodeId); //更改节点信息
@@ -193,10 +215,8 @@ module zeroc {
         CooperateFileList listFileLink(FileDTO fileDTO); //查找文件记录
         bool restoreFile(CooperateFileDTO fileInfo); //恢复删除的文件-?
         bool restoreDirectory(string path); //恢复删除的目录-?
-        bool lockFile(string fileId,string address); //锁定文件
         bool unlockFile(string fileId); //解锁文件
         bool isFileLocking(string fileId); //获取文件锁定状态
-        long getFree(CooperationQueryDTO query); //获取剩余空间-?
         CooperateFileDTO getFileInfo(string nodeId); //获取文件信息
         int getLinkCount(FileDTO fileDTO); //获取文件使用数量-?
         string createVersion(CooperateFileDTO fileInfo,string version); //添加文件版本

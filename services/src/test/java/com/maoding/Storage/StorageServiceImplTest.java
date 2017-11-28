@@ -56,6 +56,74 @@ public class StorageServiceImplTest {
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
 
+    /** 调整文件大小 */
+    @Test
+    public void testLocking() throws Exception {
+        final String NODE_NAME = "/o/p/q";
+        final String USER_ID = "123";
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setFullName(NODE_NAME);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        storageService.createNode(request,null);
+        Boolean b = storageService.isLocking(NODE_NAME,null);
+        Assert.assertFalse(b);
+        storageService.lockNode(NODE_NAME,USER_ID,null);
+        b = storageService.isLocking(NODE_NAME,null);
+        Assert.assertTrue(b);
+        storageService.lockNode(NODE_NAME,USER_ID,null);
+        b = storageService.unlockNode(NODE_NAME,USER_ID + "zzz",null);
+        Assert.assertFalse(b);
+        storageService.unlockNode(NODE_NAME,USER_ID,null);
+        b = storageService.isLocking(NODE_NAME,null);
+        Assert.assertFalse(b);
+    }
+
+    /** 调整文件大小 */
+    @Test
+    public void testCanBeDeleted() throws Exception {
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setFullName("/x/y/z");
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        storageService.createNode(request,null);
+        Boolean b = storageService.canBeDeleted("/x/y/z",null);
+        Assert.assertTrue(b);
+        b = storageService.canBeDeleted("/x/y",null);
+        Assert.assertFalse(b);
+    }
+
+    /** 调整文件大小 */
+    @Test
+    public void testSetFileLength() throws Exception {
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setFullName("/x/y/z");
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        storageService.createNode(request,null);
+        Boolean b = storageService.setFileLength("/x/y/z",100,null);
+        Assert.assertTrue(b);
+    }
+
+    /** 判断目录是否为空 */
+    @Test
+    public void testIsDirectoryEmpty() throws Exception {
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setFullName("/c/d/e");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        storageService.createDirectory(request,null);
+        Boolean b = storageService.isDirectoryEmpty("/c/d",null);
+        Assert.assertFalse(b);
+    }
+
+    /** 获取树节点信息 */
+    @Test
+    public void testGetSimpleNodeInfo() throws Exception {
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setFullName("/c/d/e");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        storageService.createDirectory(request,null);
+        SimpleNodeDTO dto = storageService.getSimpleNodeInfo("/c/d",null);
+        Assert.assertNotNull(dto);
+    }
+
     /** 初始化树节点 */
     @Test
     public void testInitNodeInfo() throws Exception {

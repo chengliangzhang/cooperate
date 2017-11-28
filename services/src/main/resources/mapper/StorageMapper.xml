@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maoding.Storage.Dao.StorageDao" >
+
+    <sql id="DirUnion">
+        maoding_storage a
+        inner join maoding_storage b on (a.path like concat(b.path,'%'))
+        inner join maoding_storage_dir c on (a.id = c.id)
+        left join maoding_const d on ((d.classic_id = 14) and (a.type_id = d.value_id))
+    </sql>
+
+    <sql id="SimpleNodeFieldListForDirUnion">
+        a.id
+        ,a.node_name as name
+        ,a.pid as p_node_id
+        ,a.type_id
+        ,d.content as type_name
+        ,unix_timestamp(a.create_time) as create_time_stamp
+        ,date_format(a.create_time,'%Y-%m-%a %T') as create_time_text
+        ,unix_timestamp(a.last_modify_time) as last_modify_time_stamp
+        ,date_format(a.last_modify_time,'%Y-%m-%a %T') as last_modify_time_text
+        ,0 as fileLength
+    </sql>
+
+    <sql id="FileUnion">
+        maoding_storage a
+        inner join maoding_storage b on (a.path like concat(b.path,'%'))
+        inner join maoding_storage_file c on (a.id = c.id)
+        left join maoding_const d on ((d.classic_id = 14) and (a.type_id = d.value_id))
+        left join maoding_const e on ((e.classic_id = 5) and (c.file_type_id = e.value_id))
+        left join maoding_const f on ((f.classic_id = 16) and (c.sync_mode_id = f.value_id))
+    </sql>
+
+    <sql id="SimpleNodeFieldListForFileUnion">
+        a.id
+        ,a.node_name as name
+        ,a.pid as p_node_id
+        ,a.type_id
+        ,d.content as type_name
+        ,unix_timestamp(a.create_time) as create_time_stamp
+        ,date_format(a.create_time,'%Y-%m-%a %T') as create_time_text
+        ,unix_timestamp(a.last_modify_time) as last_modify_time_stamp
+        ,date_format(a.last_modify_time,'%Y-%m-%a %T') as last_modify_time_text
+        ,c.file_length
+    </sql>
+
     <select id="listFileByScopeAndKey" resultType="com.maoding.Storage.zeroc.CooperateFileDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
       select
         a.id
@@ -35,6 +78,46 @@
               and (a.file_key like concat('%',#{key}))
           </if>
       group by a.id
+    </select>
+
+    <select id="getSimpleNodeByPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
+        select <include refid="SimpleNodeFieldListForDirUnion"/>
+        from <include refid="DirUnion"/>
+        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
+            <if test="_parameter != null">
+                and (a.path = #{_parameter})
+            </if>
+        group by a.id
+        union all
+        select <include refid="SimpleNodeFieldListForFileUnion"/>
+        from <include refid="FileUnion"/>
+        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
+            <if test="_parameter != null">
+                and (a.path = #{_parameter})
+            </if>
+        group by a.id
+    </select>
+
+    <select id="getFirstChildTypeId" resultType="java.lang.Short" parameterType="java.lang.String">
+        select a.type_id
+        from maoding_storage a
+        where (a.deleted = 0)
+            <if test="_parameter != null">
+                and (a.path like concat(#{_parameter},'_%'))
+            </if>
+        group by a.id
+        limit 1
+    </select>
+
+    <select id="selectByPath" resultType="com.maoding.Storage.Entity.StorageEntity" parameterType="java.lang.String">
+        select *
+        from maoding_storage a
+        where (a.deleted = 0)
+            <if test="_parameter != null">
+                and (a.path = #{_parameter})
+            </if>
+        group by a.id
+        limit 1
     </select>
 
     <select id="getDirNodeInfo" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">

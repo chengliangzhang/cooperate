@@ -17,17 +17,13 @@ public class BaseTreeEntity extends BaseEntity{
     @Column
     private String path;
 
-    /** 对应节点实体的唯一编号 */
-    @Column
-    private String detailId;
-
-    /** 对应节点实体的类型 */
-    @Column
-    private Short typeId;
-
     /** 节点名称 */
     @Column
     private String nodeName;
+
+    /** 对应节点细节的类型 */
+    @Column
+    private Short typeId;
 
     public String getPid() {
         return pid;
@@ -43,14 +39,6 @@ public class BaseTreeEntity extends BaseEntity{
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public String getDetailId() {
-        return detailId;
-    }
-
-    public void setDetailId(String detailId) {
-        this.detailId = detailId;
     }
 
     public Short getTypeId() {

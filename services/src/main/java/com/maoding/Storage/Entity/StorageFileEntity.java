@@ -25,12 +25,9 @@ public class StorageFileEntity extends BaseEntity {
     /** 协同文件创建者的用户职责id */
     @Column
     private String creatorDutyId;
-    /** 文件的专业id */
-    @Column
-    private String specialtyId;
     /** 文件类型 */
     @Column
-    private Short typeId;
+    private Short fileTypeId;
     /** 校验和 */
     @Column
     private String fileChecksum;
@@ -43,9 +40,6 @@ public class StorageFileEntity extends BaseEntity {
     /** 用户自定义版本 */
     @Column
     private String fileVersion;
-    /** 是否锁定修改，0-不锁定，1-锁定 */
-    @Column
-    private Boolean locking;
     /** 同步模式，0-手动同步，1-自动更新 */
     @Column
     private Short syncModeId;
@@ -91,20 +85,12 @@ public class StorageFileEntity extends BaseEntity {
         this.creatorDutyId = creatorDutyId;
     }
 
-    public String getSpecialtyId() {
-        return specialtyId;
+    public Short getFileTypeId() {
+        return fileTypeId;
     }
 
-    public void setSpecialtyId(String specialtyId) {
-        this.specialtyId = specialtyId;
-    }
-
-    public Short getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Short typeId) {
-        this.typeId = typeId;
+    public void setFileTypeId(Short fileTypeId) {
+        this.fileTypeId = fileTypeId;
     }
 
     public String getFileChecksum() {
@@ -139,14 +125,6 @@ public class StorageFileEntity extends BaseEntity {
         this.fileVersion = fileVersion;
     }
 
-    public Boolean getLocking() {
-        return locking;
-    }
-
-    public void setLocking(Boolean locking) {
-        this.locking = locking;
-    }
-
     public Short getSyncModeId() {
         return syncModeId;
     }
@@ -179,11 +157,4 @@ public class StorageFileEntity extends BaseEntity {
         this.uploadedKey = uploadedKey;
     }
 
-    public void reset(){
-        super.reset();
-        setUploadedScope("");
-        setUploadedKey("");
-        setLocking(false);
-        setDownloading(0);
-    }
 }

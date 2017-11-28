@@ -22,6 +22,340 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default SimpleNodeDTO getSimpleNodeInfo(String path)
+    {
+        return getSimpleNodeInfo(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default SimpleNodeDTO getSimpleNodeInfo(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_getSimpleNodeInfoAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> getSimpleNodeInfoAsync(String path)
+    {
+        return _iceI_getSimpleNodeInfoAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> getSimpleNodeInfoAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_getSimpleNodeInfoAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_getSimpleNodeInfoAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getSimpleNodeInfo", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     SimpleNodeDTO ret;
+                     ret = SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default String createNode(CreateNodeRequestDTO request)
+    {
+        return createNode(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default String createNode(CreateNodeRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createNodeAsync(request, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> createNodeAsync(CreateNodeRequestDTO request)
+    {
+        return _iceI_createNodeAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> createNodeAsync(CreateNodeRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createNodeAsync(request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_createNodeAsync(CreateNodeRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createNode", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     CreateNodeRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     String ret;
+                     ret = istr.readString();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean isDirectoryEmpty(String path)
+    {
+        return isDirectoryEmpty(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean isDirectoryEmpty(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_isDirectoryEmptyAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isDirectoryEmptyAsync(String path)
+    {
+        return _iceI_isDirectoryEmptyAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isDirectoryEmptyAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_isDirectoryEmptyAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_isDirectoryEmptyAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "isDirectoryEmpty", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean setFileLength(String path, long fileLength)
+    {
+        return setFileLength(path, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean setFileLength(String path, long fileLength, java.util.Map<String, String> context)
+    {
+        return _iceI_setFileLengthAsync(path, fileLength, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFileLengthAsync(String path, long fileLength)
+    {
+        return _iceI_setFileLengthAsync(path, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFileLengthAsync(String path, long fileLength, java.util.Map<String, String> context)
+    {
+        return _iceI_setFileLengthAsync(path, fileLength, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_setFileLengthAsync(String iceP_path, long iceP_fileLength, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setFileLength", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                     ostr.writeLong(iceP_fileLength);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean canBeDeleted(String path)
+    {
+        return canBeDeleted(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean canBeDeleted(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_canBeDeletedAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> canBeDeletedAsync(String path)
+    {
+        return _iceI_canBeDeletedAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> canBeDeletedAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_canBeDeletedAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_canBeDeletedAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "canBeDeleted", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default long getFree(StorageQueryDTO query)
+    {
+        return getFree(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default long getFree(StorageQueryDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_getFreeAsync(query, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Long> getFreeAsync(StorageQueryDTO query)
+    {
+        return _iceI_getFreeAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Long> getFreeAsync(StorageQueryDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_getFreeAsync(query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Long> _iceI_getFreeAsync(StorageQueryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Long> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFree", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     StorageQueryDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     long ret;
+                     ret = istr.readLong();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean lockNode(String path, String userId)
+    {
+        return lockNode(path, userId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean lockNode(String path, String userId, java.util.Map<String, String> context)
+    {
+        return _iceI_lockNodeAsync(path, userId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> lockNodeAsync(String path, String userId)
+    {
+        return _iceI_lockNodeAsync(path, userId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> lockNodeAsync(String path, String userId, java.util.Map<String, String> context)
+    {
+        return _iceI_lockNodeAsync(path, userId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_lockNodeAsync(String iceP_path, String iceP_userId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "lockNode", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                     ostr.writeString(iceP_userId);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean unlockNode(String path, String userId)
+    {
+        return unlockNode(path, userId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean unlockNode(String path, String userId, java.util.Map<String, String> context)
+    {
+        return _iceI_unlockNodeAsync(path, userId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> unlockNodeAsync(String path, String userId)
+    {
+        return _iceI_unlockNodeAsync(path, userId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> unlockNodeAsync(String path, String userId, java.util.Map<String, String> context)
+    {
+        return _iceI_unlockNodeAsync(path, userId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_unlockNodeAsync(String iceP_path, String iceP_userId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unlockNode", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                     ostr.writeString(iceP_userId);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean isLocking(String path)
+    {
+        return isLocking(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean isLocking(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_isLockingAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isLockingAsync(String path)
+    {
+        return _iceI_isLockingAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isLockingAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_isLockingAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_isLockingAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "isLocking", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean lockFile(String fileId, String address)
+    {
+        return lockFile(fileId, address, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean lockFile(String fileId, String address, java.util.Map<String, String> context)
+    {
+        return _iceI_lockFileAsync(fileId, address, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> lockFileAsync(String fileId, String address)
+    {
+        return _iceI_lockFileAsync(fileId, address, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> lockFileAsync(String fileId, String address, java.util.Map<String, String> context)
+    {
+        return _iceI_lockFileAsync(fileId, address, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_lockFileAsync(String iceP_fileId, String iceP_address, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "lockFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_fileId);
+                     ostr.writeString(iceP_address);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
     default NodeDTO getNodeInfo(CooperationQueryDTO query)
     {
         return getNodeInfo(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
@@ -794,40 +1128,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default boolean lockFile(String fileId, String address)
-    {
-        return lockFile(fileId, address, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default boolean lockFile(String fileId, String address, java.util.Map<String, String> context)
-    {
-        return _iceI_lockFileAsync(fileId, address, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> lockFileAsync(String fileId, String address)
-    {
-        return _iceI_lockFileAsync(fileId, address, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> lockFileAsync(String fileId, String address, java.util.Map<String, String> context)
-    {
-        return _iceI_lockFileAsync(fileId, address, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_lockFileAsync(String iceP_fileId, String iceP_address, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "lockFile", null, sync, null);
-        f.invoke(true, context, null, ostr -> {
-                     ostr.writeString(iceP_fileId);
-                     ostr.writeString(iceP_address);
-                 }, istr -> {
-                     boolean ret;
-                     ret = istr.readBool();
-                     return ret;
-                 });
-        return f;
-    }
-
     default boolean unlockFile(String fileId)
     {
         return unlockFile(fileId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
@@ -889,39 +1189,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
                  }, istr -> {
                      boolean ret;
                      ret = istr.readBool();
-                     return ret;
-                 });
-        return f;
-    }
-
-    default long getFree(CooperationQueryDTO query)
-    {
-        return getFree(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default long getFree(CooperationQueryDTO query, java.util.Map<String, String> context)
-    {
-        return _iceI_getFreeAsync(query, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<java.lang.Long> getFreeAsync(CooperationQueryDTO query)
-    {
-        return _iceI_getFreeAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<java.lang.Long> getFreeAsync(CooperationQueryDTO query, java.util.Map<String, String> context)
-    {
-        return _iceI_getFreeAsync(query, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Long> _iceI_getFreeAsync(CooperationQueryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Long> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFree", null, sync, null);
-        f.invoke(true, context, null, ostr -> {
-                     CooperationQueryDTO.ice_write(ostr, iceP_query);
-                 }, istr -> {
-                     long ret;
-                     ret = istr.readLong();
                      return ret;
                  });
         return f;

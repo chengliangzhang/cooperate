@@ -34,4 +34,10 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     List<FileVersionDTO> listVersion(String nodeId);
     /** 使用pid和name查找树节点记录 */
     StorageEntity selectByPIdAndName(QueryByPidAndNameDTO query);
+    /** 使用全路径名查找节点简单信息 */
+    SimpleNodeDTO getSimpleNodeByPath(String path);
+    /** 根据全路径名判断目录是否为空 */
+    Short getFirstChildTypeId(String path);
+    /** 根据全路径名获取树id */
+    StorageEntity selectByPath(String path);
 }

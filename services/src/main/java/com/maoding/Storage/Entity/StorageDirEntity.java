@@ -90,4 +90,16 @@ public class StorageDirEntity extends BaseEntity {
     public void setTypeId(Short typeId) {
         this.typeId = typeId;
     }
+
+    public StorageDirEntity reset(){
+        super.reset();
+        setFullName(null);
+        return this;
+    }
+
+    public StorageDirEntity clear(){
+        super.clear();
+        setFullName(null);
+        return this;
+    }
 }
