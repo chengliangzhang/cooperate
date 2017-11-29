@@ -56,6 +56,12 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
+    public List<SimpleNodeDTO> listSubNode(String path, Current current) {
+        List<SimpleNodeDTO> list = storageDao.listSubNodeByPath(StringUtils.formatPath(path));
+        return list;
+    }
+
+    @Override
     public CooperateDirNodeDTO getDirNodeInfo(String path, Current current) {
         return storageDao.getDirNodeInfoByPath(StringUtils.formatPath(path));
     }

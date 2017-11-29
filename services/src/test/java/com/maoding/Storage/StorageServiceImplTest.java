@@ -78,6 +78,17 @@ public class StorageServiceImplTest {
         Assert.assertFalse(storageServicePrx.getDirNodeInfo("\\abcde").getIsValid());
     }
 
+    /** 获取一层子节点信息 */
+    @Test
+    public void testListSubNode() throws Exception {
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setFullName("/a/b/d");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        storageService.createNode(request,null);
+        List<SimpleNodeDTO> list = storageServicePrx.listSubNode("\\a\\b");
+        Assert.assertTrue(list.size() > 0);
+    }
+
     /** 调整文件大小 */
     @Test
     public void testLocking() throws Exception {

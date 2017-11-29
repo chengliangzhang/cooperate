@@ -94,6 +94,26 @@
         ,b.last_modify_duty_id
     </sql>
 
+    <select id="listSubNodeByNodeId" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
+        select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
+        from <include refid="SimpleDirUnion"/>
+        where <include refid="FixConditionForSimpleDirUnion"/>
+            <if test="_parameter != null">
+                and (a.pid = #{_parameter})
+            </if>
+    </select>
+
+    <select id="listSubNodeByPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
+        select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
+        from <include refid="SimpleDirUnion"/>
+            inner join maoding_storage d on (a.pid = d.id)
+        where <include refid="FixConditionForSimpleDirUnion"/>
+            and (d.deleted = 0)
+            <if test="_parameter != null">
+                and (d.path = #{_parameter})
+            </if>
+    </select>
+
     <select id="listFileByScopeAndKey" resultType="com.maoding.Storage.zeroc.CooperateFileDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
       select
         a.id

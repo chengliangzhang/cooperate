@@ -44,4 +44,8 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     CooperateDirNodeDTO getDirNodeInfoByPath(String path);
     /** 根据全路径名获取文件详细信息 */
     FileNodeDTO getFileNodeInfoByPath(String path);
+    /** 根据节点编号获取一层子节点简单信息 */
+    List<SimpleNodeDTO> listSubNodeByNodeId(String nodeId);
+    /** 根据全路径名获取一层子节点简单信息 */
+    List<SimpleNodeDTO> listSubNodeByPath(String path);
 }

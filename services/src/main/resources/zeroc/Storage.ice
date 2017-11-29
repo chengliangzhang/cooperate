@@ -200,6 +200,7 @@ module zeroc {
         bool isLocking(string path); //通过路径判断树节点是否被锁
         CooperateDirNodeDTO getDirNodeInfo(string path); //获取目录节点详细信息
         FileNodeDTO getFileNodeInfo(string path); //获取目录节点详细信息
+        SimpleNodeList listSubNode(string path); //获取目录一层子节点简单信息
 
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool lockFile(string fileId,string address); //锁定文件
