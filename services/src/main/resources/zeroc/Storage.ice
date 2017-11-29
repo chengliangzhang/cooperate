@@ -186,7 +186,7 @@ module zeroc {
         bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
         bool setFileLength(string path,long fileLength); //调整文件大小
         bool canBeDeleted(string path); //判断节点是否可被删除
-        long getFree(StorageQueryDTO query); //获取剩余空间
+        long getUsage(StorageQueryDTO query); //获取已使用空间
         bool lockNode(string path,string userId); //通过路径锁定树节点
         bool unlockNode(string path,string userId); //通过路径解锁树节点
         bool isLocking(string path); //通过路径判断树节点是否被锁

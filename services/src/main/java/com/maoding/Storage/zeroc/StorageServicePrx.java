@@ -188,29 +188,29 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default long getFree(StorageQueryDTO query)
+    default long getUsage(StorageQueryDTO query)
     {
-        return getFree(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return getUsage(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default long getFree(StorageQueryDTO query, java.util.Map<String, String> context)
+    default long getUsage(StorageQueryDTO query, java.util.Map<String, String> context)
     {
-        return _iceI_getFreeAsync(query, context, true).waitForResponse();
+        return _iceI_getUsageAsync(query, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Long> getFreeAsync(StorageQueryDTO query)
+    default java.util.concurrent.CompletableFuture<java.lang.Long> getUsageAsync(StorageQueryDTO query)
     {
-        return _iceI_getFreeAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_getUsageAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Long> getFreeAsync(StorageQueryDTO query, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.lang.Long> getUsageAsync(StorageQueryDTO query, java.util.Map<String, String> context)
     {
-        return _iceI_getFreeAsync(query, context, false);
+        return _iceI_getUsageAsync(query, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Long> _iceI_getFreeAsync(StorageQueryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Long> _iceI_getUsageAsync(StorageQueryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Long> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFree", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Long> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getUsage", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      StorageQueryDTO.ice_write(ostr, iceP_query);
                  }, istr -> {

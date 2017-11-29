@@ -32,7 +32,7 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     boolean canBeDeleted(String path, com.zeroc.Ice.Current current);
 
-    long getFree(StorageQueryDTO query, com.zeroc.Ice.Current current);
+    long getUsage(StorageQueryDTO query, com.zeroc.Ice.Current current);
 
     boolean lockNode(String path, String userId, com.zeroc.Ice.Current current);
 
@@ -193,14 +193,14 @@ public interface StorageService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFree(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getUsage(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         StorageQueryDTO iceP_query;
         iceP_query = StorageQueryDTO.ice_read(istr);
         inS.endReadParams();
-        long ret = obj.getFree(iceP_query, current);
+        long ret = obj.getUsage(iceP_query, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         ostr.writeLong(ret);
         inS.endWriteParams(ostr);
@@ -710,10 +710,10 @@ public interface StorageService extends com.zeroc.Ice.Object
         "finishUpload",
         "getCooperateDirInfo",
         "getFileInfo",
-        "getFree",
         "getLinkCount",
         "getNodeInfo",
         "getSimpleNodeInfo",
+        "getUsage",
         "ice_id",
         "ice_ids",
         "ice_isA",
@@ -816,19 +816,19 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 16:
             {
-                return _iceD_getFree(this, in, current);
+                return _iceD_getLinkCount(this, in, current);
             }
             case 17:
             {
-                return _iceD_getLinkCount(this, in, current);
+                return _iceD_getNodeInfo(this, in, current);
             }
             case 18:
             {
-                return _iceD_getNodeInfo(this, in, current);
+                return _iceD_getSimpleNodeInfo(this, in, current);
             }
             case 19:
             {
-                return _iceD_getSimpleNodeInfo(this, in, current);
+                return _iceD_getUsage(this, in, current);
             }
             case 20:
             {

@@ -705,8 +705,8 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public long getFree(StorageQueryDTO query, Current current) {
-        return 65535;
+    public long getUsage(StorageQueryDTO query, Current current) {
+        return 0;
     }
 
     @Override
