@@ -103,8 +103,8 @@ module zeroc {
         string projectName; //所属项目名字
         string taskId; //所属任务id
         string taskName; //所属任务名字
-        short typeId; //目录特殊类别编号
-        string typeName; //目录类别名字
+        short typeId; //目录树节点类别编号
+        string typeName; //目录树节点类别名字
         long createTimeStamp; //目录建立时间
         string createTimeText; //目录建立时间文字
     };
@@ -138,6 +138,8 @@ module zeroc {
         string typeName; //节点类别名字
         long createTimeStamp; //节点建立时间
         string createTimeText; //节点建立时间文字
+        long lastModifyTimeStamp; //节点最后修改时间
+        string lastModifyTimeText; //节点最后修改时间文字
         long fileLength; //文件长度
     };
     ["java:type:java.util.ArrayList<SimpleNodeDTO>"] sequence<SimpleNodeDTO> SimpleNodeList;
@@ -181,8 +183,8 @@ module zeroc {
     };
 
     interface StorageService {
-        SimpleNodeDTO getSimpleNodeInfo(string path); //根据路径获取单节点简单信息
         string createNode(CreateNodeRequestDTO request); //创建树节点,返回目录树节点id
+        SimpleNodeDTO getSimpleNodeInfo(string path); //根据路径获取单节点简单信息
         bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
         bool setFileLength(string path,long fileLength); //调整文件大小
         bool canBeDeleted(string path); //判断节点是否可被删除
@@ -190,10 +192,11 @@ module zeroc {
         bool lockNode(string path,string userId); //通过路径锁定树节点
         bool unlockNode(string path,string userId); //通过路径解锁树节点
         bool isLocking(string path); //通过路径判断树节点是否被锁
+        CooperateDirNodeDTO getDirNodeInfo(string path); //获取目录节点详细信息
 
+        CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool lockFile(string fileId,string address); //锁定文件
         NodeDTO getNodeInfo(CooperationQueryDTO query); //获取节点简单信息
-        CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool changeNodeInfo(NodeModifyRequestDTO request,string nodeId); //更改节点信息
         bool initNodeInfo(CreateNodeRequestDTO request); //初始化树节点信息
         bool modifyFileInfo(CooperateFileDTO fileInfo); //更改文件信息-?

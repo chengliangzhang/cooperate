@@ -107,6 +107,30 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.createTimeText = createTimeText;
     }
 
+    public long lastModifyTimeStamp;
+
+    public long getLastModifyTimeStamp()
+    {
+        return lastModifyTimeStamp;
+    }
+
+    public void setLastModifyTimeStamp(long lastModifyTimeStamp)
+    {
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
+    }
+
+    public String lastModifyTimeText;
+
+    public String getLastModifyTimeText()
+    {
+        return lastModifyTimeText;
+    }
+
+    public void setLastModifyTimeText(String lastModifyTimeText)
+    {
+        this.lastModifyTimeText = lastModifyTimeText;
+    }
+
     public long fileLength;
 
     public long getFileLength()
@@ -126,9 +150,10 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.pNodeId = "";
         this.typeName = "";
         this.createTimeText = "";
+        this.lastModifyTimeText = "";
     }
 
-    public SimpleNodeDTO(String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long fileLength)
+    public SimpleNodeDTO(String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, long fileLength)
     {
         this.id = id;
         this.name = name;
@@ -137,6 +162,8 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.typeName = typeName;
         this.createTimeStamp = createTimeStamp;
         this.createTimeText = createTimeText;
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
+        this.lastModifyTimeText = lastModifyTimeText;
         this.fileLength = fileLength;
     }
 
@@ -197,6 +224,17 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.lastModifyTimeStamp != r.lastModifyTimeStamp)
+            {
+                return false;
+            }
+            if(this.lastModifyTimeText != r.lastModifyTimeText)
+            {
+                if(this.lastModifyTimeText == null || r.lastModifyTimeText == null || !this.lastModifyTimeText.equals(r.lastModifyTimeText))
+                {
+                    return false;
+                }
+            }
             if(this.fileLength != r.fileLength)
             {
                 return false;
@@ -219,6 +257,8 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
         return h_;
     }
@@ -246,6 +286,8 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.typeName);
         ostr.writeLong(this.createTimeStamp);
         ostr.writeString(this.createTimeText);
+        ostr.writeLong(this.lastModifyTimeStamp);
+        ostr.writeString(this.lastModifyTimeText);
         ostr.writeLong(this.fileLength);
     }
 
@@ -258,6 +300,8 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.typeName = istr.readString();
         this.createTimeStamp = istr.readLong();
         this.createTimeText = istr.readString();
+        this.lastModifyTimeStamp = istr.readLong();
+        this.lastModifyTimeText = istr.readString();
         this.fileLength = istr.readLong();
     }
 
@@ -313,5 +357,5 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     private static final SimpleNodeDTO _nullMarshalValue = new SimpleNodeDTO();
 
-    public static final long serialVersionUID = 1763373018L;
+    public static final long serialVersionUID = -1624554116L;
 }

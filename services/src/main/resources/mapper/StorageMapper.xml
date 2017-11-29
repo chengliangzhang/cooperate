@@ -10,16 +10,33 @@
     </sql>
 
     <sql id="SimpleNodeFieldListForDirUnion">
-        a.id
+        ifnull(a.id,'')
+        ,ifnull(a.node_name,'') as name
+        ,ifnull(a.pid,'') as p_node_id
+        ,ifnull(a.type_id,3)
+        ,ifnull(d.content,'') as type_name
+        ,unix_timestamp(ifnull(a.create_time,now())) as create_time_stamp
+        ,date_format(ifnull(a.create_time,now()),'%Y-%m-%a %T') as create_time_text
+        ,unix_timestamp(ifnull(a.last_modify_time,now())) as last_modify_time_stamp
+        ,date_format(ifnull(a.last_modify_time,now()),'%Y-%m-%a %T') as last_modify_time_text
+        ,0 as fileLength
+    </sql>
+
+    <sql id="DirNodeFieldListForDirUnion">
+        a.id as id
         ,a.node_name as name
         ,a.pid as p_node_id
         ,a.type_id
         ,d.content as type_name
+        ,a.path as full_name
+        ,c.user_id
+        ,c.duty_id
+        ,c.org_id
+        ,c.project_id
+        ,c.task_id
+        ,d.content as type_name
         ,unix_timestamp(a.create_time) as create_time_stamp
-        ,date_format(a.create_time,'%Y-%m-%a %T') as create_time_text
-        ,unix_timestamp(a.last_modify_time) as last_modify_time_stamp
-        ,date_format(a.last_modify_time,'%Y-%m-%a %T') as last_modify_time_text
-        ,0 as fileLength
+        ,date_format(a.create_time,'%Y-%m-%d %T') as create_time_text
     </sql>
 
     <sql id="FileUnion">

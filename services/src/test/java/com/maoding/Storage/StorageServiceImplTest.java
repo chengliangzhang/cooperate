@@ -56,6 +56,12 @@ public class StorageServiceImplTest {
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
 
+    /** 获取文件信息 */
+    @Test
+    public void testGetFileInfo() throws Exception {
+        storageService.getFileInfo("\\abcde",null);
+    }
+
     /** 调整文件大小 */
     @Test
     public void testLocking() throws Exception {

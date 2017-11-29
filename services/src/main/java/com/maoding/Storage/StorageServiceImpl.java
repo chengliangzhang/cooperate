@@ -56,6 +56,11 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
+    public CooperateDirNodeDTO getDirNodeInfo(String path, Current current) {
+        return null;
+    }
+
+    @Override
     public boolean lockNode(String path, String userId, Current current) {
         assert (path != null);
         StorageEntity node = storageDao.selectByPath(path);
