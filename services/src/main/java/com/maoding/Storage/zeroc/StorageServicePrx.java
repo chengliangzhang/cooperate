@@ -421,6 +421,40 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default boolean moveNode(String oldPath, String newPath)
+    {
+        return moveNode(oldPath, newPath, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean moveNode(String oldPath, String newPath, java.util.Map<String, String> context)
+    {
+        return _iceI_moveNodeAsync(oldPath, newPath, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> moveNodeAsync(String oldPath, String newPath)
+    {
+        return _iceI_moveNodeAsync(oldPath, newPath, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> moveNodeAsync(String oldPath, String newPath, java.util.Map<String, String> context)
+    {
+        return _iceI_moveNodeAsync(oldPath, newPath, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_moveNodeAsync(String iceP_oldPath, String iceP_newPath, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "moveNode", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_oldPath);
+                     ostr.writeString(iceP_newPath);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
     default CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query)
     {
         return getCooperateDirInfo(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);

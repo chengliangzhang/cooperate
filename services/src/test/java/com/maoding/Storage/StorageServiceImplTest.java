@@ -85,7 +85,7 @@ public class StorageServiceImplTest {
         request.setFullName("/a/b/d");
         request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
         storageService.createNode(request,null);
-        List<SimpleNodeDTO> list = storageServicePrx.listSubNode("\\a\\b");
+        List<SimpleNodeDTO> list = storageService.listSubNode("/",null);
         Assert.assertTrue(list.size() > 0);
     }
 

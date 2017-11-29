@@ -56,9 +56,15 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
+    public boolean moveNode(String oldPath, String newPath, Current current) {
+        return false;
+    }
+
+    @Override
     public List<SimpleNodeDTO> listSubNode(String path, Current current) {
-        List<SimpleNodeDTO> list = storageDao.listSubNodeByPath(StringUtils.formatPath(path));
-        return list;
+        path = StringUtils.formatPath(path);
+        if (StringUtils.isSame(path,StringUtils.SPLIT_PATH)) path = null;
+        return storageDao.listSubNodeByPath(path);
     }
 
     @Override
@@ -68,14 +74,13 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public FileNodeDTO getFileNodeInfo(String path, Current current) {
-        FileNodeDTO file = storageDao.getFileNodeInfoByPath(StringUtils.formatPath(path));
-        return file;
+        return storageDao.getFileNodeInfoByPath(StringUtils.formatPath(path));
     }
 
     @Override
     public boolean lockNode(String path, String userId, Current current) {
         assert (path != null);
-        StorageEntity node = storageDao.selectByPath(path);
+        StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
         if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_DIR_TYPE_MAX)) return false;
         if ((node.getLockUserId() != null) && (!StringUtils.isSame(node.getLockUserId(),userId))) return false;
 
@@ -87,7 +92,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public boolean unlockNode(String path, String userId, Current current) {
         assert (path != null);
-        StorageEntity node = storageDao.selectByPath(path);
+        StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
         if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_DIR_TYPE_MAX)) return false;
         if ((node.getLockUserId() != null) && (!StringUtils.isSame(node.getLockUserId(),userId))) return false;
 
@@ -100,8 +105,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     public boolean isLocking(String path, Current current) {
         assert (path != null);
         StorageEntity node = storageDao.selectByPath(path);
-        if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_DIR_TYPE_MAX)) return false;
-        return (node.getLockUserId() != null);
+        return (node != null) && (node.getTypeId() <= StorageConst.STORAGE_DIR_TYPE_MAX) && (node.getLockUserId() != null);
     }
 
     @Override

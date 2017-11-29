@@ -46,6 +46,8 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     java.util.List<SimpleNodeDTO> listSubNode(String path, com.zeroc.Ice.Current current);
 
+    boolean moveNode(String oldPath, String newPath, com.zeroc.Ice.Current current);
+
     CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query, com.zeroc.Ice.Current current);
 
     boolean lockFile(String fileId, String address, com.zeroc.Ice.Current current);
@@ -297,6 +299,22 @@ public interface StorageService extends com.zeroc.Ice.Object
         java.util.List<SimpleNodeDTO> ret = obj.listSubNode(iceP_path, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         SimpleNodeListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_moveNode(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_oldPath;
+        String iceP_newPath;
+        iceP_oldPath = istr.readString();
+        iceP_newPath = istr.readString();
+        inS.endReadParams();
+        boolean ret = obj.moveNode(iceP_oldPath, iceP_newPath, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -761,6 +779,7 @@ public interface StorageService extends com.zeroc.Ice.Object
         "lockFile",
         "lockNode",
         "modifyFileInfo",
+        "moveNode",
         "replaceFile",
         "requestDownload",
         "requestDownloadFromLast",
@@ -927,41 +946,45 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 35:
             {
-                return _iceD_replaceFile(this, in, current);
+                return _iceD_moveNode(this, in, current);
             }
             case 36:
             {
-                return _iceD_requestDownload(this, in, current);
+                return _iceD_replaceFile(this, in, current);
             }
             case 37:
             {
-                return _iceD_requestDownloadFromLast(this, in, current);
+                return _iceD_requestDownload(this, in, current);
             }
             case 38:
             {
-                return _iceD_requestUpload(this, in, current);
+                return _iceD_requestDownloadFromLast(this, in, current);
             }
             case 39:
             {
-                return _iceD_restoreDirectory(this, in, current);
+                return _iceD_requestUpload(this, in, current);
             }
             case 40:
             {
-                return _iceD_restoreFile(this, in, current);
+                return _iceD_restoreDirectory(this, in, current);
             }
             case 41:
             {
-                return _iceD_setFileLength(this, in, current);
+                return _iceD_restoreFile(this, in, current);
             }
             case 42:
             {
-                return _iceD_unlockFile(this, in, current);
+                return _iceD_setFileLength(this, in, current);
             }
             case 43:
             {
-                return _iceD_unlockNode(this, in, current);
+                return _iceD_unlockFile(this, in, current);
             }
             case 44:
+            {
+                return _iceD_unlockNode(this, in, current);
+            }
+            case 45:
             {
                 return _iceD_uploadCallback(this, in, current);
             }
