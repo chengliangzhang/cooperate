@@ -33,7 +33,7 @@ public final class RelatedFileListHelper
             ostr.writeSize(v.size());
             for(FileNodeDTO elem : v)
             {
-                ostr.writeValue(elem);
+                FileNodeDTO.ice_write(ostr, elem);
             }
         }
     }
@@ -42,12 +42,12 @@ public final class RelatedFileListHelper
     {
         final java.util.List<FileNodeDTO> v;
         v = new java.util.ArrayList<FileNodeDTO>();
-        final int len0 = istr.readAndCheckSeqSize(1);
+        final int len0 = istr.readAndCheckSeqSize(49);
         for(int i0 = 0; i0 < len0; i0++)
         {
-            v.add(null);
-            final int fi0 = i0;
-            istr.readValue(value -> v.set(fi0, value), FileNodeDTO.class);
+            FileNodeDTO elem;
+            elem = FileNodeDTO.ice_read(istr);
+            v.add(elem);
         }
         return v;
     }

@@ -33,7 +33,7 @@ public final class CooperateDirListHelper
             ostr.writeSize(v.size());
             for(CooperateDirNodeDTO elem : v)
             {
-                ostr.writeValue(elem);
+                CooperateDirNodeDTO.ice_write(ostr, elem);
             }
         }
     }
@@ -42,12 +42,12 @@ public final class CooperateDirListHelper
     {
         final java.util.List<CooperateDirNodeDTO> v;
         v = new java.util.ArrayList<CooperateDirNodeDTO>();
-        final int len0 = istr.readAndCheckSeqSize(1);
+        final int len0 = istr.readAndCheckSeqSize(44);
         for(int i0 = 0; i0 < len0; i0++)
         {
-            v.add(null);
-            final int fi0 = i0;
-            istr.readValue(value -> v.set(fi0, value), CooperateDirNodeDTO.class);
+            CooperateDirNodeDTO elem;
+            elem = CooperateDirNodeDTO.ice_read(istr);
+            v.add(elem);
         }
         return v;
     }

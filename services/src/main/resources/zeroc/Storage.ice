@@ -6,36 +6,37 @@
 module zeroc {
 
     ["java:getset"]
-    class FileNodeDTO { //协同文件信息
-        string id; //协同文件编号
-        string name; //协同文件名
-        string nodeId; //协同文件树节点编号
-        string pNodeId; //协同文件父节点编号
-        string pathName; //协同文件所在路径文字说明
+    struct FileNodeDTO { //协同文件信息
+        bool isValid; //节点是否有效
+        string id; //节点编号（树节点编号）
+        string name; //节点名称（树节点名称或文件名称）
+        string pNodeId; //父节点编号
+        short typeId; //节点类别编号
+        string typeName; //节点类别名字
+        long createTimeStamp; //节点建立时间
+        string createTimeText; //节点建立时间文字
+        long lastModifyTimeStamp; //节点最后修改时间
+        string lastModifyTimeText; //节点最后修改时间文字
         long fileLength; //文件长度
+
+        string fullName; //协同文件全路径名
         string fileChecksum; //协同文件校验和
         string fileVersion; //协同文件版本号
-        string specialtyId; //专业id
-        string specialtyName; //专业文字说明
         string lastModifyAddress; //最后上传的地址
         short syncModeId; //同步模式，0-手动同步，1-自动更新
         string syncModeName; //同步模式文字说明
-        short typeId; //文件类型
-        string typeName; //文件类型文字说明
+        short fileTypeId; //文件类型
+        string fileTypeName; //文件类型文字说明
         bool locking; //是否锁定，false-不锁定，true-锁定
         string localFile; //本地文件路径，包含文件名
         string creatorDutyId; //协同创建者的用户职责id
         string creatorDutyName; //协同创建者名字
-        long createTimeStamp; //协同建立时间
-        string createTimeText; //协同建立时间文字
         string lastModifyDutyId; //最近更改协同的用户职责id
         string lastModifyDutyName; //最近更改协同的用户名字
-        long lastModifyTimeStamp; //最近更改协同的时间
-        string lastModifyTimeText; //最近更改协同的时间文字
     };
     ["java:type:java.util.ArrayList<FileNodeDTO>"] sequence<FileNodeDTO> RelatedFileList;
 
-    class FileVersionDTO { //版本信息
+    struct FileVersionDTO { //版本信息
         string id; //协同文件编号
         string nodeId; //协同文件树节点编号
         string fileVersion; //协同文件版本号
@@ -87,11 +88,19 @@ module zeroc {
     ["java:type:java.util.ArrayList<CooperateFileDTO>"] sequence<CooperateFileDTO> CooperateFileList;
 
     ["java:getset"]
-    class CooperateDirNodeDTO {
-        string id; //协同目录编号（树节点编号）
-        string name; //协同目录名（树节点名）
+    struct CooperateDirNodeDTO {
+        bool isValid; //节点是否有效
+        string id; //节点编号（树节点编号）
+        string name; //节点名称（树节点名称或文件名称）
         string pNodeId; //父节点编号
-        string detailId; //目录细节信息编号
+        short typeId; //节点类别编号
+        string typeName; //节点类别名字
+        long createTimeStamp; //节点建立时间
+        string createTimeText; //节点建立时间文字
+        long lastModifyTimeStamp; //节点最后修改时间
+        string lastModifyTimeText; //节点最后修改时间文字
+        long fileLength; //文件长度
+
         string fullName; //目录全路径
         string userId; //协同目录所属用户id
         string dutyId; //协同目录所属用户的职责id
@@ -103,10 +112,6 @@ module zeroc {
         string projectName; //所属项目名字
         string taskId; //所属任务id
         string taskName; //所属任务名字
-        short typeId; //目录树节点类别编号
-        string typeName; //目录树节点类别名字
-        long createTimeStamp; //目录建立时间
-        string createTimeText; //目录建立时间文字
     };
     ["java:type:java.util.ArrayList<CooperateDirNodeDTO>"] sequence<CooperateDirNodeDTO> CooperateDirList;
 
@@ -131,6 +136,7 @@ module zeroc {
 
     ["java:getset"]
     struct SimpleNodeDTO { //节点信息简化版（统一目录和文件信息）
+        bool isValid; //节点是否有效
         string id; //节点编号（树节点编号）
         string name; //节点名称（树节点名称或文件名称）
         string pNodeId; //父节点编号
@@ -193,6 +199,7 @@ module zeroc {
         bool unlockNode(string path,string userId); //通过路径解锁树节点
         bool isLocking(string path); //通过路径判断树节点是否被锁
         CooperateDirNodeDTO getDirNodeInfo(string path); //获取目录节点详细信息
+        FileNodeDTO getFileNodeInfo(string path); //获取目录节点详细信息
 
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool lockFile(string fileId,string address); //锁定文件

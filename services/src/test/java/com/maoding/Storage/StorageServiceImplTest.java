@@ -59,7 +59,23 @@ public class StorageServiceImplTest {
     /** 获取文件信息 */
     @Test
     public void testGetFileInfo() throws Exception {
-        storageService.getFileInfo("\\abcde",null);
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setFullName("/x/y/z");
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        storageService.createNode(request,null);
+        Assert.assertTrue(storageServicePrx.getFileNodeInfo("\\x\\y\\z").getIsValid());
+        Assert.assertFalse(storageServicePrx.getFileNodeInfo("\\abcde").getIsValid());
+    }
+
+    /** 获取目录信息 */
+    @Test
+    public void testGetDirInfo() throws Exception {
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setFullName("/a/b/d");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        storageService.createNode(request,null);
+        Assert.assertTrue(storageServicePrx.getDirNodeInfo("\\a\\b\\d").getIsValid());
+        Assert.assertFalse(storageServicePrx.getDirNodeInfo("\\abcde").getIsValid());
     }
 
     /** 调整文件大小 */
@@ -128,6 +144,12 @@ public class StorageServiceImplTest {
         storageService.createDirectory(request,null);
         SimpleNodeDTO dto = storageService.getSimpleNodeInfo("/c/d",null);
         Assert.assertNotNull(dto);
+        dto = storageService.getSimpleNodeInfo("/x/d",null);
+        Assert.assertNull(dto);
+        dto = storageServicePrx.getSimpleNodeInfo("/x/d");
+        Assert.assertFalse(dto.getIsValid());
+        dto = storageServicePrx.getSimpleNodeInfo("/c/d");
+        Assert.assertTrue(dto.getIsValid());
     }
 
     /** 初始化树节点 */
@@ -168,10 +190,9 @@ public class StorageServiceImplTest {
     @Test
     public void testCreateDirectory() throws Exception {
         CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
-        request.setFullName("a");
+        request.setFullName("//a");
         request.setTypeId(StorageConst.STORAGE_DIR_TYPE_SYS);
-        String fullPath = storageService.createDirectory(request,null);
-        String nodeId = StringUtils.getLastSplit(fullPath,StringUtils.SPLIT_ID);
+        String nodeId = storageService.createDirectory(request,null);
         request.setPNodeId(nodeId);
         request.setFullName("b");
         storageService.createDirectory(request,null);

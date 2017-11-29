@@ -2,63 +2,96 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maoding.Storage.Dao.StorageDao" >
 
-    <sql id="DirUnion">
+    <sql id="SimpleDirUnion">
         maoding_storage a
-        inner join maoding_storage b on (a.path like concat(b.path,'%'))
-        inner join maoding_storage_dir c on (a.id = c.id)
-        left join maoding_const d on ((d.classic_id = 14) and (a.type_id = d.value_id))
+        inner join maoding_storage_dir b on (a.id = b.id)
+        left join maoding_const c on (a.type_id = c.value_id)
+    </sql>
+    
+    <sql id="FixConditionForSimpleDirUnion">
+        (a.deleted = 0) and (b.deleted = 0) and (c.classic_id = 14) 
     </sql>
 
-    <sql id="SimpleNodeFieldListForDirUnion">
-        ifnull(a.id,'')
-        ,ifnull(a.node_name,'') as name
-        ,ifnull(a.pid,'') as p_node_id
-        ,ifnull(a.type_id,3)
-        ,ifnull(d.content,'') as type_name
-        ,unix_timestamp(ifnull(a.create_time,now())) as create_time_stamp
-        ,date_format(ifnull(a.create_time,now()),'%Y-%m-%a %T') as create_time_text
-        ,unix_timestamp(ifnull(a.last_modify_time,now())) as last_modify_time_stamp
-        ,date_format(ifnull(a.last_modify_time,now()),'%Y-%m-%a %T') as last_modify_time_text
-        ,0 as fileLength
-    </sql>
-
-    <sql id="DirNodeFieldListForDirUnion">
-        a.id as id
+    <sql id="CommonDirFieldList">
+        1 as is_valid
+        ,a.id
         ,a.node_name as name
         ,a.pid as p_node_id
         ,a.type_id
-        ,d.content as type_name
+        ,c.content as type_name
+        ,unix_timestamp(ifnull(a.create_time,0)) as create_time_stamp
+        ,date_format(ifnull(a.create_time,0),'%Y-%m-%a %T') as create_time_text
+        ,unix_timestamp(ifnull(a.last_modify_time,0)) as last_modify_time_stamp
+        ,date_format(ifnull(a.last_modify_time,0),'%Y-%m-%a %T') as last_modify_time_text
+    </sql>
+
+    <sql id="SimpleNodeFieldListForSimpleDirUnion">
+        <include refid="CommonDirFieldList"/>
+        ,0 as file_length
+    </sql>
+
+    <sql id="DirUnion">
+        <include refid="SimpleDirUnion"/>
+        left join maoding_storage x on (x.path like concat(a.path,'_%'))
+        left join maoding_storage_file y on (y.id = x.id))
+    </sql>
+
+    <sql id="FixConditionForDirUnion">
+        <include refid="FixConditionForSimpleDirUnion"/>
+        and (ifnull(x.deleted,0) = 0) and (4 > ifnull(x.type_id,0)) and (ifnull(y.deleted,0) = 0)
+    </sql>
+
+    <sql id="DirNodeFieldListForDirUnion">
+        <include refid="CommonDirFieldList"/>
+        ,sum(ifnull(y.file_length,0)) as file_length
         ,a.path as full_name
-        ,c.user_id
-        ,c.duty_id
-        ,c.org_id
-        ,c.project_id
-        ,c.task_id
-        ,d.content as type_name
-        ,unix_timestamp(a.create_time) as create_time_stamp
-        ,date_format(a.create_time,'%Y-%m-%d %T') as create_time_text
+        ,b.user_id
+        ,b.duty_id
+        ,b.org_id
+        ,b.project_id
+        ,b.task_id
     </sql>
 
     <sql id="FileUnion">
         maoding_storage a
-        inner join maoding_storage b on (a.path like concat(b.path,'%'))
-        inner join maoding_storage_file c on (a.id = c.id)
-        left join maoding_const d on ((d.classic_id = 14) and (a.type_id = d.value_id))
-        left join maoding_const e on ((e.classic_id = 5) and (c.file_type_id = e.value_id))
-        left join maoding_const f on ((f.classic_id = 16) and (c.sync_mode_id = f.value_id))
+        inner join maoding_storage_file b on (a.id = b.id)
+        left join maoding_const c on (a.type_id = c.value_id)
+        left join maoding_const d on (b.file_type_id = d.value_id)
+        left join maoding_const e on (b.sync_mode_id = e.value_id)
+    </sql>
+
+    <sql id="FixConditionForFileUnion">
+        (a.deleted = 0) and (b.deleted = 0)
+        and (c.classic_id = 14) and (d.classic_id = 5) and (e.classic_id = 16)
     </sql>
 
     <sql id="SimpleNodeFieldListForFileUnion">
-        a.id
+        1 as is_valid
+        ,a.id
         ,a.node_name as name
         ,a.pid as p_node_id
         ,a.type_id
-        ,d.content as type_name
-        ,unix_timestamp(a.create_time) as create_time_stamp
-        ,date_format(a.create_time,'%Y-%m-%a %T') as create_time_text
-        ,unix_timestamp(a.last_modify_time) as last_modify_time_stamp
-        ,date_format(a.last_modify_time,'%Y-%m-%a %T') as last_modify_time_text
-        ,c.file_length
+        ,c.content as type_name
+        ,unix_timestamp(ifnull(a.create_time,0)) as create_time_stamp
+        ,date_format(ifnull(a.create_time,0),'%Y-%m-%a %T') as create_time_text
+        ,unix_timestamp(ifnull(a.last_modify_time,0)) as last_modify_time_stamp
+        ,date_format(ifnull(a.last_modify_time,0),'%Y-%m-%a %T') as last_modify_time_text
+        ,b.file_length
+    </sql>
+
+    <sql id="FileNodeFieldListForFileUnion">
+        <include refid="SimpleNodeFieldListForFileUnion"/>
+        ,a.path as full_name
+        ,b.file_checksum
+        ,b.file_version
+        ,b.last_modify_address
+        ,b.sync_mode_id
+        ,e.content as sync_mode_name
+        ,b.file_type_id
+        ,d.content as file_type_name
+        ,if(a.lock_user_id is null,0,1) as locking
+        ,b.creator_duty_id
+        ,b.last_modify_duty_id
     </sql>
 
     <select id="listFileByScopeAndKey" resultType="com.maoding.Storage.zeroc.CooperateFileDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
@@ -98,24 +131,26 @@
     </select>
 
     <select id="getSimpleNodeByPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
-        select <include refid="SimpleNodeFieldListForDirUnion"/>
-        from <include refid="DirUnion"/>
-        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
+        select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
+        from <include refid="SimpleDirUnion"/>
+        where <include refid="FixConditionForSimpleDirUnion"/>
             <if test="_parameter != null">
                 and (a.path = #{_parameter})
             </if>
         group by a.id
+        limit 1
         union all
         select <include refid="SimpleNodeFieldListForFileUnion"/>
         from <include refid="FileUnion"/>
-        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
+        where <include refid="FixConditionForFileUnion"/>
             <if test="_parameter != null">
                 and (a.path = #{_parameter})
             </if>
         group by a.id
+        limit 1
     </select>
 
-    <select id="getFirstChildTypeId" resultType="java.lang.Short" parameterType="java.lang.String">
+    <select id="getFirstChildTypeIdByPath" resultType="java.lang.Short" parameterType="java.lang.String">
         select a.type_id
         from maoding_storage a
         where (a.deleted = 0)
@@ -137,48 +172,26 @@
         limit 1
     </select>
 
-    <select id="getDirNodeInfo" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
-        select
-            a.id as id
-            ,a.node_name as name
-            ,a.pid as p_node_id
-            ,a.detail_id
-            ,ifnull(c.full_name,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '')) as full_name
-            ,c.user_id
-            ,c.duty_id
-            ,c.org_id
-            ,c.project_id
-            ,c.task_id
-            ,a.type_id
-            ,d.content as type_name
-            ,unix_timestamp(a.create_time) as create_time_stamp
-            ,date_format(a.create_time,'%Y-%m-%d %T') as create_time_text
-        from
-            maoding_storage a
-            inner join maoding_storage b on (find_in_set(b.id,a.path))
-            inner join maoding_storage_dir c on (a.detail_id = c.id)
-            inner join maoding_const d on (a.type_id = d.value_id)
-        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
-            and (d.classic_id = 14)
-            <choose>
-                <when test="nodeId != null">
-                    and (a.id = #{nodeId})
-                </when>
-                <otherwise>
-                    <choose>
-                        <when test="pNodeId != null">
-                            and (a.pid = #{pNodeId})
-                        </when>
-                        <otherwise>
-                            and (a.pid is null)
-                        </otherwise>
-                    </choose>
-                    <if test="nodeName != null">
-                        and (a.node_name = #{nodeName})
-                    </if>
-                </otherwise>
-            </choose>
+    <select id="getDirNodeInfoByPath" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="java.lang.String">
+        select <include refid="DirNodeFieldListForDirUnion"/>
+        from <include refid="DirUnion"/>
+        where <include refid="FixConditionForDirUnion"/>
+            <if test="_parameter != null">
+                and (a.path = #{_parameter})
+            </if>
         group by a.id
+        limit 1
+    </select>
+
+    <select id="getFileNodeInfoByPath" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="java.lang.String">
+        select <include refid="FileNodeFieldListForFileUnion"/>
+        from <include refid="FileUnion"/>
+        where <include refid="FixConditionForFileUnion"/>
+            <if test="_parameter != null">
+                and (a.path = #{_parameter})
+            </if>
+        group by a.id
+        limit 1
     </select>
 
     <select id="getDirNodeInfoByNodeId" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="java.lang.String">
@@ -264,6 +277,16 @@
                     </if>
                 </otherwise>
             </choose>
+        group by a.id
+    </select>
+
+    <select id="getFileNodeByPath" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="java.lang.String">
+        select <include refid="FileNodeFieldListForFileUnion"/>
+        from <include refid="FileUnion"/>
+        where <include refid="FixConditionForFileUnion"/>
+            <if test="_parameter != null">
+                and (a.path = #{_parameter})
+            </if>
         group by a.id
     </select>
 

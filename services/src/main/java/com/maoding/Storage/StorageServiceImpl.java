@@ -57,7 +57,13 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public CooperateDirNodeDTO getDirNodeInfo(String path, Current current) {
-        return null;
+        return storageDao.getDirNodeInfoByPath(StringUtils.formatPath(path));
+    }
+
+    @Override
+    public FileNodeDTO getFileNodeInfo(String path, Current current) {
+        FileNodeDTO file = storageDao.getFileNodeInfoByPath(StringUtils.formatPath(path));
+        return file;
     }
 
     @Override

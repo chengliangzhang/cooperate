@@ -23,6 +23,23 @@ package com.maoding.Storage.zeroc;
 public class SimpleNodeDTO implements java.lang.Cloneable,
                                       java.io.Serializable
 {
+    public boolean isValid;
+
+    public boolean getIsValid()
+    {
+        return isValid;
+    }
+
+    public void setIsValid(boolean isValid)
+    {
+        this.isValid = isValid;
+    }
+
+    public boolean isIsValid()
+    {
+        return isValid;
+    }
+
     public String id;
 
     public String getId()
@@ -153,8 +170,9 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = "";
     }
 
-    public SimpleNodeDTO(String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, long fileLength)
+    public SimpleNodeDTO(boolean isValid, String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, long fileLength)
     {
+        this.isValid = isValid;
         this.id = id;
         this.name = name;
         this.pNodeId = pNodeId;
@@ -181,6 +199,10 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
+            if(this.isValid != r.isValid)
+            {
+                return false;
+            }
             if(this.id != r.id)
             {
                 if(this.id == null || r.id == null || !this.id.equals(r.id))
@@ -250,6 +272,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::SimpleNodeDTO");
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
@@ -279,6 +302,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
+        ostr.writeBool(this.isValid);
         ostr.writeString(this.id);
         ostr.writeString(this.name);
         ostr.writeString(this.pNodeId);
@@ -293,6 +317,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
+        this.isValid = istr.readBool();
         this.id = istr.readString();
         this.name = istr.readString();
         this.pNodeId = istr.readString();
@@ -357,5 +382,5 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     private static final SimpleNodeDTO _nullMarshalValue = new SimpleNodeDTO();
 
-    public static final long serialVersionUID = -1624554116L;
+    public static final long serialVersionUID = -415953129L;
 }

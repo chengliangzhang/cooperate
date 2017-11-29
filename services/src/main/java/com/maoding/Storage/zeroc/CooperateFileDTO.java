@@ -366,6 +366,7 @@ public class CooperateFileDTO implements java.lang.Cloneable,
 
     public CooperateFileDTO()
     {
+        this.node = new FileNodeDTO();
         this.id = "";
         this.name = "";
         this.nodeId = "";
@@ -669,7 +670,7 @@ public class CooperateFileDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeValue(this.node);
+        FileNodeDTO.ice_write(ostr, this.node);
         ostr.writeString(this.id);
         ostr.writeString(this.name);
         ostr.writeString(this.nodeId);
@@ -701,7 +702,7 @@ public class CooperateFileDTO implements java.lang.Cloneable,
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        istr.readValue(v -> node = v, FileNodeDTO.class);
+        this.node = FileNodeDTO.ice_read(istr);
         this.id = istr.readString();
         this.name = istr.readString();
         this.nodeId = istr.readString();

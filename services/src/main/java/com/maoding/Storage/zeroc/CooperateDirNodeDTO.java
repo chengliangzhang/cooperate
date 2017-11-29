@@ -20,50 +20,24 @@
 
 package com.maoding.Storage.zeroc;
 
-public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
+public class CooperateDirNodeDTO implements java.lang.Cloneable,
+                                            java.io.Serializable
 {
-    public CooperateDirNodeDTO()
+    public boolean isValid;
+
+    public boolean getIsValid()
     {
-        this.id = "";
-        this.name = "";
-        this.pNodeId = "";
-        this.detailId = "";
-        this.fullName = "";
-        this.userId = "";
-        this.dutyId = "";
-        this.userName = "";
-        this.aliasName = "";
-        this.orgId = "";
-        this.orgName = "";
-        this.projectId = "";
-        this.projectName = "";
-        this.taskId = "";
-        this.taskName = "";
-        this.typeName = "";
-        this.createTimeText = "";
+        return isValid;
     }
 
-    public CooperateDirNodeDTO(String id, String name, String pNodeId, String detailId, String fullName, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName, short typeId, String typeName, long createTimeStamp, String createTimeText)
+    public void setIsValid(boolean isValid)
     {
-        this.id = id;
-        this.name = name;
-        this.pNodeId = pNodeId;
-        this.detailId = detailId;
-        this.fullName = fullName;
-        this.userId = userId;
-        this.dutyId = dutyId;
-        this.userName = userName;
-        this.aliasName = aliasName;
-        this.orgId = orgId;
-        this.orgName = orgName;
-        this.projectId = projectId;
-        this.projectName = projectName;
-        this.taskId = taskId;
-        this.taskName = taskName;
-        this.typeId = typeId;
-        this.typeName = typeName;
-        this.createTimeStamp = createTimeStamp;
-        this.createTimeText = createTimeText;
+        this.isValid = isValid;
+    }
+
+    public boolean isIsValid()
+    {
+        return isValid;
     }
 
     public String id;
@@ -102,16 +76,88 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         this.pNodeId = pNodeId;
     }
 
-    public String detailId;
+    public short typeId;
 
-    public String getDetailId()
+    public short getTypeId()
     {
-        return detailId;
+        return typeId;
     }
 
-    public void setDetailId(String detailId)
+    public void setTypeId(short typeId)
     {
-        this.detailId = detailId;
+        this.typeId = typeId;
+    }
+
+    public String typeName;
+
+    public String getTypeName()
+    {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName)
+    {
+        this.typeName = typeName;
+    }
+
+    public long createTimeStamp;
+
+    public long getCreateTimeStamp()
+    {
+        return createTimeStamp;
+    }
+
+    public void setCreateTimeStamp(long createTimeStamp)
+    {
+        this.createTimeStamp = createTimeStamp;
+    }
+
+    public String createTimeText;
+
+    public String getCreateTimeText()
+    {
+        return createTimeText;
+    }
+
+    public void setCreateTimeText(String createTimeText)
+    {
+        this.createTimeText = createTimeText;
+    }
+
+    public long lastModifyTimeStamp;
+
+    public long getLastModifyTimeStamp()
+    {
+        return lastModifyTimeStamp;
+    }
+
+    public void setLastModifyTimeStamp(long lastModifyTimeStamp)
+    {
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
+    }
+
+    public String lastModifyTimeText;
+
+    public String getLastModifyTimeText()
+    {
+        return lastModifyTimeText;
+    }
+
+    public void setLastModifyTimeText(String lastModifyTimeText)
+    {
+        this.lastModifyTimeText = lastModifyTimeText;
+    }
+
+    public long fileLength;
+
+    public long getFileLength()
+    {
+        return fileLength;
+    }
+
+    public void setFileLength(long fileLength)
+    {
+        this.fileLength = fileLength;
     }
 
     public String fullName;
@@ -246,121 +292,359 @@ public class CooperateDirNodeDTO extends com.zeroc.Ice.Value
         this.taskName = taskName;
     }
 
-    public short typeId;
-
-    public short getTypeId()
+    public CooperateDirNodeDTO()
     {
-        return typeId;
+        this.id = "";
+        this.name = "";
+        this.pNodeId = "";
+        this.typeName = "";
+        this.createTimeText = "";
+        this.lastModifyTimeText = "";
+        this.fullName = "";
+        this.userId = "";
+        this.dutyId = "";
+        this.userName = "";
+        this.aliasName = "";
+        this.orgId = "";
+        this.orgName = "";
+        this.projectId = "";
+        this.projectName = "";
+        this.taskId = "";
+        this.taskName = "";
     }
 
-    public void setTypeId(short typeId)
+    public CooperateDirNodeDTO(boolean isValid, String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, long fileLength, String fullName, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName)
     {
+        this.isValid = isValid;
+        this.id = id;
+        this.name = name;
+        this.pNodeId = pNodeId;
         this.typeId = typeId;
-    }
-
-    public String typeName;
-
-    public String getTypeName()
-    {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName)
-    {
         this.typeName = typeName;
-    }
-
-    public long createTimeStamp;
-
-    public long getCreateTimeStamp()
-    {
-        return createTimeStamp;
-    }
-
-    public void setCreateTimeStamp(long createTimeStamp)
-    {
         this.createTimeStamp = createTimeStamp;
-    }
-
-    public String createTimeText;
-
-    public String getCreateTimeText()
-    {
-        return createTimeText;
-    }
-
-    public void setCreateTimeText(String createTimeText)
-    {
         this.createTimeText = createTimeText;
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
+        this.lastModifyTimeText = lastModifyTimeText;
+        this.fileLength = fileLength;
+        this.fullName = fullName;
+        this.userId = userId;
+        this.dutyId = dutyId;
+        this.userName = userName;
+        this.aliasName = aliasName;
+        this.orgId = orgId;
+        this.orgName = orgName;
+        this.projectId = projectId;
+        this.projectName = projectName;
+        this.taskId = taskId;
+        this.taskName = taskName;
+    }
+
+    public boolean equals(java.lang.Object rhs)
+    {
+        if(this == rhs)
+        {
+            return true;
+        }
+        CooperateDirNodeDTO r = null;
+        if(rhs instanceof CooperateDirNodeDTO)
+        {
+            r = (CooperateDirNodeDTO)rhs;
+        }
+
+        if(r != null)
+        {
+            if(this.isValid != r.isValid)
+            {
+                return false;
+            }
+            if(this.id != r.id)
+            {
+                if(this.id == null || r.id == null || !this.id.equals(r.id))
+                {
+                    return false;
+                }
+            }
+            if(this.name != r.name)
+            {
+                if(this.name == null || r.name == null || !this.name.equals(r.name))
+                {
+                    return false;
+                }
+            }
+            if(this.pNodeId != r.pNodeId)
+            {
+                if(this.pNodeId == null || r.pNodeId == null || !this.pNodeId.equals(r.pNodeId))
+                {
+                    return false;
+                }
+            }
+            if(this.typeId != r.typeId)
+            {
+                return false;
+            }
+            if(this.typeName != r.typeName)
+            {
+                if(this.typeName == null || r.typeName == null || !this.typeName.equals(r.typeName))
+                {
+                    return false;
+                }
+            }
+            if(this.createTimeStamp != r.createTimeStamp)
+            {
+                return false;
+            }
+            if(this.createTimeText != r.createTimeText)
+            {
+                if(this.createTimeText == null || r.createTimeText == null || !this.createTimeText.equals(r.createTimeText))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyTimeStamp != r.lastModifyTimeStamp)
+            {
+                return false;
+            }
+            if(this.lastModifyTimeText != r.lastModifyTimeText)
+            {
+                if(this.lastModifyTimeText == null || r.lastModifyTimeText == null || !this.lastModifyTimeText.equals(r.lastModifyTimeText))
+                {
+                    return false;
+                }
+            }
+            if(this.fileLength != r.fileLength)
+            {
+                return false;
+            }
+            if(this.fullName != r.fullName)
+            {
+                if(this.fullName == null || r.fullName == null || !this.fullName.equals(r.fullName))
+                {
+                    return false;
+                }
+            }
+            if(this.userId != r.userId)
+            {
+                if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
+                {
+                    return false;
+                }
+            }
+            if(this.dutyId != r.dutyId)
+            {
+                if(this.dutyId == null || r.dutyId == null || !this.dutyId.equals(r.dutyId))
+                {
+                    return false;
+                }
+            }
+            if(this.userName != r.userName)
+            {
+                if(this.userName == null || r.userName == null || !this.userName.equals(r.userName))
+                {
+                    return false;
+                }
+            }
+            if(this.aliasName != r.aliasName)
+            {
+                if(this.aliasName == null || r.aliasName == null || !this.aliasName.equals(r.aliasName))
+                {
+                    return false;
+                }
+            }
+            if(this.orgId != r.orgId)
+            {
+                if(this.orgId == null || r.orgId == null || !this.orgId.equals(r.orgId))
+                {
+                    return false;
+                }
+            }
+            if(this.orgName != r.orgName)
+            {
+                if(this.orgName == null || r.orgName == null || !this.orgName.equals(r.orgName))
+                {
+                    return false;
+                }
+            }
+            if(this.projectId != r.projectId)
+            {
+                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
+                {
+                    return false;
+                }
+            }
+            if(this.projectName != r.projectName)
+            {
+                if(this.projectName == null || r.projectName == null || !this.projectName.equals(r.projectName))
+                {
+                    return false;
+                }
+            }
+            if(this.taskId != r.taskId)
+            {
+                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
+                {
+                    return false;
+                }
+            }
+            if(this.taskName != r.taskName)
+            {
+                if(this.taskName == null || r.taskName == null || !this.taskName.equals(r.taskName))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public int hashCode()
+    {
+        int h_ = 5381;
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CooperateDirNodeDTO");
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeText);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dutyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, aliasName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
+        return h_;
     }
 
     public CooperateDirNodeDTO clone()
     {
-        return (CooperateDirNodeDTO)super.clone();
+        CooperateDirNodeDTO c = null;
+        try
+        {
+            c = (CooperateDirNodeDTO)super.clone();
+        }
+        catch(CloneNotSupportedException ex)
+        {
+            assert false; // impossible
+        }
+        return c;
     }
 
-    public static String ice_staticId()
+    public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        return "::zeroc::CooperateDirNodeDTO";
+        ostr.writeBool(this.isValid);
+        ostr.writeString(this.id);
+        ostr.writeString(this.name);
+        ostr.writeString(this.pNodeId);
+        ostr.writeShort(this.typeId);
+        ostr.writeString(this.typeName);
+        ostr.writeLong(this.createTimeStamp);
+        ostr.writeString(this.createTimeText);
+        ostr.writeLong(this.lastModifyTimeStamp);
+        ostr.writeString(this.lastModifyTimeText);
+        ostr.writeLong(this.fileLength);
+        ostr.writeString(this.fullName);
+        ostr.writeString(this.userId);
+        ostr.writeString(this.dutyId);
+        ostr.writeString(this.userName);
+        ostr.writeString(this.aliasName);
+        ostr.writeString(this.orgId);
+        ostr.writeString(this.orgName);
+        ostr.writeString(this.projectId);
+        ostr.writeString(this.projectName);
+        ostr.writeString(this.taskId);
+        ostr.writeString(this.taskName);
     }
 
-    @Override
-    public String ice_id()
+    public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        return ice_staticId();
+        this.isValid = istr.readBool();
+        this.id = istr.readString();
+        this.name = istr.readString();
+        this.pNodeId = istr.readString();
+        this.typeId = istr.readShort();
+        this.typeName = istr.readString();
+        this.createTimeStamp = istr.readLong();
+        this.createTimeText = istr.readString();
+        this.lastModifyTimeStamp = istr.readLong();
+        this.lastModifyTimeText = istr.readString();
+        this.fileLength = istr.readLong();
+        this.fullName = istr.readString();
+        this.userId = istr.readString();
+        this.dutyId = istr.readString();
+        this.userName = istr.readString();
+        this.aliasName = istr.readString();
+        this.orgId = istr.readString();
+        this.orgName = istr.readString();
+        this.projectId = istr.readString();
+        this.projectName = istr.readString();
+        this.taskId = istr.readString();
+        this.taskName = istr.readString();
     }
 
-    public static final long serialVersionUID = -1568157328L;
-
-    @Override
-    protected void _iceWriteImpl(com.zeroc.Ice.OutputStream ostr_)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, CooperateDirNodeDTO v)
     {
-        ostr_.startSlice(ice_staticId(), -1, true);
-        ostr_.writeString(id);
-        ostr_.writeString(name);
-        ostr_.writeString(pNodeId);
-        ostr_.writeString(detailId);
-        ostr_.writeString(fullName);
-        ostr_.writeString(userId);
-        ostr_.writeString(dutyId);
-        ostr_.writeString(userName);
-        ostr_.writeString(aliasName);
-        ostr_.writeString(orgId);
-        ostr_.writeString(orgName);
-        ostr_.writeString(projectId);
-        ostr_.writeString(projectName);
-        ostr_.writeString(taskId);
-        ostr_.writeString(taskName);
-        ostr_.writeShort(typeId);
-        ostr_.writeString(typeName);
-        ostr_.writeLong(createTimeStamp);
-        ostr_.writeString(createTimeText);
-        ostr_.endSlice();
+        if(v == null)
+        {
+            _nullMarshalValue.ice_writeMembers(ostr);
+        }
+        else
+        {
+            v.ice_writeMembers(ostr);
+        }
     }
 
-    @Override
-    protected void _iceReadImpl(com.zeroc.Ice.InputStream istr_)
+    static public CooperateDirNodeDTO ice_read(com.zeroc.Ice.InputStream istr)
     {
-        istr_.startSlice();
-        id = istr_.readString();
-        name = istr_.readString();
-        pNodeId = istr_.readString();
-        detailId = istr_.readString();
-        fullName = istr_.readString();
-        userId = istr_.readString();
-        dutyId = istr_.readString();
-        userName = istr_.readString();
-        aliasName = istr_.readString();
-        orgId = istr_.readString();
-        orgName = istr_.readString();
-        projectId = istr_.readString();
-        projectName = istr_.readString();
-        taskId = istr_.readString();
-        taskName = istr_.readString();
-        typeId = istr_.readShort();
-        typeName = istr_.readString();
-        createTimeStamp = istr_.readLong();
-        createTimeText = istr_.readString();
-        istr_.endSlice();
+        CooperateDirNodeDTO v = new CooperateDirNodeDTO();
+        v.ice_readMembers(istr);
+        return v;
     }
+
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<CooperateDirNodeDTO> v)
+    {
+        if(v != null && v.isPresent())
+        {
+            ice_write(ostr, tag, v.get());
+        }
+    }
+
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, CooperateDirNodeDTO v)
+    {
+        if(ostr.writeOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
+        {
+            int pos = ostr.startSize();
+            ice_write(ostr, v);
+            ostr.endSize(pos);
+        }
+    }
+
+    static public java.util.Optional<CooperateDirNodeDTO> ice_read(com.zeroc.Ice.InputStream istr, int tag)
+    {
+        if(istr.readOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
+        {
+            istr.skip(4);
+            return java.util.Optional.of(CooperateDirNodeDTO.ice_read(istr));
+        }
+        else
+        {
+            return java.util.Optional.empty();
+        }
+    }
+
+    private static final CooperateDirNodeDTO _nullMarshalValue = new CooperateDirNodeDTO();
+
+    public static final long serialVersionUID = -588206463L;
 }

@@ -61,6 +61,7 @@ public class CooperateDirDTO implements java.lang.Cloneable,
 
     public CooperateDirDTO()
     {
+        this.node = new CooperateDirNodeDTO();
     }
 
     public CooperateDirDTO(CooperateDirNodeDTO node, java.util.List<CooperateDirNodeDTO> subDirList, java.util.List<CooperateFileDTO> fileList)
@@ -138,14 +139,14 @@ public class CooperateDirDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeValue(this.node);
+        CooperateDirNodeDTO.ice_write(ostr, this.node);
         CooperateDirListHelper.write(ostr, this.subDirList);
         CooperateFileListHelper.write(ostr, this.fileList);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        istr.readValue(v -> node = v, CooperateDirNodeDTO.class);
+        this.node = CooperateDirNodeDTO.ice_read(istr);
         this.subDirList = CooperateDirListHelper.read(istr);
         this.fileList = CooperateFileListHelper.read(istr);
     }

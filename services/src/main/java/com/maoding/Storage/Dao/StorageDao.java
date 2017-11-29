@@ -40,4 +40,8 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     Short getFirstChildTypeId(String path);
     /** 根据全路径名获取树id */
     StorageEntity selectByPath(String path);
+    /** 根据全路径名获取目录详细信息 */
+    CooperateDirNodeDTO getDirNodeInfoByPath(String path);
+    /** 根据全路径名获取文件详细信息 */
+    FileNodeDTO getFileNodeInfoByPath(String path);
 }

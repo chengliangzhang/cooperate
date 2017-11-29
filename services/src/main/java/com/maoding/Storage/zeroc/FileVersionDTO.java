@@ -20,8 +20,31 @@
 
 package com.maoding.Storage.zeroc;
 
-public class FileVersionDTO extends com.zeroc.Ice.Value
+public class FileVersionDTO implements java.lang.Cloneable,
+                                       java.io.Serializable
 {
+    public String id;
+
+    public String nodeId;
+
+    public String fileVersion;
+
+    public String lastModifyAddress;
+
+    public boolean locking;
+
+    public long createTimeStamp;
+
+    public String createTimeText;
+
+    public String lastModifyDutyId;
+
+    public String lastModifyDutyName;
+
+    public long lastModifyTimeStamp;
+
+    public String lastModifyTimeText;
+
     public FileVersionDTO()
     {
         this.id = "";
@@ -49,79 +72,208 @@ public class FileVersionDTO extends com.zeroc.Ice.Value
         this.lastModifyTimeText = lastModifyTimeText;
     }
 
-    public String id;
+    public boolean equals(java.lang.Object rhs)
+    {
+        if(this == rhs)
+        {
+            return true;
+        }
+        FileVersionDTO r = null;
+        if(rhs instanceof FileVersionDTO)
+        {
+            r = (FileVersionDTO)rhs;
+        }
 
-    public String nodeId;
+        if(r != null)
+        {
+            if(this.id != r.id)
+            {
+                if(this.id == null || r.id == null || !this.id.equals(r.id))
+                {
+                    return false;
+                }
+            }
+            if(this.nodeId != r.nodeId)
+            {
+                if(this.nodeId == null || r.nodeId == null || !this.nodeId.equals(r.nodeId))
+                {
+                    return false;
+                }
+            }
+            if(this.fileVersion != r.fileVersion)
+            {
+                if(this.fileVersion == null || r.fileVersion == null || !this.fileVersion.equals(r.fileVersion))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyAddress != r.lastModifyAddress)
+            {
+                if(this.lastModifyAddress == null || r.lastModifyAddress == null || !this.lastModifyAddress.equals(r.lastModifyAddress))
+                {
+                    return false;
+                }
+            }
+            if(this.locking != r.locking)
+            {
+                return false;
+            }
+            if(this.createTimeStamp != r.createTimeStamp)
+            {
+                return false;
+            }
+            if(this.createTimeText != r.createTimeText)
+            {
+                if(this.createTimeText == null || r.createTimeText == null || !this.createTimeText.equals(r.createTimeText))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyDutyId != r.lastModifyDutyId)
+            {
+                if(this.lastModifyDutyId == null || r.lastModifyDutyId == null || !this.lastModifyDutyId.equals(r.lastModifyDutyId))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyDutyName != r.lastModifyDutyName)
+            {
+                if(this.lastModifyDutyName == null || r.lastModifyDutyName == null || !this.lastModifyDutyName.equals(r.lastModifyDutyName))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyTimeStamp != r.lastModifyTimeStamp)
+            {
+                return false;
+            }
+            if(this.lastModifyTimeText != r.lastModifyTimeText)
+            {
+                if(this.lastModifyTimeText == null || r.lastModifyTimeText == null || !this.lastModifyTimeText.equals(r.lastModifyTimeText))
+                {
+                    return false;
+                }
+            }
 
-    public String fileVersion;
+            return true;
+        }
 
-    public String lastModifyAddress;
+        return false;
+    }
 
-    public boolean locking;
-
-    public long createTimeStamp;
-
-    public String createTimeText;
-
-    public String lastModifyDutyId;
-
-    public String lastModifyDutyName;
-
-    public long lastModifyTimeStamp;
-
-    public String lastModifyTimeText;
+    public int hashCode()
+    {
+        int h_ = 5381;
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::FileVersionDTO");
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, nodeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileVersion);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyAddress);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, locking);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyDutyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyDutyName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeText);
+        return h_;
+    }
 
     public FileVersionDTO clone()
     {
-        return (FileVersionDTO)super.clone();
+        FileVersionDTO c = null;
+        try
+        {
+            c = (FileVersionDTO)super.clone();
+        }
+        catch(CloneNotSupportedException ex)
+        {
+            assert false; // impossible
+        }
+        return c;
     }
 
-    public static String ice_staticId()
+    public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        return "::zeroc::FileVersionDTO";
+        ostr.writeString(this.id);
+        ostr.writeString(this.nodeId);
+        ostr.writeString(this.fileVersion);
+        ostr.writeString(this.lastModifyAddress);
+        ostr.writeBool(this.locking);
+        ostr.writeLong(this.createTimeStamp);
+        ostr.writeString(this.createTimeText);
+        ostr.writeString(this.lastModifyDutyId);
+        ostr.writeString(this.lastModifyDutyName);
+        ostr.writeLong(this.lastModifyTimeStamp);
+        ostr.writeString(this.lastModifyTimeText);
     }
 
-    @Override
-    public String ice_id()
+    public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        return ice_staticId();
+        this.id = istr.readString();
+        this.nodeId = istr.readString();
+        this.fileVersion = istr.readString();
+        this.lastModifyAddress = istr.readString();
+        this.locking = istr.readBool();
+        this.createTimeStamp = istr.readLong();
+        this.createTimeText = istr.readString();
+        this.lastModifyDutyId = istr.readString();
+        this.lastModifyDutyName = istr.readString();
+        this.lastModifyTimeStamp = istr.readLong();
+        this.lastModifyTimeText = istr.readString();
     }
 
-    public static final long serialVersionUID = -741663931L;
-
-    @Override
-    protected void _iceWriteImpl(com.zeroc.Ice.OutputStream ostr_)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, FileVersionDTO v)
     {
-        ostr_.startSlice(ice_staticId(), -1, true);
-        ostr_.writeString(id);
-        ostr_.writeString(nodeId);
-        ostr_.writeString(fileVersion);
-        ostr_.writeString(lastModifyAddress);
-        ostr_.writeBool(locking);
-        ostr_.writeLong(createTimeStamp);
-        ostr_.writeString(createTimeText);
-        ostr_.writeString(lastModifyDutyId);
-        ostr_.writeString(lastModifyDutyName);
-        ostr_.writeLong(lastModifyTimeStamp);
-        ostr_.writeString(lastModifyTimeText);
-        ostr_.endSlice();
+        if(v == null)
+        {
+            _nullMarshalValue.ice_writeMembers(ostr);
+        }
+        else
+        {
+            v.ice_writeMembers(ostr);
+        }
     }
 
-    @Override
-    protected void _iceReadImpl(com.zeroc.Ice.InputStream istr_)
+    static public FileVersionDTO ice_read(com.zeroc.Ice.InputStream istr)
     {
-        istr_.startSlice();
-        id = istr_.readString();
-        nodeId = istr_.readString();
-        fileVersion = istr_.readString();
-        lastModifyAddress = istr_.readString();
-        locking = istr_.readBool();
-        createTimeStamp = istr_.readLong();
-        createTimeText = istr_.readString();
-        lastModifyDutyId = istr_.readString();
-        lastModifyDutyName = istr_.readString();
-        lastModifyTimeStamp = istr_.readLong();
-        lastModifyTimeText = istr_.readString();
-        istr_.endSlice();
+        FileVersionDTO v = new FileVersionDTO();
+        v.ice_readMembers(istr);
+        return v;
     }
+
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<FileVersionDTO> v)
+    {
+        if(v != null && v.isPresent())
+        {
+            ice_write(ostr, tag, v.get());
+        }
+    }
+
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, FileVersionDTO v)
+    {
+        if(ostr.writeOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
+        {
+            int pos = ostr.startSize();
+            ice_write(ostr, v);
+            ostr.endSize(pos);
+        }
+    }
+
+    static public java.util.Optional<FileVersionDTO> ice_read(com.zeroc.Ice.InputStream istr, int tag)
+    {
+        if(istr.readOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
+        {
+            istr.skip(4);
+            return java.util.Optional.of(FileVersionDTO.ice_read(istr));
+        }
+        else
+        {
+            return java.util.Optional.empty();
+        }
+    }
+
+    private static final FileVersionDTO _nullMarshalValue = new FileVersionDTO();
+
+    public static final long serialVersionUID = 1005729311L;
 }

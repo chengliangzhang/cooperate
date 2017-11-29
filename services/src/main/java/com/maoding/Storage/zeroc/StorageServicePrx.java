@@ -348,10 +348,42 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      ostr.writeString(iceP_path);
                  }, istr -> {
-                     final com.zeroc.IceInternal.Holder<CooperateDirNodeDTO> ret = new com.zeroc.IceInternal.Holder<>();
-                     istr.readValue(v -> ret.value = v, CooperateDirNodeDTO.class);
-                     istr.readPendingValues();
-                     return ret.value;
+                     CooperateDirNodeDTO ret;
+                     ret = CooperateDirNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default FileNodeDTO getFileNodeInfo(String path)
+    {
+        return getFileNodeInfo(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default FileNodeDTO getFileNodeInfo(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_getFileNodeInfoAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<FileNodeDTO> getFileNodeInfoAsync(String path)
+    {
+        return _iceI_getFileNodeInfoAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<FileNodeDTO> getFileNodeInfoAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_getFileNodeInfoAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<FileNodeDTO> _iceI_getFileNodeInfoAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<FileNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFileNodeInfo", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     FileNodeDTO ret;
+                     ret = FileNodeDTO.ice_read(istr);
+                     return ret;
                  });
         return f;
     }
@@ -384,7 +416,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
                  }, istr -> {
                      CooperateDirDTO ret;
                      ret = CooperateDirDTO.ice_read(istr);
-                     istr.readPendingValues();
                      return ret;
                  });
         return f;
@@ -549,7 +580,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "modifyFileInfo", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
-                     ostr.writePendingValues();
                  }, istr -> {
                      boolean ret;
                      ret = istr.readBool();
@@ -584,7 +614,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
                      ostr.writeInt(iceP_mode);
-                     ostr.writePendingValues();
                  }, istr -> {
                      com.maoding.FileServer.zeroc.FileRequestDTO ret;
                      ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
@@ -619,7 +648,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
                      ostr.writeInt(iceP_mode);
-                     ostr.writePendingValues();
                  }, istr -> {
                      com.maoding.FileServer.zeroc.FileRequestDTO ret;
                      ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
@@ -654,7 +682,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
                      ostr.writeInt(iceP_mode);
-                     ostr.writePendingValues();
                  }, istr -> {
                      com.maoding.FileServer.zeroc.FileRequestDTO ret;
                      ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
@@ -691,7 +718,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
                  }, istr -> {
                      CooperateFileDTO ret;
                      ret = CooperateFileDTO.ice_read(istr);
-                     istr.readPendingValues();
                      return ret;
                  });
         return f;
@@ -812,7 +838,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
                      com.maoding.FileServer.zeroc.FileDTO.ice_write(ostr, iceP_fileDTO);
-                     ostr.writePendingValues();
                  }, istr -> {
                      boolean ret;
                      ret = istr.readBool();
@@ -846,7 +871,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "deleteFile", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
-                     ostr.writePendingValues();
                  }, istr -> {
                      boolean ret;
                      ret = istr.readBool();
@@ -981,11 +1005,9 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
                      ostr.writeString(iceP_path);
-                     ostr.writePendingValues();
                  }, istr -> {
                      CooperateFileDTO ret;
                      ret = CooperateFileDTO.ice_read(istr);
-                     istr.readPendingValues();
                      return ret;
                  });
         return f;
@@ -1017,11 +1039,9 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
                      ostr.writeString(iceP_path);
-                     ostr.writePendingValues();
                  }, istr -> {
                      CooperateFileDTO ret;
                      ret = CooperateFileDTO.ice_read(istr);
-                     istr.readPendingValues();
                      return ret;
                  });
         return f;
@@ -1089,7 +1109,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
                  }, istr -> {
                      java.util.List<CooperateFileDTO> ret;
                      ret = CooperateFileListHelper.read(istr);
-                     istr.readPendingValues();
                      return ret;
                  });
         return f;
@@ -1120,7 +1139,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "restoreFile", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
-                     ostr.writePendingValues();
                  }, istr -> {
                      boolean ret;
                      ret = istr.readBool();
@@ -1256,7 +1274,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
                  }, istr -> {
                      CooperateFileDTO ret;
                      ret = CooperateFileDTO.ice_read(istr);
-                     istr.readPendingValues();
                      return ret;
                  });
         return f;
@@ -1321,7 +1338,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, ostr -> {
                      CooperateFileDTO.ice_write(ostr, iceP_fileInfo);
                      ostr.writeString(iceP_version);
-                     ostr.writePendingValues();
                  }, istr -> {
                      String ret;
                      ret = istr.readString();

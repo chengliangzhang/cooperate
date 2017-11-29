@@ -33,7 +33,7 @@ public final class FileVersionListHelper
             ostr.writeSize(v.size());
             for(FileVersionDTO elem : v)
             {
-                ostr.writeValue(elem);
+                FileVersionDTO.ice_write(ostr, elem);
             }
         }
     }
@@ -42,12 +42,12 @@ public final class FileVersionListHelper
     {
         final java.util.List<FileVersionDTO> v;
         v = new java.util.ArrayList<FileVersionDTO>();
-        final int len0 = istr.readAndCheckSeqSize(1);
+        final int len0 = istr.readAndCheckSeqSize(25);
         for(int i0 = 0; i0 < len0; i0++)
         {
-            v.add(null);
-            final int fi0 = i0;
-            istr.readValue(value -> v.set(fi0, value), FileVersionDTO.class);
+            FileVersionDTO elem;
+            elem = FileVersionDTO.ice_read(istr);
+            v.add(elem);
         }
         return v;
     }

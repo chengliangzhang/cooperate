@@ -20,58 +20,24 @@
 
 package com.maoding.Storage.zeroc;
 
-public class FileNodeDTO extends com.zeroc.Ice.Value
+public class FileNodeDTO implements java.lang.Cloneable,
+                                    java.io.Serializable
 {
-    public FileNodeDTO()
+    public boolean isValid;
+
+    public boolean getIsValid()
     {
-        this.id = "";
-        this.name = "";
-        this.nodeId = "";
-        this.pNodeId = "";
-        this.pathName = "";
-        this.fileChecksum = "";
-        this.fileVersion = "";
-        this.specialtyId = "";
-        this.specialtyName = "";
-        this.lastModifyAddress = "";
-        this.syncModeName = "";
-        this.typeName = "";
-        this.localFile = "";
-        this.creatorDutyId = "";
-        this.creatorDutyName = "";
-        this.createTimeText = "";
-        this.lastModifyDutyId = "";
-        this.lastModifyDutyName = "";
-        this.lastModifyTimeText = "";
+        return isValid;
     }
 
-    public FileNodeDTO(String id, String name, String nodeId, String pNodeId, String pathName, long fileLength, String fileChecksum, String fileVersion, String specialtyId, String specialtyName, String lastModifyAddress, short syncModeId, String syncModeName, short typeId, String typeName, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, long createTimeStamp, String createTimeText, String lastModifyDutyId, String lastModifyDutyName, long lastModifyTimeStamp, String lastModifyTimeText)
+    public void setIsValid(boolean isValid)
     {
-        this.id = id;
-        this.name = name;
-        this.nodeId = nodeId;
-        this.pNodeId = pNodeId;
-        this.pathName = pathName;
-        this.fileLength = fileLength;
-        this.fileChecksum = fileChecksum;
-        this.fileVersion = fileVersion;
-        this.specialtyId = specialtyId;
-        this.specialtyName = specialtyName;
-        this.lastModifyAddress = lastModifyAddress;
-        this.syncModeId = syncModeId;
-        this.syncModeName = syncModeName;
-        this.typeId = typeId;
-        this.typeName = typeName;
-        this.locking = locking;
-        this.localFile = localFile;
-        this.creatorDutyId = creatorDutyId;
-        this.creatorDutyName = creatorDutyName;
-        this.createTimeStamp = createTimeStamp;
-        this.createTimeText = createTimeText;
-        this.lastModifyDutyId = lastModifyDutyId;
-        this.lastModifyDutyName = lastModifyDutyName;
-        this.lastModifyTimeStamp = lastModifyTimeStamp;
-        this.lastModifyTimeText = lastModifyTimeText;
+        this.isValid = isValid;
+    }
+
+    public boolean isIsValid()
+    {
+        return isValid;
     }
 
     public String id;
@@ -98,18 +64,6 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
         this.name = name;
     }
 
-    public String nodeId;
-
-    public String getNodeId()
-    {
-        return nodeId;
-    }
-
-    public void setNodeId(String nodeId)
-    {
-        this.nodeId = nodeId;
-    }
-
     public String pNodeId;
 
     public String getPNodeId()
@@ -122,16 +76,76 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
         this.pNodeId = pNodeId;
     }
 
-    public String pathName;
+    public short typeId;
 
-    public String getPathName()
+    public short getTypeId()
     {
-        return pathName;
+        return typeId;
     }
 
-    public void setPathName(String pathName)
+    public void setTypeId(short typeId)
     {
-        this.pathName = pathName;
+        this.typeId = typeId;
+    }
+
+    public String typeName;
+
+    public String getTypeName()
+    {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName)
+    {
+        this.typeName = typeName;
+    }
+
+    public long createTimeStamp;
+
+    public long getCreateTimeStamp()
+    {
+        return createTimeStamp;
+    }
+
+    public void setCreateTimeStamp(long createTimeStamp)
+    {
+        this.createTimeStamp = createTimeStamp;
+    }
+
+    public String createTimeText;
+
+    public String getCreateTimeText()
+    {
+        return createTimeText;
+    }
+
+    public void setCreateTimeText(String createTimeText)
+    {
+        this.createTimeText = createTimeText;
+    }
+
+    public long lastModifyTimeStamp;
+
+    public long getLastModifyTimeStamp()
+    {
+        return lastModifyTimeStamp;
+    }
+
+    public void setLastModifyTimeStamp(long lastModifyTimeStamp)
+    {
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
+    }
+
+    public String lastModifyTimeText;
+
+    public String getLastModifyTimeText()
+    {
+        return lastModifyTimeText;
+    }
+
+    public void setLastModifyTimeText(String lastModifyTimeText)
+    {
+        this.lastModifyTimeText = lastModifyTimeText;
     }
 
     public long fileLength;
@@ -144,6 +158,18 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
     public void setFileLength(long fileLength)
     {
         this.fileLength = fileLength;
+    }
+
+    public String fullName;
+
+    public String getFullName()
+    {
+        return fullName;
+    }
+
+    public void setFullName(String fullName)
+    {
+        this.fullName = fullName;
     }
 
     public String fileChecksum;
@@ -168,30 +194,6 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
     public void setFileVersion(String fileVersion)
     {
         this.fileVersion = fileVersion;
-    }
-
-    public String specialtyId;
-
-    public String getSpecialtyId()
-    {
-        return specialtyId;
-    }
-
-    public void setSpecialtyId(String specialtyId)
-    {
-        this.specialtyId = specialtyId;
-    }
-
-    public String specialtyName;
-
-    public String getSpecialtyName()
-    {
-        return specialtyName;
-    }
-
-    public void setSpecialtyName(String specialtyName)
-    {
-        this.specialtyName = specialtyName;
     }
 
     public String lastModifyAddress;
@@ -230,28 +232,28 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
         this.syncModeName = syncModeName;
     }
 
-    public short typeId;
+    public short fileTypeId;
 
-    public short getTypeId()
+    public short getFileTypeId()
     {
-        return typeId;
+        return fileTypeId;
     }
 
-    public void setTypeId(short typeId)
+    public void setFileTypeId(short fileTypeId)
     {
-        this.typeId = typeId;
+        this.fileTypeId = fileTypeId;
     }
 
-    public String typeName;
+    public String fileTypeName;
 
-    public String getTypeName()
+    public String getFileTypeName()
     {
-        return typeName;
+        return fileTypeName;
     }
 
-    public void setTypeName(String typeName)
+    public void setFileTypeName(String fileTypeName)
     {
-        this.typeName = typeName;
+        this.fileTypeName = fileTypeName;
     }
 
     public boolean locking;
@@ -307,30 +309,6 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
         this.creatorDutyName = creatorDutyName;
     }
 
-    public long createTimeStamp;
-
-    public long getCreateTimeStamp()
-    {
-        return createTimeStamp;
-    }
-
-    public void setCreateTimeStamp(long createTimeStamp)
-    {
-        this.createTimeStamp = createTimeStamp;
-    }
-
-    public String createTimeText;
-
-    public String getCreateTimeText()
-    {
-        return createTimeText;
-    }
-
-    public void setCreateTimeText(String createTimeText)
-    {
-        this.createTimeText = createTimeText;
-    }
-
     public String lastModifyDutyId;
 
     public String getLastModifyDutyId()
@@ -355,109 +333,383 @@ public class FileNodeDTO extends com.zeroc.Ice.Value
         this.lastModifyDutyName = lastModifyDutyName;
     }
 
-    public long lastModifyTimeStamp;
-
-    public long getLastModifyTimeStamp()
+    public FileNodeDTO()
     {
-        return lastModifyTimeStamp;
+        this.id = "";
+        this.name = "";
+        this.pNodeId = "";
+        this.typeName = "";
+        this.createTimeText = "";
+        this.lastModifyTimeText = "";
+        this.fullName = "";
+        this.fileChecksum = "";
+        this.fileVersion = "";
+        this.lastModifyAddress = "";
+        this.syncModeName = "";
+        this.fileTypeName = "";
+        this.localFile = "";
+        this.creatorDutyId = "";
+        this.creatorDutyName = "";
+        this.lastModifyDutyId = "";
+        this.lastModifyDutyName = "";
     }
 
-    public void setLastModifyTimeStamp(long lastModifyTimeStamp)
+    public FileNodeDTO(boolean isValid, String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, long fileLength, String fullName, String fileChecksum, String fileVersion, String lastModifyAddress, short syncModeId, String syncModeName, short fileTypeId, String fileTypeName, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, String lastModifyDutyId, String lastModifyDutyName)
     {
+        this.isValid = isValid;
+        this.id = id;
+        this.name = name;
+        this.pNodeId = pNodeId;
+        this.typeId = typeId;
+        this.typeName = typeName;
+        this.createTimeStamp = createTimeStamp;
+        this.createTimeText = createTimeText;
         this.lastModifyTimeStamp = lastModifyTimeStamp;
-    }
-
-    public String lastModifyTimeText;
-
-    public String getLastModifyTimeText()
-    {
-        return lastModifyTimeText;
-    }
-
-    public void setLastModifyTimeText(String lastModifyTimeText)
-    {
         this.lastModifyTimeText = lastModifyTimeText;
+        this.fileLength = fileLength;
+        this.fullName = fullName;
+        this.fileChecksum = fileChecksum;
+        this.fileVersion = fileVersion;
+        this.lastModifyAddress = lastModifyAddress;
+        this.syncModeId = syncModeId;
+        this.syncModeName = syncModeName;
+        this.fileTypeId = fileTypeId;
+        this.fileTypeName = fileTypeName;
+        this.locking = locking;
+        this.localFile = localFile;
+        this.creatorDutyId = creatorDutyId;
+        this.creatorDutyName = creatorDutyName;
+        this.lastModifyDutyId = lastModifyDutyId;
+        this.lastModifyDutyName = lastModifyDutyName;
+    }
+
+    public boolean equals(java.lang.Object rhs)
+    {
+        if(this == rhs)
+        {
+            return true;
+        }
+        FileNodeDTO r = null;
+        if(rhs instanceof FileNodeDTO)
+        {
+            r = (FileNodeDTO)rhs;
+        }
+
+        if(r != null)
+        {
+            if(this.isValid != r.isValid)
+            {
+                return false;
+            }
+            if(this.id != r.id)
+            {
+                if(this.id == null || r.id == null || !this.id.equals(r.id))
+                {
+                    return false;
+                }
+            }
+            if(this.name != r.name)
+            {
+                if(this.name == null || r.name == null || !this.name.equals(r.name))
+                {
+                    return false;
+                }
+            }
+            if(this.pNodeId != r.pNodeId)
+            {
+                if(this.pNodeId == null || r.pNodeId == null || !this.pNodeId.equals(r.pNodeId))
+                {
+                    return false;
+                }
+            }
+            if(this.typeId != r.typeId)
+            {
+                return false;
+            }
+            if(this.typeName != r.typeName)
+            {
+                if(this.typeName == null || r.typeName == null || !this.typeName.equals(r.typeName))
+                {
+                    return false;
+                }
+            }
+            if(this.createTimeStamp != r.createTimeStamp)
+            {
+                return false;
+            }
+            if(this.createTimeText != r.createTimeText)
+            {
+                if(this.createTimeText == null || r.createTimeText == null || !this.createTimeText.equals(r.createTimeText))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyTimeStamp != r.lastModifyTimeStamp)
+            {
+                return false;
+            }
+            if(this.lastModifyTimeText != r.lastModifyTimeText)
+            {
+                if(this.lastModifyTimeText == null || r.lastModifyTimeText == null || !this.lastModifyTimeText.equals(r.lastModifyTimeText))
+                {
+                    return false;
+                }
+            }
+            if(this.fileLength != r.fileLength)
+            {
+                return false;
+            }
+            if(this.fullName != r.fullName)
+            {
+                if(this.fullName == null || r.fullName == null || !this.fullName.equals(r.fullName))
+                {
+                    return false;
+                }
+            }
+            if(this.fileChecksum != r.fileChecksum)
+            {
+                if(this.fileChecksum == null || r.fileChecksum == null || !this.fileChecksum.equals(r.fileChecksum))
+                {
+                    return false;
+                }
+            }
+            if(this.fileVersion != r.fileVersion)
+            {
+                if(this.fileVersion == null || r.fileVersion == null || !this.fileVersion.equals(r.fileVersion))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyAddress != r.lastModifyAddress)
+            {
+                if(this.lastModifyAddress == null || r.lastModifyAddress == null || !this.lastModifyAddress.equals(r.lastModifyAddress))
+                {
+                    return false;
+                }
+            }
+            if(this.syncModeId != r.syncModeId)
+            {
+                return false;
+            }
+            if(this.syncModeName != r.syncModeName)
+            {
+                if(this.syncModeName == null || r.syncModeName == null || !this.syncModeName.equals(r.syncModeName))
+                {
+                    return false;
+                }
+            }
+            if(this.fileTypeId != r.fileTypeId)
+            {
+                return false;
+            }
+            if(this.fileTypeName != r.fileTypeName)
+            {
+                if(this.fileTypeName == null || r.fileTypeName == null || !this.fileTypeName.equals(r.fileTypeName))
+                {
+                    return false;
+                }
+            }
+            if(this.locking != r.locking)
+            {
+                return false;
+            }
+            if(this.localFile != r.localFile)
+            {
+                if(this.localFile == null || r.localFile == null || !this.localFile.equals(r.localFile))
+                {
+                    return false;
+                }
+            }
+            if(this.creatorDutyId != r.creatorDutyId)
+            {
+                if(this.creatorDutyId == null || r.creatorDutyId == null || !this.creatorDutyId.equals(r.creatorDutyId))
+                {
+                    return false;
+                }
+            }
+            if(this.creatorDutyName != r.creatorDutyName)
+            {
+                if(this.creatorDutyName == null || r.creatorDutyName == null || !this.creatorDutyName.equals(r.creatorDutyName))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyDutyId != r.lastModifyDutyId)
+            {
+                if(this.lastModifyDutyId == null || r.lastModifyDutyId == null || !this.lastModifyDutyId.equals(r.lastModifyDutyId))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyDutyName != r.lastModifyDutyName)
+            {
+                if(this.lastModifyDutyName == null || r.lastModifyDutyName == null || !this.lastModifyDutyName.equals(r.lastModifyDutyName))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public int hashCode()
+    {
+        int h_ = 5381;
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::FileNodeDTO");
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeText);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileChecksum);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileVersion);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyAddress);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, syncModeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, syncModeName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, locking);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, localFile);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, creatorDutyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, creatorDutyName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyDutyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyDutyName);
+        return h_;
     }
 
     public FileNodeDTO clone()
     {
-        return (FileNodeDTO)super.clone();
+        FileNodeDTO c = null;
+        try
+        {
+            c = (FileNodeDTO)super.clone();
+        }
+        catch(CloneNotSupportedException ex)
+        {
+            assert false; // impossible
+        }
+        return c;
     }
 
-    public static String ice_staticId()
+    public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        return "::zeroc::FileNodeDTO";
+        ostr.writeBool(this.isValid);
+        ostr.writeString(this.id);
+        ostr.writeString(this.name);
+        ostr.writeString(this.pNodeId);
+        ostr.writeShort(this.typeId);
+        ostr.writeString(this.typeName);
+        ostr.writeLong(this.createTimeStamp);
+        ostr.writeString(this.createTimeText);
+        ostr.writeLong(this.lastModifyTimeStamp);
+        ostr.writeString(this.lastModifyTimeText);
+        ostr.writeLong(this.fileLength);
+        ostr.writeString(this.fullName);
+        ostr.writeString(this.fileChecksum);
+        ostr.writeString(this.fileVersion);
+        ostr.writeString(this.lastModifyAddress);
+        ostr.writeShort(this.syncModeId);
+        ostr.writeString(this.syncModeName);
+        ostr.writeShort(this.fileTypeId);
+        ostr.writeString(this.fileTypeName);
+        ostr.writeBool(this.locking);
+        ostr.writeString(this.localFile);
+        ostr.writeString(this.creatorDutyId);
+        ostr.writeString(this.creatorDutyName);
+        ostr.writeString(this.lastModifyDutyId);
+        ostr.writeString(this.lastModifyDutyName);
     }
 
-    @Override
-    public String ice_id()
+    public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        return ice_staticId();
+        this.isValid = istr.readBool();
+        this.id = istr.readString();
+        this.name = istr.readString();
+        this.pNodeId = istr.readString();
+        this.typeId = istr.readShort();
+        this.typeName = istr.readString();
+        this.createTimeStamp = istr.readLong();
+        this.createTimeText = istr.readString();
+        this.lastModifyTimeStamp = istr.readLong();
+        this.lastModifyTimeText = istr.readString();
+        this.fileLength = istr.readLong();
+        this.fullName = istr.readString();
+        this.fileChecksum = istr.readString();
+        this.fileVersion = istr.readString();
+        this.lastModifyAddress = istr.readString();
+        this.syncModeId = istr.readShort();
+        this.syncModeName = istr.readString();
+        this.fileTypeId = istr.readShort();
+        this.fileTypeName = istr.readString();
+        this.locking = istr.readBool();
+        this.localFile = istr.readString();
+        this.creatorDutyId = istr.readString();
+        this.creatorDutyName = istr.readString();
+        this.lastModifyDutyId = istr.readString();
+        this.lastModifyDutyName = istr.readString();
     }
 
-    public static final long serialVersionUID = 1015856917L;
-
-    @Override
-    protected void _iceWriteImpl(com.zeroc.Ice.OutputStream ostr_)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, FileNodeDTO v)
     {
-        ostr_.startSlice(ice_staticId(), -1, true);
-        ostr_.writeString(id);
-        ostr_.writeString(name);
-        ostr_.writeString(nodeId);
-        ostr_.writeString(pNodeId);
-        ostr_.writeString(pathName);
-        ostr_.writeLong(fileLength);
-        ostr_.writeString(fileChecksum);
-        ostr_.writeString(fileVersion);
-        ostr_.writeString(specialtyId);
-        ostr_.writeString(specialtyName);
-        ostr_.writeString(lastModifyAddress);
-        ostr_.writeShort(syncModeId);
-        ostr_.writeString(syncModeName);
-        ostr_.writeShort(typeId);
-        ostr_.writeString(typeName);
-        ostr_.writeBool(locking);
-        ostr_.writeString(localFile);
-        ostr_.writeString(creatorDutyId);
-        ostr_.writeString(creatorDutyName);
-        ostr_.writeLong(createTimeStamp);
-        ostr_.writeString(createTimeText);
-        ostr_.writeString(lastModifyDutyId);
-        ostr_.writeString(lastModifyDutyName);
-        ostr_.writeLong(lastModifyTimeStamp);
-        ostr_.writeString(lastModifyTimeText);
-        ostr_.endSlice();
+        if(v == null)
+        {
+            _nullMarshalValue.ice_writeMembers(ostr);
+        }
+        else
+        {
+            v.ice_writeMembers(ostr);
+        }
     }
 
-    @Override
-    protected void _iceReadImpl(com.zeroc.Ice.InputStream istr_)
+    static public FileNodeDTO ice_read(com.zeroc.Ice.InputStream istr)
     {
-        istr_.startSlice();
-        id = istr_.readString();
-        name = istr_.readString();
-        nodeId = istr_.readString();
-        pNodeId = istr_.readString();
-        pathName = istr_.readString();
-        fileLength = istr_.readLong();
-        fileChecksum = istr_.readString();
-        fileVersion = istr_.readString();
-        specialtyId = istr_.readString();
-        specialtyName = istr_.readString();
-        lastModifyAddress = istr_.readString();
-        syncModeId = istr_.readShort();
-        syncModeName = istr_.readString();
-        typeId = istr_.readShort();
-        typeName = istr_.readString();
-        locking = istr_.readBool();
-        localFile = istr_.readString();
-        creatorDutyId = istr_.readString();
-        creatorDutyName = istr_.readString();
-        createTimeStamp = istr_.readLong();
-        createTimeText = istr_.readString();
-        lastModifyDutyId = istr_.readString();
-        lastModifyDutyName = istr_.readString();
-        lastModifyTimeStamp = istr_.readLong();
-        lastModifyTimeText = istr_.readString();
-        istr_.endSlice();
+        FileNodeDTO v = new FileNodeDTO();
+        v.ice_readMembers(istr);
+        return v;
     }
+
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<FileNodeDTO> v)
+    {
+        if(v != null && v.isPresent())
+        {
+            ice_write(ostr, tag, v.get());
+        }
+    }
+
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, FileNodeDTO v)
+    {
+        if(ostr.writeOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
+        {
+            int pos = ostr.startSize();
+            ice_write(ostr, v);
+            ostr.endSize(pos);
+        }
+    }
+
+    static public java.util.Optional<FileNodeDTO> ice_read(com.zeroc.Ice.InputStream istr, int tag)
+    {
+        if(istr.readOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
+        {
+            istr.skip(4);
+            return java.util.Optional.of(FileNodeDTO.ice_read(istr));
+        }
+        else
+        {
+            return java.util.Optional.empty();
+        }
+    }
+
+    private static final FileNodeDTO _nullMarshalValue = new FileNodeDTO();
+
+    public static final long serialVersionUID = 726842928L;
 }

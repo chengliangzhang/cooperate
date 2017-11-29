@@ -77,7 +77,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static String getLastSplit(String str,String split){
         if ((str == null) || (split == null)) return str;
         int pos = str.lastIndexOf(split);
-        return (pos > 0) ? str.substring(pos+split.length()) : str;
+        return (pos >= 0) ? str.substring(pos+split.length()) : str;
     }
 
     /** 获取文件名 */
