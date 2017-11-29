@@ -48,4 +48,6 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     List<SimpleNodeDTO> listSubNodeByNodeId(String nodeId);
     /** 根据全路径名获取一层子节点简单信息 */
     List<SimpleNodeDTO> listSubNodeByPath(String path);
+    /** 根据全路径名获取所有子节点编号 */
+    List<String> listAllSubNodeIdByPath(String path);
 }

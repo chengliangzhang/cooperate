@@ -98,7 +98,9 @@ public class CustomProvider extends MapperTemplate {
                 sqlWhere.append(" and `" + column.getColumn() + "`").append("=0");
             }
             if ("lastModifyUserId".equals(column.getProperty())) {
+                sql.append("<if test=\"lastModifyUserId!=null\">");
                 sql.append("`" + column.getColumn() + "`").append("=#{lastModifyUserId}").append(","); //#{lastModifyUserId}是从@Param中得到的字符串
+                sql.append("</if>");
             }
             if ("lastModifyTime".equals(column.getProperty())) {
                 sql.append("<choose>");

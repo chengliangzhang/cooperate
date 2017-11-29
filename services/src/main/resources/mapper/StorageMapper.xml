@@ -105,21 +105,30 @@
 
     <select id="listSubNodeByPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
         <choose>
-            <when test="_parameter != null">
+            <when test="_parameter == null">
+                select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
+                from <include refid="SimpleDirUnion"/>
+                where <include refid="FixConditionForSimpleDirUnion"/>
+                    and (a.pid is null)
+            </when>
+            <otherwise>
                 select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
                 from <include refid="SimpleDirUnion"/>
                     inner join maoding_storage d on (a.pid = d.id)
                 where <include refid="FixConditionForSimpleDirUnion"/>
                     and (d.deleted = 0)
                     and (d.path = #{_parameter})
-            </when>
-            <otherwise>
-                select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
-                from <include refid="SimpleDirUnion"/>
-                where <include refid="FixConditionForSimpleDirUnion"/>
-                    and (a.pid is null)
             </otherwise>
         </choose>
+    </select>
+
+    <select id="listAllSubNodeIdByPath" resultType="java.lang.String" parameterType="java.lang.String">
+        select a.id
+        from maoding_storage a
+        where (a.deleted = 0)
+            <if test="_parameter != null">
+                and (a.path like concat(#{_parameter},'%'))
+            </if>
     </select>
 
     <select id="listFileByScopeAndKey" resultType="com.maoding.Storage.zeroc.CooperateFileDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
