@@ -172,8 +172,10 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public boolean isDirectoryEmpty(String path, Current current) {
-        Short typeId = storageDao.getFirstChildTypeIdByPath(StringUtils.formatPath(path));
-        return (typeId == null);
+        path = StringUtils.formatPath(path);
+        if (StringUtils.isSame(path,StringUtils.SPLIT_PATH)) path = null;
+        StorageEntity node = storageDao.getFirstChildNodeByPath(path);
+        return (node == null);
     }
 
     @Override

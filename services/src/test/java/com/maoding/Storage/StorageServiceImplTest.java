@@ -153,10 +153,13 @@ public class StorageServiceImplTest {
     @Test
     public void testIsDirectoryEmpty() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
-        request.setFullName("/c/d/e");
+        request.setFullName("/c1");
         request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
-        storageService.createDirectory(request,null);
-        Assert.assertFalse(storageService.isDirectoryEmpty("/c/d",null));
+        storageService.createDirectory(request, null);
+        request.setFullName("/c11");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        storageService.createDirectory(request, null);
+        Assert.assertTrue(storageService.isDirectoryEmpty("/c1",null));
         Assert.assertFalse(storageService.isDirectoryEmpty("/",null));
         Assert.assertTrue(storageService.isDirectoryEmpty("/x/x/x",null));
     }

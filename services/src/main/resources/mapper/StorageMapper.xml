@@ -192,9 +192,19 @@
         from maoding_storage a
         where (a.deleted = 0)
             <if test="_parameter != null">
-                and (a.path like concat(#{_parameter},'_%'))
+                and (a.path like concat(#{_parameter},'/%'))
             </if>
         group by a.id
+        limit 1
+    </select>
+
+    <select id="getFirstChildNodeByPath" resultType="com.maoding.Storage.Entity.StorageEntity" parameterType="java.lang.String">
+        select *
+        from maoding_storage a
+        where (a.deleted = 0)
+            <if test="_parameter != null">
+                and (a.path like concat(#{_parameter},'/%'))
+            </if>
         limit 1
     </select>
 
