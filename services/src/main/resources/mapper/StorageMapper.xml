@@ -116,7 +116,7 @@
                 from <include refid="SimpleDirUnion"/>
                     inner join maoding_storage d on (a.pid = d.id)
                 where <include refid="FixConditionForSimpleDirUnion"/>
-                    and (d.deleted = 0)
+                    and (ifnull(d.deleted,0) = 0)
                     and (d.path = #{_parameter})
             </otherwise>
         </choose>
@@ -559,9 +559,14 @@
     <select id="selectByPIdAndName" resultType="com.maoding.Storage.Entity.StorageEntity" parameterType="com.maoding.Storage.Dto.QueryByPidAndNameDTO">
         select * from maoding_storage a
         where (a.deleted = 0)
-            <if test="pid != null">
-                and (a.pid = #{pid})
-            </if>
+            <choose>
+                <when test="pid == null">
+                    and (a.pid is null)
+                </when>
+                <otherwise>
+                    and (a.pid = #{pid})
+                </otherwise>
+            </choose>
             <if test="name != null">
                 and (a.node_name = #{name})
             </if>
