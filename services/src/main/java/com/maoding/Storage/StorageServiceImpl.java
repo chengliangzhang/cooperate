@@ -63,9 +63,13 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         if (node == null) return false;
         String targetPath = StringUtils.getDirName(newPath);
         String targetName = StringUtils.getFileName(newPath);
-        StorageEntity targetPNode = storageDao.selectByPath(StringUtils.formatPath(targetPath));
-        if (targetPNode == null) return false;
-        node.setPid(targetPNode.getId());
+        String targetPid = null;
+        if (!StringUtils.isEmpty(targetPath)) {
+            StorageEntity targetPNode = storageDao.selectByPath(StringUtils.formatPath(targetPath));
+            if (targetPNode == null) return false;
+            targetPid = targetPNode.getId();
+        }
+        node.setPid(targetPid);
         node.setNodeName(targetName);
         node.setPath(targetPath + StringUtils.SPLIT_PATH + targetName);
         storageDao.updateById(node,node.getId());
@@ -117,16 +121,31 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     public boolean isLocking(String path, Current current) {
         assert (path != null);
         StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
-        return (node != null) && (node.getTypeId() <= StorageConst.STORAGE_DIR_TYPE_MAX) && (node.getLockUserId() != null);
+        return isLocking(node,current);
+    }
+    private boolean isLocking(StorageEntity node, Current current){
+        if (node == null) return false;
+        Boolean locking = false;
+        if (node.getTypeId() > StorageConst.STORAGE_DIR_TYPE_MAX) {
+            locking = true;
+        } else if (node.getLockUserId() != null) {
+            locking = true;
+        }
+        return locking;
     }
 
     @Override
     public boolean canBeDeleted(String path, Current current) {
         assert (path != null);
         StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
-        if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_DIR_TYPE_MAX)) return false;
+        return canBeDeleted(node,current);
+    }
+
+    private boolean canBeDeleted(StorageEntity node, Current current){
         Boolean isSafe = true;
-        if (node.getLockUserId() != null) {
+        if (node == null) {
+            isSafe = false;
+        } else if (isLocking(node,current)) {
             isSafe = false;
         } else if (node.getTypeId() <= StorageConst.STORAGE_FILE_TYPE_MAX){
             StorageFileEntity fileNode = storageFileDao.selectById(node.getId());
@@ -430,6 +449,21 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public boolean replaceFile(CooperateFileDTO fileInfo, FileDTO fileDTO, Current current) {
         return false;
+    }
+
+    @Override
+    public boolean deleteNode(String path, boolean force, Current current) {
+        assert (path != null);
+        path = StringUtils.formatPath(path);
+        StorageEntity node = storageDao.selectByPath(path);
+        if (node == null) return false;
+        int n = 0;
+        if (force || canBeDeleted(path,current)){
+            n += storageDao.fakeDeleteById(node.getId());
+            if (node.getTypeId() <= StorageConst.STORAGE_FILE_TYPE_MAX) n += storageFileDao.fakeDeleteById(node.getId());
+            else if (node.getTypeId() <= StorageConst.STORAGE_DIR_TYPE_MAX) n += storageDirDao.fakeDeleteById(node.getId());
+        }
+        return (n > 0);
     }
 
     @Override

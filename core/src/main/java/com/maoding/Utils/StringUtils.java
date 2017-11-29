@@ -68,9 +68,16 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /** 标准化路径（所有路径分隔都用"/"） */
-    public static String formatPath(String path) {
+    public static String formatPath(String path,Boolean rootAsNull) {
         if (path == null) return null;
-        return path.replaceAll("\\\\", "/").trim();
+        path = path.replaceAll("\\\\", "/").trim();
+        if ((rootAsNull) && (isSame(path,SPLIT_PATH))){
+            path = null;
+        }
+        return path;
+    }
+    public static String formatPath(String path) {
+        return formatPath(path,false);
     }
 
     /** 获取分隔符分隔的最后一个字符串 */

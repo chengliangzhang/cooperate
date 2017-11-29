@@ -33,7 +33,7 @@
     <sql id="DirUnion">
         <include refid="SimpleDirUnion"/>
         left join maoding_storage x on (x.path like concat(a.path,'_%'))
-        left join maoding_storage_file y on (y.id = x.id))
+        left join maoding_storage_file y on (y.id = x.id)
     </sql>
 
     <sql id="FixConditionForDirUnion">
@@ -191,25 +191,23 @@
 
     <select id="selectByPath" resultType="com.maoding.Storage.Entity.StorageEntity" parameterType="java.lang.String">
         <choose>
-            <when test="_parameter != null and _parameter != '/'">
+            <when test="_parameter != null">
                 select *
                 from maoding_storage a
                 where (a.deleted = 0)
                     and (a.path = #{_parameter})
+                group by a.id
+                limit 1
             </when>
             <otherwise>
                 select
-                    null as id
+                    '' as id
                     ,null as pid
                     ,'/' as node_name
                     ,'/' as path
                     ,3 as type_id
             </otherwise>
         </choose>
-        <if test="_parameter != null">
-            </if>
-        group by a.id
-        limit 1
     </select>
 
     <select id="getDirNodeInfoByPath" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="java.lang.String">

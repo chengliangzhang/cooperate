@@ -120,7 +120,7 @@ public class StorageServiceImplTest {
         storageService.createNode(request,null);
         Boolean b = storageService.canBeDeleted("/x/y/z",null);
         Assert.assertTrue(b);
-        b = storageService.canBeDeleted("/x/y",null);
+        b = storageService.canBeDeleted("/",null);
         Assert.assertFalse(b);
     }
 

@@ -455,6 +455,40 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default boolean deleteNode(String path, boolean force)
+    {
+        return deleteNode(path, force, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean deleteNode(String path, boolean force, java.util.Map<String, String> context)
+    {
+        return _iceI_deleteNodeAsync(path, force, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> deleteNodeAsync(String path, boolean force)
+    {
+        return _iceI_deleteNodeAsync(path, force, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> deleteNodeAsync(String path, boolean force, java.util.Map<String, String> context)
+    {
+        return _iceI_deleteNodeAsync(path, force, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_deleteNodeAsync(String iceP_path, boolean iceP_force, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "deleteNode", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                     ostr.writeBool(iceP_force);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
     default CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query)
     {
         return getCooperateDirInfo(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);

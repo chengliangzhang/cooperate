@@ -202,6 +202,8 @@ module zeroc {
         FileNodeDTO getFileNodeInfo(string path); //获取目录节点详细信息
         SimpleNodeList listSubNode(string path); //获取一层子节点简单信息
         bool moveNode(string oldPath,string newPath); //移动或更名节点
+        bool deleteNode(string path,bool force); //删除树节点
+
 
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool lockFile(string fileId,string address); //锁定文件
