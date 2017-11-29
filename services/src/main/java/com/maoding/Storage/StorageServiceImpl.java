@@ -57,7 +57,19 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public boolean moveNode(String oldPath, String newPath, Current current) {
-        return false;
+        assert (oldPath != null);
+        if (storageDao.selectByPath(StringUtils.formatPath(newPath)) != null) return false;
+        StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(oldPath));
+        if (node == null) return false;
+        String targetPath = StringUtils.getDirName(newPath);
+        String targetName = StringUtils.getFileName(newPath);
+        StorageEntity targetPNode = storageDao.selectByPath(StringUtils.formatPath(targetPath));
+        if (targetPNode == null) return false;
+        node.setPid(targetPNode.getId());
+        node.setNodeName(targetName);
+        node.setPath(targetPath + StringUtils.SPLIT_PATH + targetName);
+        storageDao.updateById(node,node.getId());
+        return true;
     }
 
     @Override
@@ -104,14 +116,14 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public boolean isLocking(String path, Current current) {
         assert (path != null);
-        StorageEntity node = storageDao.selectByPath(path);
+        StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
         return (node != null) && (node.getTypeId() <= StorageConst.STORAGE_DIR_TYPE_MAX) && (node.getLockUserId() != null);
     }
 
     @Override
     public boolean canBeDeleted(String path, Current current) {
         assert (path != null);
-        StorageEntity node = storageDao.selectByPath(path);
+        StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
         if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_DIR_TYPE_MAX)) return false;
         Boolean isSafe = true;
         if (node.getLockUserId() != null) {
@@ -130,7 +142,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     public boolean setFileLength(String path, long fileLength, Current current) {
         assert (path != null);
         assert (fileLength >= 0);
-        StorageEntity node = storageDao.selectByPath(path);
+        StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
         if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_FILE_TYPE_MAX)) return false;
         StorageFileEntity fileEntity = new StorageFileEntity();
         fileEntity.clear();
@@ -141,13 +153,13 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public boolean isDirectoryEmpty(String path, Current current) {
-        Short typeId = storageDao.getFirstChildTypeId(path);
+        Short typeId = storageDao.getFirstChildTypeIdByPath(StringUtils.formatPath(path));
         return (typeId == null);
     }
 
     @Override
     public SimpleNodeDTO getSimpleNodeInfo(String path, Current current) {
-        return storageDao.getSimpleNodeByPath(path);
+        return storageDao.getSimpleNodeByPath(StringUtils.formatPath(path));
     }
 
     @Override

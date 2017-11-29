@@ -142,8 +142,9 @@ public class StorageServiceImplTest {
         request.setFullName("/c/d/e");
         request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
         storageService.createDirectory(request,null);
-        Boolean b = storageService.isDirectoryEmpty("/c/d",null);
-        Assert.assertFalse(b);
+        Assert.assertFalse(storageService.isDirectoryEmpty("/c/d",null));
+        Assert.assertFalse(storageService.isDirectoryEmpty("/",null));
+        Assert.assertTrue(storageService.isDirectoryEmpty("/x/x/x",null));
     }
 
     /** 获取树节点信息 */

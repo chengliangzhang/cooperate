@@ -37,7 +37,7 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     /** 使用全路径名查找节点简单信息 */
     SimpleNodeDTO getSimpleNodeByPath(String path);
     /** 根据全路径名判断目录是否为空 */
-    Short getFirstChildTypeId(String path);
+    Short getFirstChildTypeIdByPath(String path);
     /** 根据全路径名获取树id */
     StorageEntity selectByPath(String path);
     /** 根据全路径名获取目录详细信息 */

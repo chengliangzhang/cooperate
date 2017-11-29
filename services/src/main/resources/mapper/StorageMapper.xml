@@ -190,11 +190,23 @@
     </select>
 
     <select id="selectByPath" resultType="com.maoding.Storage.Entity.StorageEntity" parameterType="java.lang.String">
-        select *
-        from maoding_storage a
-        where (a.deleted = 0)
-            <if test="_parameter != null">
-                and (a.path = #{_parameter})
+        <choose>
+            <when test="_parameter != null and _parameter != '/'">
+                select *
+                from maoding_storage a
+                where (a.deleted = 0)
+                    and (a.path = #{_parameter})
+            </when>
+            <otherwise>
+                select
+                    null as id
+                    ,null as pid
+                    ,'/' as node_name
+                    ,'/' as path
+                    ,3 as type_id
+            </otherwise>
+        </choose>
+        <if test="_parameter != null">
             </if>
         group by a.id
         limit 1
