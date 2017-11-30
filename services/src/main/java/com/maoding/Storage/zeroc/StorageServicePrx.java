@@ -489,32 +489,65 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default com.maoding.FileServer.zeroc.FileRequestDTO requestUploadByPath(String path, int mode)
+    default com.maoding.FileServer.zeroc.FileRequestDTO requestUploadByPath(String path, String userId)
     {
-        return requestUploadByPath(path, mode, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return requestUploadByPath(path, userId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default com.maoding.FileServer.zeroc.FileRequestDTO requestUploadByPath(String path, int mode, java.util.Map<String, String> context)
+    default com.maoding.FileServer.zeroc.FileRequestDTO requestUploadByPath(String path, String userId, java.util.Map<String, String> context)
     {
-        return _iceI_requestUploadByPathAsync(path, mode, context, true).waitForResponse();
+        return _iceI_requestUploadByPathAsync(path, userId, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> requestUploadByPathAsync(String path, int mode)
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> requestUploadByPathAsync(String path, String userId)
     {
-        return _iceI_requestUploadByPathAsync(path, mode, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_requestUploadByPathAsync(path, userId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> requestUploadByPathAsync(String path, int mode, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> requestUploadByPathAsync(String path, String userId, java.util.Map<String, String> context)
     {
-        return _iceI_requestUploadByPathAsync(path, mode, context, false);
+        return _iceI_requestUploadByPathAsync(path, userId, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> _iceI_requestUploadByPathAsync(String iceP_path, int iceP_mode, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> _iceI_requestUploadByPathAsync(String iceP_path, String iceP_userId, java.util.Map<String, String> context, boolean sync)
     {
         com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "requestUploadByPath", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      ostr.writeString(iceP_path);
-                     ostr.writeInt(iceP_mode);
+                     ostr.writeString(iceP_userId);
+                 }, istr -> {
+                     com.maoding.FileServer.zeroc.FileRequestDTO ret;
+                     ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default com.maoding.FileServer.zeroc.FileRequestDTO requestDownloadByPath(String path)
+    {
+        return requestDownloadByPath(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.FileServer.zeroc.FileRequestDTO requestDownloadByPath(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_requestDownloadByPathAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> requestDownloadByPathAsync(String path)
+    {
+        return _iceI_requestDownloadByPathAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> requestDownloadByPathAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_requestDownloadByPathAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> _iceI_requestDownloadByPathAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "requestDownloadByPath", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
                  }, istr -> {
                      com.maoding.FileServer.zeroc.FileRequestDTO ret;
                      ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);

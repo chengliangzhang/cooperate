@@ -309,7 +309,8 @@ public class LocalServer implements BasicFileServerInterface {
         String scope = src.getScope();
         String key = src.getKey();
         String fullNameIn = FILE_SERVER_PATH + StringUtils.SPLIT_PATH  + scope + StringUtils.SPLIT_PATH  + key;
-        if (key.contains(FILE_NAME_SPLIT)) key = key.substring(key.lastIndexOf(FILE_NAME_SPLIT) + FILE_NAME_SPLIT.length());
+        int tpos = key.indexOf(FILE_NAME_SPLIT);
+        if (tpos == StringUtils.TIME_STAMP_FORMAT.length()) key = key.substring(tpos + FILE_NAME_SPLIT.length());
         String keyOut = StringUtils.getTimeStamp(StringUtils.TIME_STAMP_FORMAT) + "_" + key;
         String fullNameOut = FILE_SERVER_PATH + StringUtils.SPLIT_PATH  + scope + StringUtils.SPLIT_PATH  + keyOut;
 

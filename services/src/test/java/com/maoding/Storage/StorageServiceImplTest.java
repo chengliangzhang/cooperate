@@ -443,10 +443,10 @@ public class StorageServiceImplTest {
         if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(mode)) {
             fileService.setFileServerType(fileServerType, null);
             CreateNodeRequestDTO requestDTO = new CreateNodeRequestDTO();
-            requestDTO.setFullName("/x/x.txt");
+            requestDTO.setFullName(StringUtils.SPLIT_PATH + key);
             requestDTO.setTypeId(StorageConst.STORAGE_FILE_TYPE_UNKNOWN);
             storageService.createNode(requestDTO,null);
-            fileRequestDTO = storageService.requestUploadByPath("/x/x.txt", mode, null);
+            fileRequestDTO = storageService.requestUploadByPath("\\" + key, null, null);
             fileRequestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
         } else if (FileServerConst.FILE_SERVER_MODE_OSS.equals(mode)) {
             fileService.setFileServerType(fileServerType, null);
@@ -496,7 +496,7 @@ public class StorageServiceImplTest {
         if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(mode)) {
             fileService.setFileServerType(fileServerType, null);
             //初始化协同文件
-            fileRequestDTO = storageService.requestDownload(fileInfo, mode, null);
+            fileRequestDTO = storageService.requestDownloadByPath("\\" + fileDTO.getKey(), null);
             fileRequestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
         } else if (FileServerConst.FILE_SERVER_MODE_OSS.equals(mode)) {
             fileRequestDTO = storageService.requestDownload(fileInfo, mode, null);

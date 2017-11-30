@@ -1,6 +1,7 @@
 package com.maoding.Storage;
 
 import com.maoding.Base.BaseLocalService;
+import com.maoding.Const.FileServerConst;
 import com.maoding.Const.StorageConst;
 import com.maoding.FileServer.zeroc.FileDTO;
 import com.maoding.FileServer.zeroc.FileRequestDTO;
@@ -243,8 +244,46 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         int n = storageDao.updateById(nodeEntity,nodeEntity.getId());
         return (n > 0);
     }
+
+    private boolean canBeDownload(StorageEntity nodeEntity, StorageFileEntity fileEntity){
+        if (fileEntity == null) return false;
+        if (fileEntity.getFileKey() == null) return false;
+        if ((nodeEntity.getLockUserId() == null) && (fileEntity.getUploadedKey() != null)) return false;
+        return true;
+    }
+
     @Override
-    public FileRequestDTO requestUploadByPath(String path, int mode, Current current) {
+    public FileRequestDTO requestDownloadByPath(String path, Current current) {
+        assert (path != null);
+
+        //获取节点信息
+        path = StringUtils.formatPath(path);
+        StorageEntity nodeEntity = storageDao.selectByPath(path);
+        if (nodeEntity == null) return null;
+
+        //建立获取下载参数的对象
+        StorageFileEntity fileEntity = storageFileDao.selectById(nodeEntity.getId());
+        assert (fileEntity != null);
+        if (!canBeDownload(nodeEntity,fileEntity)) return null;
+
+        //从数据库内获取scope和key
+        FileDTO fileDTO = new FileDTO();
+        fileDTO.setScope(fileEntity.getFileScope());
+        fileDTO.setKey(fileEntity.getFileKey());
+
+        //获取下载参数
+        //if (fileService == null) fileService = FileServiceImpl.getInstance();
+        assert (fileService != null);
+        FileRequestDTO fileRequestDTO = fileService.getDownloadRequest(fileDTO,FileServerConst.FILE_SERVER_MODE_DEFAULT_COM,null,current);
+        fileRequestDTO.setId(nodeEntity.getId());
+
+        //增加下载计数
+        fileEntity.setDownloading(fileEntity.getDownloading()+1);
+        return fileRequestDTO;
+    }
+
+    @Override
+    public FileRequestDTO requestUploadByPath(String path, String userId, Current current) {
         assert (path != null);
 
         //获取节点信息
@@ -252,7 +291,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         StorageEntity nodeEntity = storageDao.selectByPath(path);
         if (nodeEntity == null) return null;
         //锁定节点
-        if (!lockNode(nodeEntity,StringUtils.getRemoteIp(current))) return null;
+//        if (!lockNode(nodeEntity,userId)) return null;
 
         //获取文件信息
         StorageFileEntity fileEntity = storageFileDao.selectById(nodeEntity.getId());
@@ -275,7 +314,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         }
 
         //组装上传申请结果
-        FileRequestDTO fileRequestDTO = fileService.getUploadRequest(fileDTO,mode,null,current);
+        FileRequestDTO fileRequestDTO = fileService.getUploadRequest(fileDTO, FileServerConst.FILE_SERVER_MODE_DEFAULT_COM,null,current);
         fileRequestDTO.setId(nodeEntity.getId());
         fileRequestDTO.setNodeId(nodeEntity.getId());
         //保存上传的实际文件标志
@@ -503,24 +542,26 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         //结束上传
         fileService.finishUpload(request,current);
 
+        StorageFileEntity fileEntity = storageFileDao.selectById(request.getId());
+        assert (fileEntity != null);
         if (succeeded) { //如果上传成功，修改文件记录，保存已上传的文件
-            StorageFileEntity fileEntity = storageFileDao.selectById(request.getId());
-            assert (fileEntity != null);
             if (fileEntity.getDownloading() <= 0) {
                 fileEntity.setFileScope(request.getScope());
                 fileEntity.setFileKey(request.getKey());
+                fileEntity.setUploadedScope(null);
+                fileEntity.setUploadedKey(null);
                 fileEntity.setLastModifyAddress(StringUtils.getRemoteIp(current));
             } else {
-                fileEntity.setUploadedScope(request.getScope());
-                fileEntity.setUploadedKey(request.getKey());
                 fileEntity.setLastModifyAddress(StringUtils.getRemoteIp(current));
             }
-            storageFileDao.updateById(fileEntity,fileEntity.getId());
         } else { //如果上传失败，删除已上传的文件，并解锁文件
             FileDTO fileDTO = BeanUtils.createFrom(request,FileDTO.class);
             fileService.deleteFile(fileDTO,current);
-            unlockFile(request.getId(),current);
+            fileEntity.setUploadedScope(null);
+            fileEntity.setUploadedKey(null);
+//            unlockFile(request.getId(),current);
         }
+        storageFileDao.updateExactById(fileEntity,fileEntity.getId());
     }
 
     @Override
