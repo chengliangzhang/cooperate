@@ -292,7 +292,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         StorageEntity nodeEntity = storageDao.selectByPath(path);
         if (nodeEntity == null) return null;
         //锁定节点
-//        if (!lockNode(nodeEntity,userId)) return null;
+        if (!canBeLock(nodeEntity,userId)) return null;
+        nodeEntity.setLockUserId(userId);
+        storageDao.updateExactById(nodeEntity,nodeEntity.getId());
 
         //获取文件信息
         StorageFileEntity fileEntity = storageFileDao.selectById(nodeEntity.getId());
