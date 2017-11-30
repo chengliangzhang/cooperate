@@ -52,7 +52,9 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     com.maoding.FileServer.zeroc.FileRequestDTO requestUploadByPath(String path, String userId, com.zeroc.Ice.Current current);
 
-    com.maoding.FileServer.zeroc.FileRequestDTO requestDownloadByPath(String path, com.zeroc.Ice.Current current);
+    com.maoding.FileServer.zeroc.FileRequestDTO requestDownloadByPath(String path, String userId, com.zeroc.Ice.Current current);
+
+    void finishUploadById(String nodeId, String userId, com.zeroc.Ice.Current current);
 
     CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query, com.zeroc.Ice.Current current);
 
@@ -362,13 +364,28 @@ public interface StorageService extends com.zeroc.Ice.Object
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         String iceP_path;
+        String iceP_userId;
         iceP_path = istr.readString();
+        iceP_userId = istr.readString();
         inS.endReadParams();
-        com.maoding.FileServer.zeroc.FileRequestDTO ret = obj.requestDownloadByPath(iceP_path, current);
+        com.maoding.FileServer.zeroc.FileRequestDTO ret = obj.requestDownloadByPath(iceP_path, iceP_userId, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         com.maoding.FileServer.zeroc.FileRequestDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_finishUploadById(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_nodeId;
+        String iceP_userId;
+        iceP_nodeId = istr.readString();
+        iceP_userId = istr.readString();
+        inS.endReadParams();
+        obj.finishUploadById(iceP_nodeId, iceP_userId, current);
+        return inS.setResult(inS.writeEmptyParams());
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getCooperateDirInfo(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -811,6 +828,7 @@ public interface StorageService extends com.zeroc.Ice.Object
         "duplicateFile",
         "finishDownload",
         "finishUpload",
+        "finishUploadById",
         "getCooperateDirInfo",
         "getDirNodeInfo",
         "getFileInfo",
@@ -921,137 +939,141 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 15:
             {
-                return _iceD_getCooperateDirInfo(this, in, current);
+                return _iceD_finishUploadById(this, in, current);
             }
             case 16:
             {
-                return _iceD_getDirNodeInfo(this, in, current);
+                return _iceD_getCooperateDirInfo(this, in, current);
             }
             case 17:
             {
-                return _iceD_getFileInfo(this, in, current);
+                return _iceD_getDirNodeInfo(this, in, current);
             }
             case 18:
             {
-                return _iceD_getFileNodeInfo(this, in, current);
+                return _iceD_getFileInfo(this, in, current);
             }
             case 19:
             {
-                return _iceD_getLinkCount(this, in, current);
+                return _iceD_getFileNodeInfo(this, in, current);
             }
             case 20:
             {
-                return _iceD_getNodeInfo(this, in, current);
+                return _iceD_getLinkCount(this, in, current);
             }
             case 21:
             {
-                return _iceD_getSimpleNodeInfo(this, in, current);
+                return _iceD_getNodeInfo(this, in, current);
             }
             case 22:
             {
-                return _iceD_getUsage(this, in, current);
+                return _iceD_getSimpleNodeInfo(this, in, current);
             }
             case 23:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getUsage(this, in, current);
             }
             case 24:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 25:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 26:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 27:
             {
-                return _iceD_initNodeInfo(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 28:
             {
-                return _iceD_isDirectoryEmpty(this, in, current);
+                return _iceD_initNodeInfo(this, in, current);
             }
             case 29:
             {
-                return _iceD_isFileLocking(this, in, current);
+                return _iceD_isDirectoryEmpty(this, in, current);
             }
             case 30:
             {
-                return _iceD_isLocking(this, in, current);
+                return _iceD_isFileLocking(this, in, current);
             }
             case 31:
             {
-                return _iceD_listFileLink(this, in, current);
+                return _iceD_isLocking(this, in, current);
             }
             case 32:
             {
-                return _iceD_listSubNode(this, in, current);
+                return _iceD_listFileLink(this, in, current);
             }
             case 33:
             {
-                return _iceD_lockFile(this, in, current);
+                return _iceD_listSubNode(this, in, current);
             }
             case 34:
             {
-                return _iceD_lockNode(this, in, current);
+                return _iceD_lockFile(this, in, current);
             }
             case 35:
             {
-                return _iceD_modifyFileInfo(this, in, current);
+                return _iceD_lockNode(this, in, current);
             }
             case 36:
             {
-                return _iceD_moveNode(this, in, current);
+                return _iceD_modifyFileInfo(this, in, current);
             }
             case 37:
             {
-                return _iceD_replaceFile(this, in, current);
+                return _iceD_moveNode(this, in, current);
             }
             case 38:
             {
-                return _iceD_requestDownload(this, in, current);
+                return _iceD_replaceFile(this, in, current);
             }
             case 39:
             {
-                return _iceD_requestDownloadByPath(this, in, current);
+                return _iceD_requestDownload(this, in, current);
             }
             case 40:
             {
-                return _iceD_requestDownloadFromLast(this, in, current);
+                return _iceD_requestDownloadByPath(this, in, current);
             }
             case 41:
             {
-                return _iceD_requestUpload(this, in, current);
+                return _iceD_requestDownloadFromLast(this, in, current);
             }
             case 42:
             {
-                return _iceD_requestUploadByPath(this, in, current);
+                return _iceD_requestUpload(this, in, current);
             }
             case 43:
             {
-                return _iceD_restoreDirectory(this, in, current);
+                return _iceD_requestUploadByPath(this, in, current);
             }
             case 44:
             {
-                return _iceD_restoreFile(this, in, current);
+                return _iceD_restoreDirectory(this, in, current);
             }
             case 45:
             {
-                return _iceD_setFileLength(this, in, current);
+                return _iceD_restoreFile(this, in, current);
             }
             case 46:
             {
-                return _iceD_unlockFile(this, in, current);
+                return _iceD_setFileLength(this, in, current);
             }
             case 47:
             {
-                return _iceD_unlockNode(this, in, current);
+                return _iceD_unlockFile(this, in, current);
             }
             case 48:
+            {
+                return _iceD_unlockNode(this, in, current);
+            }
+            case 49:
             {
                 return _iceD_uploadCallback(this, in, current);
             }

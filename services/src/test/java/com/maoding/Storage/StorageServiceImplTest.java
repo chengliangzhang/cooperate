@@ -446,7 +446,7 @@ public class StorageServiceImplTest {
             requestDTO.setFullName(StringUtils.SPLIT_PATH + key);
             requestDTO.setTypeId(StorageConst.STORAGE_FILE_TYPE_UNKNOWN);
             storageService.createNode(requestDTO,null);
-            fileRequestDTO = storageService.requestUploadByPath("\\" + key, null, null);
+            fileRequestDTO = storageService.requestUploadByPath("\\" + key, "123", null);
             fileRequestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
         } else if (FileServerConst.FILE_SERVER_MODE_OSS.equals(mode)) {
             fileService.setFileServerType(fileServerType, null);
@@ -464,7 +464,7 @@ public class StorageServiceImplTest {
 
         //通告上传完毕
         if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(mode)) {
-            storageService.finishUpload(fileRequestDTO, true, null);
+            storageService.finishUploadById(fileRequestDTO.getId(), "123", null);
         }else if(FileServerConst.FILE_SERVER_MODE_OSS.equals(mode)){
             storageService.finishUpload(fileRequestDTO, true, null);
         } else {
@@ -496,7 +496,7 @@ public class StorageServiceImplTest {
         if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(mode)) {
             fileService.setFileServerType(fileServerType, null);
             //初始化协同文件
-            fileRequestDTO = storageService.requestDownloadByPath("\\" + fileDTO.getKey(), null);
+            fileRequestDTO = storageService.requestDownloadByPath("\\" + fileDTO.getKey(), "123",null);
             fileRequestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
         } else if (FileServerConst.FILE_SERVER_MODE_OSS.equals(mode)) {
             fileRequestDTO = storageService.requestDownload(fileInfo, mode, null);

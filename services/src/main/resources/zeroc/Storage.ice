@@ -205,7 +205,8 @@ module zeroc {
         bool moveNode(string oldPath,string newPath); //移动或更名节点
         bool deleteNode(string path,bool force); //删除树节点
         FileRequestDTO requestUploadByPath(string path,string userId); //申请上传文件
-        FileRequestDTO requestDownloadByPath(string path); //申请下载文件
+        FileRequestDTO requestDownloadByPath(string path,string userId); //申请下载文件
+        void finishUploadById(string nodeId,string userId); //通告上传文件结束
 
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool lockFile(string fileId,string address); //锁定文件
