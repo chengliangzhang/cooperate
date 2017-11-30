@@ -141,6 +141,7 @@ module zeroc {
         string name; //节点名称（树节点名称或文件名称）
         string pNodeId; //父节点编号
         short typeId; //节点类别编号
+        bool isDirectory; //节点是否目录
         string typeName; //节点类别名字
         long createTimeStamp; //节点建立时间
         string createTimeText; //节点建立时间文字

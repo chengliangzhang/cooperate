@@ -56,6 +56,20 @@ public class StorageServiceImplTest {
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
 
+    /** 重命名及移动节点 */
+    @Test
+    public void testMoveNode() throws Exception {
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setFullName("/x1/x11/x111");
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        storageService.createNode(request,null);
+        request.setFullName("/x1/x11/x112");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        storageService.createNode(request,null);
+        Assert.assertTrue(storageService.moveNode("/x1/x11","/x2",null));
+        Assert.assertNotNull(storageService.getSimpleNodeInfo("/x2",null));
+    }
+
     /** 删除树节点 */
     @Test
     public void testDeleteNode() throws Exception {
@@ -77,8 +91,8 @@ public class StorageServiceImplTest {
         request.setFullName("/x/y/z");
         request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
         storageService.createNode(request,null);
-        Assert.assertTrue(storageServicePrx.getFileNodeInfo("\\x\\y\\z").getIsValid());
-        Assert.assertFalse(storageServicePrx.getFileNodeInfo("\\abcde").getIsValid());
+        Assert.assertTrue(storageService.getFileNodeInfo("\\x\\y\\z",null) != null);
+        Assert.assertFalse(storageService.getFileNodeInfo("\\abcde",null) != null);
     }
 
     /** 获取目录信息 */

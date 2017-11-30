@@ -23,6 +23,7 @@
         ,date_format(ifnull(a.create_time,0),'%Y-%m-%a %T') as create_time_text
         ,unix_timestamp(ifnull(a.last_modify_time,0)) as last_modify_time_stamp
         ,date_format(ifnull(a.last_modify_time,0),'%Y-%m-%a %T') as last_modify_time_text
+        ,if(a.type_id >= 3,1,0) as is_directory
     </sql>
 
     <sql id="SimpleNodeFieldListForSimpleDirUnion">
@@ -66,16 +67,7 @@
     </sql>
 
     <sql id="SimpleNodeFieldListForFileUnion">
-        1 as is_valid
-        ,a.id
-        ,a.node_name as name
-        ,a.pid as p_node_id
-        ,a.type_id
-        ,c.content as type_name
-        ,unix_timestamp(ifnull(a.create_time,0)) as create_time_stamp
-        ,date_format(ifnull(a.create_time,0),'%Y-%m-%a %T') as create_time_text
-        ,unix_timestamp(ifnull(a.last_modify_time,0)) as last_modify_time_stamp
-        ,date_format(ifnull(a.last_modify_time,0),'%Y-%m-%a %T') as last_modify_time_text
+        <include refid="CommonDirFieldList"/>
         ,b.file_length
     </sql>
 
@@ -94,13 +86,22 @@
         ,b.last_modify_duty_id
     </sql>
 
+    <update id="updateParentPath" parameterType="java.util.Map">
+        update maoding_storage set path=replace(path,#{oldPath},#{newPath}) where path like concat(#{oldPath},'/%')
+    </update>
+
     <select id="listSubNodeByNodeId" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
         select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
         from <include refid="SimpleDirUnion"/>
         where <include refid="FixConditionForSimpleDirUnion"/>
-            <if test="_parameter != null">
-                and (a.pid = #{_parameter})
-            </if>
+            <choose>
+                <when test="_parameter == null">
+                    and (a.pid is null)
+                </when>
+                <otherwise>
+                    and (a.pid = #{_parameter})
+                </otherwise>
+            </choose>
     </select>
 
     <select id="listSubNodeByPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
@@ -127,73 +128,50 @@
         from maoding_storage a
         where (a.deleted = 0)
             <if test="_parameter != null">
-                and (a.path like concat(#{_parameter},'%'))
+                and (a.path like concat(#{_parameter},'/%'))
             </if>
-    </select>
-
-    <select id="listFileByScopeAndKey" resultType="com.maoding.Storage.zeroc.CooperateFileDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
-      select
-        a.id
-        ,a.file_name as name
-        ,b.id as node_id
-        ,b.pid as p_node_id
-        ,b.node_name
-        ,group_concat(if(c.node_name is null,'',concat(c.node_name,'/')) order by length(c.path) separator '') as path_name
-        ,a.file_length
-        ,a.file_checksum
-        ,a.file_version
-        ,a.specialty_id
-        ,a.last_modify_address
-        ,a.sync_mode_id as sync_mode_id
-        ,a.type_id
-        ,a.locking
-        ,a.creator_duty_id
-        ,a.create_time
-        ,date_format(a.create_time,'%Y-%m-%a %T') as create_time_text
-        ,a.last_modify_duty_id
-        ,a.last_modify_time
-        ,date_format(a.create_time,'%Y-%m-%a %T') as last_modify_time_text
-      from
-          maoding_storage_file a
-          left join maoding_storage b on (b.detail_id = a.id)
-          left join maoding_storage c on (find_in_set(c.id,b.path))
-      where (a.deleted = 0)
-          <if test="scope != null">
-              and (a.file_scope = #{scope})
-          </if>
-          <if test="key != null">
-              and (a.file_key like concat('%',#{key}))
-          </if>
-      group by a.id
     </select>
 
     <select id="getSimpleNodeByPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
-        select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
-        from <include refid="SimpleDirUnion"/>
-        where <include refid="FixConditionForSimpleDirUnion"/>
-            <if test="_parameter != null">
-                and (a.path = #{_parameter})
-            </if>
-        group by a.id
-        limit 1
-        union all
-        select <include refid="SimpleNodeFieldListForFileUnion"/>
-        from <include refid="FileUnion"/>
-        where <include refid="FixConditionForFileUnion"/>
-            <if test="_parameter != null">
-                and (a.path = #{_parameter})
-            </if>
-        group by a.id
-        limit 1
+        <choose>
+            <when test="_parameter == null">
+                select
+                    '' as id
+                    ,null as pid
+                    ,'/' as node_name
+                    ,'/' as path
+                    ,3 as type_id
+            </when>
+            <otherwise>
+                    select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
+                    from <include refid="SimpleDirUnion"/>
+                    where <include refid="FixConditionForSimpleDirUnion"/>
+                        and (a.path = #{_parameter})
+                    group by a.id
+                    limit 1
+                union all
+                    select <include refid="SimpleNodeFieldListForFileUnion"/>
+                    from <include refid="FileUnion"/>
+                    where <include refid="FixConditionForFileUnion"/>
+                        and (a.path = #{_parameter})
+                    group by a.id
+                    limit 1
+            </otherwise>
+        </choose>
     </select>
 
     <select id="getFirstChildTypeIdByPath" resultType="java.lang.Short" parameterType="java.lang.String">
         select a.type_id
         from maoding_storage a
         where (a.deleted = 0)
-            <if test="_parameter != null">
-                and (a.path like concat(#{_parameter},'/%'))
-            </if>
+            <choose>
+                <when test="_parameter == null">
+                    and (a.pid is null)
+                </when>
+                <otherwise>
+                    and (a.path like concat(#{_parameter},'/%'))
+                </otherwise>
+            </choose>
         group by a.id
         limit 1
     </select>
@@ -202,42 +180,58 @@
         select *
         from maoding_storage a
         where (a.deleted = 0)
-            <if test="_parameter != null">
-                and (a.path like concat(#{_parameter},'/%'))
-            </if>
+            <choose>
+                <when test="_parameter == null">
+                    and (a.pid is null)
+                </when>
+                <otherwise>
+                    and (a.path like concat(#{_parameter},'/%'))
+                </otherwise>
+            </choose>
         limit 1
     </select>
 
     <select id="selectByPath" resultType="com.maoding.Storage.Entity.StorageEntity" parameterType="java.lang.String">
         <choose>
-            <when test="_parameter != null">
-                select *
-                from maoding_storage a
-                where (a.deleted = 0)
-                    and (a.path = #{_parameter})
-                group by a.id
-                limit 1
-            </when>
-            <otherwise>
+            <when test="_parameter == null">
                 select
                     '' as id
                     ,null as pid
                     ,'/' as node_name
                     ,'/' as path
                     ,3 as type_id
+            </when>
+            <otherwise>
+                select *
+                from maoding_storage a
+                where (a.deleted = 0)
+                    and (a.path = #{_parameter})
+                group by a.id
+                limit 1
             </otherwise>
         </choose>
     </select>
 
     <select id="getDirNodeInfoByPath" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="java.lang.String">
-        select <include refid="DirNodeFieldListForDirUnion"/>
-        from <include refid="DirUnion"/>
-        where <include refid="FixConditionForDirUnion"/>
-            <if test="_parameter != null">
-                and (a.path = #{_parameter})
-            </if>
-        group by a.id
-        limit 1
+        <choose>
+            <when test="_parameter == null">
+                select
+                    '' as id
+                    ,null as p_node_id
+                    ,'/' as name
+                    ,3 as type_id
+            </when>
+            <otherwise>
+                select <include refid="DirNodeFieldListForDirUnion"/>
+                from <include refid="DirUnion"/>
+                where <include refid="FixConditionForDirUnion"/>
+                    <if test="_parameter != null">
+                        and (a.path = #{_parameter})
+                    </if>
+                group by a.id
+                limit 1
+            </otherwise>
+        </choose>
     </select>
 
     <select id="getFileNodeInfoByPath" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="java.lang.String">
@@ -334,16 +328,6 @@
                     </if>
                 </otherwise>
             </choose>
-        group by a.id
-    </select>
-
-    <select id="getFileNodeByPath" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="java.lang.String">
-        select <include refid="FileNodeFieldListForFileUnion"/>
-        from <include refid="FileUnion"/>
-        where <include refid="FixConditionForFileUnion"/>
-            <if test="_parameter != null">
-                and (a.path = #{_parameter})
-            </if>
         group by a.id
     </select>
 
@@ -572,4 +556,40 @@
             </if>
         limit 1
     </select>
+    <select id="listFileByScopeAndKey" resultType="com.maoding.Storage.zeroc.CooperateFileDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
+      select
+        a.id
+        ,a.file_name as name
+        ,b.id as node_id
+        ,b.pid as p_node_id
+        ,b.node_name
+        ,group_concat(if(c.node_name is null,'',concat(c.node_name,'/')) order by length(c.path) separator '') as path_name
+        ,a.file_length
+        ,a.file_checksum
+        ,a.file_version
+        ,a.specialty_id
+        ,a.last_modify_address
+        ,a.sync_mode_id as sync_mode_id
+        ,a.type_id
+        ,a.locking
+        ,a.creator_duty_id
+        ,a.create_time
+        ,date_format(a.create_time,'%Y-%m-%a %T') as create_time_text
+        ,a.last_modify_duty_id
+        ,a.last_modify_time
+        ,date_format(a.create_time,'%Y-%m-%a %T') as last_modify_time_text
+      from
+          maoding_storage_file a
+          left join maoding_storage b on (b.detail_id = a.id)
+          left join maoding_storage c on (find_in_set(c.id,b.path))
+      where (a.deleted = 0)
+          <if test="scope != null">
+              and (a.file_scope = #{scope})
+          </if>
+          <if test="key != null">
+              and (a.file_key like concat('%',#{key}))
+          </if>
+      group by a.id
+    </select>
+
 </mapper>

@@ -72,8 +72,11 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         node.setPid(targetPid);
         node.setNodeName(targetName);
         node.setPath(targetPath + StringUtils.SPLIT_PATH + targetName);
-        storageDao.updateById(node,node.getId());
-        return true;
+        int n = storageDao.updateExactById(node,node.getId());
+        if (!StringUtils.isSame(oldPath,node.getPath())) {
+            n += storageDao.updateParentPath(oldPath, node.getPath());
+        }
+        return (n > 0);
     }
 
     @Override
@@ -97,12 +100,28 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     public boolean lockNode(String path, String userId, Current current) {
         assert (path != null);
         StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
-        if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_DIR_TYPE_MAX)) return false;
-        if ((node.getLockUserId() != null) && (!StringUtils.isSame(node.getLockUserId(),userId))) return false;
+        if (!canBeLock(node,userId)) return false;
 
         node.setLockUserId(userId);
         int n = storageDao.updateById(node,node.getId());
+
+        if (isFile(node)){
+
+        }
+
         return (n > 0);
+    }
+
+    private boolean isFile(StorageEntity node){
+        assert (node != null);
+        return (node.getTypeId() <= StorageConst.STORAGE_FILE_TYPE_MAX);
+    }
+
+    private boolean canBeLock(StorageEntity node,String userId){
+        if (node == null) return false;
+        if (node.getTypeId() > StorageConst.STORAGE_DIR_TYPE_MAX) return false;
+        if ((node.getLockUserId() != null) && (!StringUtils.isSame(node.getLockUserId(),userId))) return false;
+        return true;
     }
 
     @Override

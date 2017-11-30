@@ -4,6 +4,7 @@ import com.maoding.Base.BaseDao;
 import com.maoding.Storage.Dto.QueryByPidAndNameDTO;
 import com.maoding.Storage.Entity.StorageEntity;
 import com.maoding.Storage.zeroc.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -52,4 +53,6 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     List<SimpleNodeDTO> listSubNodeByPath(String path);
     /** 根据全路径名获取所有子节点编号 */
     List<String> listAllSubNodeIdByPath(String path);
+    /** 更改子节点全路径名 */
+    int updateParentPath(@Param("oldPath") String oldPath,@Param("newPath") String newPath);
 }
