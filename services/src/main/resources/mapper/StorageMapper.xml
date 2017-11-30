@@ -115,18 +115,30 @@
     <select id="listSubNodeByPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
         <choose>
             <when test="_parameter == null">
-                select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
-                from <include refid="SimpleDirUnion"/>
-                where <include refid="FixConditionForSimpleDirUnion"/>
-                    and (a.pid is null)
+                    select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
+                    from <include refid="SimpleDirUnion"/>
+                    where <include refid="FixConditionForSimpleDirUnion"/>
+                        and (a.pid is null)
+                union all
+                    select <include refid="SimpleNodeFieldListForFileUnion"/>
+                    from <include refid="FileUnion"/>
+                    where <include refid="FixConditionForFileUnion"/>
+                        and (a.pid is null)
             </when>
             <otherwise>
-                select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
-                from <include refid="SimpleDirUnion"/>
-                    inner join maoding_storage d on (a.pid = d.id)
-                where <include refid="FixConditionForSimpleDirUnion"/>
-                    and (ifnull(d.deleted,0) = 0)
-                    and (d.path = #{_parameter})
+                    select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
+                    from <include refid="SimpleDirUnion"/>
+                        inner join maoding_storage x on (a.pid = x.id)
+                    where <include refid="FixConditionForSimpleDirUnion"/>
+                        and (ifnull(x.deleted,0) = 0)
+                        and (x.path = #{_parameter})
+                union all
+                    select <include refid="SimpleNodeFieldListForFileUnion"/>
+                    from <include refid="FileUnion"/>
+                        inner join maoding_storage x on (a.pid = x.id)
+                    where <include refid="FixConditionForFileUnion"/>
+                        and (ifnull(x.deleted,0) = 0)
+                        and (x.path = #{_parameter})
             </otherwise>
         </choose>
     </select>
