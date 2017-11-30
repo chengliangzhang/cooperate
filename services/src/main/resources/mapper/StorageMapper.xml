@@ -86,6 +86,14 @@
         ,b.last_modify_duty_id
     </sql>
 
+    <sql id="RootNodeFieldList">
+        '' as id
+        ,null as pid
+        ,'/' as node_name
+        ,'/' as path
+        ,3 as type_id
+    </sql>
+
     <update id="updateParentPath" parameterType="java.util.Map">
         update maoding_storage set path=replace(path,#{oldPath},#{newPath}) where path like concat(#{oldPath},'/%')
     </update>
@@ -135,12 +143,7 @@
     <select id="getSimpleNodeByPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
         <choose>
             <when test="_parameter == null">
-                select
-                    '' as id
-                    ,null as pid
-                    ,'/' as node_name
-                    ,'/' as path
-                    ,3 as type_id
+                select <include refid="RootNodeFieldList"/>
             </when>
             <otherwise>
                     select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
@@ -194,12 +197,7 @@
     <select id="selectByPath" resultType="com.maoding.Storage.Entity.StorageEntity" parameterType="java.lang.String">
         <choose>
             <when test="_parameter == null">
-                select
-                    '' as id
-                    ,null as pid
-                    ,'/' as node_name
-                    ,'/' as path
-                    ,3 as type_id
+                select <include refid="RootNodeFieldList"/>
             </when>
             <otherwise>
                 select *
@@ -212,14 +210,28 @@
         </choose>
     </select>
 
+    <select id="selectByRedundancyPath" resultType="com.maoding.Storage.Entity.StorageEntity" parameterType="java.lang.String">
+        <choose>
+            <when test="_parameter == null">
+                select <include refid="RootNodeFieldList"/>
+            </when>
+            <otherwise>
+                select *
+                from maoding_storage a
+                where (a.deleted = 0)
+                    and (#{_parameter} like concat(a.path,'%'))
+                    and ((length(#{_parameter}) = length(a.path))
+                        or (substring(#{_parameter},length(a.path)+1,1) = '/'))
+                order by length(a.path) desc
+                limit 1
+            </otherwise>
+        </choose>
+    </select>
+
     <select id="getDirNodeInfoByPath" resultType="com.maoding.Storage.zeroc.CooperateDirNodeDTO" parameterType="java.lang.String">
         <choose>
             <when test="_parameter == null">
-                select
-                    '' as id
-                    ,null as p_node_id
-                    ,'/' as name
-                    ,3 as type_id
+                select <include refid="RootNodeFieldList"/>
             </when>
             <otherwise>
                 select <include refid="DirNodeFieldListForDirUnion"/>

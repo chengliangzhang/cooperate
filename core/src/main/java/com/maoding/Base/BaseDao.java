@@ -24,6 +24,14 @@ public interface BaseDao<T extends BaseEntity> extends Mapper<T>, MySqlMapper<T>
         return insertSelective(entity);
     }
 
+    default int insertList(List<T> entityList){
+        int n = 0;
+        for (T entity : entityList){
+            n += insertSelective(entity);
+        }
+        return n;
+    }
+
     default int updateById(T entity){
         return updateByPrimaryKeySelective(entity);
     }

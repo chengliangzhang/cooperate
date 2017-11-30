@@ -55,4 +55,6 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     List<String> listAllSubNodeIdByPath(String path);
     /** 更改子节点全路径名 */
     int updateParentPath(@Param("oldPath") String oldPath,@Param("newPath") String newPath);
+    /** 根据全路径名获取最靠近的节点 */
+    StorageEntity selectByRedundancyPath(String path);
 }
