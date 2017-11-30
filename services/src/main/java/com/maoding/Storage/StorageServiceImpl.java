@@ -58,8 +58,10 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public boolean moveNode(String oldPath, String newPath, Current current) {
         assert (oldPath != null);
-        if (storageDao.selectByPath(StringUtils.formatPath(newPath)) != null) return false;
-        StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(oldPath));
+        oldPath = StringUtils.formatPath(oldPath);
+        newPath = StringUtils.formatPath(newPath);
+        if (storageDao.selectByPath(newPath) != null) return false;
+        StorageEntity node = storageDao.selectByPath(oldPath);
         if (node == null) return false;
         String targetPath = StringUtils.getDirName(newPath);
         String targetName = StringUtils.getFileName(newPath);

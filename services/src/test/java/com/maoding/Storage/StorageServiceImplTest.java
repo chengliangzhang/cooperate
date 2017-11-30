@@ -60,14 +60,24 @@ public class StorageServiceImplTest {
     @Test
     public void testMoveNode() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
-        request.setFullName("/x1/x11/x111");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
-        storageService.createNode(request,null);
-        request.setFullName("/x1/x11/x112");
+        request.setFullName("/123");
         request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
         storageService.createNode(request,null);
-        Assert.assertTrue(storageService.moveNode("/x1/x11","/x2",null));
-        Assert.assertNotNull(storageService.getSimpleNodeInfo("/x2",null));
+        request.setFullName("/456");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        storageService.createNode(request,null);
+        request.setFullName("/456/789/321");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        storageService.createNode(request,null);
+        request.setFullName("/456/789/654");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        storageService.createNode(request,null);
+        request.setFullName("/456/789/987");
+        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        storageService.createNode(request,null);
+        Assert.assertTrue(storageService.moveNode("\\456\\789","\\789",null));
+        Assert.assertNotNull(storageService.getSimpleNodeInfo("/789",null));
+        Assert.assertNotNull(storageService.getSimpleNodeInfo("/789/321",null));
     }
 
     /** 删除树节点 */
