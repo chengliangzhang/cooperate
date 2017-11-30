@@ -77,19 +77,29 @@ public class CustomProvider extends MapperTemplate {
             if (!column.isUpdatable()) continue;
             if (column.isId()) {
                 /**
-                 *   <if test="idList != null and idList.size() > 0">
+                 *   <choose">
+                 *   <when test="idList != null and idList.size() > 0">
                  *       and id in
                  *       <foreach collection="idList" item="id" open="(" separator="," close=")">
                  *          #{id}
                  *       </foreach>
-                 *   </if>
+                 *   </when>
+                 *   <otherwise>
+                 *       and id is null
+                 *   </otherwise>
+                 *   </choose>
                  */
-                sqlWhere.append("<if test=\"idList != null and idList.size() > 0\">");
+                sqlWhere.append("<choose>");
+                sqlWhere.append("<when test=\"idList != null and idList.size() > 0\">");
                 sqlWhere.append(" and `" + column.getColumn() + "` in ");
                 sqlWhere.append("<foreach collection=\"idList\" item=\"id\" open=\"(\" separator=\",\" close=\")\">");
                 sqlWhere.append("#{id}");
                 sqlWhere.append("</foreach>");
-                sqlWhere.append("</if>");
+                sqlWhere.append("</when>");
+                sqlWhere.append("<otherwise>");
+                sqlWhere.append(" and `" + column.getColumn() + "` is null");
+                sqlWhere.append("</otherwise>");
+                sqlWhere.append("</choose>");
             }
             if ("deleted".equals(column.getProperty())) {
                 /** set deleted=1 */

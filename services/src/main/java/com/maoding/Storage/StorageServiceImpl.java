@@ -483,6 +483,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         int n = 0;
         if (force || canBeDeleted(path,current)){
             List<String> idList = storageDao.listAllSubNodeIdByPath(node.getPath());
+            idList.add(node.getId());
             n += storageDao.fakeDeleteById(idList);
             if (node.getTypeId() <= StorageConst.STORAGE_FILE_TYPE_MAX) n += storageFileDao.fakeDeleteById(idList);
             else if (node.getTypeId() <= StorageConst.STORAGE_DIR_TYPE_MAX) n += storageDirDao.fakeDeleteById(idList);

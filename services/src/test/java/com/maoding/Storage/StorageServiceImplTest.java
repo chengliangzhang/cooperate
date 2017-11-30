@@ -90,8 +90,8 @@ public class StorageServiceImplTest {
         request.setFullName("/x1/x11/x112");
         request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
         storageService.createNode(request,null);
-        Assert.assertTrue(storageService.deleteNode("\\x1\\x11",true,null));
-        Assert.assertTrue(storageService.deleteNode("\\x1",true,null));
+        Assert.assertTrue(storageService.deleteNode("\\x1\\x11\\x111",true,null));
+        Assert.assertNotNull(storageService.getSimpleNodeInfo("\\x1",null));
     }
 
     /** 获取文件信息 */
