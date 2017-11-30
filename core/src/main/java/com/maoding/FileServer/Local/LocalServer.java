@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -32,6 +32,7 @@ public class LocalServer implements BasicFileServerInterface {
     private static final Integer MAX_TRY_TIMES = 5;
     private static final Integer TRY_DELAY = 50;
 
+    public static final String FILE_NAME_SPLIT = "_";
     public static final String BASE_DIR_NAME = "scope";
     public static final String PATH_NAME = "key";
     public static final Integer DEFAULT_CHUNK_PER_SIZE = 8192;
@@ -66,30 +67,21 @@ public class LocalServer implements BasicFileServerInterface {
     @Override
     public BasicFileRequestDTO getUploadRequest(BasicFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
         //补全参数
-
         //建立申请上传参数对象
         BasicFileRequestDTO requestDTO = new BasicFileRequestDTO();
         requestDTO.setUrl(FILE_UPLOAD_URL);
-        if (src.getScope() == null){
-            String scope = StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT);
-            requestDTO.setScope(scope);
-        } else {
-            requestDTO.setScope(src.getScope());
-        }
-        if (StringUtils.isEmpty(src.getKey())) {
-            String key = UUID.randomUUID().toString() + ".txt";
-            requestDTO.setKey(key);
-        } else {
-            requestDTO.setKey(src.getKey());
-        }
-        requestDTO.putParam(BASE_DIR_NAME,requestDTO.getScope());
-        requestDTO.putParam(PATH_NAME,requestDTO.getKey());
+        requestDTO.setScope(getValidScope(src.getScope()));
+        requestDTO.setKey(getValidKey(src.getKey()));
         if (modeMapConst.containsKey(mode)){
             requestDTO.setMode(modeMapConst.get(mode));
         } else {
             requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_RPC);
         }
         requestDTO.putParam(KEY_UPLOAD_ID,UUID.randomUUID().toString());
+
+        //保持兼容性
+        requestDTO.putParam(BASE_DIR_NAME,requestDTO.getScope());
+        requestDTO.putParam(PATH_NAME,requestDTO.getKey());
         return requestDTO;
     }
 
@@ -136,13 +128,13 @@ public class LocalServer implements BasicFileServerInterface {
         assert ((request.getMultipart().getPos() != null) && (request.getMultipart().getPos() >= 0));
         assert ((request.getMultipart().getSize() != null) && (request.getMultipart().getSize() > 0));
         assert (request.getMultipart().getData() != null);
+        assert (request.getMultipart().getScope() != null);
+        assert (!StringUtils.isEmpty(request.getMultipart().getKey()));
 
         //补全参数
-        BasicFileMultipartDTO multipart = request.getMultipart();
-        if (StringUtils.isEmpty(multipart.getScope())) multipart.setScope("");
-        if (StringUtils.isEmpty(multipart.getKey())) multipart.setKey(UUID.randomUUID().toString() + ".txt");
 
         //写入文件
+        BasicFileMultipartDTO multipart = request.getMultipart();
         BasicUploadResultDTO result = BeanUtils.createFrom(request,BasicUploadResultDTO.class);
         RandomAccessFile rf = null;
 
@@ -179,17 +171,16 @@ public class LocalServer implements BasicFileServerInterface {
             if (rf.length() < pos) rf.setLength(pos + len);
             rf.seek(pos);
             rf.write(data,off,len);
+            result.setStatus(ApiResponseConst.SUCCESS);
         } catch (IOException e) {
             FileUtils.close(rf);
             String msg = "写入文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "时出错";
             ExceptionUtils.logWarn(log,e,false,msg);
             result.setStatus(ApiResponseConst.FAILED);
             result.setMsg(msg);
-            return result;
+        } finally {
+            FileUtils.close(rf);
         }
-
-        FileUtils.close(rf);
-        result.setStatus(ApiResponseConst.SUCCESS);
 
         if (pos > 0) {
             long t = (System.currentTimeMillis() - t0);
@@ -287,6 +278,20 @@ public class LocalServer implements BasicFileServerInterface {
         return result;
     }
 
+    private String getValidScope(String scope){
+        if (scope == null){
+            scope = StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT);
+        }
+        return scope;
+    }
+
+    private String getValidKey(String key){
+        if (key == null){
+            key = UUID.randomUUID().toString() + ".txt";
+        }
+        return key;
+    }
+
     /**
      * 在文件服务器上复制文件，复制到同一空间，返回复制后的文件标识
      *
@@ -294,7 +299,48 @@ public class LocalServer implements BasicFileServerInterface {
      */
     @Override
     public String duplicateFile(BasicFileDTO src) {
-        return null;
+        final int BUFFER_SIZE = 2048 * 1024;
+
+        assert (src.getScope() != null);
+        assert (src.getKey() != null);
+//        assert (isExist(src));
+
+        //获取文件名
+        String scope = src.getScope();
+        String key = src.getKey();
+        String fullNameIn = FILE_SERVER_PATH + StringUtils.SPLIT_PATH  + scope + StringUtils.SPLIT_PATH  + key;
+        if (key.contains(FILE_NAME_SPLIT)) key = key.substring(key.lastIndexOf(FILE_NAME_SPLIT) + FILE_NAME_SPLIT.length());
+        String keyOut = StringUtils.getTimeStamp(StringUtils.TIME_STAMP_FORMAT) + "_" + key;
+        String fullNameOut = FILE_SERVER_PATH + StringUtils.SPLIT_PATH  + scope + StringUtils.SPLIT_PATH  + keyOut;
+
+        //复制文件
+        ByteBuffer buf = null;
+        int length = BUFFER_SIZE;
+        FileChannel in = null;
+        FileChannel out = null;
+        try {
+            in = (new FileInputStream(fullNameIn)).getChannel();
+            out = (new FileOutputStream(fullNameOut)).getChannel();
+            while (in.position() < in.size())
+            {
+                if ((in.size() - in.position()) < length) {
+                    length = (int) (in.size() - in.position());
+                } else {
+                    length = BUFFER_SIZE;
+                }
+                buf = ByteBuffer.allocateDirect(length);
+                in.read(buf);
+                buf.flip();
+                out.write(buf);
+                out.force(false);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            FileUtils.close(out);
+            FileUtils.close(in);
+        }
+        return keyOut;
     }
 
     /**

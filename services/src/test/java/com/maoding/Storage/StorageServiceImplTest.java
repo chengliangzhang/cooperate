@@ -144,15 +144,18 @@ public class StorageServiceImplTest {
         request.setFullName("/a/b/d");
         request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
         storageService.createNode(request,null);
+        request.setFullName("/a.txt");
+        request.setTypeId(StorageConst.STORAGE_FILE_TYPE_UNKNOWN);
+        storageService.createNode(request,null);
         List<SimpleNodeDTO> list = storageService.listSubNode("/a/b",null);
         Assert.assertTrue(list.size() > 0);
         list = storageService.listSubNode("\\",null);
         Assert.assertTrue(list.size() > 0);
     }
 
-    /** 调整文件大小 */
+    /** 锁定文件 */
     @Test
-    public void testLocking() throws Exception {
+    public void testLockNode() throws Exception {
         final String NODE_NAME = "/o/p/q";
         final String USER_ID = "123";
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
@@ -439,7 +442,11 @@ public class StorageServiceImplTest {
         FileRequestDTO fileRequestDTO = null;
         if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(mode)) {
             fileService.setFileServerType(fileServerType, null);
-            fileRequestDTO = storageService.requestUpload(fileInfo, mode, null);
+            CreateNodeRequestDTO requestDTO = new CreateNodeRequestDTO();
+            requestDTO.setFullName("/x/x.txt");
+            requestDTO.setTypeId(StorageConst.STORAGE_FILE_TYPE_UNKNOWN);
+            storageService.createNode(requestDTO,null);
+            fileRequestDTO = storageService.requestUploadByPath("/x/x.txt", mode, null);
             fileRequestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
         } else if (FileServerConst.FILE_SERVER_MODE_OSS.equals(mode)) {
             fileService.setFileServerType(fileServerType, null);

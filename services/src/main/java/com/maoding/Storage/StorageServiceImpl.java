@@ -106,11 +106,6 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
         node.setLockUserId(userId);
         int n = storageDao.updateById(node,node.getId());
-
-        if (isFile(node)){
-
-        }
-
         return (n > 0);
     }
 
@@ -119,11 +114,11 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return (node.getTypeId() <= StorageConst.STORAGE_FILE_TYPE_MAX);
     }
 
-    private boolean canBeLock(StorageEntity node,String userId){
-        if (node == null) return false;
-        if (node.getTypeId() > StorageConst.STORAGE_DIR_TYPE_MAX) return false;
-        if ((node.getLockUserId() != null) && (!StringUtils.isSame(node.getLockUserId(),userId))) return false;
-        return true;
+    private boolean canBeLock(StorageEntity node,String userId) {
+        return (node != null)
+                && node.getTypeId() <= StorageConst.STORAGE_DIR_TYPE_MAX
+                && ((node.getLockUserId() == null)
+                    || (StringUtils.isSame(node.getLockUserId(), userId)));
     }
 
     @Override
@@ -241,6 +236,55 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return (i > 0);
     }
 
+    private boolean lockNode(StorageEntity nodeEntity,String userId){
+        if (!canBeLock(nodeEntity,userId)) return false;
+
+        nodeEntity.setLockUserId(userId);
+        int n = storageDao.updateById(nodeEntity,nodeEntity.getId());
+        return (n > 0);
+    }
+    @Override
+    public FileRequestDTO requestUploadByPath(String path, int mode, Current current) {
+        assert (path != null);
+
+        //获取节点信息
+        path = StringUtils.formatPath(path);
+        StorageEntity nodeEntity = storageDao.selectByPath(path);
+        if (nodeEntity == null) return null;
+        //锁定节点
+        if (!lockNode(nodeEntity,StringUtils.getRemoteIp(current))) return null;
+
+        //获取文件信息
+        StorageFileEntity fileEntity = storageFileDao.selectById(nodeEntity.getId());
+        assert (fileEntity != null);
+
+        //复制文件
+        //设置fileServer功能调用参数
+        FileDTO fileDTO = new FileDTO();
+        if (fileEntity.getUploadedKey() != null) {
+            fileDTO.setScope(fileEntity.getUploadedScope());
+            fileDTO.setKey(fileEntity.getUploadedKey());
+        } else {
+            fileDTO.setScope(fileEntity.getFileScope());
+            fileDTO.setKey(fileEntity.getFileKey());
+        }
+        if (fileDTO.getKey() != null) {
+            fileDTO.setKey(fileService.duplicateFile(fileDTO, current));
+        } else {
+            fileDTO.setKey(nodeEntity.getNodeName());
+        }
+
+        //组装上传申请结果
+        FileRequestDTO fileRequestDTO = fileService.getUploadRequest(fileDTO,mode,null,current);
+        fileRequestDTO.setId(nodeEntity.getId());
+        fileRequestDTO.setNodeId(nodeEntity.getId());
+        //保存上传的实际文件标志
+        fileEntity.setUploadedScope(fileRequestDTO.getScope());
+        fileEntity.setUploadedKey(fileRequestDTO.getKey());
+        storageFileDao.updateById(fileEntity,fileEntity.getId());
+        return fileRequestDTO;
+    }
+
     @Override
     public FileRequestDTO requestUpload(CooperateFileDTO fileInfo, int mode, Current current) {
         assert (fileInfo != null);
@@ -248,6 +292,21 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         //补全参数
         if (fileInfo.getName() == null) fileInfo.setName(StringUtils.getFileName(fileInfo.getLocalFile()));
 
+//        if (isFile(node)){
+//            StorageFileEntity fileEntity = storageFileDao.selectById(node.getId());
+//            assert (fileEntity != null);
+//            FileDTO file = new FileDTO();
+//            if (fileEntity.getUploadedKey() != null) {
+//                file.setScope(fileEntity.getUploadedScope());
+//                file.setKey(fileEntity.getUploadedKey());
+//            } else {
+//                file.setScope(fileEntity.getFileScope());
+//                file.setKey(fileEntity.getFileKey());
+//            }
+//
+//            String key = fileService.duplicateFile(file,current);
+////            fileService.getUploadRequest()
+//        }
         //建立上传参数对象
         //返回前锁定记录
         //从数据库内获取树节点编号，scope和key

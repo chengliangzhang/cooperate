@@ -489,6 +489,40 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default com.maoding.FileServer.zeroc.FileRequestDTO requestUploadByPath(String path, int mode)
+    {
+        return requestUploadByPath(path, mode, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.FileServer.zeroc.FileRequestDTO requestUploadByPath(String path, int mode, java.util.Map<String, String> context)
+    {
+        return _iceI_requestUploadByPathAsync(path, mode, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> requestUploadByPathAsync(String path, int mode)
+    {
+        return _iceI_requestUploadByPathAsync(path, mode, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> requestUploadByPathAsync(String path, int mode, java.util.Map<String, String> context)
+    {
+        return _iceI_requestUploadByPathAsync(path, mode, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> _iceI_requestUploadByPathAsync(String iceP_path, int iceP_mode, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "requestUploadByPath", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                     ostr.writeInt(iceP_mode);
+                 }, istr -> {
+                     com.maoding.FileServer.zeroc.FileRequestDTO ret;
+                     ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query)
     {
         return getCooperateDirInfo(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);

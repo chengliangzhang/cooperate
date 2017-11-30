@@ -88,23 +88,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.typeId = typeId;
     }
 
-    public boolean isDirectory;
-
-    public boolean getIsDirectory()
-    {
-        return isDirectory;
-    }
-
-    public void setIsDirectory(boolean isDirectory)
-    {
-        this.isDirectory = isDirectory;
-    }
-
-    public boolean isIsDirectory()
-    {
-        return isDirectory;
-    }
-
     public String typeName;
 
     public String getTypeName()
@@ -187,14 +170,13 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = "";
     }
 
-    public SimpleNodeDTO(boolean isValid, String id, String name, String pNodeId, short typeId, boolean isDirectory, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, long fileLength)
+    public SimpleNodeDTO(boolean isValid, String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, long fileLength)
     {
         this.isValid = isValid;
         this.id = id;
         this.name = name;
         this.pNodeId = pNodeId;
         this.typeId = typeId;
-        this.isDirectory = isDirectory;
         this.typeName = typeName;
         this.createTimeStamp = createTimeStamp;
         this.createTimeText = createTimeText;
@@ -243,10 +225,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
                 }
             }
             if(this.typeId != r.typeId)
-            {
-                return false;
-            }
-            if(this.isDirectory != r.isDirectory)
             {
                 return false;
             }
@@ -299,7 +277,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isDirectory);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
@@ -330,7 +307,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.name);
         ostr.writeString(this.pNodeId);
         ostr.writeShort(this.typeId);
-        ostr.writeBool(this.isDirectory);
         ostr.writeString(this.typeName);
         ostr.writeLong(this.createTimeStamp);
         ostr.writeString(this.createTimeText);
@@ -346,7 +322,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.name = istr.readString();
         this.pNodeId = istr.readString();
         this.typeId = istr.readShort();
-        this.isDirectory = istr.readBool();
         this.typeName = istr.readString();
         this.createTimeStamp = istr.readLong();
         this.createTimeText = istr.readString();
@@ -407,5 +382,5 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     private static final SimpleNodeDTO _nullMarshalValue = new SimpleNodeDTO();
 
-    public static final long serialVersionUID = 2058521091L;
+    public static final long serialVersionUID = -415953129L;
 }

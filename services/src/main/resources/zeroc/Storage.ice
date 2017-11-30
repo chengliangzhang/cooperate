@@ -141,7 +141,6 @@ module zeroc {
         string name; //节点名称（树节点名称或文件名称）
         string pNodeId; //父节点编号
         short typeId; //节点类别编号
-        bool isDirectory; //节点是否目录
         string typeName; //节点类别名字
         long createTimeStamp; //节点建立时间
         string createTimeText; //节点建立时间文字
@@ -204,7 +203,7 @@ module zeroc {
         SimpleNodeList listSubNode(string path); //获取一层子节点简单信息
         bool moveNode(string oldPath,string newPath); //移动或更名节点
         bool deleteNode(string path,bool force); //删除树节点
-
+        FileRequestDTO requestUploadByPath(string path,int mode); //申请上传文件
 
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool lockFile(string fileId,string address); //锁定文件

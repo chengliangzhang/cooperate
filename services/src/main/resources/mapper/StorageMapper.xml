@@ -90,7 +90,7 @@
         '' as id
         ,null as pid
         ,'/' as node_name
-        ,'/' as path
+        ,'' as path
         ,3 as type_id
     </sql>
 
