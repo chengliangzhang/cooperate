@@ -37,6 +37,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public DownloadResultDTO download(DownloadRequestDTO request, Current current) {
+        request = BeanUtils.cleanProperties(request);
         BasicDownloadRequestDTO basicRequest = BeanUtils.createFrom(request, BasicDownloadRequestDTO.class);
         BasicDownloadResultDTO basicResult = fileServer.download(basicRequest);
         return BeanUtils.createFrom(basicResult, DownloadResultDTO.class);
@@ -44,6 +45,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public UploadResultDTO upload(UploadRequestDTO request, Current current) {
+        request = BeanUtils.cleanProperties(request);
         BasicUploadRequestDTO basicRequest = BeanUtils.createFrom(request, BasicUploadRequestDTO.class);
         BasicUploadResultDTO basicResult = fileServer.upload(basicRequest);
         return BeanUtils.createFrom(basicResult, UploadResultDTO.class);

@@ -83,22 +83,21 @@ public class StorageServiceImplTest {
     /** 创建树节点 */
     @Test
     public void testCreateNode() throws Exception {
-        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
-        request.setFullName("/x1/x11/x111");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
-        Assert.assertNotNull(storageService.createNode(request,null));
-        request.setFullName("/x1/x11/x112");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
-        Assert.assertNotNull(storageService.createNode(request,null));
-        request.setFullName("\\x1\\x11\\x113");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
-        Assert.assertNotNull(storageService.createNode(request,null));
-        request.setFullName("\\x2");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
-        Assert.assertNotNull(storageService.createNode(request,null));
-        request.setFullName("\\x22");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
-        Assert.assertNotNull(storageService.createNode(request,null));
+        String name = "新建abc文件夹";
+        for (int i=1; i<6; i++) {
+            CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+            request.setFullName("\\" + name + ((i<2) ? "" : " (" + i + ")"));
+            request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+            Assert.assertNotNull(storageService.createNode(request,null));
+            String subname = "\\" + name + ((i<2) ? "" : " (" + i + ")");
+            for (int j=0; j<i; j++){
+                subname += "\\" + name + ((i<2) ? "" : " (" + i + ")");
+                System.out.println(subname);
+                request.setFullName(subname);
+                request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+                Assert.assertNotNull(storageService.createNode(request,null));
+            }
+        }
     }
 
      /** 删除树节点 */
@@ -258,11 +257,14 @@ public class StorageServiceImplTest {
     @Test
     public void testCreateFile() throws Exception {
         CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
-        request.setFullName("t");
-        request.setTypeId((short)0);
-        String fullPath = storageService.createFile(request,null);
-        String nodeId = StringUtils.getLastSplit(fullPath,StringUtils.SPLIT_ID);
-        Assert.assertNotNull(nodeId);
+        String fn = "t";
+        for(int i=0; i<10; i++){
+            fn += "t";
+            request.setFullName(fn);
+            request.setTypeId(StorageConst.STORAGE_UNKNOWN_TYPE);
+            String nodeId = storageService.createFile(request,null);
+            Assert.assertNotNull(nodeId);
+        }
     }
 
     /** 创建目录 */

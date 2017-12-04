@@ -47,14 +47,14 @@ public class UploadResultDTO implements java.lang.Cloneable,
         this.msg = msg;
     }
 
-    public FileMultipartDTO data;
+    public FileDTO data;
 
-    public FileMultipartDTO getData()
+    public FileDTO getData()
     {
         return data;
     }
 
-    public void setData(FileMultipartDTO data)
+    public void setData(FileDTO data)
     {
         this.data = data;
     }
@@ -110,11 +110,11 @@ public class UploadResultDTO implements java.lang.Cloneable,
     public UploadResultDTO()
     {
         this.msg = "";
-        this.data = new FileMultipartDTO();
+        this.data = new FileDTO();
         this.uploadId = "";
     }
 
-    public UploadResultDTO(int status, String msg, FileMultipartDTO data, int requestId, String uploadId, int chunkId, int chunkSize)
+    public UploadResultDTO(int status, String msg, FileDTO data, int requestId, String uploadId, int chunkId, int chunkSize)
     {
         this.status = status;
         this.msg = msg;
@@ -215,7 +215,7 @@ public class UploadResultDTO implements java.lang.Cloneable,
     {
         ostr.writeInt(this.status);
         ostr.writeString(this.msg);
-        FileMultipartDTO.ice_write(ostr, this.data);
+        FileDTO.ice_write(ostr, this.data);
         ostr.writeInt(this.requestId);
         ostr.writeString(this.uploadId);
         ostr.writeInt(this.chunkId);
@@ -226,7 +226,7 @@ public class UploadResultDTO implements java.lang.Cloneable,
     {
         this.status = istr.readInt();
         this.msg = istr.readString();
-        this.data = FileMultipartDTO.ice_read(istr);
+        this.data = FileDTO.ice_read(istr);
         this.requestId = istr.readInt();
         this.uploadId = istr.readString();
         this.chunkId = istr.readInt();

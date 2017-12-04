@@ -232,8 +232,8 @@
                 from maoding_storage a
                 where (a.deleted = 0)
                     and (#{_parameter} like concat(a.path,'%'))
-                    and ((length(#{_parameter}) = length(a.path))
-                        or (substring(#{_parameter},length(a.path)+1,1) = '/'))
+                    and ((#{_parameter} = concat(a.path,'/',a.node_name))
+                        or (substring(#{_parameter},char_length(a.path)+1,1) = '/'))
                 order by length(a.path) desc
                 limit 1
             </otherwise>

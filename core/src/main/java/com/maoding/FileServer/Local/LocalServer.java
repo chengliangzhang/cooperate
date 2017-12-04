@@ -94,14 +94,14 @@ public class LocalServer implements BasicFileServerInterface {
     @Override
     public BasicFileRequestDTO getDownloadRequest(BasicFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
         //检查参数
-        assert src != null;
-        assert src.getKey() != null;
+        assert (src != null);
+        assert (src.getKey() != null);
         
         //补全参数
         if (StringUtils.isEmpty(src.getScope())) src.setScope("");
 
         //建立申请下载参数对象
-        BasicFileRequestDTO requestDTO = new BasicFileRequestDTO();
+        BasicFileRequestDTO requestDTO = BeanUtils.createFrom(src,BasicFileRequestDTO.class);
         requestDTO.setUrl(FILE_DOWNLOAD_URL);
         requestDTO.putParam(BASE_DIR_NAME,src.getScope());
         requestDTO.putParam(PATH_NAME,src.getKey());
@@ -136,6 +136,7 @@ public class LocalServer implements BasicFileServerInterface {
         //写入文件
         BasicFileMultipartDTO multipart = request.getMultipart();
         BasicUploadResultDTO result = BeanUtils.createFrom(request,BasicUploadResultDTO.class);
+        result.setData(BeanUtils.createFrom(multipart,BasicFileDTO.class));
         RandomAccessFile rf = null;
 
         byte[] data = multipart.getData();
@@ -171,13 +172,14 @@ public class LocalServer implements BasicFileServerInterface {
             if (rf.length() < pos) rf.setLength(pos + len);
             rf.seek(pos);
             rf.write(data,off,len);
+            result.setChunkSize(len);
             result.setStatus(ApiResponseConst.SUCCESS);
         } catch (IOException e) {
-            FileUtils.close(rf);
             String msg = "写入文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "时出错";
             ExceptionUtils.logWarn(log,e,false,msg);
-            result.setStatus(ApiResponseConst.FAILED);
             result.setMsg(msg);
+            result.setChunkSize(0);
+            result.setStatus(ApiResponseConst.FAILED);
         } finally {
             FileUtils.close(rf);
         }
@@ -207,7 +209,6 @@ public class LocalServer implements BasicFileServerInterface {
 
         //补全参数
         if (StringUtils.isEmpty(request.getScope())) request.setScope("");
-        if ((request.getChunkSize() == null) || (request.getChunkSize() <= 0)) request.setChunkSize(DEFAULT_CHUNK_PER_SIZE);
         if ((request.getSize() == null) || (request.getSize() <= 0)) request.setSize(DEFAULT_CHUNK_PER_SIZE);
 
         //下载文件

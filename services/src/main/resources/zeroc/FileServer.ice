@@ -56,7 +56,7 @@ module zeroc {
     struct UploadResultDTO {
         int status; //返回状态，等于0-正常，小于0-发生异常，大于0-存在警告
         string msg; //返回状态的文字说明
-        FileMultipartDTO data; //上传文件在文件服务器内的标识
+        FileDTO data; //上传文件在文件服务器内的标识
         int requestId; //上传申请的唯一编号
         string uploadId; //上传任务ID
         int chunkId; //当前上传的分片序号
