@@ -86,6 +86,39 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default java.util.List<SimpleNodeDTO> listSubNodeForCurrent(String path)
+    {
+        return listSubNodeForCurrent(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<SimpleNodeDTO> listSubNodeForCurrent(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_listSubNodeForCurrentAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeForCurrentAsync(String path)
+    {
+        return _iceI_listSubNodeForCurrentAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeForCurrentAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_listSubNodeForCurrentAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> _iceI_listSubNodeForCurrentAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listSubNodeForCurrent", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     java.util.List<SimpleNodeDTO> ret;
+                     ret = SimpleNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default java.util.List<SimpleNodeDTO> listSubNodeForAccount(String path, com.maoding.User.zeroc.AccountDTO account)
     {
         return listSubNodeForAccount(path, account, com.zeroc.Ice.ObjectPrx.noExplicitContext);

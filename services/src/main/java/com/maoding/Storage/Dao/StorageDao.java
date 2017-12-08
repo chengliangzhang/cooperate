@@ -20,6 +20,7 @@ import java.util.List;
 public interface StorageDao extends BaseDao<StorageEntity> {
     /** 正在实现的接口 */
     List<SimpleNodeDTO> listRootNodeOfCompany(QuerySubNodeDTO query);
+    List<SimpleNodeDTO> listRootNodeOfProject(QuerySubNodeDTO query);
 
     List<SimpleNodeDTO> listSubNodeOfCompany(QuerySubNodeDTO query);
     List<SimpleNodeDTO> listSubNodeOfProject(QuerySubNodeDTO query);

@@ -229,6 +229,7 @@ module zeroc {
         //正在实现的接口
         SimpleNodeList listRootNodeForCurrent(); //获取当前账号的根节点
         SimpleNodeList listRootNodeForAccount(AccountDTO account); //获取指定账号的根节点
+        SimpleNodeList listSubNodeForCurrent(string path); //获取指定账号的指定路径的一层子节点
         SimpleNodeList listSubNodeForAccount(string path,AccountDTO account); //获取指定账号的指定路径的一层子节点
 
         //已经实现的接口

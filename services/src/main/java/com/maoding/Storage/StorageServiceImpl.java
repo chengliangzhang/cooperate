@@ -71,19 +71,32 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public List<SimpleNodeDTO> listRootNodeForAccount(AccountDTO account, Current current) {
-        return listSubNodeForAccount(StringUtils.SPLIT_PATH,account,current);
+        QuerySubNodeDTO query = new QuerySubNodeDTO();
+        query.addUserId(account.getId());
+        List<SimpleNodeDTO> companyList = storageDao.listRootNodeOfCompany(query);
+        List<SimpleNodeDTO> projectList = storageDao.listRootNodeOfProject(query);
+        return null;
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listSubNodeForCurrent(String path, Current current) {
+        //获取当前用户信息
+        AccountDTO accountDTO = userService.getCurrent(current);
+        return listSubNodeForAccount(StringUtils.SPLIT_PATH,accountDTO,current);
     }
 
     @Override
     public List<SimpleNodeDTO> listSubNodeForAccount(String path, AccountDTO account, Current current) {
+        path = StringUtils.formatPath(path);
+        if (StringUtils.isEmpty(path) || StringUtils.isSame(StringUtils.SPLIT_PATH,path)) {
+            return listRootNodeForAccount(account,current);
+        }
+
         QuerySubNodeDTO query = new QuerySubNodeDTO();
         query.addUserId(account.getId());
-        query.setParentPath(StringUtils.formatPath(path));
-        if (StringUtils.SPLIT_PATH.equals(query.getParentPath())) {
-            List<SimpleNodeDTO> companyList = storageDao.listRootNodeOfCompany(query);
-            List<SimpleNodeDTO> projectList = storageDao.listSubNodeOfProject(query);
-        }
-        return storageDao.listSubNode(query);
+        query.setParentPath(path);
+
+        return null;
     }
 
     @Override

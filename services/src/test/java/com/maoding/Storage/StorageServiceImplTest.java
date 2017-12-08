@@ -139,6 +139,12 @@ public class StorageServiceImplTest {
         Assert.assertFalse(storageServicePrx.getDirNodeInfo("\\abcde").getIsValid());
     }
 
+    /** 获取当前用户一层子节点信息 */
+    @Test
+    public void testListRootNodeForCurrent() throws Exception {
+
+    }
+
     /** 获取一层子节点信息 */
     @Test
     public void testListSubNode() throws Exception {
