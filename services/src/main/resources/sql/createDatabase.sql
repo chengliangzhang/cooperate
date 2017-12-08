@@ -2,8 +2,8 @@
 DROP PROCEDURE IF EXISTS createEmptyTables;
 CREATE PROCEDURE createEmptyTables()
 BEGIN
-	-- maoding_const -- 常量定义
 	DROP TABLE IF EXISTS `maoding_const`;
+	-- maoding_const -- 常量定义
 	CREATE TABLE IF NOT EXISTS `maoding_const` (
 		`classic_id` smallint(4) unsigned NOT NULL COMMENT '常量分类编号，0：分类类别',
 		`value_id` smallint(4) unsigned NOT NULL COMMENT '特定分类内的常量编号',
@@ -12,8 +12,8 @@ BEGIN
 		PRIMARY KEY (`classic_id`,`value_id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-	-- maoding_storage -- 协同节点定义
 	DROP TABLE IF EXISTS `maoding_storage`;
+	-- maoding_storage -- 协同节点定义
 	CREATE TABLE IF NOT EXISTS `maoding_storage` (
 		`id` char(32) NOT NULL COMMENT '唯一编号',
 		`deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
@@ -23,8 +23,9 @@ BEGIN
 		`last_modify_duty_id` char(32) DEFAULT NULL COMMENT '记录最后修改者职责id',
 		`pid` char(32) DEFAULT NULL COMMENT '父节点在此表中的id',
 		`path` varchar(255) DEFAULT NULL COMMENT '文件或目录带路径全名，以"/"作为分隔符',
-		`type_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '文件关系类型',
+		`type_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '节点类型',
 		`node_name` varchar(255) DEFAULT NULL COMMENT '树节点名',
+		`pid_type_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '父节点类型',
 		`file_length` bigint(16) unsigned DEFAULT '0' COMMENT '文件长度，如果节点是目录则固定为0',
 		
 		`lock_user_id` varchar(32) DEFAULT NULL COMMENT '（取消，因只需锁定文件）锁定树节点的用户id',
@@ -33,8 +34,8 @@ BEGIN
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-	-- maoding_storage_file -- 协同文件定义
 	DROP TABLE IF EXISTS `maoding_storage_file`;
+	-- maoding_storage_file -- 协同文件定义
 	CREATE TABLE IF NOT EXISTS `maoding_storage_file` (
 		`id` char(32) NOT NULL COMMENT '唯一编号',
 		`deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
@@ -70,9 +71,24 @@ BEGIN
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-  -- maoding_storage_file_duty -- 协同文件评审历史记录定义
   DROP TABLE IF EXISTS `maoding_storage_file_his`;
+  -- maoding_storage_file_his -- 协同文件校审历史记录定义
 	CREATE TABLE IF NOT EXISTS `maoding_storage_file_his` (
+		`id` char(32) NOT NULL COMMENT '唯一编号',
+		`deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
+		`create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
+		`last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+		`last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
+		`last_modify_duty_id` char(32) DEFAULT NULL COMMENT '记录最后修改者职责id',
+    `file_id` char(32) DEFAULT NULL COMMENT '协同文件编号id',
+    `action_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '校审动作类型',
+
+		PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+  DROP TABLE IF EXISTS `maoding_storage_file_ref`;
+  -- maoding_storage_file_ref -- 协同文件参考文件定义
+	CREATE TABLE IF NOT EXISTS `maoding_storage_file_ref` (
 		`id` char(32) NOT NULL COMMENT '唯一编号',
 		`deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
 		`create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
@@ -85,8 +101,8 @@ BEGIN
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-	-- maoding_storage_dir -- 协同目录定义
 	DROP TABLE IF EXISTS `maoding_storage_dir`;
+	-- maoding_storage_dir -- 协同目录定义
 	CREATE TABLE IF NOT EXISTS `maoding_storage_dir` (
 		`id` char(32) NOT NULL COMMENT '唯一编号',
 		`deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
@@ -105,88 +121,117 @@ BEGIN
 
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+	DROP TABLE IF EXISTS `maoding_web_account`;
+	-- maoding_web_account -- 用户登录表
+  CREATE TABLE IF NOT EXISTS  `maoding_web_account` (
+    `id` varchar(32) NOT NULL COMMENT '主键id，uuid',
+    `user_name` varchar(30) DEFAULT NULL COMMENT '用户名（冗余）',
+    `nick_name` varchar(30) DEFAULT NULL COMMENT '昵称',
+    `password` varchar(32) DEFAULT NULL COMMENT '密码',
+    `cellphone` varchar(11) NOT NULL COMMENT '手机号',
+    `email` varchar(100) DEFAULT NULL,
+    `default_company_id` varchar(32) DEFAULT NULL COMMENT '默认企业id',
+    `signature` varchar(100) DEFAULT NULL COMMENT '个性签名',
+    `status` varchar(1) DEFAULT '0' COMMENT '账号状态(1:未激活，0：激活）',
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    `emial_code` varchar(100) DEFAULT NULL COMMENT '邮箱绑定(验证）格式：邮箱-验证码（email-code）',
+    `active_time` datetime DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `cellphone` (`cellphone`),
+    KEY `default_company_id` (`default_company_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='登录用户表';
 END;
 
 -- 建立初始化常量存储过程
 DROP PROCEDURE IF EXISTS initConst;
 CREATE PROCEDURE initConst()
 BEGIN
-	DECLARE classic_id_value smallint default 0;
-
   -- 常量分类
-	set classic_id_value = 0;
-	DELETE FROM maoding_const WHERE classic_id=classic_id_value;
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,0,'常量分类',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,1,'操作权限',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,2,'合作类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,3,'任务类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,4,'财务类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,5,'文件类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,6,'节点类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,7,'动态类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,8,'个人任务类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,9,'邀请目的类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,10,'通知类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,11,'目录类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,12,'用户类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,13,'组织类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,14,'文件关系类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,15,'锁定状态',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,16,'同步模式',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,17,'删除状态',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,19,'文件服务器类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,20,'协同文件历史类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,0,'常量分类',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,1,'操作权限',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,2,'合作类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,3,'任务类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,4,'财务类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,6,'节点类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,7,'动态类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,8,'个人任务类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,9,'邀请目的类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,10,'通知类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,12,'用户类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,13,'组织类型',null);
 
-	-- 协同文件历史类型
-	set classic_id_value = 20;
-	DELETE FROM maoding_const WHERE classic_id=classic_id_value;
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,0,'审核',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,1,'校验',null);
+  delete from maoding_const where classic_id = 21;
+	-- 父节点类型
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,21,'父节点类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,0,'本树节点',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,1,'项目节点','project_id');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,2,'任务节点','task_id');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,3,'报销节点','exp_id');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,4,'通告节点','notice_id');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,5,'公司节点','company_id');
 
+  delete from maoding_const where classic_id = 20;
+	-- 校审类型
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,20,'校审类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,0,'校验',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,1,'审核',null);
+
+  delete from maoding_const where classic_id = 19;
 	-- 文件服务器类型
-  set classic_id_value = 19;
-	DELETE FROM maoding_const WHERE classic_id=classic_id_value;
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,0,'本地服务器',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,1,'阿里云服务器',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,19,'文件服务器类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (19,0,'本地服务器',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (19,1,'阿里云服务器',null);
 
+  delete from maoding_const where classic_id = 17;
 	-- 删除状态
-	set classic_id_value = 17;
-	DELETE FROM maoding_const WHERE classic_id=classic_id_value;
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,0,'未删除',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,1,'已删除',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,17,'删除状态',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (17,0,'未删除',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (17,1,'已删除',null);
 
+  delete from maoding_const where classic_id = 16;
 	-- 同步模式
-	set classic_id_value = 16;
-	DELETE FROM maoding_const WHERE classic_id=classic_id_value;
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,0,'手动同步',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,1,'自动同步',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,16,'同步模式',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (16,0,'手动同步',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (16,1,'自动同步',null);
 
+  delete from maoding_const where classic_id = 15;
 	-- 锁定状态
-	set classic_id_value = 15;
-	DELETE FROM maoding_const WHERE classic_id=classic_id_value;
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,0,'不锁定',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,1,'锁定',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,15,'锁定状态',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (15,0,'不锁定',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (15,1,'锁定',null);
 
-	-- 文件关系类型
-	set classic_id_value = 14;
-	DELETE FROM maoding_const WHERE classic_id=classic_id_value;
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,0,'最新文件',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,1,'参考文件',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,2,'历史版本',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,3,'系统目录',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,4,'用户目录',null);
-  INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,99,'尚未建立的树节点',null);
+  delete from maoding_const where classic_id = 14;
+	-- 存储节点类型
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,14,'存储节点类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,0,'主文件',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,1,'参考文件',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,10,'系统目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,11,'备份目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,12,'用户目录',null);
 
-	-- 目录类型
-	set classic_id_value = 11;
-	DELETE FROM maoding_const WHERE classic_id=classic_id_value;
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,0,'全部共享',null);
+  delete from maoding_const where classic_id = 11;
+	-- 共享类型
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,11,'共享类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (11,0,'全部共享',null);
 
+  delete from maoding_const where classic_id = 5;
 	-- 文件类型
-	set classic_id_value = 5;
-	DELETE FROM maoding_const WHERE classic_id=classic_id_value;
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,0,'未知类型',null);
-	INSERT INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (classic_id_value,1,'CAD设计文档',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,5,'文件类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,0,'未知类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,1,'CAD设计文档',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,3,'合同附件',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,4,'公司logo',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,5,'认证授权书',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,6,'移动端上传轮播图片',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,7,'公司邀请二维码',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,8,'营业执照',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,9,'法人身份证信息',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,20,'报销附件',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,21,'通知公告附件',null);
 END;
 
 -- 建立重置索引存储过程

@@ -23,23 +23,6 @@ package com.maoding.Storage.zeroc;
 public class CooperateDirNodeDTO implements java.lang.Cloneable,
                                             java.io.Serializable
 {
-    public boolean isValid;
-
-    public boolean getIsValid()
-    {
-        return isValid;
-    }
-
-    public void setIsValid(boolean isValid)
-    {
-        this.isValid = isValid;
-    }
-
-    public boolean isIsValid()
-    {
-        return isValid;
-    }
-
     public String id;
 
     public String getId()
@@ -148,6 +131,23 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = lastModifyTimeText;
     }
 
+    public boolean isReadOnly;
+
+    public boolean getIsReadOnly()
+    {
+        return isReadOnly;
+    }
+
+    public void setIsReadOnly(boolean isReadOnly)
+    {
+        this.isReadOnly = isReadOnly;
+    }
+
+    public boolean isIsReadOnly()
+    {
+        return isReadOnly;
+    }
+
     public long fileLength;
 
     public long getFileLength()
@@ -160,6 +160,40 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
         this.fileLength = fileLength;
     }
 
+    public boolean isSystem;
+
+    public boolean getIsSystem()
+    {
+        return isSystem;
+    }
+
+    public void setIsSystem(boolean isSystem)
+    {
+        this.isSystem = isSystem;
+    }
+
+    public boolean isIsSystem()
+    {
+        return isSystem;
+    }
+
+    public boolean isBackup;
+
+    public boolean getIsBackup()
+    {
+        return isBackup;
+    }
+
+    public void setIsBackup(boolean isBackup)
+    {
+        this.isBackup = isBackup;
+    }
+
+    public boolean isIsBackup()
+    {
+        return isBackup;
+    }
+
     public String fullName;
 
     public String getFullName()
@@ -170,6 +204,71 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
     public void setFullName(String fullName)
     {
         this.fullName = fullName;
+    }
+
+    public String projectId;
+
+    public String getProjectId()
+    {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId)
+    {
+        this.projectId = projectId;
+    }
+
+    public String projectName;
+
+    public String getProjectName()
+    {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName)
+    {
+        this.projectName = projectName;
+    }
+
+    public String taskId;
+
+    public String getTaskId()
+    {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId)
+    {
+        this.taskId = taskId;
+    }
+
+    public String taskName;
+
+    public String getTaskName()
+    {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName)
+    {
+        this.taskName = taskName;
+    }
+
+    public boolean isValid;
+
+    public boolean getIsValid()
+    {
+        return isValid;
+    }
+
+    public void setIsValid(boolean isValid)
+    {
+        this.isValid = isValid;
+    }
+
+    public boolean isIsValid()
+    {
+        return isValid;
     }
 
     public String userId;
@@ -244,54 +343,6 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
         this.orgName = orgName;
     }
 
-    public String projectId;
-
-    public String getProjectId()
-    {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId)
-    {
-        this.projectId = projectId;
-    }
-
-    public String projectName;
-
-    public String getProjectName()
-    {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName)
-    {
-        this.projectName = projectName;
-    }
-
-    public String taskId;
-
-    public String getTaskId()
-    {
-        return taskId;
-    }
-
-    public void setTaskId(String taskId)
-    {
-        this.taskId = taskId;
-    }
-
-    public String taskName;
-
-    public String getTaskName()
-    {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName)
-    {
-        this.taskName = taskName;
-    }
-
     public CooperateDirNodeDTO()
     {
         this.id = "";
@@ -301,21 +352,20 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
         this.createTimeText = "";
         this.lastModifyTimeText = "";
         this.fullName = "";
+        this.projectId = "";
+        this.projectName = "";
+        this.taskId = "";
+        this.taskName = "";
         this.userId = "";
         this.dutyId = "";
         this.userName = "";
         this.aliasName = "";
         this.orgId = "";
         this.orgName = "";
-        this.projectId = "";
-        this.projectName = "";
-        this.taskId = "";
-        this.taskName = "";
     }
 
-    public CooperateDirNodeDTO(boolean isValid, String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, long fileLength, String fullName, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName, String projectId, String projectName, String taskId, String taskName)
+    public CooperateDirNodeDTO(String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, boolean isSystem, boolean isBackup, String fullName, String projectId, String projectName, String taskId, String taskName, boolean isValid, String userId, String dutyId, String userName, String aliasName, String orgId, String orgName)
     {
-        this.isValid = isValid;
         this.id = id;
         this.name = name;
         this.pNodeId = pNodeId;
@@ -325,18 +375,22 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
         this.createTimeText = createTimeText;
         this.lastModifyTimeStamp = lastModifyTimeStamp;
         this.lastModifyTimeText = lastModifyTimeText;
+        this.isReadOnly = isReadOnly;
         this.fileLength = fileLength;
+        this.isSystem = isSystem;
+        this.isBackup = isBackup;
         this.fullName = fullName;
+        this.projectId = projectId;
+        this.projectName = projectName;
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.isValid = isValid;
         this.userId = userId;
         this.dutyId = dutyId;
         this.userName = userName;
         this.aliasName = aliasName;
         this.orgId = orgId;
         this.orgName = orgName;
-        this.projectId = projectId;
-        this.projectName = projectName;
-        this.taskId = taskId;
-        this.taskName = taskName;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -353,10 +407,6 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
-            if(this.isValid != r.isValid)
-            {
-                return false;
-            }
             if(this.id != r.id)
             {
                 if(this.id == null || r.id == null || !this.id.equals(r.id))
@@ -411,7 +461,19 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.isReadOnly != r.isReadOnly)
+            {
+                return false;
+            }
             if(this.fileLength != r.fileLength)
+            {
+                return false;
+            }
+            if(this.isSystem != r.isSystem)
+            {
+                return false;
+            }
+            if(this.isBackup != r.isBackup)
             {
                 return false;
             }
@@ -421,6 +483,38 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
                 {
                     return false;
                 }
+            }
+            if(this.projectId != r.projectId)
+            {
+                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
+                {
+                    return false;
+                }
+            }
+            if(this.projectName != r.projectName)
+            {
+                if(this.projectName == null || r.projectName == null || !this.projectName.equals(r.projectName))
+                {
+                    return false;
+                }
+            }
+            if(this.taskId != r.taskId)
+            {
+                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
+                {
+                    return false;
+                }
+            }
+            if(this.taskName != r.taskName)
+            {
+                if(this.taskName == null || r.taskName == null || !this.taskName.equals(r.taskName))
+                {
+                    return false;
+                }
+            }
+            if(this.isValid != r.isValid)
+            {
+                return false;
             }
             if(this.userId != r.userId)
             {
@@ -464,34 +558,6 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.projectId != r.projectId)
-            {
-                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
-                {
-                    return false;
-                }
-            }
-            if(this.projectName != r.projectName)
-            {
-                if(this.projectName == null || r.projectName == null || !this.projectName.equals(r.projectName))
-                {
-                    return false;
-                }
-            }
-            if(this.taskId != r.taskId)
-            {
-                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
-                {
-                    return false;
-                }
-            }
-            if(this.taskName != r.taskName)
-            {
-                if(this.taskName == null || r.taskName == null || !this.taskName.equals(r.taskName))
-                {
-                    return false;
-                }
-            }
 
             return true;
         }
@@ -503,7 +569,6 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CooperateDirNodeDTO");
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
@@ -513,18 +578,22 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeText);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isReadOnly);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isSystem);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isBackup);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dutyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, aliasName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
         return h_;
     }
 
@@ -544,7 +613,6 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeBool(this.isValid);
         ostr.writeString(this.id);
         ostr.writeString(this.name);
         ostr.writeString(this.pNodeId);
@@ -554,23 +622,26 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.createTimeText);
         ostr.writeLong(this.lastModifyTimeStamp);
         ostr.writeString(this.lastModifyTimeText);
+        ostr.writeBool(this.isReadOnly);
         ostr.writeLong(this.fileLength);
+        ostr.writeBool(this.isSystem);
+        ostr.writeBool(this.isBackup);
         ostr.writeString(this.fullName);
+        ostr.writeString(this.projectId);
+        ostr.writeString(this.projectName);
+        ostr.writeString(this.taskId);
+        ostr.writeString(this.taskName);
+        ostr.writeBool(this.isValid);
         ostr.writeString(this.userId);
         ostr.writeString(this.dutyId);
         ostr.writeString(this.userName);
         ostr.writeString(this.aliasName);
         ostr.writeString(this.orgId);
         ostr.writeString(this.orgName);
-        ostr.writeString(this.projectId);
-        ostr.writeString(this.projectName);
-        ostr.writeString(this.taskId);
-        ostr.writeString(this.taskName);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.isValid = istr.readBool();
         this.id = istr.readString();
         this.name = istr.readString();
         this.pNodeId = istr.readString();
@@ -580,18 +651,22 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
         this.createTimeText = istr.readString();
         this.lastModifyTimeStamp = istr.readLong();
         this.lastModifyTimeText = istr.readString();
+        this.isReadOnly = istr.readBool();
         this.fileLength = istr.readLong();
+        this.isSystem = istr.readBool();
+        this.isBackup = istr.readBool();
         this.fullName = istr.readString();
+        this.projectId = istr.readString();
+        this.projectName = istr.readString();
+        this.taskId = istr.readString();
+        this.taskName = istr.readString();
+        this.isValid = istr.readBool();
         this.userId = istr.readString();
         this.dutyId = istr.readString();
         this.userName = istr.readString();
         this.aliasName = istr.readString();
         this.orgId = istr.readString();
         this.orgName = istr.readString();
-        this.projectId = istr.readString();
-        this.projectName = istr.readString();
-        this.taskId = istr.readString();
-        this.taskName = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CooperateDirNodeDTO v)
@@ -646,5 +721,5 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
 
     private static final CooperateDirNodeDTO _nullMarshalValue = new CooperateDirNodeDTO();
 
-    public static final long serialVersionUID = -588206463L;
+    public static final long serialVersionUID = -628536015L;
 }

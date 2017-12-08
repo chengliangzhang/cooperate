@@ -4,6 +4,13 @@
 [["java:package:com.maoding.Organization"]]
 module zeroc {
     ["java:getset"]
+    struct OrganizationDTO {
+        string id; //唯一标识
+        string name; //组织名称
+    };
+    ["java:type:java.util.ArrayList<OrganizationDTO>"] sequence<OrganizationDTO> OrganizationList;
+
+    ["java:getset"]
     struct CompanyDTO {
         string id; //唯一标识
         string token; //app使用的token标示
@@ -49,10 +56,12 @@ module zeroc {
         Integer companyStartFlag; //公司开始标识:1
         Integer isInCompanyFlag; //是否在公司标识:1：在，0：不在
     };
-
     ["java:type:java.util.ArrayList<CompanyDTO>"] sequence<CompanyDTO> CompanyDTOList;
 
     interface OrganizationService {
+        OrganizationList listOrganizationByUserId(string userId); //获取指定用户所属组织
+        OrganizationList listOrganizationForCurrent(); //获取当前账号所属组织
+
         CompanyDTOList listCompanyByUserId(string userId);
     };
 };

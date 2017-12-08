@@ -13,9 +13,17 @@ import javax.persistence.Table;
  */
 @Table(name = "maoding_storage")
 public class StorageEntity extends BaseTreeEntity {
-    /** 锁定树节点的用户id */
+    /** 文件长度，如果节点是目录则固定为0 */
+    @Column
+    private Long fileLength;
+
+    /** （取消，因只需锁定文件）锁定树节点的用户id */
     @Column
     private String lockUserId;
+
+    /** （取消，因唯一编号同id）对应file/dir内的唯一编号 */
+    @Column
+    private String detailId;
 
     public String getLockUserId() {
         return lockUserId;
@@ -25,15 +33,19 @@ public class StorageEntity extends BaseTreeEntity {
         this.lockUserId = lockUserId;
     }
 
-    public StorageEntity reset(){
-        super.reset();
-        setLockUserId(null);
-        return this;
+    public Long getFileLength() {
+        return fileLength;
     }
 
-    public StorageEntity clear(){
-        super.clear();
-        setLockUserId(null);
-        return this;
+    public void setFileLength(Long fileLength) {
+        this.fileLength = fileLength;
+    }
+
+    public String getDetailId() {
+        return detailId;
+    }
+
+    public void setDetailId(String detailId) {
+        this.detailId = detailId;
     }
 }

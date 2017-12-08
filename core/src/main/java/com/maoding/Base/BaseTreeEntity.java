@@ -9,21 +9,21 @@ import javax.persistence.Column;
  * 描    述 :
  */
 public class BaseTreeEntity extends BaseEntity{
-    /** 父节点唯一编号 */
+    /** 父节点在此表中的id */
     @Column
     private String pid;
 
-    /** 从根节点到本节点的id路径 */
+    /** 节点路径全名，以"/"作为分隔符 */
     @Column
     private String path;
 
-    /** 节点名称 */
-    @Column
-    private String nodeName;
-
-    /** 对应节点细节的类型 */
+    /** 细节类型 */
     @Column
     private Short typeId;
+
+    /** 树节点名 */
+    @Column
+    private String nodeName;
 
     public String getPid() {
         return pid;

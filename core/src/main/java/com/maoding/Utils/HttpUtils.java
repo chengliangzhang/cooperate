@@ -28,32 +28,34 @@ public class HttpUtils {
     private static final Logger log = LoggerFactory.getLogger(HttpUtils.class);
 
     public static <T> CloseableHttpResponse postData(CloseableHttpClient client, String url, String type, T data) {
-        assert ((url != null) && (type != null) && (data != null));
+        assert (url != null);
         final String requestBodyType = "application/json";
         final String defaultVarName = "var";
 
         //建立参数
         StringEntity entity = null;
-        if (requestBodyType.equals(type)){
-            entity = new StringEntity(JsonUtils.obj2Json(data), StandardCharsets.UTF_8);
-        } else {
-            List<NameValuePair> params = new ArrayList<>();
-            if (data instanceof Map) {
-                for (Map.Entry<?,?> item : ((Map<?,?>)data).entrySet()){
-                    params.add(new BasicNameValuePair(item.getKey().toString(), JsonUtils.obj2Json(item.getValue())));
-                }
+        if ((type != null) && (data != null)) {
+            if (requestBodyType.equals(type)) {
+                entity = new StringEntity(JsonUtils.obj2Json(data), StandardCharsets.UTF_8);
             } else {
-                params.add(new BasicNameValuePair(defaultVarName, JsonUtils.obj2Json(data)));
+                List<NameValuePair> params = new ArrayList<>();
+                if (data instanceof Map) {
+                    for (Map.Entry<?, ?> item : ((Map<?, ?>) data).entrySet()) {
+                        params.add(new BasicNameValuePair(item.getKey().toString(), JsonUtils.obj2Json(item.getValue())));
+                    }
+                } else {
+                    params.add(new BasicNameValuePair(defaultVarName, JsonUtils.obj2Json(data)));
+                }
+                entity = new UrlEncodedFormEntity(params, StandardCharsets.UTF_8);
             }
-            entity = new UrlEncodedFormEntity(params, StandardCharsets.UTF_8);
+            entity.setContentEncoding("UTF-8");
+            entity.setContentType(type);
         }
-        entity.setContentEncoding("UTF-8");
-        entity.setContentType(type);
 
         // 发起Post请求
         HttpPost post = new HttpPost(url);
-        post.setHeader(HTTP.CONTENT_TYPE,type);
-        post.setEntity(entity);
+        if (type != null) post.setHeader(HTTP.CONTENT_TYPE,type);
+        if (entity != null) post.setEntity(entity);
         CloseableHttpResponse response = null;
         try {
             response = client.execute(post);
@@ -61,6 +63,9 @@ public class HttpUtils {
             ExceptionUtils.logError(log,e);
         }
         return response;
+    }
+    public static <T> CloseableHttpResponse postData(CloseableHttpClient client, String url){
+        return postData(client,url,null,null);
     }
 
 }

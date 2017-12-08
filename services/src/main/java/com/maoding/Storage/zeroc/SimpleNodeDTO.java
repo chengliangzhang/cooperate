@@ -23,23 +23,6 @@ package com.maoding.Storage.zeroc;
 public class SimpleNodeDTO implements java.lang.Cloneable,
                                       java.io.Serializable
 {
-    public boolean isValid;
-
-    public boolean getIsValid()
-    {
-        return isValid;
-    }
-
-    public void setIsValid(boolean isValid)
-    {
-        this.isValid = isValid;
-    }
-
-    public boolean isIsValid()
-    {
-        return isValid;
-    }
-
     public String id;
 
     public String getId()
@@ -86,23 +69,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
     public void setTypeId(short typeId)
     {
         this.typeId = typeId;
-    }
-
-    public boolean isDirectory;
-
-    public boolean getIsDirectory()
-    {
-        return isDirectory;
-    }
-
-    public void setIsDirectory(boolean isDirectory)
-    {
-        this.isDirectory = isDirectory;
-    }
-
-    public boolean isIsDirectory()
-    {
-        return isDirectory;
     }
 
     public String typeName;
@@ -165,6 +131,23 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = lastModifyTimeText;
     }
 
+    public boolean isReadOnly;
+
+    public boolean getIsReadOnly()
+    {
+        return isReadOnly;
+    }
+
+    public void setIsReadOnly(boolean isReadOnly)
+    {
+        this.isReadOnly = isReadOnly;
+    }
+
+    public boolean isIsReadOnly()
+    {
+        return isReadOnly;
+    }
+
     public long fileLength;
 
     public long getFileLength()
@@ -177,6 +160,40 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.fileLength = fileLength;
     }
 
+    public boolean isDirectory;
+
+    public boolean getIsDirectory()
+    {
+        return isDirectory;
+    }
+
+    public void setIsDirectory(boolean isDirectory)
+    {
+        this.isDirectory = isDirectory;
+    }
+
+    public boolean isIsDirectory()
+    {
+        return isDirectory;
+    }
+
+    public boolean isValid;
+
+    public boolean getIsValid()
+    {
+        return isValid;
+    }
+
+    public void setIsValid(boolean isValid)
+    {
+        this.isValid = isValid;
+    }
+
+    public boolean isIsValid()
+    {
+        return isValid;
+    }
+
     public SimpleNodeDTO()
     {
         this.id = "";
@@ -187,20 +204,21 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = "";
     }
 
-    public SimpleNodeDTO(boolean isValid, String id, String name, String pNodeId, short typeId, boolean isDirectory, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, long fileLength)
+    public SimpleNodeDTO(String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, boolean isDirectory, boolean isValid)
     {
-        this.isValid = isValid;
         this.id = id;
         this.name = name;
         this.pNodeId = pNodeId;
         this.typeId = typeId;
-        this.isDirectory = isDirectory;
         this.typeName = typeName;
         this.createTimeStamp = createTimeStamp;
         this.createTimeText = createTimeText;
         this.lastModifyTimeStamp = lastModifyTimeStamp;
         this.lastModifyTimeText = lastModifyTimeText;
+        this.isReadOnly = isReadOnly;
         this.fileLength = fileLength;
+        this.isDirectory = isDirectory;
+        this.isValid = isValid;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -217,10 +235,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
-            if(this.isValid != r.isValid)
-            {
-                return false;
-            }
             if(this.id != r.id)
             {
                 if(this.id == null || r.id == null || !this.id.equals(r.id))
@@ -243,10 +257,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
                 }
             }
             if(this.typeId != r.typeId)
-            {
-                return false;
-            }
-            if(this.isDirectory != r.isDirectory)
             {
                 return false;
             }
@@ -279,7 +289,19 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.isReadOnly != r.isReadOnly)
+            {
+                return false;
+            }
             if(this.fileLength != r.fileLength)
+            {
+                return false;
+            }
+            if(this.isDirectory != r.isDirectory)
+            {
+                return false;
+            }
+            if(this.isValid != r.isValid)
             {
                 return false;
             }
@@ -294,18 +316,19 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::SimpleNodeDTO");
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isDirectory);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeText);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isReadOnly);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isDirectory);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
         return h_;
     }
 
@@ -325,34 +348,36 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeBool(this.isValid);
         ostr.writeString(this.id);
         ostr.writeString(this.name);
         ostr.writeString(this.pNodeId);
         ostr.writeShort(this.typeId);
-        ostr.writeBool(this.isDirectory);
         ostr.writeString(this.typeName);
         ostr.writeLong(this.createTimeStamp);
         ostr.writeString(this.createTimeText);
         ostr.writeLong(this.lastModifyTimeStamp);
         ostr.writeString(this.lastModifyTimeText);
+        ostr.writeBool(this.isReadOnly);
         ostr.writeLong(this.fileLength);
+        ostr.writeBool(this.isDirectory);
+        ostr.writeBool(this.isValid);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.isValid = istr.readBool();
         this.id = istr.readString();
         this.name = istr.readString();
         this.pNodeId = istr.readString();
         this.typeId = istr.readShort();
-        this.isDirectory = istr.readBool();
         this.typeName = istr.readString();
         this.createTimeStamp = istr.readLong();
         this.createTimeText = istr.readString();
         this.lastModifyTimeStamp = istr.readLong();
         this.lastModifyTimeText = istr.readString();
+        this.isReadOnly = istr.readBool();
         this.fileLength = istr.readLong();
+        this.isDirectory = istr.readBool();
+        this.isValid = istr.readBool();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, SimpleNodeDTO v)
@@ -407,5 +432,5 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     private static final SimpleNodeDTO _nullMarshalValue = new SimpleNodeDTO();
 
-    public static final long serialVersionUID = 2058521091L;
+    public static final long serialVersionUID = -213390760L;
 }

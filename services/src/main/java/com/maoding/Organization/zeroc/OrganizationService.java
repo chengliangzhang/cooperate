@@ -22,6 +22,10 @@ package com.maoding.Organization.zeroc;
 
 public interface OrganizationService extends com.zeroc.Ice.Object
 {
+    java.util.List<OrganizationDTO> listOrganizationByUserId(String userId, com.zeroc.Ice.Current current);
+
+    java.util.List<OrganizationDTO> listOrganizationForCurrent(com.zeroc.Ice.Current current);
+
     java.util.List<CompanyDTO> listCompanyByUserId(String userId, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
@@ -47,6 +51,31 @@ public interface OrganizationService extends com.zeroc.Ice.Object
         return "::zeroc::OrganizationService";
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listOrganizationByUserId(OrganizationService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_userId;
+        iceP_userId = istr.readString();
+        inS.endReadParams();
+        java.util.List<OrganizationDTO> ret = obj.listOrganizationByUserId(iceP_userId, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        OrganizationListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listOrganizationForCurrent(OrganizationService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        java.util.List<OrganizationDTO> ret = obj.listOrganizationForCurrent(current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        OrganizationListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listCompanyByUserId(OrganizationService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
@@ -67,7 +96,9 @@ public interface OrganizationService extends com.zeroc.Ice.Object
         "ice_ids",
         "ice_isA",
         "ice_ping",
-        "listCompanyByUserId"
+        "listCompanyByUserId",
+        "listOrganizationByUserId",
+        "listOrganizationForCurrent"
     };
 
     @Override
@@ -101,6 +132,14 @@ public interface OrganizationService extends com.zeroc.Ice.Object
             case 4:
             {
                 return _iceD_listCompanyByUserId(this, in, current);
+            }
+            case 5:
+            {
+                return _iceD_listOrganizationByUserId(this, in, current);
+            }
+            case 6:
+            {
+                return _iceD_listOrganizationForCurrent(this, in, current);
             }
         }
 

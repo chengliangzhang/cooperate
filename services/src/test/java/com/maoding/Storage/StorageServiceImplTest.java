@@ -23,9 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +44,10 @@ public class StorageServiceImplTest {
     private static final String testUploadLocalFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer\\upload_test.txt";
     private static final String testDownloadLocalFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer\\upload_test_downloading.txt";
     private static final String testDir = "testForStorageService";
+    
+    private static final Integer CALL_METHOD_LOCAL = 0;
+    private static final Integer CALL_METHOD_ICE = 1;
+    private static final Integer CALL_METHOD_POST = 2;
 
     @Autowired
     private StorageService storageService;
@@ -55,25 +57,26 @@ public class StorageServiceImplTest {
     private FileServicePrx fileServicePrx = FileServiceImpl.getInstance();
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
+    private Integer callServiceMethod = CALL_METHOD_LOCAL;
 
     /** 重命名及移动节点 */
     @Test
     public void testMoveNode() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/123");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createNode(request,null);
         request.setFullName("/456");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createNode(request,null);
         request.setFullName("/456/789/321");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createNode(request,null);
         request.setFullName("/456/789/654");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createNode(request,null);
         request.setFullName("/456/789/987");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createNode(request,null);
         Assert.assertTrue(storageService.moveNode("\\456\\789","\\789",null));
         Assert.assertNotNull(storageService.getSimpleNodeInfo("/789",null));
@@ -87,14 +90,14 @@ public class StorageServiceImplTest {
         for (int i=1; i<6; i++) {
             CreateNodeRequestDTO request = new CreateNodeRequestDTO();
             request.setFullName("\\" + name + ((i<2) ? "" : " (" + i + ")"));
-            request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+            request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
             Assert.assertNotNull(storageService.createNode(request,null));
             String subname = "\\" + name + ((i<2) ? "" : " (" + i + ")");
             for (int j=0; j<i; j++){
                 subname += "\\" + name + ((i<2) ? "" : " (" + i + ")");
                 System.out.println(subname);
                 request.setFullName(subname);
-                request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+                request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
                 Assert.assertNotNull(storageService.createNode(request,null));
             }
         }
@@ -108,7 +111,7 @@ public class StorageServiceImplTest {
         request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
         storageService.createNode(request,null);
         request.setFullName("/x1/x11/x112");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createNode(request,null);
         Assert.assertTrue(storageService.deleteNode("\\x1\\x11\\x111",true,null));
         Assert.assertNotNull(storageService.getSimpleNodeInfo("\\x1",null));
@@ -130,7 +133,7 @@ public class StorageServiceImplTest {
     public void testGetDirInfo() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/a/b/d");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createNode(request,null);
         Assert.assertTrue(storageServicePrx.getDirNodeInfo("\\a\\b\\d").getIsValid());
         Assert.assertFalse(storageServicePrx.getDirNodeInfo("\\abcde").getIsValid());
@@ -141,7 +144,7 @@ public class StorageServiceImplTest {
     public void testListSubNode() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/a/b/d");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createNode(request,null);
         request.setFullName("/a.txt");
         request.setTypeId(StorageConst.STORAGE_FILE_TYPE_UNKNOWN);
@@ -203,10 +206,10 @@ public class StorageServiceImplTest {
     public void testIsDirectoryEmpty() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/c1");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createDirectory(request, null);
         request.setFullName("/c11");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createDirectory(request, null);
         Assert.assertTrue(storageService.isDirectoryEmpty("/c1",null));
         Assert.assertFalse(storageService.isDirectoryEmpty("/",null));
@@ -218,7 +221,7 @@ public class StorageServiceImplTest {
     public void testGetSimpleNodeInfo() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/c/d/e");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         storageService.createDirectory(request,null);
         SimpleNodeDTO dto = storageService.getSimpleNodeInfo("/c/d",null);
         Assert.assertNotNull(dto);
@@ -261,7 +264,7 @@ public class StorageServiceImplTest {
         for(int i=0; i<10; i++){
             fn += "t";
             request.setFullName(fn);
-            request.setTypeId(StorageConst.STORAGE_UNKNOWN_TYPE);
+            request.setTypeId(StorageConst.STORAGE_NODE_TYPE_UNKNOWN);
             String nodeId = storageService.createFile(request,null);
             Assert.assertNotNull(nodeId);
         }
@@ -272,7 +275,7 @@ public class StorageServiceImplTest {
     public void testCreateDirectory() throws Exception {
         CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
         request.setFullName("//a");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_SYS);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_SYS_DIR);
         String nodeId = storageService.createDirectory(request,null);
         request.setPNodeId(nodeId);
         request.setFullName("b");
@@ -284,7 +287,7 @@ public class StorageServiceImplTest {
     public void testDeleteDirectory() throws Exception {
         CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
         request.setFullName("m/n");
-        request.setTypeId(StorageConst.STORAGE_DIR_TYPE_USER);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
         String fullPath = storageService.createDirectory(request,null);
         String nodeId = StringUtils.getLastSplit(fullPath,StringUtils.SPLIT_ID);
         boolean b = storageService.deleteDirectory(nodeId,true,null);
@@ -364,7 +367,9 @@ public class StorageServiceImplTest {
     @Test
     public void testUploadForAliyun() throws Exception {
         fileServerType = FileServerConst.FILE_SERVER_TYPE_ALIYUN;
-        upload(FileServerConst.FILE_SERVER_MODE_OSS);
+        callServiceMethod = CALL_METHOD_LOCAL;
+//        upload(FileServerConst.FILE_SERVER_MODE_OSS);
+        uploadByPath(testUploadLocalFile,"",FileServerConst.FILE_SERVER_MODE_DEFAULT);
     }
 
     @Test
@@ -436,6 +441,25 @@ public class StorageServiceImplTest {
     }
 
     //申请上传
+    public void uploadByPath(String localFile,String userId,Integer requestMode) throws Exception{
+        //获取文件服务器接口
+        FileRequestDTO fileRequestDTO = null;
+        if (CALL_METHOD_LOCAL.equals(callServiceMethod)) {
+            fileService.setFileServerType(fileServerType,null);
+            String path = StringUtils.getLastSplit(localFile,":");
+            fileRequestDTO = storageService.requestUploadByPath(path,userId,null);
+        }
+        Assert.assertNotNull (fileRequestDTO);
+
+        //上传文件内容
+        uploadContent(new File(localFile), fileRequestDTO);
+
+        //通告上传完毕
+        if (CALL_METHOD_LOCAL.equals(callServiceMethod)) {
+            storageService.finishUploadById(fileRequestDTO.getId(), userId, null);
+        }
+    }
+
     public void upload(Integer mode, String localFile, String scope, String key) throws Exception {
         //初始化协同文件
         CooperateFileDTO fileInfo = createCooperateFileDTO(localFile, scope, key);
@@ -631,16 +655,35 @@ public class StorageServiceImplTest {
         return fileService.download(request, null);
     }
 
+    UploadRequestDTO createUploadRequestDTOByPosSize(FileRequestDTO fileRequestDTO, RandomAccessFile in, long pos, int size) throws Exception {
+        Map<String, String> requestParams = fileRequestDTO.getParams();
+
+        //建立上传内容
+        FileMultipartDTO multipart = BeanUtils.createFrom(requestParams, FileMultipartDTO.class);
+        byte[] bytes = new byte[size];
+        multipart.setScope(fileRequestDTO.getScope());
+        multipart.setKey(fileRequestDTO.getKey());
+        multipart.setPos(pos);
+        in.seek(pos);
+        multipart.setSize(in.read(bytes));
+        multipart.setData(bytes);
+
+        //建立上传申请对象
+        UploadRequestDTO request = BeanUtils.createFrom(requestParams, UploadRequestDTO.class);
+        request.setMultipart(multipart);
+
+        return request;
+    }
+    
     //实际上传文件内容
     public void uploadContent(File f, FileRequestDTO fileRequestDTO) throws Exception {
-        assert ((f != null) && (fileRequestDTO != null));
-        final Integer chunkSize = 10;//FileServerConst.DEFAULT_CHUNK_SIZE;
-        Integer chunkCount = (int) (f.length() / (long) chunkSize) + 1;
-        FileChannel fc = null;
-        //上传文件
-        for (Integer chunkId = 0; chunkId < chunkCount; chunkId++) {
-            //建立上传申请
-            UploadRequestDTO request = createUploadRequestDTO(f, fileRequestDTO, chunkId, chunkSize, chunkCount);
+        long length = f.length();
+        int size = 1000;
+
+        RandomAccessFile in = new RandomAccessFile(f, "r");
+        for (long pos=0; pos<length; pos+=size){
+            UploadRequestDTO request = createUploadRequestDTOByPosSize(fileRequestDTO, in, pos, size);
+
             //发送上传申请
             UploadResultDTO result = null;
             if (FileServerConst.FILE_SERVER_MODE_LOCAL.equals(fileRequestDTO.getMode()))
@@ -650,20 +693,11 @@ public class StorageServiceImplTest {
             else if (FileServerConst.FILE_SERVER_MODE_HTTP_POST.equals(fileRequestDTO.getMode()))
                 result = uploadContentByPost(fileRequestDTO, request);
             else if (FileServerConst.FILE_SERVER_MODE_OSS.equals(fileRequestDTO.getMode())) {
-                if (f.exists() && f.isFile()) {
-                    FileInputStream fis = new FileInputStream(f);
-                    fc = fis.getChannel();
-                }
-                if (fc.size() < 102400) {
-                    request.setChunkCount(1);
-                    result = uploadContentByOSS(fileRequestDTO, request);
-                    break;
-                }
                 result = uploadContentByOSS(fileRequestDTO, request);
             }
-            assert result != null;
             Assert.assertEquals((Integer) 0, (Integer) result.getStatus());
         }
+        in.close();
     }
 
 
@@ -683,30 +717,32 @@ public class StorageServiceImplTest {
     }
 
     public UploadResultDTO uploadContentByPost(FileRequestDTO fileRequestDTO, UploadRequestDTO request) throws Exception {
-        //补全参数
-        if (fileRequestDTO == null) fileRequestDTO = new FileRequestDTO();
-        if (fileRequestDTO.getUrl() == null) fileRequestDTO.setUrl("http://localhost:8087/FileServer/upload");
-        Map<String, String> requestParams = fileRequestDTO.getParams();
-        String uploadContentType = ((requestParams != null) && (requestParams.containsKey("contentType"))) ? uploadContentType = requestParams.get("contentType") : "application/json";
-        String setFileServerTypeUrl = ((requestParams != null) && (requestParams.containsKey("fileServerTypeUrl"))) ? uploadContentType = requestParams.get("fileServerTypeUrl") : "http://localhost:8087/FileServer/setFileServerType";
-        String setFileServerTypeContentType = ((requestParams != null) && (requestParams.containsKey("fileServerTypeContentType"))) ? uploadContentType = requestParams.get("fileServerTypeContentType") : "application/x-www-form-urlencoded";
-
         //初始化post客户端
         CloseableHttpClient client = HttpClients.createDefault();
 
-        //选择文件服务器类型
-        Map<String, Integer> params = new HashMap<>();
-        params.put("type", fileServerType);
-        CloseableHttpResponse r1 = HttpUtils.postData(client, setFileServerTypeUrl,
-                setFileServerTypeContentType, params);
-        Assert.assertEquals(200, r1.getStatusLine().getStatusCode());
-        r1.close();
+        //如果是自定义服务先选择文件服务器类型
+        if (FileServerConst.FILE_SERVER_TYPE_LOCAL.equals(fileServerType)) {
+            final String FILE_SERVER_TYPE_SET_URL = "http://localhost:8087/FileServer/setFileServerType";
+            final String FILE_SERVER_TYPE_SET_PARAM_CONTENT_TYPE = "application/x-www-form-urlencoded";
+            final String FILE_SERVER_TYPE_SET_PARAM_NAME = "type";
+            Map<String, Integer> params = new HashMap<>();
+            params.put(FILE_SERVER_TYPE_SET_PARAM_NAME, fileServerType);
+            CloseableHttpResponse rt = HttpUtils.postData(client, FILE_SERVER_TYPE_SET_URL,
+                    FILE_SERVER_TYPE_SET_PARAM_CONTENT_TYPE, params);
+            Assert.assertEquals(200, rt.getStatusLine().getStatusCode());
+            rt.close();
+        }
 
         //发送上传申请
-        CloseableHttpResponse r2 = HttpUtils.postData(client, fileRequestDTO.getUrl(), uploadContentType, request);
-        Assert.assertEquals(200, r2.getStatusLine().getStatusCode());
-        String resultString = EntityUtils.toString(r2.getEntity());
-        r2.close();
+        final String DEFAULT_CONTENT_TYPE = "application/json";
+        String url = fileRequestDTO.getUrl() + "/" + fileRequestDTO.getKey() + "?partNumber=" + 1 + "&uploadId=" + fileRequestDTO.getParams().get("uploadId");
+        Map<String,String> params = fileRequestDTO.getParams();
+        Integer size = request.getMultipart().getSize();
+        params.put("Content-Length",size.toString());
+        CloseableHttpResponse r = HttpUtils.postData(client, url, DEFAULT_CONTENT_TYPE, params);
+        Assert.assertEquals(200, r.getStatusLine().getStatusCode());
+        String resultString = EntityUtils.toString(r.getEntity());
+        r.close();
 
         client.close();
 

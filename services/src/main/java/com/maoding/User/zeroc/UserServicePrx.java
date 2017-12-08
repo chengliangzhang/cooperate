@@ -22,34 +22,195 @@ package com.maoding.User.zeroc;
 
 public interface UserServicePrx extends com.zeroc.Ice.ObjectPrx
 {
-    default UserRelatedDTO getUserRelatedInfo(String userId)
+    default boolean login(LoginDTO loginInfo)
     {
-        return getUserRelatedInfo(userId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return login(loginInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default UserRelatedDTO getUserRelatedInfo(String userId, java.util.Map<String, String> context)
+    default boolean login(LoginDTO loginInfo, java.util.Map<String, String> context)
     {
-        return _iceI_getUserRelatedInfoAsync(userId, context, true).waitForResponse();
+        return _iceI_loginAsync(loginInfo, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<UserRelatedDTO> getUserRelatedInfoAsync(String userId)
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> loginAsync(LoginDTO loginInfo)
     {
-        return _iceI_getUserRelatedInfoAsync(userId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_loginAsync(loginInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<UserRelatedDTO> getUserRelatedInfoAsync(String userId, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> loginAsync(LoginDTO loginInfo, java.util.Map<String, String> context)
     {
-        return _iceI_getUserRelatedInfoAsync(userId, context, false);
+        return _iceI_loginAsync(loginInfo, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<UserRelatedDTO> _iceI_getUserRelatedInfoAsync(String iceP_userId, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_loginAsync(LoginDTO iceP_loginInfo, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<UserRelatedDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getUserRelatedInfo", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "login", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     LoginDTO.ice_write(ostr, iceP_loginInfo);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default AccountDTO getCurrent()
+    {
+        return getCurrent(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default AccountDTO getCurrent(java.util.Map<String, String> context)
+    {
+        return _iceI_getCurrentAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<AccountDTO> getCurrentAsync()
+    {
+        return _iceI_getCurrentAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<AccountDTO> getCurrentAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_getCurrentAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<AccountDTO> _iceI_getCurrentAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<AccountDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getCurrent", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     AccountDTO ret;
+                     ret = AccountDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean setOrganization(String organizationId)
+    {
+        return setOrganization(organizationId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean setOrganization(String organizationId, java.util.Map<String, String> context)
+    {
+        return _iceI_setOrganizationAsync(organizationId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setOrganizationAsync(String organizationId)
+    {
+        return _iceI_setOrganizationAsync(organizationId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setOrganizationAsync(String organizationId, java.util.Map<String, String> context)
+    {
+        return _iceI_setOrganizationAsync(organizationId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_setOrganizationAsync(String iceP_organizationId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setOrganization", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_organizationId);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean setDuty(String dutyId)
+    {
+        return setDuty(dutyId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean setDuty(String dutyId, java.util.Map<String, String> context)
+    {
+        return _iceI_setDutyAsync(dutyId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setDutyAsync(String dutyId)
+    {
+        return _iceI_setDutyAsync(dutyId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setDutyAsync(String dutyId, java.util.Map<String, String> context)
+    {
+        return _iceI_setDutyAsync(dutyId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_setDutyAsync(String iceP_dutyId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setDuty", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_dutyId);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default java.util.List<DutyDTO> listDutyByUserId(String userId)
+    {
+        return listDutyByUserId(userId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<DutyDTO> listDutyByUserId(String userId, java.util.Map<String, String> context)
+    {
+        return _iceI_listDutyByUserIdAsync(userId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<DutyDTO>> listDutyByUserIdAsync(String userId)
+    {
+        return _iceI_listDutyByUserIdAsync(userId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<DutyDTO>> listDutyByUserIdAsync(String userId, java.util.Map<String, String> context)
+    {
+        return _iceI_listDutyByUserIdAsync(userId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<DutyDTO>> _iceI_listDutyByUserIdAsync(String iceP_userId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<DutyDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listDutyByUserId", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      ostr.writeString(iceP_userId);
                  }, istr -> {
-                     UserRelatedDTO ret;
-                     ret = UserRelatedDTO.ice_read(istr);
+                     java.util.List<DutyDTO> ret;
+                     ret = DutyListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default java.util.List<DutyDTO> listDutyForCurrent()
+    {
+        return listDutyForCurrent(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<DutyDTO> listDutyForCurrent(java.util.Map<String, String> context)
+    {
+        return _iceI_listDutyForCurrentAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<DutyDTO>> listDutyForCurrentAsync()
+    {
+        return _iceI_listDutyForCurrentAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<DutyDTO>> listDutyForCurrentAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_listDutyForCurrentAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<DutyDTO>> _iceI_listDutyForCurrentAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<DutyDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listDutyForCurrent", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     java.util.List<DutyDTO> ret;
+                     ret = DutyListHelper.read(istr);
                      return ret;
                  });
         return f;

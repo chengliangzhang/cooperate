@@ -1,13 +1,13 @@
 #pragma once
 #include <Common.ice>
 #include <FileServer.ice>
+#include <User.ice>
 
 [["java:package:com.maoding.Storage"]]
 module zeroc {
-
     ["java:getset"]
-    struct FileNodeDTO { //协同文件信息
-        bool isValid; //节点是否有效
+    struct SimpleNodeDTO { //节点信息（统一目录和文件信息）
+        //节点、文件、目录通用信息
         string id; //节点编号（树节点编号）
         string name; //节点名称（树节点名称或文件名称）
         string pNodeId; //父节点编号
@@ -17,25 +17,74 @@ module zeroc {
         string createTimeText; //节点建立时间文字
         long lastModifyTimeStamp; //节点最后修改时间
         string lastModifyTimeText; //节点最后修改时间文字
-        long fileLength; //文件长度
+        bool isReadOnly; //节点是否只读（当前用户没有修改权限，或文件被其他用户锁定）
+        long fileLength; //节点长度
 
-        string fullName; //协同文件全路径名
-        string fileChecksum; //协同文件校验和
-        string fileVersion; //协同文件版本号
-        string lastModifyAddress; //最后上传的地址
-        short syncModeId; //同步模式，0-手动同步，1-自动更新
-        string syncModeName; //同步模式文字说明
+        //节点特有信息
+        bool isDirectory; //节点是否目录
+
+        //以下属性有可能被删除
+        bool isValid; //节点是否有效
+    };
+    ["java:type:java.util.ArrayList<SimpleNodeDTO>"] sequence<SimpleNodeDTO> SimpleNodeList;
+
+    ["java:getset"]
+    struct NodeDTO { //节点完整信息
+        SimpleNodeDTO node; //本节点信息
+        SimpleNodeList subNodeList; //子节点列表
+    };
+
+    ["java:getset"]
+    struct FileNodeDTO { //文件信息
+        //节点、文件、目录通用信息
+        string id; //节点编号（树节点编号）
+        string name; //节点名称（树节点名称或文件名称）
+        string pNodeId; //父节点编号
+        short typeId; //节点类别编号
+        string typeName; //节点类别名字
+        long createTimeStamp; //节点建立时间
+        string createTimeText; //节点建立时间文字
+        long lastModifyTimeStamp; //节点最后修改时间
+        string lastModifyTimeText; //节点最后修改时间文字
+        bool isReadOnly; //节点是否只读（当前用户没有修改权限，或文件被其他用户锁定）
+        long fileLength; //节点长度
+
+        //文件节点特有信息
+        string fullName; //文件全路径名
+        string fileChecksum; //文件校验和
+        string fileVersion; //文件版本号
         short fileTypeId; //文件类型
         string fileTypeName; //文件类型文字说明
-        bool locking; //是否锁定，false-不锁定，true-锁定
-        string localFile; //本地文件路径，包含文件名
         string creatorDutyId; //协同创建者的用户职责id
         string creatorDutyName; //协同创建者名字
-        string lastModifyDutyId; //最近更改协同的用户职责id
-        string lastModifyDutyName; //最近更改协同的用户名字
+        string lastModifyDutyId; //最后更改协同的用户职责id
+        string lastModifyDutyName; //最后更改协同的用户名字
+        string organizationId; //文件所属公司id
+        string organizationName; //文件所属公司名称
+        short syncModeId; //同步模式
+        string syncModeName; //同步模式文字说明
+        string lastModifyAddress; //最后上传的地址
+
+        //以下属性有可能被删除
+        bool isValid; //节点是否有效
+        bool locking; //是否锁定，false-不锁定，true-锁定
+        string localFile; //本地文件路径，包含文件名
     };
     ["java:type:java.util.ArrayList<FileNodeDTO>"] sequence<FileNodeDTO> RelatedFileList;
 
+    struct FileReviewNodeDTO { //文件校审信息
+        string id; //文件校审记录编号
+        string fileId; //文件节点编号
+        string dutyId; //校审人员职责编号
+        string dutyName; //校审人员名字
+        short actionId; //校审动作编号
+        string actionName; //校审动作名称
+        long actionTimeStamp; //校审时间
+        string actionTimeText; //校审时间文字
+    };
+    ["java:type:java.util.ArrayList<FileReviewNodeDTO>"] sequence<FileReviewNodeDTO> FileReviewList;
+
+    //此接口有可能被清除
     struct FileVersionDTO { //版本信息
         string id; //协同文件编号
         string nodeId; //协同文件树节点编号
@@ -51,10 +100,16 @@ module zeroc {
     };
     ["java:type:java.util.ArrayList<FileVersionDTO>"] sequence<FileVersionDTO> FileVersionList;
 
+
     ["java:getset"]
-    struct CooperateFileDTO { //主协同文件信息
-        //本节点信息
-        FileNodeDTO node; //本协同文件信息
+    struct CooperateFileDTO { //文件完整信息
+        FileNodeDTO node; //本文件信息
+        RelatedFileList referenceFileList; //参考文件列表
+        FileReviewList reviewList; //文件校审记录列表
+
+
+        //以下属性有可能被删除
+        FileVersionList versionList; //历史版本列表
         string id; //协同文件编号
         string name; //协同文件名
         string nodeId; //协同文件树节点编号
@@ -80,16 +135,12 @@ module zeroc {
         string lastModifyDutyName; //最近更改协同的用户名字
         long lastModifyTimeStamp; //最近更改协同的时间
         string lastModifyTimeText; //最近更改协同的时间文字
-
-        //子节点信息
-        RelatedFileList referenceFileList; //参考文件列表
-        FileVersionList versionList; //历史版本列表
     };
     ["java:type:java.util.ArrayList<CooperateFileDTO>"] sequence<CooperateFileDTO> CooperateFileList;
 
     ["java:getset"]
     struct CooperateDirNodeDTO {
-        bool isValid; //节点是否有效
+        //节点、文件、目录通用信息
         string id; //节点编号（树节点编号）
         string name; //节点名称（树节点名称或文件名称）
         string pNodeId; //父节点编号
@@ -99,19 +150,26 @@ module zeroc {
         string createTimeText; //节点建立时间文字
         long lastModifyTimeStamp; //节点最后修改时间
         string lastModifyTimeText; //节点最后修改时间文字
-        long fileLength; //文件长度
+        bool isReadOnly; //节点是否只读（当前用户没有修改权限，或文件被其他用户锁定）
+        long fileLength; //节点长度
 
-        string fullName; //目录全路径
+        //目录节点特有信息
+        bool isSystem; //是否系统目录
+        bool isBackup; //是否备份目录
+        string fullName; //目录全路径名
+        string projectId; //所属项目id
+        string projectName; //所属项目名字
+        string taskId; //所属任务id
+        string taskName; //所属任务名字
+
+        //以下属性有可能被删除
+        bool isValid; //节点是否有效
         string userId; //协同目录所属用户id
         string dutyId; //协同目录所属用户的职责id
         string userName; //所属用户名字
         string aliasName; //所属用户别名
         string orgId; //所属组织id
         string orgName; //所属组织名字
-        string projectId; //所属项目id
-        string projectName; //所属项目名字
-        string taskId; //所属任务id
-        string taskName; //所属任务名字
     };
     ["java:type:java.util.ArrayList<CooperateDirNodeDTO>"] sequence<CooperateDirNodeDTO> CooperateDirList;
 
@@ -134,28 +192,6 @@ module zeroc {
         short typeId; //目标节点类型Id
     };
 
-    ["java:getset"]
-    struct SimpleNodeDTO { //节点信息简化版（统一目录和文件信息）
-        bool isValid; //节点是否有效
-        string id; //节点编号（树节点编号）
-        string name; //节点名称（树节点名称或文件名称）
-        string pNodeId; //父节点编号
-        short typeId; //节点类别编号
-        bool isDirectory; //节点是否目录
-        string typeName; //节点类别名字
-        long createTimeStamp; //节点建立时间
-        string createTimeText; //节点建立时间文字
-        long lastModifyTimeStamp; //节点最后修改时间
-        string lastModifyTimeText; //节点最后修改时间文字
-        long fileLength; //文件长度
-    };
-    ["java:type:java.util.ArrayList<SimpleNodeDTO>"] sequence<SimpleNodeDTO> SimpleNodeList;
-
-    ["java:getset"]
-    struct NodeDTO { //节点内容
-        SimpleNodeDTO node; //本节点信息
-        SimpleNodeList subNodeList; //子节点列表
-    };
 
     ["java:getset"]
     struct NodeModifyRequestDTO { //节点更改申请
@@ -190,6 +226,12 @@ module zeroc {
     };
 
     interface StorageService {
+        //正在实现的接口
+        SimpleNodeList listRootNodeForCurrent(); //获取当前账号的根节点
+        SimpleNodeList listRootNodeForAccount(AccountDTO account); //获取指定账号的根节点
+        SimpleNodeList listSubNodeForAccount(string path,AccountDTO account); //获取指定账号的指定路径的一层子节点
+
+        //已经实现的接口
         string createNode(CreateNodeRequestDTO request); //创建树节点,返回目录树节点id
         SimpleNodeDTO getSimpleNodeInfo(string path); //根据路径获取单节点简单信息
         bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
@@ -201,12 +243,15 @@ module zeroc {
         bool isLocking(string path); //通过路径判断树节点是否被锁
         CooperateDirNodeDTO getDirNodeInfo(string path); //获取目录节点详细信息
         FileNodeDTO getFileNodeInfo(string path); //获取目录节点详细信息
-        SimpleNodeList listSubNode(string path); //获取一层子节点简单信息
         bool moveNode(string oldPath,string newPath); //移动或更名节点
         bool deleteNode(string path,bool force); //删除树节点
         FileRequestDTO requestUploadByPath(string path,string userId); //申请上传文件
         FileRequestDTO requestDownloadByPath(string path,string userId); //申请下载文件
         void finishUploadById(string nodeId,string userId); //通告上传文件结束
+
+
+        //有可能被删除的接口
+        SimpleNodeList listSubNode(string path); //获取一层子节点简单信息
 
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool lockFile(string fileId,string address); //锁定文件

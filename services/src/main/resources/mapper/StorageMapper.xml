@@ -1,19 +1,92 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maoding.Storage.Dao.StorageDao" >
+    <sql id="maoding_company">
+        SELECT
+            concat('/',if(lvl0_c.company_name is null,'',concat(lvl0_c.company_name,'/')),
+                lvl0_a.path) as path,
+            0 as deleted,null as last_modify_duty_id,10 as type_id,0 as file_length
+            lvl0_a.id,lvl0_a.create_time,lvl0_a.last_modify_time,lvl0_a.last_modify_user_id,lvl0_a.pid,lvl0_a.node_name
+        FROM
+            (
+                SELECT
+                    lvl1_b.org_pid AS path_pid,
+                    concat(if(lvl1_c.company_name is null,'',concat(lvl1_c.company_name,'/')),
+                        lvl1_a.path) as path,
+                    lvl1_a.id,lvl1_a.create_time,lvl1_a.last_modify_time,lvl1_a.last_modify_user_id,lvl1_a.pid,lvl1_a.node_name
+                FROM
+                    (
+                        SELECT
+                            lvl2_b.org_pid as path_pid,
+                            concat(if(lvl2_c.company_name is null,'',concat(lvl2_c.company_name,'/')),lvl2_a.company_name) as path,
+                            lvl2_a.id,
+                            lvl2_a.status as deleted,
+                            lvl2_a.create_date as create_time,
+                            ifnull(lvl2_a.update_date,lvl2_a.create_date) as last_modify_time,
+                            ifnull(lvl2_a.update_by,lvl2_a.create_by) as last_modify_user_id,
+                            lvl2_b.org_pid AS pid,
+                            lvl2_a.company_name as node_name
+                        FROM
+                        maoding_web_company lvl2_a
+                        LEFT JOIN maoding_web_company_relation lvl2_b ON (lvl2_b.org_id = lvl2_a.id)
+                        LEFT JOIN maoding_web_company lvl2_c ON (lvl2_b.org_pid = lvl2_c.id)
+                    ) lvl1_a
+                LEFT JOIN maoding_web_company_relation lvl1_b ON (lvl1_b.org_id = lvl1_a.path_pid)
+                LEFT JOIN maoding_web_company lvl1_c ON (lvl1_b.org_pid = lvl1_c.id)
+            ) lvl0_a
+        LEFT JOIN maoding_web_company_relation lvl0_b ON (lvl0_b.org_id = lvl0_a.path_pid)
+        LEFT JOIN maoding_web_company lvl0_c ON (lvl0_b.org_pid = lvl0_c.id)
+    </sql>
 
-    <sql id="SimpleDirUnion">
-        maoding_storage a
-        inner join maoding_storage_dir b on (a.id = b.id)
-        left join maoding_const c on (a.type_id = c.value_id)
+    <sql id="SimpleNodeFieldList">
+        ,a.id
+        ,a.node_name as name
+        ,a.pid as p_node_id
+        ,a.type_id
+        ,b.content as type_name
+        ,unix_timestamp(ifnull(a.create_time,0)) as create_time_stamp
+        ,date_format(ifnull(a.create_time,0),'%Y-%m-%a %T') as create_time_text
+        ,unix_timestamp(ifnull(a.last_modify_time,0)) as last_modify_time_stamp
+        ,date_format(ifnull(a.last_modify_time,0),'%Y-%m-%a %T') as last_modify_time_text
+        ,if(a.type_id >= 10,1,0) as is_directory,
+        ,a.file_length
     </sql>
-    
-    <sql id="FixConditionForSimpleDirUnion">
-        (a.deleted = 0) and (b.deleted = 0) and (c.classic_id = 14) 
+
+    <sql id="CompanyUnion">
+        (<include refid="maoding_company"/>) a
+        left join maoding_const b on (a.type_id = b.value_id)
     </sql>
+
+    <sql id="FixConditionForCompanyUnion">
+        (b.classic_id = 14)
+    </sql>
+
+    <select id="listSubNodeOfCompany" parameterType="com.maoding.Storage.Dto.QuerySubNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeFieldList"/>
+        from <include refid="CompanyUnion"/>
+            inner join (<include refid="maoding_company"/>) x on (a.pid = x.id)
+        where <include refid="FixConditionForCompanyUnion"/>
+            <if test="parentPath != null">
+                and (x.path = #{parentPath})
+            </if>
+    </select>
+
+    <select id="listRootNodeOfCompany" parameterType="com.maoding.Storage.Dto.QuerySubNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeFieldList"/>
+        from <include refid="CompanyUnion"/>
+        where <include refid="FixConditionForCompanyUnion"/>
+            and (a.pid is null)
+    </select>
+
+    <select id="listSubNodeOfProject" parameterType="com.maoding.Storage.Dto.QuerySubNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+
+    </select>
+
+    <select id="listSubNode" parameterType="com.maoding.Storage.Dto.QuerySubNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+
+    </select>
 
     <sql id="CommonDirFieldList">
-        1 as is_valid
         ,a.id
         ,a.node_name as name
         ,a.pid as p_node_id
@@ -24,6 +97,16 @@
         ,unix_timestamp(ifnull(a.last_modify_time,0)) as last_modify_time_stamp
         ,date_format(ifnull(a.last_modify_time,0),'%Y-%m-%a %T') as last_modify_time_text
         ,if(a.type_id >= 3,1,0) as is_directory
+    </sql>
+
+    <sql id="SimpleDirUnion">
+        maoding_storage a
+        inner join maoding_storage_dir b on (a.id = b.id)
+        left join maoding_const c on (a.type_id = c.value_id)
+    </sql>
+    
+    <sql id="FixConditionForSimpleDirUnion">
+        (a.deleted = 0) and (b.deleted = 0) and (c.classic_id = 14) 
     </sql>
 
     <sql id="SimpleNodeFieldListForSimpleDirUnion">

@@ -7,13 +7,21 @@ package com.maoding.Const;
  * 描    述 :
  */
 public interface StorageConst {
+    //节点类型
     final static Short STORAGE_NODE_TYPE_MAIN_FILE = 0;
     final static Short STORAGE_NODE_TYPE_REF_FILE = 1;
-    final static Short STORAGE_NODE_TYPE_HIS_FILE = 2;
-    final static Short STORAGE_DIR_TYPE_SYS = 3;
-    final static Short STORAGE_DIR_TYPE_USER = 4;
+    final static Short STORAGE_NODE_TYPE_SYS_DIR = 10;
+    final static Short STORAGE_NODE_TYPE_BACK_DIR = 11;
+    final static Short STORAGE_NODE_TYPE_USER_DIR = 12;
+    //文件类型
     final static Short STORAGE_FILE_TYPE_UNKNOWN = 0;
-    final static Short STORAGE_UNKNOWN_TYPE = 99;
-    final static Short STORAGE_FILE_TYPE_MAX = STORAGE_NODE_TYPE_HIS_FILE;
-    final static Short STORAGE_DIR_TYPE_MAX = STORAGE_DIR_TYPE_USER;
+    //默认值
+    final static Short STORAGE_NODE_TYPE_FILE_MIN = STORAGE_NODE_TYPE_MAIN_FILE;
+    final static Short STORAGE_NODE_TYPE_FILE_MAX = STORAGE_NODE_TYPE_REF_FILE;
+    final static Short STORAGE_NODE_TYPE_DIR_MIN = STORAGE_NODE_TYPE_SYS_DIR;
+    final static Short STORAGE_NODE_TYPE_DIR_MAX = STORAGE_NODE_TYPE_USER_DIR;
+
+    //以下常量有可能被删除
+    final static Short STORAGE_NODE_TYPE_UNKNOWN = 99;
+    final static Short STORAGE_NODE_TYPE_HIS_FILE = 2;
 }

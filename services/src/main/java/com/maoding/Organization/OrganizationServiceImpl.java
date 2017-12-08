@@ -3,10 +3,7 @@ package com.maoding.Organization;
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Organization.Dao.OrganizationDao;
 import com.maoding.Organization.Entity.OrganizationEntity;
-import com.maoding.Organization.zeroc.CompanyDTO;
-import com.maoding.Organization.zeroc.OrganizationService;
-import com.maoding.Organization.zeroc.OrganizationServicePrx;
-import com.maoding.Organization.zeroc._OrganizationServicePrxI;
+import com.maoding.Organization.zeroc.*;
 import com.maoding.Utils.BeanUtils;
 import com.zeroc.Ice.Current;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +30,16 @@ public class OrganizationServiceImpl extends BaseLocalService<OrganizationServic
     }
     public static OrganizationServicePrx getInstance() {
         return getInstance(null);
+    }
+
+    @Override
+    public List<OrganizationDTO> listOrganizationByUserId(String userId, Current current) {
+        return null;
+    }
+
+    @Override
+    public List<OrganizationDTO> listOrganizationForCurrent(Current current) {
+        return null;
     }
 
     @Override

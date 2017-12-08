@@ -42,7 +42,7 @@ public final class CooperateDirListHelper
     {
         final java.util.List<CooperateDirNodeDTO> v;
         v = new java.util.ArrayList<CooperateDirNodeDTO>();
-        final int len0 = istr.readAndCheckSeqSize(44);
+        final int len0 = istr.readAndCheckSeqSize(47);
         for(int i0 = 0; i0 < len0; i0++)
         {
             CooperateDirNodeDTO elem;

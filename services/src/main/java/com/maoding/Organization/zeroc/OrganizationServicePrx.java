@@ -22,6 +22,70 @@ package com.maoding.Organization.zeroc;
 
 public interface OrganizationServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default java.util.List<OrganizationDTO> listOrganizationByUserId(String userId)
+    {
+        return listOrganizationByUserId(userId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<OrganizationDTO> listOrganizationByUserId(String userId, java.util.Map<String, String> context)
+    {
+        return _iceI_listOrganizationByUserIdAsync(userId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<OrganizationDTO>> listOrganizationByUserIdAsync(String userId)
+    {
+        return _iceI_listOrganizationByUserIdAsync(userId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<OrganizationDTO>> listOrganizationByUserIdAsync(String userId, java.util.Map<String, String> context)
+    {
+        return _iceI_listOrganizationByUserIdAsync(userId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<OrganizationDTO>> _iceI_listOrganizationByUserIdAsync(String iceP_userId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<OrganizationDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listOrganizationByUserId", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_userId);
+                 }, istr -> {
+                     java.util.List<OrganizationDTO> ret;
+                     ret = OrganizationListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default java.util.List<OrganizationDTO> listOrganizationForCurrent()
+    {
+        return listOrganizationForCurrent(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<OrganizationDTO> listOrganizationForCurrent(java.util.Map<String, String> context)
+    {
+        return _iceI_listOrganizationForCurrentAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<OrganizationDTO>> listOrganizationForCurrentAsync()
+    {
+        return _iceI_listOrganizationForCurrentAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<OrganizationDTO>> listOrganizationForCurrentAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_listOrganizationForCurrentAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<OrganizationDTO>> _iceI_listOrganizationForCurrentAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<OrganizationDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listOrganizationForCurrent", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     java.util.List<OrganizationDTO> ret;
+                     ret = OrganizationListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default java.util.List<CompanyDTO> listCompanyByUserId(String userId)
     {
         return listCompanyByUserId(userId, com.zeroc.Ice.ObjectPrx.noExplicitContext);

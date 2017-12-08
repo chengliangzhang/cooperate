@@ -2,6 +2,7 @@ package com.maoding.Storage.Dao;
 
 import com.maoding.Base.BaseDao;
 import com.maoding.Storage.Dto.QueryByPidAndNameDTO;
+import com.maoding.Storage.Dto.QuerySubNodeDTO;
 import com.maoding.Storage.Entity.StorageEntity;
 import com.maoding.Storage.zeroc.*;
 import org.apache.ibatis.annotations.Param;
@@ -17,6 +18,14 @@ import java.util.List;
  */
 @Repository
 public interface StorageDao extends BaseDao<StorageEntity> {
+    /** 正在实现的接口 */
+    List<SimpleNodeDTO> listRootNodeOfCompany(QuerySubNodeDTO query);
+
+    List<SimpleNodeDTO> listSubNodeOfCompany(QuerySubNodeDTO query);
+    List<SimpleNodeDTO> listSubNodeOfProject(QuerySubNodeDTO query);
+    List<SimpleNodeDTO> listSubNode(QuerySubNodeDTO query);
+
+    /** 已经实现的接口 */
     /** 查找文件服务器上的文件使用记录 */
     List<CooperateFileDTO> listFileByScopeAndKey(CooperationQueryDTO query);
     /** 获取本目录信息 */
@@ -57,4 +66,6 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     int updateParentPath(@Param("oldPath") String oldPath,@Param("newPath") String newPath);
     /** 根据全路径名获取最靠近的节点 */
     StorageEntity selectByRedundancyPath(String path);
+
+    /** 有可能被删除的接口 */
 }
