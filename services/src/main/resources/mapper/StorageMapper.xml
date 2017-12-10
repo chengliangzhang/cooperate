@@ -78,7 +78,7 @@
         ,unix_timestamp(ifnull(ifnull(task.update_date,task.create_date),0)) as last_modify_time_stamp
         ,date_format(ifnull(ifnull(task.update_date,task.create_date),0),'%Y-%m-%a %T') as last_modify_time_text
         ,ifnull(task.update_by,task.create_by) as last_modify_user_id
-        ,1 as is_read_only
+        ,if(task.task_type=0,0,1) as is_read_only
         ,0 as file_length
         ,1 as is_directory
     </sql>

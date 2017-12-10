@@ -151,7 +151,7 @@ public class StorageServiceImplTest {
         Assert.assertNotNull(node);
         list = storageService.listSubNodeByPathForAccount(account,"/项目20171115",null);
         Assert.assertNotNull(list);
-        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/初步设计",null);
+        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期",null);
         Assert.assertNotNull(list);
     }
 
