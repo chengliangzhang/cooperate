@@ -2,7 +2,7 @@ package com.maoding.Storage.Dao;
 
 import com.maoding.Base.BaseDao;
 import com.maoding.Storage.Dto.QueryByPidAndNameDTO;
-import com.maoding.Storage.Dto.QuerySubNodeDTO;
+import com.maoding.Storage.Dto.QueryNodeDTO;
 import com.maoding.Storage.Entity.StorageEntity;
 import com.maoding.Storage.zeroc.*;
 import org.apache.ibatis.annotations.Param;
@@ -19,12 +19,14 @@ import java.util.List;
 @Repository
 public interface StorageDao extends BaseDao<StorageEntity> {
     /** 正在实现的接口 */
-    List<SimpleNodeDTO> listRootNodeOfCompany(QuerySubNodeDTO query);
-    List<SimpleNodeDTO> listRootNodeOfProject(QuerySubNodeDTO query);
+    List<SimpleNodeDTO> listProjectRootNode(QueryNodeDTO query);
+    SimpleNodeDTO getProjectNode(QueryNodeDTO query);
+    SimpleNodeDTO getTaskNode(QueryNodeDTO query);
+    List<SimpleNodeDTO> listTaskSubNode(QueryNodeDTO query);
 
-    List<SimpleNodeDTO> listSubNodeOfCompany(QuerySubNodeDTO query);
-    List<SimpleNodeDTO> listSubNodeOfProject(QuerySubNodeDTO query);
-    List<SimpleNodeDTO> listSubNode(QuerySubNodeDTO query);
+    /** 准备实现的接口 */
+    List<SimpleNodeDTO> listCompanyRootNode(QueryNodeDTO query);
+    List<SimpleNodeDTO> listCompanySubNode(QueryNodeDTO query);
 
     /** 已经实现的接口 */
     /** 查找文件服务器上的文件使用记录 */

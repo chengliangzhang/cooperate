@@ -47,16 +47,16 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.name = name;
     }
 
-    public String pNodeId;
+    public String pid;
 
-    public String getPNodeId()
+    public String getPid()
     {
-        return pNodeId;
+        return pid;
     }
 
-    public void setPNodeId(String pNodeId)
+    public void setPid(String pid)
     {
-        this.pNodeId = pNodeId;
+        this.pid = pid;
     }
 
     public short typeId;
@@ -81,6 +81,42 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
     public void setTypeName(String typeName)
     {
         this.typeName = typeName;
+    }
+
+    public short pTypeId;
+
+    public short getPTypeId()
+    {
+        return pTypeId;
+    }
+
+    public void setPTypeId(short pTypeId)
+    {
+        this.pTypeId = pTypeId;
+    }
+
+    public String pTypeName;
+
+    public String getPTypeName()
+    {
+        return pTypeName;
+    }
+
+    public void setPTypeName(String pTypeName)
+    {
+        this.pTypeName = pTypeName;
+    }
+
+    public String path;
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
     }
 
     public long createTimeStamp;
@@ -194,23 +230,41 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         return isValid;
     }
 
+    public String pNodeId;
+
+    public String getPNodeId()
+    {
+        return pNodeId;
+    }
+
+    public void setPNodeId(String pNodeId)
+    {
+        this.pNodeId = pNodeId;
+    }
+
     public SimpleNodeDTO()
     {
         this.id = "";
         this.name = "";
-        this.pNodeId = "";
+        this.pid = "";
         this.typeName = "";
+        this.pTypeName = "";
+        this.path = "";
         this.createTimeText = "";
         this.lastModifyTimeText = "";
+        this.pNodeId = "";
     }
 
-    public SimpleNodeDTO(String id, String name, String pNodeId, short typeId, String typeName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, boolean isDirectory, boolean isValid)
+    public SimpleNodeDTO(String id, String name, String pid, short typeId, String typeName, short pTypeId, String pTypeName, String path, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, boolean isDirectory, boolean isValid, String pNodeId)
     {
         this.id = id;
         this.name = name;
-        this.pNodeId = pNodeId;
+        this.pid = pid;
         this.typeId = typeId;
         this.typeName = typeName;
+        this.pTypeId = pTypeId;
+        this.pTypeName = pTypeName;
+        this.path = path;
         this.createTimeStamp = createTimeStamp;
         this.createTimeText = createTimeText;
         this.lastModifyTimeStamp = lastModifyTimeStamp;
@@ -219,6 +273,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.fileLength = fileLength;
         this.isDirectory = isDirectory;
         this.isValid = isValid;
+        this.pNodeId = pNodeId;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -249,9 +304,9 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.pNodeId != r.pNodeId)
+            if(this.pid != r.pid)
             {
-                if(this.pNodeId == null || r.pNodeId == null || !this.pNodeId.equals(r.pNodeId))
+                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
                 {
                     return false;
                 }
@@ -263,6 +318,24 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
             if(this.typeName != r.typeName)
             {
                 if(this.typeName == null || r.typeName == null || !this.typeName.equals(r.typeName))
+                {
+                    return false;
+                }
+            }
+            if(this.pTypeId != r.pTypeId)
+            {
+                return false;
+            }
+            if(this.pTypeName != r.pTypeName)
+            {
+                if(this.pTypeName == null || r.pTypeName == null || !this.pTypeName.equals(r.pTypeName))
+                {
+                    return false;
+                }
+            }
+            if(this.path != r.path)
+            {
+                if(this.path == null || r.path == null || !this.path.equals(r.path))
                 {
                     return false;
                 }
@@ -305,6 +378,13 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
             {
                 return false;
             }
+            if(this.pNodeId != r.pNodeId)
+            {
+                if(this.pNodeId == null || r.pNodeId == null || !this.pNodeId.equals(r.pNodeId))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
@@ -318,9 +398,12 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::SimpleNodeDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pTypeName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
@@ -329,6 +412,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isDirectory);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
         return h_;
     }
 
@@ -350,9 +434,12 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
     {
         ostr.writeString(this.id);
         ostr.writeString(this.name);
-        ostr.writeString(this.pNodeId);
+        ostr.writeString(this.pid);
         ostr.writeShort(this.typeId);
         ostr.writeString(this.typeName);
+        ostr.writeShort(this.pTypeId);
+        ostr.writeString(this.pTypeName);
+        ostr.writeString(this.path);
         ostr.writeLong(this.createTimeStamp);
         ostr.writeString(this.createTimeText);
         ostr.writeLong(this.lastModifyTimeStamp);
@@ -361,15 +448,19 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         ostr.writeLong(this.fileLength);
         ostr.writeBool(this.isDirectory);
         ostr.writeBool(this.isValid);
+        ostr.writeString(this.pNodeId);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.id = istr.readString();
         this.name = istr.readString();
-        this.pNodeId = istr.readString();
+        this.pid = istr.readString();
         this.typeId = istr.readShort();
         this.typeName = istr.readString();
+        this.pTypeId = istr.readShort();
+        this.pTypeName = istr.readString();
+        this.path = istr.readString();
         this.createTimeStamp = istr.readLong();
         this.createTimeText = istr.readString();
         this.lastModifyTimeStamp = istr.readLong();
@@ -378,6 +469,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.fileLength = istr.readLong();
         this.isDirectory = istr.readBool();
         this.isValid = istr.readBool();
+        this.pNodeId = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, SimpleNodeDTO v)
@@ -432,5 +524,5 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     private static final SimpleNodeDTO _nullMarshalValue = new SimpleNodeDTO();
 
-    public static final long serialVersionUID = -213390760L;
+    public static final long serialVersionUID = 417127394L;
 }

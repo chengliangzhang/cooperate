@@ -5,6 +5,7 @@ import com.maoding.Const.StorageConst;
 import com.maoding.FileServer.FileServiceImpl;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Storage.zeroc.*;
+import com.maoding.User.zeroc.AccountDTO;
 import com.maoding.Utils.BeanUtils;
 import com.maoding.Utils.HttpUtils;
 import com.maoding.Utils.JsonUtils;
@@ -142,7 +143,16 @@ public class StorageServiceImplTest {
     /** 获取当前用户一层子节点信息 */
     @Test
     public void testListRootNodeForCurrent() throws Exception {
-
+        AccountDTO account = new AccountDTO();
+        account.setId("d5edc119ae3247bd8c9fe8bcbe57f700");
+        List<SimpleNodeDTO> list = storageService.listRootNodeForAccount(account,null);
+        Assert.assertNotNull(list);
+        SimpleNodeDTO node = storageService.getNodeByPathForAccount(account,"/项目20171115",null);
+        Assert.assertNotNull(node);
+        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115",null);
+        Assert.assertNotNull(list);
+        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/初步设计",null);
+        Assert.assertNotNull(list);
     }
 
     /** 获取一层子节点信息 */

@@ -1,11 +1,124 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maoding.Storage.Dao.StorageDao" >
+    <sql id="ProjectNodeTables">
+        maoding_web_project project
+        inner join maoding_web_project_member member on (member.project_id= project.id)
+    </sql>
+
+    <sql id="SimpleNodeForProjectNodeTables">
+        project.id
+        ,project.project_name as name
+        ,11 as type_id
+        ,'项目目录' as type_name
+        ,null AS pid
+        ,11 AS p_type_id
+        ,'项目目录' as p_type_name
+        ,concat('/',project.project_name) as path
+        ,unix_timestamp(ifnull(project.create_date,0)) as create_time_stamp
+        ,date_format(ifnull(project.create_date,0),'%Y-%m-%a %T') as create_time_text
+        ,unix_timestamp(ifnull(ifnull(project.update_date,project.create_date),0)) as last_modify_time_stamp
+        ,date_format(ifnull(ifnull(project.update_date,project.create_date),0),'%Y-%m-%a %T') as last_modify_time_text
+        ,ifnull(project.update_by,project.create_by) as last_modify_user_id
+        ,1 as is_read_only
+        ,0 as file_length
+        ,1 as is_directory
+    </sql>
+
+    <sql id="ProjectNodeTablesFilter">
+        (project.pstatus = '0')
+        and (member.deleted = 0)
+    </sql>
+
+    <select id="getProjectNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForProjectNodeTables"/>
+        from <include refid="ProjectNodeTables"/>
+        where <include refid="ProjectNodeTablesFilter"/>
+            <if test="nodeId != null">
+                and (project.id = #{nodeId})
+            </if>
+            <if test="userId != null">
+                and (member.account_id = #{userId})
+            </if>
+            <if test="path != null">
+                and (concat('/',project.project_name) = #{path})
+            </if>
+        group by project.id
+    </select>
+
+    <select id="listProjectRootNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForProjectNodeTables"/>
+        from <include refid="ProjectNodeTables"/>
+        where <include refid="ProjectNodeTablesFilter"/>
+            <if test="userId != null">
+                and (member.account_id = #{userId})
+            </if>
+        group by project.id
+    </select>
+
+    <sql id="TaskNodeTables">
+        maoding_web_project_task task
+        left join maoding_web_project_task task_parent ON (task_parent.id=task.task_pid)
+        inner join maoding_web_project project on ( task.project_id= project.id)
+    </sql>
+
+    <sql id="SimpleNodeForTaskNodeTables">
+        task.id
+        ,task.task_name as name
+        ,12 as type_id
+        ,'任务目录' as type_name
+        ,ifnull(task.task_pid,task.project_id) AS pid
+        ,if(task.task_pid is null,11,12) AS p_type_id
+        ,if(task.task_pid is null,'项目目录','任务目录') AS p_type_name
+        ,concat('/',project.project_name,'/',
+            if(task.task_pid is null,'',concat(GROUP_CONCAT(task_parent.task_name order by length(task_parent.task_path) SEPARATOR '/'),'/')),
+            task.task_name) as path
+        ,unix_timestamp(ifnull(task.create_date,0)) as create_time_stamp
+        ,date_format(ifnull(task.create_date,0),'%Y-%m-%a %T') as create_time_text
+        ,unix_timestamp(ifnull(ifnull(task.update_date,task.create_date),0)) as last_modify_time_stamp
+        ,date_format(ifnull(ifnull(task.update_date,task.create_date),0),'%Y-%m-%a %T') as last_modify_time_text
+        ,ifnull(task.update_by,task.create_by) as last_modify_user_id
+        ,1 as is_read_only
+        ,0 as file_length
+        ,1 as is_directory
+    </sql>
+
+    <sql id="TaskNodeTablesFilter">
+        (task.task_status = '0')
+        and (task.task_type in (0,1,2))
+    </sql>
+
+    <select id="getTaskNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        <if test="path != null">
+            select * from (
+        </if>
+            select <include refid="SimpleNodeForTaskNodeTables"/>
+            from <include refid="TaskNodeTables"/>
+            where<include refid="TaskNodeTablesFilter"/>
+                <if test="nodeId != null">
+                    and (task.id = #{nodeId})
+                </if>
+            group by task.id
+        <if test="path != null">
+            ) node where node.path = #{path}
+        </if>
+    </select>
+
+    <select id="listTaskSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForTaskNodeTables"/>
+        from <include refid="TaskNodeTables"/>
+        where <include refid="TaskNodeTablesFilter"/>
+            <if test="nodeId != null">
+                and (ifnull(task.task_pid,task.project_id) = #{nodeId})
+            </if>
+        group by task.id
+    </select>
+
     <sql id="maoding_company">
         SELECT
             concat('/',if(lvl0_c.company_name is null,'',concat(lvl0_c.company_name,'/')),
                 lvl0_a.path) as path,
-            0 as deleted,null as last_modify_duty_id,10 as type_id,0 as file_length
+            0 as deleted,null as last_modify_duty_id,13 as type_id,0 as file_length
             lvl0_a.id,lvl0_a.create_time,lvl0_a.last_modify_time,lvl0_a.last_modify_user_id,lvl0_a.pid,lvl0_a.node_name
         FROM
             (
@@ -20,16 +133,16 @@
                             lvl2_b.org_pid as path_pid,
                             concat(if(lvl2_c.company_name is null,'',concat(lvl2_c.company_name,'/')),lvl2_a.company_name) as path,
                             lvl2_a.id,
-                            lvl2_a.status as deleted,
                             lvl2_a.create_date as create_time,
                             ifnull(lvl2_a.update_date,lvl2_a.create_date) as last_modify_time,
                             ifnull(lvl2_a.update_by,lvl2_a.create_by) as last_modify_user_id,
                             lvl2_b.org_pid AS pid,
                             lvl2_a.company_name as node_name
                         FROM
-                        maoding_web_company lvl2_a
-                        LEFT JOIN maoding_web_company_relation lvl2_b ON (lvl2_b.org_id = lvl2_a.id)
-                        LEFT JOIN maoding_web_company lvl2_c ON (lvl2_b.org_pid = lvl2_c.id)
+                            maoding_web_company lvl2_a
+                            LEFT JOIN maoding_web_company_relation lvl2_b ON (lvl2_b.org_id = lvl2_a.id)
+                            LEFT JOIN maoding_web_company lvl2_c ON (lvl2_b.org_pid = lvl2_c.id)
+                        where lvl2_a.status = '0'
                     ) lvl1_a
                 LEFT JOIN maoding_web_company_relation lvl1_b ON (lvl1_b.org_id = lvl1_a.path_pid)
                 LEFT JOIN maoding_web_company lvl1_c ON (lvl1_b.org_pid = lvl1_c.id)

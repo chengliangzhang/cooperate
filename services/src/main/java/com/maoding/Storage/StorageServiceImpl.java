@@ -10,7 +10,7 @@ import com.maoding.Storage.Dao.StorageDao;
 import com.maoding.Storage.Dao.StorageDirDao;
 import com.maoding.Storage.Dao.StorageFileDao;
 import com.maoding.Storage.Dto.QueryByPidAndNameDTO;
-import com.maoding.Storage.Dto.QuerySubNodeDTO;
+import com.maoding.Storage.Dto.QueryNodeDTO;
 import com.maoding.Storage.Entity.StorageDirEntity;
 import com.maoding.Storage.Entity.StorageEntity;
 import com.maoding.Storage.Entity.StorageFileEntity;
@@ -64,39 +64,85 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public List<SimpleNodeDTO> listRootNodeForCurrent(Current current) {
-        //获取当前用户信息
-        AccountDTO accountDTO = userService.getCurrent(current);
-        return listRootNodeForAccount(accountDTO,current);
+        return listRootNodeForAccount(userService.getCurrent(current),current);
     }
 
     @Override
     public List<SimpleNodeDTO> listRootNodeForAccount(AccountDTO account, Current current) {
-        QuerySubNodeDTO query = new QuerySubNodeDTO();
-        query.addUserId(account.getId());
-        List<SimpleNodeDTO> companyList = storageDao.listRootNodeOfCompany(query);
-        List<SimpleNodeDTO> projectList = storageDao.listRootNodeOfProject(query);
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setUserId(account.getId());
+        List<SimpleNodeDTO> projectList = storageDao.listProjectRootNode(query);
+//        List<SimpleNodeDTO> companyList = storageDao.listRootNodeOfCompany(query);
+        return projectList;
+    }
+
+    @Override
+    public SimpleNodeDTO getNodeByPathForAccount(AccountDTO account, String path, Current current) {
+        path = StringUtils.formatPath(path);
+        if (StringUtils.isEmpty(path) || StringUtils.isSame(StringUtils.SPLIT_PATH,path)) {
+            return null;
+        }
+
+        QueryNodeDTO query = new QueryNodeDTO();
+//        query.setUserId(account.getId());
+        query.setPath(path);
+        SimpleNodeDTO node = storageDao.getProjectNode(query);
+        if (node == null) node = storageDao.getTaskNode(query);
+        return node;
+    }
+
+    @Override
+    public SimpleNodeDTO getNodeByPathForCurrent(String path, Current current) {
+        return getNodeByPathForAccount(userService.getCurrent(current),path,current);
+    }
+
+    @Override
+    public SimpleNodeDTO getNodeByIdForAccount(AccountDTO account, String id, Current current) {
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setNodeId(id);
+        SimpleNodeDTO node = storageDao.getProjectNode(query);
+        return node;
+    }
+
+    @Override
+    public SimpleNodeDTO getNodeByIdForCurrent(String id, Current current) {
+        return getNodeByIdForAccount(userService.getCurrent(current),id,current);
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listSubNodeByPNodeIdForAccount(AccountDTO account, String pid, Current current) {
         return null;
     }
 
     @Override
-    public List<SimpleNodeDTO> listSubNodeForCurrent(String path, Current current) {
-        //获取当前用户信息
-        AccountDTO accountDTO = userService.getCurrent(current);
-        return listSubNodeForAccount(StringUtils.SPLIT_PATH,accountDTO,current);
+    public List<SimpleNodeDTO> listSubNodeByPNodeIdForCurrent(String path, Current current) {
+        return null;
     }
 
     @Override
-    public List<SimpleNodeDTO> listSubNodeForAccount(String path, AccountDTO account, Current current) {
+    public List<SimpleNodeDTO> listSubNodeByPathForAccount(AccountDTO account, String path, Current current) {
         path = StringUtils.formatPath(path);
         if (StringUtils.isEmpty(path) || StringUtils.isSame(StringUtils.SPLIT_PATH,path)) {
             return listRootNodeForAccount(account,current);
         }
 
-        QuerySubNodeDTO query = new QuerySubNodeDTO();
-        query.addUserId(account.getId());
-        query.setParentPath(path);
+        SimpleNodeDTO parent = getNodeByPathForAccount(account,path,current);
+        assert (parent != null);
 
-        return null;
+        QueryNodeDTO query = new QueryNodeDTO();
+//        query.setUserId(account.getId());
+        query.setNodeId(parent.getId());
+
+        List<SimpleNodeDTO> taskList = storageDao.listTaskSubNode(query);
+
+        return taskList;
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listSubNodeByPathForCurrent(String path, Current current) {
+        //获取当前用户信息
+        AccountDTO accountDTO = userService.getCurrent(current);
+        return listSubNodeByPathForAccount(accountDTO,path,current);
     }
 
     @Override
@@ -240,8 +286,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public SimpleNodeDTO getSimpleNodeInfo(String path, Current current) {
-        //获取当前用户
-        return storageDao.getSimpleNodeByPath(StringUtils.formatPath(path));
+        return getNodeByPathForCurrent(path,current);
     }
 
     @Override

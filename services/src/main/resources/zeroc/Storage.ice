@@ -10,9 +10,12 @@ module zeroc {
         //节点、文件、目录通用信息
         string id; //节点编号（树节点编号）
         string name; //节点名称（树节点名称或文件名称）
-        string pNodeId; //父节点编号
+        string pid; //父节点编号
         short typeId; //节点类别编号
         string typeName; //节点类别名字
+        short pTypeId; //父节点类别编号
+        string pTypeName; //父节点类别名字
+        string path; //节点全路径
         long createTimeStamp; //节点建立时间
         string createTimeText; //节点建立时间文字
         long lastModifyTimeStamp; //节点最后修改时间
@@ -25,6 +28,7 @@ module zeroc {
 
         //以下属性有可能被删除
         bool isValid; //节点是否有效
+        string pNodeId; //父节点编号
     };
     ["java:type:java.util.ArrayList<SimpleNodeDTO>"] sequence<SimpleNodeDTO> SimpleNodeList;
 
@@ -227,14 +231,21 @@ module zeroc {
 
     interface StorageService {
         //正在实现的接口
-        SimpleNodeList listRootNodeForCurrent(); //获取当前账号的根节点
         SimpleNodeList listRootNodeForAccount(AccountDTO account); //获取指定账号的根节点
-        SimpleNodeList listSubNodeForCurrent(string path); //获取指定账号的指定路径的一层子节点
-        SimpleNodeList listSubNodeForAccount(string path,AccountDTO account); //获取指定账号的指定路径的一层子节点
+        SimpleNodeList listRootNodeForCurrent(); //获取当前账号的根节点
+        SimpleNodeDTO getNodeByPathForAccount(AccountDTO account,string path); //根据路径和指定用户获取指定节点信息
+        SimpleNodeDTO getNodeByPathForCurrent(string path); //根据路径获取当前用户指定节点信息
+        SimpleNodeDTO getNodeByIdForAccount(AccountDTO account,string id); //根据id获取指定用户可看到的指定节点信息
+        SimpleNodeDTO getNodeByIdForCurrent(string id); //根据id获取当前用户可看到的指定节点信息
+        SimpleNodeList listSubNodeByPathForAccount(AccountDTO account,string path); //获取指定用户指定路径的一层子节点
+        SimpleNodeList listSubNodeByPathForCurrent(string path); //获取当前用户指定路径的一层子节点
+        SimpleNodeList listSubNodeByPNodeIdForAccount(AccountDTO account,string pid); //获取指定用户指定节点的一层子节点
+        SimpleNodeList listSubNodeByPNodeIdForCurrent(string path); //获取当前用户指定节点的一层子节点
+
 
         //已经实现的接口
         string createNode(CreateNodeRequestDTO request); //创建树节点,返回目录树节点id
-        SimpleNodeDTO getSimpleNodeInfo(string path); //根据路径获取单节点简单信息
+
         bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
         bool setFileLength(string path,long fileLength); //调整文件大小
         bool canBeDeleted(string path); //判断节点是否可被删除
@@ -253,6 +264,7 @@ module zeroc {
 
         //有可能被删除的接口
         SimpleNodeList listSubNode(string path); //获取一层子节点简单信息
+        SimpleNodeDTO getSimpleNodeInfo(string path); //根据路径获取单节点简单信息
 
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool lockFile(string fileId,string address); //锁定文件

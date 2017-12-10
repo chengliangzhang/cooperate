@@ -209,9 +209,15 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,14,'存储节点类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,0,'主文件',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,1,'参考文件',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,10,'系统目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,11,'备份目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,12,'用户目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,10,'未定义系统目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,11,'项目目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,12,'任务目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,13,'组织目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,14,'通告目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,15,'报销目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,16,'备份目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,17,'回收站目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,18,'用户目录',null);
 
   delete from maoding_const where classic_id = 11;
 	-- 共享类型
