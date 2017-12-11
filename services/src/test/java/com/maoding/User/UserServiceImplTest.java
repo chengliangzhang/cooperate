@@ -40,8 +40,10 @@ public class UserServiceImplTest {
         loginDTO.setPassword("123456");
         Assert.assertTrue(userService.login(loginDTO,null));
         Assert.assertEquals("5ffee496fa814ea4b6d26a9208b00a0b",userService.getCurrent(null).getId());
+        loginDTO.setCellphone("1");
+        loginDTO.setPassword("1");
         Assert.assertTrue(userServicePrx.login(loginDTO));
-        Assert.assertEquals("5ffee496fa814ea4b6d26a9208b00a0b",userServicePrx.getCurrent().getId());
+        Assert.assertEquals("41d244733ec54f09a255836637f2b21d",userServicePrx.getCurrent().getId());
     }
     /** for method: setOrganization(String organizationId, Current current) */ 
     @Test
