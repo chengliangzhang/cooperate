@@ -25,6 +25,8 @@ module zeroc {
 
         //节点特有信息
         bool isDirectory; //节点是否目录
+        bool isProjectDirectory; //节点是否项目目录
+        bool isTaskDirectory; //节点是否任务目录
 
         //以下属性有可能被删除
         bool isValid; //节点是否有效

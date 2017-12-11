@@ -23,6 +23,8 @@
         ,1 as is_read_only
         ,0 as file_length
         ,1 as is_directory
+        ,1 as is_project_directory
+        ,0 as is_task_directory
     </sql>
 
     <sql id="ProjectNodeTablesFilter">
@@ -81,6 +83,8 @@
         ,if(task.task_type=0,0,1) as is_read_only
         ,0 as file_length
         ,1 as is_directory
+        ,0 as is_project_directory
+        ,1 as is_task_directory
     </sql>
 
     <sql id="TaskNodeTablesFilter">

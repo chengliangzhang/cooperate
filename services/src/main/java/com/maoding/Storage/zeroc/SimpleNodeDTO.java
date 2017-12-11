@@ -213,6 +213,40 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         return isDirectory;
     }
 
+    public boolean isProjectDirectory;
+
+    public boolean getIsProjectDirectory()
+    {
+        return isProjectDirectory;
+    }
+
+    public void setIsProjectDirectory(boolean isProjectDirectory)
+    {
+        this.isProjectDirectory = isProjectDirectory;
+    }
+
+    public boolean isIsProjectDirectory()
+    {
+        return isProjectDirectory;
+    }
+
+    public boolean isTaskDirectory;
+
+    public boolean getIsTaskDirectory()
+    {
+        return isTaskDirectory;
+    }
+
+    public void setIsTaskDirectory(boolean isTaskDirectory)
+    {
+        this.isTaskDirectory = isTaskDirectory;
+    }
+
+    public boolean isIsTaskDirectory()
+    {
+        return isTaskDirectory;
+    }
+
     public boolean isValid;
 
     public boolean getIsValid()
@@ -255,7 +289,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.pNodeId = "";
     }
 
-    public SimpleNodeDTO(String id, String name, String pid, short typeId, String typeName, short pTypeId, String pTypeName, String path, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, boolean isDirectory, boolean isValid, String pNodeId)
+    public SimpleNodeDTO(String id, String name, String pid, short typeId, String typeName, short pTypeId, String pTypeName, String path, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, boolean isDirectory, boolean isProjectDirectory, boolean isTaskDirectory, boolean isValid, String pNodeId)
     {
         this.id = id;
         this.name = name;
@@ -272,6 +306,8 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.isReadOnly = isReadOnly;
         this.fileLength = fileLength;
         this.isDirectory = isDirectory;
+        this.isProjectDirectory = isProjectDirectory;
+        this.isTaskDirectory = isTaskDirectory;
         this.isValid = isValid;
         this.pNodeId = pNodeId;
     }
@@ -374,6 +410,14 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
             {
                 return false;
             }
+            if(this.isProjectDirectory != r.isProjectDirectory)
+            {
+                return false;
+            }
+            if(this.isTaskDirectory != r.isTaskDirectory)
+            {
+                return false;
+            }
             if(this.isValid != r.isValid)
             {
                 return false;
@@ -411,6 +455,8 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isReadOnly);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isDirectory);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isProjectDirectory);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskDirectory);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
         return h_;
@@ -447,6 +493,8 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         ostr.writeBool(this.isReadOnly);
         ostr.writeLong(this.fileLength);
         ostr.writeBool(this.isDirectory);
+        ostr.writeBool(this.isProjectDirectory);
+        ostr.writeBool(this.isTaskDirectory);
         ostr.writeBool(this.isValid);
         ostr.writeString(this.pNodeId);
     }
@@ -468,6 +516,8 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.isReadOnly = istr.readBool();
         this.fileLength = istr.readLong();
         this.isDirectory = istr.readBool();
+        this.isProjectDirectory = istr.readBool();
+        this.isTaskDirectory = istr.readBool();
         this.isValid = istr.readBool();
         this.pNodeId = istr.readString();
     }
@@ -524,5 +574,5 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     private static final SimpleNodeDTO _nullMarshalValue = new SimpleNodeDTO();
 
-    public static final long serialVersionUID = 417127394L;
+    public static final long serialVersionUID = -2122294278L;
 }
