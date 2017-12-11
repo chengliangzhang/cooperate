@@ -242,7 +242,9 @@ module zeroc {
         SimpleNodeList listSubNodeByPathForAccount(AccountDTO account,string path); //获取指定用户指定路径的一层子节点
         SimpleNodeList listSubNodeByPathForCurrent(string path); //获取当前用户指定路径的一层子节点
         SimpleNodeList listSubNodeByPNodeIdForAccount(AccountDTO account,string pid); //获取指定用户指定节点的一层子节点
-        SimpleNodeList listSubNodeByPNodeIdForCurrent(string path); //获取当前用户指定节点的一层子节点
+        SimpleNodeList listSubNodeByPNodeIdForCurrent(string pid); //获取当前用户指定节点的一层子节点
+        SimpleNodeList listSubNodeByPNodeIdAndPTypeIdForAccount(AccountDTO account,string pid,short pTypeId); //获取指定用户指定节点的一层子节点
+        SimpleNodeList listSubNodeByPNodeIdAndPTypeIdForCurrent(string pid,short pTypeId); //获取当前用户指定节点的一层子节点
 
 
         //已经实现的接口

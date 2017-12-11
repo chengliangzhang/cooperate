@@ -40,7 +40,11 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdForAccount(com.maoding.User.zeroc.AccountDTO account, String pid, com.zeroc.Ice.Current current);
 
-    java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdForCurrent(String path, com.zeroc.Ice.Current current);
+    java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdForCurrent(String pid, com.zeroc.Ice.Current current);
+
+    java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForAccount(com.maoding.User.zeroc.AccountDTO account, String pid, short pTypeId, com.zeroc.Ice.Current current);
+
+    java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForCurrent(String pid, short pTypeId, com.zeroc.Ice.Current current);
 
     String createNode(CreateNodeRequestDTO request, com.zeroc.Ice.Current current);
 
@@ -292,10 +296,44 @@ public interface StorageService extends com.zeroc.Ice.Object
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        String iceP_path;
-        iceP_path = istr.readString();
+        String iceP_pid;
+        iceP_pid = istr.readString();
         inS.endReadParams();
-        java.util.List<SimpleNodeDTO> ret = obj.listSubNodeByPNodeIdForCurrent(iceP_path, current);
+        java.util.List<SimpleNodeDTO> ret = obj.listSubNodeByPNodeIdForCurrent(iceP_pid, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SimpleNodeListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listSubNodeByPNodeIdAndPTypeIdForAccount(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        String iceP_pid;
+        short iceP_pTypeId;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_pid = istr.readString();
+        iceP_pTypeId = istr.readShort();
+        inS.endReadParams();
+        java.util.List<SimpleNodeDTO> ret = obj.listSubNodeByPNodeIdAndPTypeIdForAccount(iceP_account, iceP_pid, iceP_pTypeId, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SimpleNodeListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listSubNodeByPNodeIdAndPTypeIdForCurrent(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_pid;
+        short iceP_pTypeId;
+        iceP_pid = istr.readString();
+        iceP_pTypeId = istr.readShort();
+        inS.endReadParams();
+        java.util.List<SimpleNodeDTO> ret = obj.listSubNodeByPNodeIdAndPTypeIdForCurrent(iceP_pid, iceP_pTypeId, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         SimpleNodeListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
@@ -1018,6 +1056,8 @@ public interface StorageService extends com.zeroc.Ice.Object
         "listRootNodeForAccount",
         "listRootNodeForCurrent",
         "listSubNode",
+        "listSubNodeByPNodeIdAndPTypeIdForAccount",
+        "listSubNodeByPNodeIdAndPTypeIdForCurrent",
         "listSubNodeByPNodeIdForAccount",
         "listSubNodeByPNodeIdForCurrent",
         "listSubNodeByPathForAccount",
@@ -1214,81 +1254,89 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 40:
             {
-                return _iceD_listSubNodeByPNodeIdForAccount(this, in, current);
+                return _iceD_listSubNodeByPNodeIdAndPTypeIdForAccount(this, in, current);
             }
             case 41:
             {
-                return _iceD_listSubNodeByPNodeIdForCurrent(this, in, current);
+                return _iceD_listSubNodeByPNodeIdAndPTypeIdForCurrent(this, in, current);
             }
             case 42:
             {
-                return _iceD_listSubNodeByPathForAccount(this, in, current);
+                return _iceD_listSubNodeByPNodeIdForAccount(this, in, current);
             }
             case 43:
             {
-                return _iceD_listSubNodeByPathForCurrent(this, in, current);
+                return _iceD_listSubNodeByPNodeIdForCurrent(this, in, current);
             }
             case 44:
             {
-                return _iceD_lockFile(this, in, current);
+                return _iceD_listSubNodeByPathForAccount(this, in, current);
             }
             case 45:
             {
-                return _iceD_lockNode(this, in, current);
+                return _iceD_listSubNodeByPathForCurrent(this, in, current);
             }
             case 46:
             {
-                return _iceD_modifyFileInfo(this, in, current);
+                return _iceD_lockFile(this, in, current);
             }
             case 47:
             {
-                return _iceD_moveNode(this, in, current);
+                return _iceD_lockNode(this, in, current);
             }
             case 48:
             {
-                return _iceD_replaceFile(this, in, current);
+                return _iceD_modifyFileInfo(this, in, current);
             }
             case 49:
             {
-                return _iceD_requestDownload(this, in, current);
+                return _iceD_moveNode(this, in, current);
             }
             case 50:
             {
-                return _iceD_requestDownloadByPath(this, in, current);
+                return _iceD_replaceFile(this, in, current);
             }
             case 51:
             {
-                return _iceD_requestDownloadFromLast(this, in, current);
+                return _iceD_requestDownload(this, in, current);
             }
             case 52:
             {
-                return _iceD_requestUpload(this, in, current);
+                return _iceD_requestDownloadByPath(this, in, current);
             }
             case 53:
             {
-                return _iceD_requestUploadByPath(this, in, current);
+                return _iceD_requestDownloadFromLast(this, in, current);
             }
             case 54:
             {
-                return _iceD_restoreDirectory(this, in, current);
+                return _iceD_requestUpload(this, in, current);
             }
             case 55:
             {
-                return _iceD_restoreFile(this, in, current);
+                return _iceD_requestUploadByPath(this, in, current);
             }
             case 56:
             {
-                return _iceD_setFileLength(this, in, current);
+                return _iceD_restoreDirectory(this, in, current);
             }
             case 57:
             {
-                return _iceD_unlockFile(this, in, current);
+                return _iceD_restoreFile(this, in, current);
             }
             case 58:
             {
-                return _iceD_unlockNode(this, in, current);
+                return _iceD_setFileLength(this, in, current);
             }
             case 59:
+            {
+                return _iceD_unlockFile(this, in, current);
+            }
+            case 60:
+            {
+                return _iceD_unlockNode(this, in, current);
+            }
+            case 61:
             {
                 return _iceD_uploadCallback(this, in, current);
             }

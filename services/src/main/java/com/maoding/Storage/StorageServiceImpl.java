@@ -118,12 +118,27 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
         SimpleNodeDTO parent = getNodeByIdForAccount(account,pid,current);
         if (parent == null) return null;
-        return listSubNode(parent);
+        return listSubNodeByPNodeIdAndPTypeIdForAccount(account,pid,parent.getTypeId(),current);
     }
 
     @Override
-    public List<SimpleNodeDTO> listSubNodeByPNodeIdForCurrent(String path, Current current) {
-        return null;
+    public List<SimpleNodeDTO> listSubNodeByPNodeIdForCurrent(String pid, Current current) {
+        return listSubNodeByPNodeIdForAccount(userService.getCurrent(current),pid,current);
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForAccount(AccountDTO account, String pid, short pTypeId, Current current) {
+        QueryNodeDTO query = new QueryNodeDTO();
+//        query.setUserId(account.getId());
+        query.setNodeId(pid);
+
+        List<SimpleNodeDTO> taskList = storageDao.listTaskSubNode(query);
+        return taskList;
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForCurrent(String pid, short pTypeId, Current current) {
+        return listSubNodeByPNodeIdAndPTypeIdForAccount(userService.getCurrent(current),pid,pTypeId,current);
     }
 
     @Override
@@ -136,21 +151,12 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         SimpleNodeDTO parent = getNodeByPathForAccount(account,path,current);
         if (parent == null) return null;
 
-        return listSubNode(parent);
+        return listSubNodeByPNodeIdAndPTypeIdForAccount(account,parent.getId(),parent.getTypeId(),current);
     }
 
     @Override
     public List<SimpleNodeDTO> listSubNodeByPathForCurrent(String path, Current current) {
         return listSubNodeByPathForAccount(userService.getCurrent(current),path,current);
-    }
-
-    private List<SimpleNodeDTO> listSubNode(SimpleNodeDTO parent){
-        QueryNodeDTO query = new QueryNodeDTO();
-//        query.setUserId(account.getId());
-        query.setNodeId(parent.getId());
-
-        List<SimpleNodeDTO> taskList = storageDao.listTaskSubNode(query);
-        return taskList;
     }
 
     @Override

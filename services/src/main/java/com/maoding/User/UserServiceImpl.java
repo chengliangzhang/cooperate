@@ -30,7 +30,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     /** 同步方式获取业务接口代理对象 */
     public static UserServicePrx getInstance(String adapterName) {
         UserServiceImpl prx = new UserServiceImpl();
-        return prx.getServicePrx("StorageService",adapterName, UserServicePrx.class,_UserServicePrxI.class);
+        return prx.getServicePrx("UserService",adapterName, UserServicePrx.class,_UserServicePrxI.class);
     }
     public static UserServicePrx getInstance(){
         return getInstance(null);

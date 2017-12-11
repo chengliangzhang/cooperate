@@ -321,31 +321,100 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdForCurrent(String path)
+    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdForCurrent(String pid)
     {
-        return listSubNodeByPNodeIdForCurrent(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return listSubNodeByPNodeIdForCurrent(pid, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdForCurrent(String path, java.util.Map<String, String> context)
+    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdForCurrent(String pid, java.util.Map<String, String> context)
     {
-        return _iceI_listSubNodeByPNodeIdForCurrentAsync(path, context, true).waitForResponse();
+        return _iceI_listSubNodeByPNodeIdForCurrentAsync(pid, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdForCurrentAsync(String path)
+    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdForCurrentAsync(String pid)
     {
-        return _iceI_listSubNodeByPNodeIdForCurrentAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_listSubNodeByPNodeIdForCurrentAsync(pid, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdForCurrentAsync(String path, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdForCurrentAsync(String pid, java.util.Map<String, String> context)
     {
-        return _iceI_listSubNodeByPNodeIdForCurrentAsync(path, context, false);
+        return _iceI_listSubNodeByPNodeIdForCurrentAsync(pid, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> _iceI_listSubNodeByPNodeIdForCurrentAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> _iceI_listSubNodeByPNodeIdForCurrentAsync(String iceP_pid, java.util.Map<String, String> context, boolean sync)
     {
         com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listSubNodeByPNodeIdForCurrent", null, sync, null);
         f.invoke(true, context, null, ostr -> {
-                     ostr.writeString(iceP_path);
+                     ostr.writeString(iceP_pid);
+                 }, istr -> {
+                     java.util.List<SimpleNodeDTO> ret;
+                     ret = SimpleNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForAccount(com.maoding.User.zeroc.AccountDTO account, String pid, short pTypeId)
+    {
+        return listSubNodeByPNodeIdAndPTypeIdForAccount(account, pid, pTypeId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForAccount(com.maoding.User.zeroc.AccountDTO account, String pid, short pTypeId, java.util.Map<String, String> context)
+    {
+        return _iceI_listSubNodeByPNodeIdAndPTypeIdForAccountAsync(account, pid, pTypeId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdAndPTypeIdForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String pid, short pTypeId)
+    {
+        return _iceI_listSubNodeByPNodeIdAndPTypeIdForAccountAsync(account, pid, pTypeId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdAndPTypeIdForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String pid, short pTypeId, java.util.Map<String, String> context)
+    {
+        return _iceI_listSubNodeByPNodeIdAndPTypeIdForAccountAsync(account, pid, pTypeId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> _iceI_listSubNodeByPNodeIdAndPTypeIdForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, String iceP_pid, short iceP_pTypeId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listSubNodeByPNodeIdAndPTypeIdForAccount", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     ostr.writeString(iceP_pid);
+                     ostr.writeShort(iceP_pTypeId);
+                 }, istr -> {
+                     java.util.List<SimpleNodeDTO> ret;
+                     ret = SimpleNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForCurrent(String pid, short pTypeId)
+    {
+        return listSubNodeByPNodeIdAndPTypeIdForCurrent(pid, pTypeId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForCurrent(String pid, short pTypeId, java.util.Map<String, String> context)
+    {
+        return _iceI_listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(pid, pTypeId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(String pid, short pTypeId)
+    {
+        return _iceI_listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(pid, pTypeId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(String pid, short pTypeId, java.util.Map<String, String> context)
+    {
+        return _iceI_listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(pid, pTypeId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> _iceI_listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(String iceP_pid, short iceP_pTypeId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listSubNodeByPNodeIdAndPTypeIdForCurrent", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_pid);
+                     ostr.writeShort(iceP_pTypeId);
                  }, istr -> {
                      java.util.List<SimpleNodeDTO> ret;
                      ret = SimpleNodeListHelper.read(istr);

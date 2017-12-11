@@ -2,6 +2,7 @@ package com.maoding.User;
 
 import com.maoding.User.zeroc.LoginDTO;
 import com.maoding.User.zeroc.UserService;
+import com.maoding.User.zeroc.UserServicePrx;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,6 +30,8 @@ public class UserServiceImplTest {
     @Autowired
     UserService userService;
 
+    private UserServicePrx userServicePrx = UserServiceImpl.getInstance();
+
     /** for method: login(LoginDTO loginInfo, Current current) */
     @Test
     public void testLogin() throws Exception {
@@ -37,6 +40,8 @@ public class UserServiceImplTest {
         loginDTO.setPassword("123456");
         Assert.assertTrue(userService.login(loginDTO,null));
         Assert.assertEquals("5ffee496fa814ea4b6d26a9208b00a0b",userService.getCurrent(null).getId());
+        Assert.assertTrue(userServicePrx.login(loginDTO));
+        Assert.assertEquals("5ffee496fa814ea4b6d26a9208b00a0b",userServicePrx.getCurrent().getId());
     }
     /** for method: setOrganization(String organizationId, Current current) */ 
     @Test
