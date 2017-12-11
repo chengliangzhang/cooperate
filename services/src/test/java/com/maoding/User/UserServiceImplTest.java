@@ -30,7 +30,7 @@ public class UserServiceImplTest {
     @Autowired
     UserService userService;
 
-    private UserServicePrx userServicePrx = UserServiceImpl.getInstance();
+    private UserServicePrx userServicePrx = UserServiceImpl.getInstance("192.168.17.168");
 
     /** for method: login(LoginDTO loginInfo, Current current) */
     @Test
