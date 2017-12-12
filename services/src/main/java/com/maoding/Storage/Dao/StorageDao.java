@@ -19,10 +19,20 @@ import java.util.List;
 @Repository
 public interface StorageDao extends BaseDao<StorageEntity> {
     /** 正在实现的接口 */
-    Integer countProjectRootNode(QueryNodeDTO query);
-    Integer countTaskSubNode(QueryNodeDTO query);
-    Integer countStorageRootNode(QueryNodeDTO query);
-    Integer countStorageSubNode(QueryNodeDTO query);
+//    List<SimpleNodeDTO> listStorageRootNode2(QueryNodeDTO query);
+//    List<SimpleNodeDTO> listStorageSubNode2(QueryNodeDTO query);
+//    SimpleNodeDTO getStorageNode2(QueryNodeDTO query);
+//    SimpleNodeDTO getStorageNodeByRedundancyPath2(QueryNodeDTO query);
+    SimpleNodeDTO getTaskNodeByRedundancyPath2(QueryNodeDTO query);
+//    SimpleNodeDTO getProjectNodeByRedundancyPath2(QueryNodeDTO query);
+//    List<SimpleNodeDTO> listProjectRootNode2(QueryNodeDTO query);
+//    SimpleNodeDTO getProjectNode2(QueryNodeDTO query);
+    SimpleNodeDTO getTaskNode2(QueryNodeDTO query);
+    List<SimpleNodeDTO> listTaskSubNode2(QueryNodeDTO query);
+//    Integer countProjectRootNode2(QueryNodeDTO query);
+    Integer countTaskSubNode2(QueryNodeDTO query);
+//    Integer countStorageRootNode2(QueryNodeDTO query);
+//    Integer countStorageSubNode2(QueryNodeDTO query);
 
     /** 准备实现的接口 */
     List<SimpleNodeDTO> listCompanyRootNode(QueryNodeDTO query);
@@ -39,6 +49,11 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     SimpleNodeDTO getProjectNode(QueryNodeDTO query);
     SimpleNodeDTO getTaskNode(QueryNodeDTO query);
     List<SimpleNodeDTO> listTaskSubNode(QueryNodeDTO query);
+    Integer countProjectRootNode(QueryNodeDTO query);
+    Integer countTaskSubNode(QueryNodeDTO query);
+    Integer countStorageRootNode(QueryNodeDTO query);
+    Integer countStorageSubNode(QueryNodeDTO query);
+
     /** 查找文件服务器上的文件使用记录 */
     List<CooperateFileDTO> listFileByScopeAndKey(CooperationQueryDTO query);
     /** 获取本目录信息 */

@@ -135,6 +135,19 @@
         </if>
     </select>
 
+    <select id="getTaskNode2" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select *
+        from maoding_task task
+        <where>
+            <if test="nodeId != null">
+                and (task.id = #{nodeId})
+            </if>
+            <if test="path != null">
+                and (task.path = #{path})
+            </if>
+        </where>
+    </select>
+
     <select id="getTaskNodeByRedundancyPath" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
         <if test="path != null">
             select * from (
@@ -153,6 +166,20 @@
         limit 1
     </select>
 
+    <select id="getTaskNodeByRedundancyPath2" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select *
+        from maoding_task task
+        <where>
+            <if test="path != null">
+                (#{path} like concat(task.path,'%'))
+                and ((#{path} = task.path) or (substring(#{path},char_length(task.path)+1,1) = '/'))
+
+            </if>
+        </where>
+        order by char_length(task.path) DESC
+        limit 1
+    </select>
+
     <select id="listTaskSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
         select <include refid="SimpleNodeForTaskNodeTables"/>
         from <include refid="TaskNodeTables"/>
@@ -161,6 +188,16 @@
                 and (ifnull(task.task_pid,task.project_id) = #{nodeId})
             </if>
         group by task.id
+    </select>
+
+    <select id="listTaskSubNode2" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select *
+        from maoding_task task
+        <where>
+            <if test="nodeId != null">
+                and (ifnull(task.task_pid,task.project_id) = #{nodeId})
+            </if>
+        </where>
     </select>
 
     <select id="countTaskSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="java.lang.Integer">
@@ -179,6 +216,19 @@
             where
                 (node.path like concat(#{path},'/%'))
         </if>
+    </select>
+
+    <select id="countTaskSubNode2" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="java.lang.Integer">
+        select count(distinct task.id)
+        from maoding_task task
+        <where>
+            <if test="nodeId != null">
+                and (ifnull(task.task_pid,task.project_id) = #{nodeId})
+            </if>
+            <if test="path != null">
+                and (task.path like concat(#{path},'/%'))
+            </if>
+        </where>
     </select>
 
     <sql id="StorageNodeTables">
