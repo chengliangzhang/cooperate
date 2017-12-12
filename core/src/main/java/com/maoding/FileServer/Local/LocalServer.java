@@ -29,8 +29,8 @@ public class LocalServer implements BasicFileServerInterface {
     /** 日志对象 */
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private static final Integer MAX_TRY_TIMES = 5;
-    private static final Integer TRY_DELAY = 50;
+    private static final Integer MAX_TRY_TIMES = 6;
+    private static final Integer TRY_DELAY = 100;
 
     public static final String FILE_NAME_SPLIT = "_";
     public static final String BASE_DIR_NAME = "scope";
@@ -153,7 +153,7 @@ public class LocalServer implements BasicFileServerInterface {
         if (!((new File(FILE_SERVER_PATH + "/" + multipart.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +multipart.getScope())).mkdirs();
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
-                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rw");
+                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rws");
                 break;
             } catch (IOException e) {
                 ExceptionUtils.logWarn(log,e,false,"打开文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "出错");
@@ -224,7 +224,7 @@ public class LocalServer implements BasicFileServerInterface {
         if (!((new File(FILE_SERVER_PATH + "/" + multipart.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +multipart.getScope())).mkdirs();
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
-                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rw");
+                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rws");
                 break;
             } catch (IOException e) {
                 ExceptionUtils.logWarn(log,e,false,"打开文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "出错");
