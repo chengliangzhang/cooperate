@@ -38,7 +38,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     @Override
     public boolean login(LoginDTO loginInfo, Current current) {
         assert (loginInfo != null);
-        final String LOGIN_URL = "http://localhost:8080/iWork/sys/login";
+        final String LOGIN_URL = "http://172.16.6.73/maoding/iWork/sys/login";
         final String PARAMS_TYPE = "application/json";
 
         if (StringUtils.isEmpty(loginInfo.getCellphone())) loginInfo.setCellphone(loginInfo.getAccountId());
@@ -56,7 +56,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
 
     @Override
     public AccountDTO getCurrent(Current current) {
-        final String LOGIN_URL = "http://localhost:8080/iWork/sys/getCurrUserOfWork";
+        final String LOGIN_URL = "http://172.16.6.73/maoding/iWork/sys/getCurrUserOfWork";
         final String USER_INFO_KEY = "userInfo";
         final String USER_ID_KEY = "id";
         final String USER_NAME_KEY = "userName";
