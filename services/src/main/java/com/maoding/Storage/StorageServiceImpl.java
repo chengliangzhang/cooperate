@@ -124,7 +124,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     private SimpleNodeDTO getNode(QueryNodeDTO query){
         SimpleNodeDTO node = storageDao.getProjectNode(query);
-        if (node == null) node = storageDao.getTaskNode(query);
+        if (node == null) node = storageDao.getTaskNode2(query);
         if (node == null) node = storageDao.getStorageNode(query);
         return node;
     }
@@ -139,7 +139,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
         List<SimpleNodeDTO> nodeList = new ArrayList<>();
 
-        List<SimpleNodeDTO> taskList = storageDao.listTaskSubNode(query);
+        List<SimpleNodeDTO> taskList = storageDao.listTaskSubNode2(query);
         nodeList.addAll(taskList);
 
         List<SimpleNodeDTO> storageList = storageDao.listStorageSubNode(query);
@@ -314,7 +314,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             cnt += storageDao.countProjectRootNode(query);
             cnt += storageDao.countStorageRootNode(query);
         } else {
-            cnt += storageDao.countTaskSubNode(query);
+            cnt += storageDao.countTaskSubNode2(query);
             cnt += storageDao.countStorageSubNode(query);
         }
         return (cnt < 0);
@@ -872,7 +872,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         query.setUserId(request.getUserId());
         query.setPath(fullName);
         SimpleNodeDTO rootNode = storageDao.getStorageNodeByRedundancyPath(query);
-        if (rootNode == null) rootNode = storageDao.getTaskNodeByRedundancyPath(query);
+        if (rootNode == null) rootNode = storageDao.getTaskNodeByRedundancyPath2(query);
         if (rootNode == null) rootNode = storageDao.getProjectNodeByRedundancyPath(query);
         if ((rootNode != null) && (StringUtils.isSame(rootNode.getPath(),fullName))) return rootNode.getId();
         String pid = null;
