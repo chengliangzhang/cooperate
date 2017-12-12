@@ -297,9 +297,6 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_NODE_TYPE_FILE_MAX)) return false;
         node.setFileLength(fileLength);
         int n = storageDao.updateById(node,node.getId());
-        StorageFileEntity fileEntity = storageFileDao.selectById(node.getId());
-        fileEntity.clear();
-        int n = storageFileDao.updateById(fileEntity,node.getId());
         return (n > 0);
     }
 
@@ -449,7 +446,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         assert (fileEntity != null);
 
         Boolean isCreator = StringUtils.isSame(account.getId(),fileEntity.getLastModifyUserId());
-        FileDTO fileDTO = getFileDtoByFileId(fileEntity,isCreator,StringUtils.getFileName(path));
+        FileDTO fileDTO = getFileDtoByFileId(fileEntity,isCreator,path);
 
         //组装上传申请结果
         FileRequestDTO fileRequestDTO = fileService.getUploadRequest(fileDTO, FileServerConst.FILE_SERVER_MODE_DEFAULT,null,current);
@@ -463,12 +460,13 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return fileRequestDTO;
     }
 
-    private FileDTO getFileDtoByFileId(StorageFileEntity fileEntity,Boolean isCreator,String defaultKey){
+    private FileDTO getFileDtoByFileId(StorageFileEntity fileEntity,Boolean isCreator,String path){
         //设置fileServer功能调用参数
         FileDTO fileDTO = new FileDTO();
         fileDTO.setScope(fileEntity.getFileScope());
+        if (StringUtils.isEmpty(fileDTO.getScope())) fileDTO.setScope(StringUtils.getDirName(path));
         fileDTO.setKey(fileEntity.getFileKey());
-        if (StringUtils.isEmpty(fileDTO.getKey())) fileDTO.setKey(defaultKey);
+        if (StringUtils.isEmpty(fileDTO.getKey())) fileDTO.setKey(StringUtils.getFileName(path));
         return fileDTO;
     }
 
