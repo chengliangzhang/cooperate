@@ -22,6 +22,10 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileService extends com.zeroc.Ice.Object
 {
+    int writeFile(FileMultipartDTO data, com.zeroc.Ice.Current current);
+
+    FileMultipartDTO readFile(FileDTO file, long pos, int size, com.zeroc.Ice.Current current);
+
     void setFileServerType(int type, com.zeroc.Ice.Current current);
 
     int getFileServerType(com.zeroc.Ice.Current current);
@@ -67,6 +71,38 @@ public interface FileService extends com.zeroc.Ice.Object
     static String ice_staticId()
     {
         return "::zeroc::FileService";
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        FileMultipartDTO iceP_data;
+        iceP_data = FileMultipartDTO.ice_read(istr);
+        inS.endReadParams();
+        int ret = obj.writeFile(iceP_data, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeInt(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_readFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        FileDTO iceP_file;
+        long iceP_pos;
+        int iceP_size;
+        iceP_file = FileDTO.ice_read(istr);
+        iceP_pos = istr.readLong();
+        iceP_size = istr.readInt();
+        inS.endReadParams();
+        FileMultipartDTO ret = obj.readFile(iceP_file, iceP_pos, iceP_size, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        FileMultipartDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setFileServerType(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -246,8 +282,10 @@ public interface FileService extends com.zeroc.Ice.Object
         "isExist",
         "listFile",
         "listScope",
+        "readFile",
         "setFileServerType",
-        "upload"
+        "upload",
+        "writeFile"
     };
 
     @Override
@@ -320,11 +358,19 @@ public interface FileService extends com.zeroc.Ice.Object
             }
             case 14:
             {
-                return _iceD_setFileServerType(this, in, current);
+                return _iceD_readFile(this, in, current);
             }
             case 15:
             {
+                return _iceD_setFileServerType(this, in, current);
+            }
+            case 16:
+            {
                 return _iceD_upload(this, in, current);
+            }
+            case 17:
+            {
+                return _iceD_writeFile(this, in, current);
             }
         }
 

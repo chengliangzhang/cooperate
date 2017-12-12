@@ -87,6 +87,12 @@ module zeroc {
     };
 
     interface FileService {
+        //准备实现的接口
+        int writeFile(FileMultipartDTO data); //写入文件
+        FileMultipartDTO readFile(FileDTO file,long pos,int size); //从文件读取数据
+
+
+
         void setFileServerType(int type); //设置文件服务器类型，1-FastDFS服务器，2-阿里云服务器
         int getFileServerType(); //读取文件服务器类型，1-FastDFS服务器，2-阿里云服务器
         FileRequestDTO getUploadRequest(FileDTO src,int mode,CallbackDTO callback); //获取通过Multipart上传文件时的参数

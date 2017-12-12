@@ -17,6 +17,10 @@ public class StorageEntity extends BaseTreeEntity {
     @Column
     private Long fileLength;
 
+    /** 上级节点类型 */
+    @Column
+    private Short pidTypeId;
+
     /** （取消，因只需锁定文件）锁定树节点的用户id */
     @Column
     private String lockUserId;
@@ -39,6 +43,14 @@ public class StorageEntity extends BaseTreeEntity {
 
     public void setFileLength(Long fileLength) {
         this.fileLength = fileLength;
+    }
+
+    public Short getPidTypeId() {
+        return pidTypeId;
+    }
+
+    public void setPidTypeId(Short pidTypeId) {
+        this.pidTypeId = pidTypeId;
     }
 
     public String getDetailId() {

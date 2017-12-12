@@ -22,6 +22,140 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForCurrent(String path)
+    {
+        return openFileForCurrent(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForCurrent(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_openFileForCurrentAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForCurrentAsync(String path)
+    {
+        return _iceI_openFileForCurrentAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForCurrentAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_openFileForCurrentAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> _iceI_openFileForCurrentAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "openFileForCurrent", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     com.maoding.FileServer.zeroc.FileRequestDTO ret;
+                     ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForAccount(com.maoding.User.zeroc.AccountDTO account, String path)
+    {
+        return openFileForAccount(account, path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForAccount(com.maoding.User.zeroc.AccountDTO account, String path, java.util.Map<String, String> context)
+    {
+        return _iceI_openFileForAccountAsync(account, path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String path)
+    {
+        return _iceI_openFileForAccountAsync(account, path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String path, java.util.Map<String, String> context)
+    {
+        return _iceI_openFileForAccountAsync(account, path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> _iceI_openFileForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "openFileForAccount", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     com.maoding.FileServer.zeroc.FileRequestDTO ret;
+                     ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean closeFileForCurrent(String path)
+    {
+        return closeFileForCurrent(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean closeFileForCurrent(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_closeFileForCurrentAsync(path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> closeFileForCurrentAsync(String path)
+    {
+        return _iceI_closeFileForCurrentAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> closeFileForCurrentAsync(String path, java.util.Map<String, String> context)
+    {
+        return _iceI_closeFileForCurrentAsync(path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_closeFileForCurrentAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "closeFileForCurrent", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default boolean closeFileForAccount(com.maoding.User.zeroc.AccountDTO account, String path)
+    {
+        return closeFileForAccount(account, path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean closeFileForAccount(com.maoding.User.zeroc.AccountDTO account, String path, java.util.Map<String, String> context)
+    {
+        return _iceI_closeFileForAccountAsync(account, path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> closeFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String path)
+    {
+        return _iceI_closeFileForAccountAsync(account, path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> closeFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String path, java.util.Map<String, String> context)
+    {
+        return _iceI_closeFileForAccountAsync(account, path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_closeFileForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "closeFileForAccount", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
     default java.util.List<SimpleNodeDTO> listRootNodeForAccount(com.maoding.User.zeroc.AccountDTO account)
     {
         return listRootNodeForAccount(account, com.zeroc.Ice.ObjectPrx.noExplicitContext);
@@ -346,75 +480,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listSubNodeByPNodeIdForCurrent", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      ostr.writeString(iceP_pid);
-                 }, istr -> {
-                     java.util.List<SimpleNodeDTO> ret;
-                     ret = SimpleNodeListHelper.read(istr);
-                     return ret;
-                 });
-        return f;
-    }
-
-    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForAccount(com.maoding.User.zeroc.AccountDTO account, String pid, short pTypeId)
-    {
-        return listSubNodeByPNodeIdAndPTypeIdForAccount(account, pid, pTypeId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForAccount(com.maoding.User.zeroc.AccountDTO account, String pid, short pTypeId, java.util.Map<String, String> context)
-    {
-        return _iceI_listSubNodeByPNodeIdAndPTypeIdForAccountAsync(account, pid, pTypeId, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdAndPTypeIdForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String pid, short pTypeId)
-    {
-        return _iceI_listSubNodeByPNodeIdAndPTypeIdForAccountAsync(account, pid, pTypeId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdAndPTypeIdForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String pid, short pTypeId, java.util.Map<String, String> context)
-    {
-        return _iceI_listSubNodeByPNodeIdAndPTypeIdForAccountAsync(account, pid, pTypeId, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> _iceI_listSubNodeByPNodeIdAndPTypeIdForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, String iceP_pid, short iceP_pTypeId, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listSubNodeByPNodeIdAndPTypeIdForAccount", null, sync, null);
-        f.invoke(true, context, null, ostr -> {
-                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
-                     ostr.writeString(iceP_pid);
-                     ostr.writeShort(iceP_pTypeId);
-                 }, istr -> {
-                     java.util.List<SimpleNodeDTO> ret;
-                     ret = SimpleNodeListHelper.read(istr);
-                     return ret;
-                 });
-        return f;
-    }
-
-    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForCurrent(String pid, short pTypeId)
-    {
-        return listSubNodeByPNodeIdAndPTypeIdForCurrent(pid, pTypeId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default java.util.List<SimpleNodeDTO> listSubNodeByPNodeIdAndPTypeIdForCurrent(String pid, short pTypeId, java.util.Map<String, String> context)
-    {
-        return _iceI_listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(pid, pTypeId, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(String pid, short pTypeId)
-    {
-        return _iceI_listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(pid, pTypeId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(String pid, short pTypeId, java.util.Map<String, String> context)
-    {
-        return _iceI_listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(pid, pTypeId, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> _iceI_listSubNodeByPNodeIdAndPTypeIdForCurrentAsync(String iceP_pid, short iceP_pTypeId, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listSubNodeByPNodeIdAndPTypeIdForCurrent", null, sync, null);
-        f.invoke(true, context, null, ostr -> {
-                     ostr.writeString(iceP_pid);
-                     ostr.writeShort(iceP_pTypeId);
                  }, istr -> {
                      java.util.List<SimpleNodeDTO> ret;
                      ret = SimpleNodeListHelper.read(istr);

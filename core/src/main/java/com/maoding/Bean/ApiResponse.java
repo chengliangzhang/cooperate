@@ -30,8 +30,7 @@ public class ApiResponse<T> implements Serializable {
     private Object info; //同AjaxMessage.info
 
     public ApiResponse(Integer status, String msg, T data) {
-        this.status = status;
-        this.code = (this.status != null) ? this.status.toString() : ApiResponseConst.SUCCESS.toString();
+        this.status = (status != null) ? status : ApiResponseConst.SUCCESS;
         this.msg = (msg != null) ? msg : ApiResponseConst.DEFAULT_MESSAGE.get(this.status);
         this.data = data;
 
@@ -95,11 +94,7 @@ public class ApiResponse<T> implements Serializable {
     }
 
     public Integer getStatus() {
-        Integer i = status;
-        if ((i == null) && (code != null)){
-            i = Integer.parseInt(code);
-        }
-        return i;
+        return status;
     }
 
     public void setStatus(Integer status) {
@@ -107,11 +102,7 @@ public class ApiResponse<T> implements Serializable {
     }
 
     public String getMsg() {
-        String s = msg;
-        if (s == null){
-            s = info.toString();
-        }
-        return s;
+        return msg;
     }
 
     public void setMsg(String msg) {
@@ -130,14 +121,15 @@ public class ApiResponse<T> implements Serializable {
     /** 维持兼容性 */
     public String getCode() {
         String s = code;
-        if ((code == null) && (status != null)){
-            s = status.toString();
+        if (s == null){
+            s =  (status != null) ? status.toString() : ApiResponseConst.SUCCESS.toString();
         }
         return s;
     }
 
     public ApiResponse<T> setCode(String code) {
         this.code = code;
+        status = Integer.parseInt(code);
         return this;
     }
 
@@ -145,12 +137,16 @@ public class ApiResponse<T> implements Serializable {
         Object o = info;
         if (o == null){
             o = msg;
+            if (o == null) o = (status != null) ? ApiResponseConst.DEFAULT_MESSAGE.get(status) : ApiResponseConst.DEFAULT_MESSAGE.get(ApiResponseConst.SUCCESS);
         }
         return o;
     }
 
     public ApiResponse<T> setInfo(Object info) {
         this.info = info;
+        if (info instanceof String){
+            msg = (String) info;
+        }
         return this;
     }
 

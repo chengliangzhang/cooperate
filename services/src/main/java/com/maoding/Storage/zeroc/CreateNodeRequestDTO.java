@@ -35,16 +35,28 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
         this.pNodeId = pNodeId;
     }
 
-    public String fullName;
+    public short typeId;
 
-    public String getFullName()
+    public short getTypeId()
     {
-        return fullName;
+        return typeId;
     }
 
-    public void setFullName(String fullName)
+    public void setTypeId(short typeId)
     {
-        this.fullName = fullName;
+        this.typeId = typeId;
+    }
+
+    public short fileTypeId;
+
+    public short getFileTypeId()
+    {
+        return fileTypeId;
+    }
+
+    public void setFileTypeId(short fileTypeId)
+    {
+        this.fileTypeId = fileTypeId;
     }
 
     public String userId;
@@ -107,39 +119,40 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
         this.taskId = taskId;
     }
 
-    public short typeId;
+    public String fullName;
 
-    public short getTypeId()
+    public String getFullName()
     {
-        return typeId;
+        return fullName;
     }
 
-    public void setTypeId(short typeId)
+    public void setFullName(String fullName)
     {
-        this.typeId = typeId;
+        this.fullName = fullName;
     }
 
     public CreateNodeRequestDTO()
     {
         this.pNodeId = "";
-        this.fullName = "";
         this.userId = "";
         this.dutyId = "";
         this.orgId = "";
         this.projectId = "";
         this.taskId = "";
+        this.fullName = "";
     }
 
-    public CreateNodeRequestDTO(String pNodeId, String fullName, String userId, String dutyId, String orgId, String projectId, String taskId, short typeId)
+    public CreateNodeRequestDTO(String pNodeId, short typeId, short fileTypeId, String userId, String dutyId, String orgId, String projectId, String taskId, String fullName)
     {
         this.pNodeId = pNodeId;
-        this.fullName = fullName;
+        this.typeId = typeId;
+        this.fileTypeId = fileTypeId;
         this.userId = userId;
         this.dutyId = dutyId;
         this.orgId = orgId;
         this.projectId = projectId;
         this.taskId = taskId;
-        this.typeId = typeId;
+        this.fullName = fullName;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -163,12 +176,13 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.fullName != r.fullName)
+            if(this.typeId != r.typeId)
             {
-                if(this.fullName == null || r.fullName == null || !this.fullName.equals(r.fullName))
-                {
-                    return false;
-                }
+                return false;
+            }
+            if(this.fileTypeId != r.fileTypeId)
+            {
+                return false;
             }
             if(this.userId != r.userId)
             {
@@ -205,9 +219,12 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.typeId != r.typeId)
+            if(this.fullName != r.fullName)
             {
-                return false;
+                if(this.fullName == null || r.fullName == null || !this.fullName.equals(r.fullName))
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -221,13 +238,14 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CreateNodeRequestDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dutyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
         return h_;
     }
 
@@ -248,25 +266,27 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         ostr.writeString(this.pNodeId);
-        ostr.writeString(this.fullName);
+        ostr.writeShort(this.typeId);
+        ostr.writeShort(this.fileTypeId);
         ostr.writeString(this.userId);
         ostr.writeString(this.dutyId);
         ostr.writeString(this.orgId);
         ostr.writeString(this.projectId);
         ostr.writeString(this.taskId);
-        ostr.writeShort(this.typeId);
+        ostr.writeString(this.fullName);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.pNodeId = istr.readString();
-        this.fullName = istr.readString();
+        this.typeId = istr.readShort();
+        this.fileTypeId = istr.readShort();
         this.userId = istr.readString();
         this.dutyId = istr.readString();
         this.orgId = istr.readString();
         this.projectId = istr.readString();
         this.taskId = istr.readString();
-        this.typeId = istr.readShort();
+        this.fullName = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CreateNodeRequestDTO v)
@@ -321,5 +341,5 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
 
     private static final CreateNodeRequestDTO _nullMarshalValue = new CreateNodeRequestDTO();
 
-    public static final long serialVersionUID = 907265342L;
+    public static final long serialVersionUID = 878446730L;
 }

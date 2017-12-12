@@ -9,22 +9,22 @@
     <sql id="SimpleNodeForProjectNodeTables">
         project.id
         ,project.project_name as name
-        ,11 as type_id
-        ,'项目目录' as type_name
+        ,if(project.id is null,null,11) as type_id
+        ,if(project.id is null,null,'项目目录') as type_name
         ,null AS pid
-        ,11 AS p_type_id
-        ,'项目目录' as p_type_name
-        ,concat('/',project.project_name) as path
-        ,unix_timestamp(ifnull(project.create_date,0)) as create_time_stamp
-        ,date_format(ifnull(project.create_date,0),'%Y-%m-%a %T') as create_time_text
-        ,unix_timestamp(ifnull(ifnull(project.update_date,project.create_date),0)) as last_modify_time_stamp
-        ,date_format(ifnull(ifnull(project.update_date,project.create_date),0),'%Y-%m-%a %T') as last_modify_time_text
-        ,ifnull(project.update_by,project.create_by) as last_modify_user_id
-        ,1 as is_read_only
-        ,0 as file_length
-        ,1 as is_directory
-        ,1 as is_project_directory
-        ,0 as is_task_directory
+        ,if(project.id is null,null,11) AS p_type_id
+        ,if(project.id is null,null,'项目目录') as p_type_name
+        ,if(project.id is null,null,concat('/',project.project_name)) as path
+        ,if(project.id is null,null,unix_timestamp(ifnull(project.create_date,0))) as create_time_stamp
+        ,if(project.id is null,null,date_format(ifnull(project.create_date,0),'%Y-%m-%a %T')) as create_time_text
+        ,if(project.id is null,null,unix_timestamp(ifnull(ifnull(project.update_date,project.create_date),0))) as last_modify_time_stamp
+        ,if(project.id is null,null,date_format(ifnull(ifnull(project.update_date,project.create_date),0),'%Y-%m-%a %T')) as last_modify_time_text
+        ,if(project.id is null,null,ifnull(project.update_by,project.create_by)) as last_modify_user_id
+        ,if(project.id is null,null,1) as is_read_only
+        ,if(project.id is null,null,0) as file_length
+        ,if(project.id is null,null,1) as is_directory
+        ,if(project.id is null,null,1) as is_project_directory
+        ,if(project.id is null,null,0) as is_task_directory
     </sql>
 
     <sql id="ProjectNodeTablesFilter">
@@ -48,6 +48,20 @@
         group by project.id
     </select>
 
+    <select id="getProjectNodeByRedundancyPath" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForProjectNodeTables"/>
+        from <include refid="ProjectNodeTables"/>
+        where<include refid="ProjectNodeTablesFilter"/>
+            <if test="userId != null">
+                and (member.account_id = #{userId})
+            </if>
+            <if test="path != null">
+                and (#{path} = concat('/',project.project_name))
+            </if>
+        group by project.id
+        limit 1
+    </select>
+
     <select id="listProjectRootNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
         select <include refid="SimpleNodeForProjectNodeTables"/>
         from <include refid="ProjectNodeTables"/>
@@ -61,30 +75,34 @@
     <sql id="TaskNodeTables">
         maoding_web_project_task task
         left join maoding_web_project_task task_parent ON (task_parent.id=task.task_pid)
+        left join maoding_web_project_task task_parent2 ON (task_parent2.id=task_parent.task_pid)
+        left join maoding_web_project_task task_parent3 ON (task_parent3.id=task_parent2.task_pid)
         inner join maoding_web_project project on ( task.project_id= project.id)
     </sql>
 
     <sql id="SimpleNodeForTaskNodeTables">
         task.id
         ,task.task_name as name
-        ,12 as type_id
-        ,'任务目录' as type_name
+        ,if(task.id is null,null,12) as type_id
+        ,if(task.id is null,null,'任务目录') as type_name
         ,ifnull(task.task_pid,task.project_id) AS pid
-        ,if(task.task_pid is null,11,12) AS p_type_id
-        ,if(task.task_pid is null,'项目目录','任务目录') AS p_type_name
-        ,concat('/',project.project_name,'/',
-            if(task.task_pid is null,'',concat(GROUP_CONCAT(task_parent.task_name order by length(task_parent.task_path) SEPARATOR '/'),'/')),
-            task.task_name) as path
-        ,unix_timestamp(ifnull(task.create_date,0)) as create_time_stamp
-        ,date_format(ifnull(task.create_date,0),'%Y-%m-%a %T') as create_time_text
-        ,unix_timestamp(ifnull(ifnull(task.update_date,task.create_date),0)) as last_modify_time_stamp
-        ,date_format(ifnull(ifnull(task.update_date,task.create_date),0),'%Y-%m-%a %T') as last_modify_time_text
-        ,ifnull(task.update_by,task.create_by) as last_modify_user_id
-        ,if(task.task_type=0,0,1) as is_read_only
-        ,0 as file_length
-        ,1 as is_directory
-        ,0 as is_project_directory
-        ,1 as is_task_directory
+        ,if(task.id is null,null,if(task.task_pid is null,11,12)) AS p_type_id
+        ,if(task.id is null,null,if(task.task_pid is null,'项目目录','任务目录')) AS p_type_name
+        ,if(task.id is null,null,concat('/',project.project_name,'/'
+            ,if(task_parent3.id is not null,concat(task_parent3.task_name,'/'),'')
+            ,if(task_parent2.id is not null,concat(task_parent2.task_name,'/'),'')
+            ,if(task_parent.id is not null,concat(task_parent.task_name,'/'),'')
+            ,task.task_name)) as path
+        ,if(task.id is null,null,unix_timestamp(ifnull(task.create_date,0))) as create_time_stamp
+        ,if(task.id is null,null,date_format(ifnull(task.create_date,0),'%Y-%m-%a %T')) as create_time_text
+        ,if(task.id is null,null,unix_timestamp(ifnull(ifnull(task.update_date,task.create_date),0))) as last_modify_time_stamp
+        ,if(task.id is null,null,date_format(ifnull(ifnull(task.update_date,task.create_date),0),'%Y-%m-%a %T')) as last_modify_time_text
+        ,if(task.id is null,null,ifnull(task.update_by,task.create_by)) as last_modify_user_id
+        ,if(task.id is null,null,if(task.task_type=0,0,1)) as is_read_only
+        ,if(task.id is null,null,0) as file_length
+        ,if(task.id is null,null,1) as is_directory
+        ,if(task.id is null,null,0) as is_project_directory
+        ,if(task.id is null,null,1) as is_task_directory
     </sql>
 
     <sql id="TaskNodeTablesFilter">
@@ -108,6 +126,25 @@
         </if>
     </select>
 
+    <select id="getTaskNodeByRedundancyPath" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        <if test="path != null">
+            select * from (
+        </if>
+            select <include refid="SimpleNodeForTaskNodeTables"/>
+            from <include refid="TaskNodeTables"/>
+            where<include refid="TaskNodeTablesFilter"/>
+            group by task.id
+        <if test="path != null">
+            ) node
+            where
+                (#{path} like concat(node.path,'%'))
+                and ((#{path} = node.path) or (substring(#{path},char_length(node.path)+1,1) = '/'))
+            order by char_length(node.path) DESC
+        </if>
+        limit 1
+    </select>
+
+
     <select id="listTaskSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
         select <include refid="SimpleNodeForTaskNodeTables"/>
         from <include refid="TaskNodeTables"/>
@@ -117,6 +154,94 @@
             </if>
         group by task.id
     </select>
+
+    <sql id="StorageNodeTables">
+        maoding_storage st
+        left join maoding_const cst on (st.type_id = cst.value_id)
+        left join maoding_const pcst on (st.pid_type_id = pcst.value_id)
+    </sql>
+
+    <sql id="SimpleNodeForStorageNodeTables">
+        st.id
+        ,st.node_name as name
+        ,st.type_id as type_id
+        ,cst.content as type_name
+        ,st.pid as pid
+        ,st.pid_type_id AS p_type_id
+        ,pcst.content AS p_type_name
+        ,st.path as path
+        ,unix_timestamp(ifnull(st.create_time,0)) as create_time_stamp
+        ,date_format(ifnull(st.create_time,0),'%Y-%m-%a %T') as create_time_text
+        ,unix_timestamp(ifnull(st.last_modify_time,0)) as last_modify_time_stamp
+        ,date_format(ifnull(st.last_modify_time,0),'%Y-%m-%a %T') as last_modify_time_text
+        ,st.last_modify_user_id as last_modify_user_id
+        ,if(st.id is null,null,0) as is_read_only
+        ,st.file_length as file_length
+        ,if(st.type_id >= 10,1,0) as is_directory
+        ,if(st.id is null,null,0) as is_project_directory
+        ,if(st.id is null,null,0) as is_task_directory
+    </sql>
+
+    <sql id="StorageNodeTablesFilter">
+        (st.deleted = '0')
+        and (cst.classic_id = 14)
+        and (pcst.classic_id = 14)
+    </sql>
+
+    <select id="getStorageNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForStorageNodeTables"/>
+        from <include refid="StorageNodeTables"/>
+        where<include refid="StorageNodeTablesFilter"/>
+            <if test="nodeId != null">
+                and (st.id = #{nodeId})
+            </if>
+            <if test="userId != null">
+                and (st.last_modify_user_id = #{userId})
+            </if>
+            <if test="path != null">
+                and (st.path = #{path})
+            </if>
+        group by st.id
+    </select>
+
+    <select id="getStorageNodeByRedundancyPath" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForStorageNodeTables"/>
+        from <include refid="StorageNodeTables"/>
+        where<include refid="StorageNodeTablesFilter"/>
+            <if test="userId != null">
+                and (st.last_modify_user_id = #{userId})
+            </if>
+            <if test="path != null">
+                and (#{path} like concat(st.path,'%'))
+                and ((#{path} = st.path) or (substring(#{path},char_length(st.path)+1,1) = '/'))
+            </if>
+        group by st.id
+        order by char_length(st.path) DESC
+        limit 1
+    </select>
+
+    <select id="listStorageRootNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForStorageNodeTables"/>
+        from <include refid="StorageNodeTables"/>
+        where <include refid="StorageNodeTablesFilter"/>
+            and (st.pid is null)
+            <if test="userId != null">
+                and (st.last_modify_user_id = #{userId})
+            </if>
+        group by st.id
+    </select>
+
+    <select id="listStorageSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForStorageNodeTables"/>
+        from <include refid="StorageNodeTables"/>
+        where <include refid="StorageNodeTablesFilter"/>
+            <if test="nodeId != null">
+                and (st.pid = #{nodeId})
+            </if>
+        group by st.id
+    </select>
+
+
 
     <sql id="maoding_company">
         SELECT

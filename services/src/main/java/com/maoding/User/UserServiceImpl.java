@@ -2,7 +2,6 @@ package com.maoding.User;
 
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Bean.ApiResponse;
-import com.maoding.Const.HttpConst;
 import com.maoding.User.zeroc.*;
 import com.maoding.Utils.*;
 import com.zeroc.Ice.Current;
@@ -48,7 +47,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
 
         if (client == null) client = HttpClients.createDefault();
         CloseableHttpResponse response = HttpUtils.postData(client, LOGIN_URL, PARAMS_TYPE, loginInfo);
-        assert (response != null) && (response.getStatusLine() != null) && (response.getStatusLine().getStatusCode() == HttpConst.HTTP_RESULT_OK);
+        if (!HttpUtils.isResponseOK(response)) return false;
         ApiResponse result = getResult(response);
         FileUtils.close(response);
         assert (result != null);
@@ -63,7 +62,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
         final String USER_NAME_KEY = "userName";
         if (client == null) client = HttpClients.createDefault();
         CloseableHttpResponse response = HttpUtils.postData(client, LOGIN_URL);
-        assert (response != null) && (response.getStatusLine() != null) && (response.getStatusLine().getStatusCode() == HttpConst.HTTP_RESULT_OK);
+        if (!HttpUtils.isResponseOK(response)) return null;
         ApiResponse result = getResult(response);
         FileUtils.close(response);
         assert ((result != null) && (result.getData() != null));

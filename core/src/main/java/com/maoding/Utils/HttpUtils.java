@@ -1,5 +1,6 @@
 package com.maoding.Utils;
 
+import com.maoding.Const.HttpConst;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -66,6 +67,10 @@ public class HttpUtils {
     }
     public static <T> CloseableHttpResponse postData(CloseableHttpClient client, String url){
         return postData(client,url,null,null);
+    }
+
+    public static Boolean isResponseOK(CloseableHttpResponse response){
+        return (response != null) && (response.getStatusLine() != null) && (response.getStatusLine().getStatusCode() == HttpConst.HTTP_RESULT_OK);
     }
 
 }
