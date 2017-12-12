@@ -44,6 +44,19 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     }
 
     @Override
+    public int writeFile(FileMultipartDTO data, Current current) {
+        BasicFileMultipartDTO basicData = BeanUtils.createFrom(data,BasicFileMultipartDTO.class);
+        return fileServer.writeFile(basicData);
+    }
+
+    @Override
+    public FileMultipartDTO readFile(FileDTO file, long pos, int size, Current current) {
+        BasicFileDTO basicFile = BeanUtils.createFrom(file,BasicFileDTO.class);
+        BasicFileMultipartDTO basicMulti = fileServer.readFile(basicFile,pos,size);
+        return BeanUtils.createFrom(basicMulti,FileMultipartDTO.class);
+    }
+
+    @Override
     public UploadResultDTO upload(UploadRequestDTO request, Current current) {
         request = BeanUtils.cleanProperties(request);
         BasicUploadRequestDTO basicRequest = BeanUtils.createFrom(request, BasicUploadRequestDTO.class);

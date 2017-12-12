@@ -22,6 +22,74 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default int writeFile(FileMultipartDTO data)
+    {
+        return writeFile(data, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default int writeFile(FileMultipartDTO data, java.util.Map<String, String> context)
+    {
+        return _iceI_writeFileAsync(data, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileAsync(FileMultipartDTO data)
+    {
+        return _iceI_writeFileAsync(data, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileAsync(FileMultipartDTO data, java.util.Map<String, String> context)
+    {
+        return _iceI_writeFileAsync(data, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> _iceI_writeFileAsync(FileMultipartDTO iceP_data, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "writeFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     FileMultipartDTO.ice_write(ostr, iceP_data);
+                 }, istr -> {
+                     int ret;
+                     ret = istr.readInt();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default FileMultipartDTO readFile(FileDTO file, long pos, int size)
+    {
+        return readFile(file, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default FileMultipartDTO readFile(FileDTO file, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readFileAsync(file, pos, size, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<FileMultipartDTO> readFileAsync(FileDTO file, long pos, int size)
+    {
+        return _iceI_readFileAsync(file, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<FileMultipartDTO> readFileAsync(FileDTO file, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readFileAsync(file, pos, size, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<FileMultipartDTO> _iceI_readFileAsync(FileDTO iceP_file, long iceP_pos, int iceP_size, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<FileMultipartDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "readFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     FileDTO.ice_write(ostr, iceP_file);
+                     ostr.writeLong(iceP_pos);
+                     ostr.writeInt(iceP_size);
+                 }, istr -> {
+                     FileMultipartDTO ret;
+                     ret = FileMultipartDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default void setFileServerType(int type)
     {
         setFileServerType(type, com.zeroc.Ice.ObjectPrx.noExplicitContext);

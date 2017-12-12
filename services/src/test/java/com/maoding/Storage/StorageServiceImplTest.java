@@ -45,6 +45,8 @@ public class StorageServiceImplTest {
     private static final String testUploadLocalFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer\\upload_test.txt";
     private static final String testDownloadLocalFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer\\upload_test_downloading.txt";
     private static final String testDir = "testForStorageService";
+    private static final String localUserId = "5ffee496fa814ea4b6d26a9208b00a0b";
+    private static final String remoteUserId = "41d244733ec54f09a255836637f2b21d";
     
     private static final Integer CALL_METHOD_LOCAL = 0;
     private static final Integer CALL_METHOD_ICE = 1;
@@ -52,12 +54,13 @@ public class StorageServiceImplTest {
 
     @Autowired
     private StorageService storageService;
-    private StorageServicePrx storageServicePrx = StorageServiceImpl.getInstance();
+    private StorageServicePrx storageServicePrx = StorageServiceImpl.getInstance("192.168.17.168");
     @Autowired
     private FileService fileService;
     private FileServicePrx fileServicePrx = FileServiceImpl.getInstance();
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
+    private Integer fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
     private Integer callServiceMethod = CALL_METHOD_LOCAL;
 
     /** 重命名及移动节点 */
@@ -87,21 +90,14 @@ public class StorageServiceImplTest {
     /** 创建树节点 */
     @Test
     public void testCreateNode() throws Exception {
-        String name = "新建abc文件夹";
-        for (int i=1; i<6; i++) {
-            CreateNodeRequestDTO request = new CreateNodeRequestDTO();
-            request.setFullName("\\" + name + ((i<2) ? "" : " (" + i + ")"));
-            request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
-            Assert.assertNotNull(storageService.createNode(request,null));
-            String subname = "\\" + name + ((i<2) ? "" : " (" + i + ")");
-            for (int j=0; j<i; j++){
-                subname += "\\" + name + ((i<2) ? "" : " (" + i + ")");
-                System.out.println(subname);
-                request.setFullName(subname);
-                request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
-                Assert.assertNotNull(storageService.createNode(request,null));
-            }
-        }
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setFullName("/项目20171115/项目前期/自定义目录");
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        Assert.assertNotNull(storageService.createNode(request,null));
+        request.setFullName("/项目20171115/项目前期/自定义文件");
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        request.setFileTypeId(StorageConst.STORAGE_FILE_TYPE_UNKNOWN);
+        Assert.assertNotNull(storageService.createNode(request,null));
     }
 
      /** 删除树节点 */
@@ -142,33 +138,19 @@ public class StorageServiceImplTest {
 
     /** 获取当前用户一层子节点信息 */
     @Test
-    public void testListRootNodeForCurrent() throws Exception {
+    public void testListSubNode() throws Exception {
         AccountDTO account = new AccountDTO();
-        account.setId("d5edc119ae3247bd8c9fe8bcbe57f700");
-        List<SimpleNodeDTO> list = storageService.listRootNodeForAccount(account,null);
+        account.setId("5ffee496fa814ea4b6d26a9208b00a0b");
+        List<SimpleNodeDTO> list = storageService.listSubNodeByPathForAccount(account,"/",null);
         Assert.assertNotNull(list);
         SimpleNodeDTO node = storageService.getNodeByPathForAccount(account,"/项目20171115",null);
         Assert.assertNotNull(node);
         list = storageService.listSubNodeByPathForAccount(account,"/项目20171115",null);
         Assert.assertNotNull(list);
+        node = storageService.getNodeByPathForAccount(account,"/项目20171115/项目前期",null);
+        Assert.assertNotNull(node);
         list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期",null);
         Assert.assertNotNull(list);
-    }
-
-    /** 获取一层子节点信息 */
-    @Test
-    public void testListSubNode() throws Exception {
-        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
-        request.setFullName("/a/b/d");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
-        storageService.createNode(request,null);
-        request.setFullName("/a.txt");
-        request.setTypeId(StorageConst.STORAGE_FILE_TYPE_UNKNOWN);
-        storageService.createNode(request,null);
-        List<SimpleNodeDTO> list = storageService.listSubNode("/a/b",null);
-        Assert.assertTrue(list.size() > 0);
-        list = storageService.listSubNode("\\",null);
-        Assert.assertTrue(list.size() > 0);
     }
 
     /** 锁定文件 */
@@ -362,17 +344,137 @@ public class StorageServiceImplTest {
 
     /** 文件服务器使用LocalServer,使用多个调用文件服务器接口 */
     @Test
-    public void testUploadForLocal() throws Exception {
+    public void testWriteFileForLocal() throws Exception {
         fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
-        upload(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
+        callServiceMethod = CALL_METHOD_LOCAL;
+        writeFile(testUploadLocalFile,StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile));
 //        upload(FileServerConst.FILE_SERVER_MODE_RPC);
 //        upload(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+    }
+
+    public void writeFile(String localFile, String path) throws Exception {
+        AccountDTO account = new AccountDTO();
+        account.setId(localUserId);
+
+        //获取文件服务器接口
+        FileRequestDTO fileRequestDTO = null;
+        if (CALL_METHOD_LOCAL.equals(callServiceMethod)) {
+            fileService.setFileServerType(fileServerType, null);
+            fileRequestDTO = storageService.openFileForAccount(account,path,null);
+        }
+
+        //实际写文件内容
+        writeFile(localFile, fileRequestDTO);
+
+        //释放文件服务器接口
+        if (CALL_METHOD_LOCAL.equals(callServiceMethod)) {
+            storageService.closeFileForAccount(account,path,null);
+        }
+    }
+
+    //实际上传文件内容
+    private void writeFile(String localFile, FileRequestDTO fileRequestDTO) throws Exception {
+        File f = new File(localFile);
+        long length = f.length();
+        int size = 15;
+
+        RandomAccessFile in = new RandomAccessFile(f, "r");
+        for (long pos=0; pos<length; pos+=size){
+            FileMultipartDTO multipart = createFileMultipartDTO(fileRequestDTO, in, pos, size);
+
+            //上传文件内容申请
+            int realSize = 0;
+            if (CALL_METHOD_LOCAL.equals(callServiceMethod)){
+                fileService.setFileServerType(fileServerType,null);
+                if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode()))
+                    realSize = writeLocalLocal(multipart);
+            }
+            Assert.assertEquals(realSize,multipart.getSize());
+        }
+        in.close();
+    }
+
+    private int writeLocalLocal(FileMultipartDTO multipart) throws Exception {
+        return fileService.writeFile(multipart,null);
+    }
+
+    private FileMultipartDTO createFileMultipartDTO(FileRequestDTO fileRequestDTO, RandomAccessFile in, long pos, int size) throws Exception {
+        //建立上传内容
+        FileMultipartDTO multipart = new FileMultipartDTO();
+        byte[] bytes = new byte[size];
+        multipart.setScope(fileRequestDTO.getScope());
+        multipart.setKey(fileRequestDTO.getKey());
+        multipart.setPos(pos);
+        in.seek(pos);
+        multipart.setSize(in.read(bytes));
+        multipart.setData(bytes);
+
+        return multipart;
+    }
+
+    @Test
+    public void testReadFileForLocal() throws Exception {
+        fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
+        fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
+        callServiceMethod = CALL_METHOD_LOCAL;
+        readFile(StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile),testDownloadLocalFile);
+    }
+
+    private void readFile(String path,String localFile) throws Exception {
+        AccountDTO account = new AccountDTO();
+        account.setId(localUserId);
+
+        //获取文件服务器接口
+        FileRequestDTO fileRequestDTO = null;
+        if (CALL_METHOD_LOCAL.equals(callServiceMethod)) {
+            fileService.setFileServerType(fileServerType, null);
+            fileRequestDTO = storageService.openFileForAccount(account,path,null);
+        }
+
+        //实际读文件内容
+        readFile(fileRequestDTO,localFile);
+    }
+
+    private void readFile(FileRequestDTO fileRequestDTO, String localFile) throws Exception {
+        FileDTO fileDTO = BeanUtils.createFrom(fileRequestDTO,FileDTO.class);
+        long pos = 0;
+        int size = 10;
+        do {
+            FileMultipartDTO multipart = null;
+            if (CALL_METHOD_LOCAL.equals(callServiceMethod)){
+                fileService.setFileServerType(fileServerType,null);
+                if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode()))
+                    multipart = readLocalLocal(fileDTO,pos,size);
+            }
+
+            if (multipart == null) break;
+
+            RandomAccessFile rf = new RandomAccessFile(localFile, "rw");
+            if ((rf.length() < multipart.getPos()) || (multipart.getSize() < size)) {
+                rf.setLength(multipart.getPos() + multipart.getSize());
+            }
+            if (multipart.getSize() > 0) {
+                rf.seek(multipart.getPos());
+                rf.write(multipart.getData(), 0, multipart.getSize());
+            }
+            rf.close();
+
+            //申请下一块
+            if (multipart.getSize() < size) break;
+            pos = multipart.getPos() + multipart.getSize();
+        } while (pos < 1024*1024);
+    }
+
+    private FileMultipartDTO readLocalLocal(FileDTO fileDTO,long pos,int size) throws Exception{
+        return fileService.readFile(fileDTO,pos,size,null);
     }
 
     @Test
     public void testDownloadForLocal() throws Exception {
         fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
-        download(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
+        callServiceMethod = CALL_METHOD_LOCAL;
 //        download(FileServerConst.FILE_SERVER_MODE_RPC);
 //        download(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
     }

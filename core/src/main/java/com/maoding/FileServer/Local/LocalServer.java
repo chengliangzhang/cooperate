@@ -195,6 +195,74 @@ public class LocalServer implements BasicFileServerInterface {
         return result;
     }
 
+    @Override
+    public int writeFile(BasicFileMultipartDTO multipart) {
+        //检查参数
+        assert (multipart != null);
+        assert ((multipart.getPos() != null) && (multipart.getPos() >= 0));
+        assert ((multipart.getSize() != null) && (multipart.getSize() > 0));
+        assert (multipart.getData() != null);
+        assert (multipart.getScope() != null);
+        assert (!StringUtils.isEmpty(multipart.getKey()));
+
+        //补全参数
+
+        //写入文件
+        RandomAccessFile rf = null;
+
+        byte[] data = multipart.getData();
+        int off = 0;
+        int len = multipart.getSize();
+        long pos = multipart.getPos();
+
+        if (pos == 0) {
+            t0 = System.currentTimeMillis();
+            pos0 = pos + len;
+            log.info("=====>接收到第一个数据包:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t0)));
+        }
+
+        if (!((new File(FILE_SERVER_PATH + "/" + multipart.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +multipart.getScope())).mkdirs();
+        for (Integer i=0; i<MAX_TRY_TIMES; i++) {
+            try {
+                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rw");
+                break;
+            } catch (IOException e) {
+                ExceptionUtils.logWarn(log,e,false,"打开文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "出错");
+                try {
+                    Thread.sleep(TRY_DELAY);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                rf = null;
+            }
+        }
+
+        try {
+            if (rf == null) throw new IOException();
+            assert ((pos >= 0) && (len > 0) && (data != null) && (len <= data.length));
+            if (rf.length() < pos) rf.setLength(pos + len);
+            rf.seek(pos);
+            rf.write(data,off,len);
+        } catch (IOException e) {
+            String msg = "写入文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "时出错";
+            ExceptionUtils.logWarn(log,e,false,msg);
+            len = 0;
+        } finally {
+            FileUtils.close(rf);
+        }
+
+        if ((pos > 0) && (len > 0)) {
+            long t = (System.currentTimeMillis() - t0);
+            assert (t > 0);
+            long rev = pos + len;
+            long cal = rev - pos0;
+            log.info("已写入" + StringUtils.calBytes(rev) + ":用时" + t + "ms，速度"
+                    + StringUtils.calSpeed(cal,t));
+        }
+        return len;
+
+    }
+
     /**
      * 下载文件分片内容
      *
@@ -274,6 +342,77 @@ public class LocalServer implements BasicFileServerInterface {
             long t = (System.currentTimeMillis() - t1);
             assert (t > 0);
             long c = result.getData().getPos() + result.getData().getSize();
+            log.info("已准备好" + StringUtils.calBytes(c) + "数据，用时" + t + "ms,速度" + StringUtils.calSpeed(c,t));
+        }
+        return result;
+    }
+
+    @Override
+    public BasicFileMultipartDTO readFile(BasicFileDTO file, long pos, int size) {
+        //检查参数
+        assert (file != null);
+        assert (file.getKey() != null);
+        assert (pos >= 0);
+
+        //补全参数
+        if (StringUtils.isEmpty(file.getScope())) file.setScope("");
+        if (size <= 0) size = DEFAULT_CHUNK_PER_SIZE;
+
+        //下载文件
+        BasicFileMultipartDTO result = BeanUtils.createFrom(file,BasicFileMultipartDTO.class);
+        RandomAccessFile rf = null;
+
+        if (pos == 0) {
+            t1 = System.currentTimeMillis();
+            log.info("=====>接收到下载请求:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t1)));
+        }
+
+        //打开文件
+        for (Integer i=0; i<MAX_TRY_TIMES; i++) {
+            try {
+                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + file.getScope() + "/" + file.getKey(), "r");
+                break;
+            } catch (IOException e) {
+                ExceptionUtils.logWarn(log, e, false, "打开文件" + FILE_SERVER_PATH + "/" + file.getScope() + "/" + file.getKey() + "出错");
+                try {
+                    Thread.sleep(TRY_DELAY);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                rf = null;
+            }
+        }
+
+        try {
+            if (rf == null) throw new IOException("打开文件" + FILE_SERVER_PATH + "/" + file.getScope() + "/" + file.getKey() + "出错");
+            //定位
+            long length = rf.length();
+            if (pos >= length) throw new IOException("读文件申请超出边界:file=" + FILE_SERVER_PATH + "/" + file.getScope() + "/" + file.getKey() + ",length=" + length + ",pos=" + pos);
+            assert (size > 0);
+            rf.seek(pos);
+            //读取文件内容
+            byte[] bytes = new byte[size];
+            int n = rf.read(bytes);
+            assert (n > 0) && (n <= size);
+            bytes = Arrays.copyOfRange(bytes,0,n);
+            size = n;
+
+            //设置返回参数
+            long posLast = pos + size;
+            result.setPos(pos);
+            result.setSize(size);
+            result.setData(bytes);
+        } catch (IOException e) {
+            ExceptionUtils.logError(log,e);
+            result = null;
+        } finally {
+            FileUtils.close(rf);
+        }
+
+        if (result != null) {
+            long t = (System.currentTimeMillis() - t1);
+            assert (t > 0);
+            long c = result.getPos() + result.getSize();
             log.info("已准备好" + StringUtils.calBytes(c) + "数据，用时" + t + "ms,速度" + StringUtils.calSpeed(c,t));
         }
         return result;

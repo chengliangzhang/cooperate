@@ -189,13 +189,14 @@ module zeroc {
     ["java:getset"]
     struct CreateNodeRequestDTO { //创建节点时的参数
         string pNodeId; //父节点编号
-        string fullName; //创建节点相对于父节点的全路径
+        short typeId; //目标节点类型Id
+        short fileTypeId; //目标文件类型Id
         string userId; //创建者的userId
         string dutyId; //创建者的dutyId
         string orgId; //创建组织的orgId
         string projectId; //项目Id
         string taskId; //任务Id
-        short typeId; //目标节点类型Id
+        string fullName; //创建节点相对于父节点的全路径
     };
 
 
@@ -232,7 +233,13 @@ module zeroc {
     };
 
     interface StorageService {
-        //正在实现的接口
+        //准备实现的接口
+        FileRequestDTO openFileForCurrent(string path); //打开文件准备上传及下载
+        FileRequestDTO openFileForAccount(AccountDTO account,string path); //打开文件准备上传及下载
+        bool closeFileForCurrent(string path); //关闭文件
+        bool closeFileForAccount(AccountDTO account,string path); //关闭文件准备上传及下载
+
+        //已经实现的接口
         SimpleNodeList listRootNodeForAccount(AccountDTO account); //获取指定账号的根节点
         SimpleNodeList listRootNodeForCurrent(); //获取当前账号的根节点
         SimpleNodeDTO getNodeByPathForAccount(AccountDTO account,string path); //根据路径和指定用户获取指定节点信息
@@ -243,11 +250,6 @@ module zeroc {
         SimpleNodeList listSubNodeByPathForCurrent(string path); //获取当前用户指定路径的一层子节点
         SimpleNodeList listSubNodeByPNodeIdForAccount(AccountDTO account,string pid); //获取指定用户指定节点的一层子节点
         SimpleNodeList listSubNodeByPNodeIdForCurrent(string pid); //获取当前用户指定节点的一层子节点
-        SimpleNodeList listSubNodeByPNodeIdAndPTypeIdForAccount(AccountDTO account,string pid,short pTypeId); //获取指定用户指定节点的一层子节点
-        SimpleNodeList listSubNodeByPNodeIdAndPTypeIdForCurrent(string pid,short pTypeId); //获取当前用户指定节点的一层子节点
-
-
-        //已经实现的接口
         string createNode(CreateNodeRequestDTO request); //创建树节点,返回目录树节点id
 
         bool isDirectoryEmpty(string path); //根据路径判断目录是否为空

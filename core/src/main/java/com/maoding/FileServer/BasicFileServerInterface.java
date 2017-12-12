@@ -46,4 +46,7 @@ public interface BasicFileServerInterface {
     void deleteFile(BasicFileDTO src);
     /** 通告文件服务器上传完毕 */
     default void finishUpload(BasicFileRequestDTO request){}
+
+    default int writeFile(BasicFileMultipartDTO data){return 0;};
+    default BasicFileMultipartDTO readFile(BasicFileDTO file, long pos, int size){return null;}
 }

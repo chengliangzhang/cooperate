@@ -48,6 +48,20 @@
         group by project.id
     </select>
 
+    <select id="getProjectNodeByRedundancyPath" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForProjectNodeTables"/>
+        from <include refid="ProjectNodeTables"/>
+        where<include refid="ProjectNodeTablesFilter"/>
+            <if test="userId != null">
+                and (member.account_id = #{userId})
+            </if>
+            <if test="path != null">
+                and (#{path} = concat('/',project.project_name))
+            </if>
+        group by project.id
+        limit 1
+    </select>
+
     <select id="listProjectRootNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
         select <include refid="SimpleNodeForProjectNodeTables"/>
         from <include refid="ProjectNodeTables"/>
@@ -108,6 +122,25 @@
         </if>
     </select>
 
+    <select id="getTaskNodeByRedundancyPath" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        <if test="path != null">
+            select * from (
+        </if>
+            select <include refid="SimpleNodeForTaskNodeTables"/>
+            from <include refid="TaskNodeTables"/>
+            where<include refid="TaskNodeTablesFilter"/>
+            group by task.id
+        <if test="path != null">
+            ) node
+            where
+                (#{path} like concat(node.path,'%'))
+                and ((#{path} = node.path) or (substring(#{path},char_length(node.path)+1,1) = '/'))
+            order by char_length(node.path) DESC
+        </if>
+        limit 1
+    </select>
+
+
     <select id="listTaskSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
         select <include refid="SimpleNodeForTaskNodeTables"/>
         from <include refid="TaskNodeTables"/>
@@ -117,6 +150,94 @@
             </if>
         group by task.id
     </select>
+
+    <sql id="StorageNodeTables">
+        maoding_storage st
+        left join maoding_const cst on (st.type_id = cst.value_id)
+        left join maoding_const pcst on (st.pid_type_id = pcst.value_id)
+    </sql>
+
+    <sql id="SimpleNodeForStorageNodeTables">
+        st.id
+        ,st.node_name as name
+        ,st.type_id as type_id
+        ,cst.content as type_name
+        ,st.pid as pid
+        ,st.pid_type_id AS p_type_id
+        ,pcst.content AS p_type_name
+        ,st.path as path
+        ,unix_timestamp(ifnull(st.create_time,0)) as create_time_stamp
+        ,date_format(ifnull(st.create_time,0),'%Y-%m-%a %T') as create_time_text
+        ,unix_timestamp(ifnull(st.last_modify_time,0)) as last_modify_time_stamp
+        ,date_format(ifnull(st.last_modify_time,0),'%Y-%m-%a %T') as last_modify_time_text
+        ,st.last_modify_user_id as last_modify_user_id
+        ,0 as is_read_only
+        ,st.file_length as file_length
+        ,if(st.type_id >= 10,1,0) as is_directory
+        ,0 as is_project_directory
+        ,0 as is_task_directory
+    </sql>
+
+    <sql id="StorageNodeTablesFilter">
+        (st.deleted = '0')
+        and (cst.classic_id = 14)
+        and (pcst.classic_id = 14)
+    </sql>
+
+    <select id="getStorageNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForStorageNodeTables"/>
+        from <include refid="StorageNodeTables"/>
+        where<include refid="StorageNodeTablesFilter"/>
+            <if test="nodeId != null">
+                and (st.id = #{nodeId})
+            </if>
+            <if test="userId != null">
+                and (st.last_modify_user_id = #{userId})
+            </if>
+            <if test="path != null">
+                and (st.path = #{path})
+            </if>
+        group by st.id
+    </select>
+
+    <select id="getStorageNodeByRedundancyPath" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForStorageNodeTables"/>
+        from <include refid="StorageNodeTables"/>
+        where<include refid="StorageNodeTablesFilter"/>
+            <if test="userId != null">
+                and (st.last_modify_user_id = #{userId})
+            </if>
+            <if test="path != null">
+                and (#{path} like concat(st.path,'%'))
+                and ((#{path} = st.path) or (substring(#{path},char_length(st.path)+1,1) = '/'))
+            </if>
+        group by st.id
+        order by char_length(st.path) DESC
+        limit 1
+    </select>
+
+    <select id="listStorageRootNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForStorageNodeTables"/>
+        from <include refid="StorageNodeTables"/>
+        where <include refid="StorageNodeTablesFilter"/>
+            and (st.pid is null)
+            <if test="userId != null">
+                and (st.last_modify_user_id = #{userId})
+            </if>
+        group by st.id
+    </select>
+
+    <select id="listStorageSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select <include refid="SimpleNodeForStorageNodeTables"/>
+        from <include refid="StorageNodeTables"/>
+        where <include refid="StorageNodeTablesFilter"/>
+            <if test="nodeId != null">
+                and (st.pid = #{nodeId})
+            </if>
+        group by st.id
+    </select>
+
+
 
     <sql id="maoding_company">
         SELECT

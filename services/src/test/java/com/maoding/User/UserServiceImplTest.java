@@ -36,12 +36,12 @@ public class UserServiceImplTest {
     @Test
     public void testLogin() throws Exception {
         LoginDTO loginDTO = new LoginDTO();
-        loginDTO.setAccountId("13680809727");
+//        loginDTO.setAccountId("13680809727");
+//        loginDTO.setPassword("123456");
+//        Assert.assertTrue(userService.login(loginDTO,null));
+//        Assert.assertEquals("5ffee496fa814ea4b6d26a9208b00a0b",userService.getCurrent(null).getId());
+        loginDTO.setCellphone("13922808965");
         loginDTO.setPassword("123456");
-        Assert.assertTrue(userService.login(loginDTO,null));
-        Assert.assertEquals("5ffee496fa814ea4b6d26a9208b00a0b",userService.getCurrent(null).getId());
-        loginDTO.setCellphone("1");
-        loginDTO.setPassword("1");
         Assert.assertTrue(userServicePrx.login(loginDTO));
         Assert.assertEquals("41d244733ec54f09a255836637f2b21d",userServicePrx.getCurrent().getId());
     }

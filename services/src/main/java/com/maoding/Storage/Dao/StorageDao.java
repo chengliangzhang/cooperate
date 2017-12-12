@@ -19,16 +19,22 @@ import java.util.List;
 @Repository
 public interface StorageDao extends BaseDao<StorageEntity> {
     /** 正在实现的接口 */
-    List<SimpleNodeDTO> listProjectRootNode(QueryNodeDTO query);
-    SimpleNodeDTO getProjectNode(QueryNodeDTO query);
-    SimpleNodeDTO getTaskNode(QueryNodeDTO query);
-    List<SimpleNodeDTO> listTaskSubNode(QueryNodeDTO query);
+    List<SimpleNodeDTO> listStorageRootNode(QueryNodeDTO query);
+    List<SimpleNodeDTO> listStorageSubNode(QueryNodeDTO query);
+    SimpleNodeDTO getStorageNode(QueryNodeDTO query);
+    SimpleNodeDTO getStorageNodeByRedundancyPath(QueryNodeDTO query);
+    SimpleNodeDTO getTaskNodeByRedundancyPath(QueryNodeDTO query);
+    SimpleNodeDTO getProjectNodeByRedundancyPath(QueryNodeDTO query);
 
     /** 准备实现的接口 */
     List<SimpleNodeDTO> listCompanyRootNode(QueryNodeDTO query);
     List<SimpleNodeDTO> listCompanySubNode(QueryNodeDTO query);
 
     /** 已经实现的接口 */
+    List<SimpleNodeDTO> listProjectRootNode(QueryNodeDTO query);
+    SimpleNodeDTO getProjectNode(QueryNodeDTO query);
+    SimpleNodeDTO getTaskNode(QueryNodeDTO query);
+    List<SimpleNodeDTO> listTaskSubNode(QueryNodeDTO query);
     /** 查找文件服务器上的文件使用记录 */
     List<CooperateFileDTO> listFileByScopeAndKey(CooperationQueryDTO query);
     /** 获取本目录信息 */
