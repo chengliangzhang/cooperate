@@ -8,17 +8,19 @@ package com.maoding.Const;
  */
 public interface StorageConst {
     //节点类型
-    final static Short STORAGE_NODE_TYPE_MAIN_FILE = 0;
-    final static Short STORAGE_NODE_TYPE_REF_FILE = 1;
-    final static Short STORAGE_NODE_TYPE_SYS_DIR = 10;
-    final static Short STORAGE_NODE_TYPE_PROJECT_DIR = 11;
-    final static Short STORAGE_NODE_TYPE_TASK_DIR = 12;
-    final static Short STORAGE_NODE_TYPE_ORG_DIR = 13;
-    final static Short STORAGE_NODE_TYPE_NOTICE_DIR = 14;
-    final static Short STORAGE_NODE_TYPE_EXP_DIR = 15;
-    final static Short STORAGE_NODE_TYPE_BACK_DIR = 16;
-    final static Short STORAGE_NODE_TYPE_RECYCLE_DIR = 17;
-    final static Short STORAGE_NODE_TYPE_USER_DIR = 18;
+    final static Short STORAGE_NODE_TYPE_UNKNOWN = 0;
+    final static Short STORAGE_NODE_TYPE_FILE_MAIN = 1;
+    final static Short STORAGE_NODE_TYPE_FILE_REF = 2;
+    final static Short STORAGE_NODE_TYPE_FILE_HIS = 3;
+    final static Short STORAGE_NODE_TYPE_DIR_UNKNOWN = 10;
+    final static Short STORAGE_NODE_TYPE_DIR_PROJECT = 11;
+    final static Short STORAGE_NODE_TYPE_DIR_TASK = 12;
+    final static Short STORAGE_NODE_TYPE_DIR_ORG = 13;
+    final static Short STORAGE_NODE_TYPE_DIR_NOTICE = 14;
+    final static Short STORAGE_NODE_TYPE_DIR_EXP = 15;
+    final static Short STORAGE_NODE_TYPE_DIR_BACK = 16;
+    final static Short STORAGE_NODE_TYPE_DIR_RECYCLE = 17;
+    final static Short STORAGE_NODE_TYPE_DIR_USER = 18;
 
     //文件类型
     final static Short STORAGE_FILE_TYPE_UNKNOWN = 0;
@@ -34,12 +36,11 @@ public interface StorageConst {
     final static Short STORAGE_FILE_TYPE_NOTICE = 21;
 
     //默认值
-    final static Short STORAGE_NODE_TYPE_FILE_MIN = STORAGE_NODE_TYPE_MAIN_FILE;
-    final static Short STORAGE_NODE_TYPE_FILE_MAX = STORAGE_NODE_TYPE_REF_FILE;
-    final static Short STORAGE_NODE_TYPE_DIR_MIN = STORAGE_NODE_TYPE_SYS_DIR;
-    final static Short STORAGE_NODE_TYPE_DIR_MAX = STORAGE_NODE_TYPE_USER_DIR;
+    final static Short STORAGE_NODE_TYPE_FILE_MIN = STORAGE_NODE_TYPE_FILE_MAIN;
+    final static Short STORAGE_NODE_TYPE_FILE_MAX = STORAGE_NODE_TYPE_FILE_REF;
+    final static Short STORAGE_NODE_TYPE_DIR_MIN = STORAGE_NODE_TYPE_DIR_UNKNOWN;
+    final static Short STORAGE_NODE_TYPE_DIR_MAX = STORAGE_NODE_TYPE_DIR_USER;
 
     //以下常量有可能被删除
-    final static Short STORAGE_NODE_TYPE_UNKNOWN = 99;
-    final static Short STORAGE_NODE_TYPE_HIS_FILE = 2;
+
 }

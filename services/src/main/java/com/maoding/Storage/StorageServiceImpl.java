@@ -305,9 +305,21 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public boolean isDirectoryEmpty(String path, Current current) {
         path = StringUtils.formatPath(path);
-        if (StringUtils.isSame(path,StringUtils.SPLIT_PATH)) path = null;
-        StorageEntity node = storageDao.getFirstChildNodeByPath(path);
-        return (node == null);
+
+        Integer cnt = 0;
+        QueryNodeDTO query = new QueryNodeDTO();
+        AccountDTO account = userService.getCurrent(current);
+        if (account != null) query.setUserId(account.getId());
+        query.setPath(path);
+
+        if (StringUtils.isEmpty(path) || StringUtils.isSame(StringUtils.SPLIT_PATH,path)){
+            cnt += storageDao.countProjectRootNode(query);
+            cnt += storageDao.countStorageRootNode(query);
+        } else {
+            cnt += storageDao.countTaskSubNode(query);
+            cnt += storageDao.countStorageSubNode(query);
+        }
+        return (cnt <= 0);
     }
 
     @Override
@@ -423,7 +435,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             CreateNodeRequestDTO request = new CreateNodeRequestDTO();
             request = BeanUtils.cleanProperties(request);
             request.setFullName(path);
-            request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+            request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
             request.setFileTypeId(StorageConst.STORAGE_FILE_TYPE_UNKNOWN);
             nodeId = createFile(request,current);
         } else if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_FILE_MAX){
@@ -469,7 +481,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         if (nodeEntity == null) {
             CreateNodeRequestDTO request = new CreateNodeRequestDTO();
             request.setFullName(path);
-            request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+            request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
             request.setUserId(userId);
             String nodeId = createFile(request,current);
             if (StringUtils.isEmpty(nodeId)) return null;
@@ -549,7 +561,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             //如果树节点缺失增加树节点
             if (StringUtils.isEmpty(fileInfo.getNodeId())){
                 nodeEntity = new StorageEntity();
-                nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+                nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
                 nodeEntity.setId(fileEntity.getId());
                 storageDao.insert(nodeEntity);
                 fileInfo.setNodeId(nodeEntity.getId());
@@ -560,7 +572,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         } else if (!StringUtils.isEmpty(fileInfo.getNodeId())) {
             //从数据库内读取文件所对应的scope和key
             nodeEntity = storageDao.selectById(fileInfo.getNodeId());
-            assert ((nodeEntity != null) && (nodeEntity.getId() != null) && (StorageConst.STORAGE_NODE_TYPE_MAIN_FILE.equals(nodeEntity.getTypeId())));
+            assert ((nodeEntity != null) && (nodeEntity.getId() != null) && (StorageConst.STORAGE_NODE_TYPE_FILE_MAIN.equals(nodeEntity.getTypeId())));
             fileEntity = storageFileDao.selectById(nodeEntity.getId());
             assert (fileEntity != null);
             fileInfo.setId(fileEntity.getId());
@@ -575,7 +587,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             storageFileDao.insert(fileEntity);
             fileInfo.setId(fileEntity.getId());
             nodeEntity = new StorageEntity();
-            nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+            nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
             nodeEntity.setId(fileEntity.getId());
             storageDao.insert(nodeEntity);
             fileInfo.setNodeId(nodeEntity.getId());
@@ -601,7 +613,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         //补全参数
         if ((fileInfo.getId() == null) && (fileInfo.getNodeId() != null)){
             StorageEntity nodeEntity = storageDao.selectById(fileInfo.getNodeId());
-            assert ((nodeEntity != null) && (nodeEntity.getId() != null) && (StorageConst.STORAGE_NODE_TYPE_MAIN_FILE.equals(nodeEntity.getTypeId())));
+            assert ((nodeEntity != null) && (nodeEntity.getId() != null) && (StorageConst.STORAGE_NODE_TYPE_FILE_MAIN.equals(nodeEntity.getTypeId())));
             fileInfo.setId(nodeEntity.getId());
         }
         assert (!StringUtils.isEmpty(fileInfo.getId()));
@@ -801,15 +813,17 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public String createFile(CreateNodeRequestDTO request, Current current) {
-        assert ((request != null) && (request.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_FILE_MAX));
+        assert (request != null);
+        if (request.getTypeId() == StorageConst.STORAGE_NODE_TYPE_UNKNOWN) request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
+        assert (StorageConst.STORAGE_NODE_TYPE_FILE_MIN <= request.getTypeId()) && (request.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_FILE_MAX);
         return createNode(request,current);
     }
 
     @Override
     public String createDirectory(CreateNodeRequestDTO request, Current current) {
-        assert ((request != null) &&
-                (StorageConst.STORAGE_NODE_TYPE_FILE_MAX) < request.getTypeId() &&
-                (request.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_DIR_MAX));
+        assert (request != null);
+        if (request.getTypeId() == StorageConst.STORAGE_NODE_TYPE_UNKNOWN) request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
+        assert (StorageConst.STORAGE_NODE_TYPE_DIR_MIN <= request.getTypeId()) && (request.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_DIR_MAX);
         return createNode(request,current);
     }
 
@@ -821,9 +835,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         node.setCreateTimeText(StringUtils.getTimeStamp(entity.getCreateTime(),StringUtils.DEFAULT_STAMP_FORMAT));
         node.setLastModifyTimeStamp(entity.getLastModifyTime().getTime());
         node.setLastModifyTimeText(StringUtils.getTimeStamp(entity.getLastModifyTime(),StringUtils.DEFAULT_STAMP_FORMAT));
-        if (StorageConst.STORAGE_NODE_TYPE_USER_DIR.equals(node.getTypeId())){
+        if (StorageConst.STORAGE_NODE_TYPE_DIR_USER.equals(node.getTypeId())){
             node.setTypeName("用户目录");
-        } else if (StorageConst.STORAGE_NODE_TYPE_MAIN_FILE.equals(node.getTypeId())){
+        } else if (StorageConst.STORAGE_NODE_TYPE_FILE_MAIN.equals(node.getTypeId())){
             node.setTypeName("主文件");
         }
         return node;
@@ -863,7 +877,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         if (rootNode == null) rootNode = storageDao.getProjectNodeByRedundancyPath(query);
         if ((rootNode != null) && (StringUtils.isSame(rootNode.getPath(),fullName))) return rootNode.getId();
         String pid = null;
-        Short pTypeId = StorageConst.STORAGE_NODE_TYPE_USER_DIR;
+        Short pTypeId = StorageConst.STORAGE_NODE_TYPE_DIR_USER;
         StringBuilder path = new StringBuilder();
         if (rootNode != null) {
             pid = rootNode.getId();
@@ -892,11 +906,11 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             pathNode.setPath(path.toString());
             pathNode.setNodeName(nodeNameArray[i]);
             if (request.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_FILE_MAX){
-                pathNode.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+                pathNode.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
             }
             nodeList.add(pathNode);
             pid = pathNode.getId();
-            pTypeId = StorageConst.STORAGE_NODE_TYPE_USER_DIR;
+            pTypeId = StorageConst.STORAGE_NODE_TYPE_DIR_USER;
         }
 
         //建立叶节点
@@ -1163,7 +1177,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         fileEntity.setFileVersion(version);
         storageFileDao.insert(fileEntity);
         StorageEntity nodeEntity = new StorageEntity();
-        nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_HIS_FILE);
+        nodeEntity.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_HIS);
         nodeEntity.setId(fileEntity.getId());
         nodeEntity.setPid(nodeId);
         String nodePath = nodeEntity.getId();

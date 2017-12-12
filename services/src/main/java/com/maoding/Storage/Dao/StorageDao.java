@@ -19,18 +19,22 @@ import java.util.List;
 @Repository
 public interface StorageDao extends BaseDao<StorageEntity> {
     /** 正在实现的接口 */
-    List<SimpleNodeDTO> listStorageRootNode(QueryNodeDTO query);
-    List<SimpleNodeDTO> listStorageSubNode(QueryNodeDTO query);
-    SimpleNodeDTO getStorageNode(QueryNodeDTO query);
-    SimpleNodeDTO getStorageNodeByRedundancyPath(QueryNodeDTO query);
-    SimpleNodeDTO getTaskNodeByRedundancyPath(QueryNodeDTO query);
-    SimpleNodeDTO getProjectNodeByRedundancyPath(QueryNodeDTO query);
+    Integer countProjectRootNode(QueryNodeDTO query);
+    Integer countTaskSubNode(QueryNodeDTO query);
+    Integer countStorageRootNode(QueryNodeDTO query);
+    Integer countStorageSubNode(QueryNodeDTO query);
 
     /** 准备实现的接口 */
     List<SimpleNodeDTO> listCompanyRootNode(QueryNodeDTO query);
     List<SimpleNodeDTO> listCompanySubNode(QueryNodeDTO query);
 
     /** 已经实现的接口 */
+    List<SimpleNodeDTO> listStorageRootNode(QueryNodeDTO query);
+    List<SimpleNodeDTO> listStorageSubNode(QueryNodeDTO query);
+    SimpleNodeDTO getStorageNode(QueryNodeDTO query);
+    SimpleNodeDTO getStorageNodeByRedundancyPath(QueryNodeDTO query);
+    SimpleNodeDTO getTaskNodeByRedundancyPath(QueryNodeDTO query);
+    SimpleNodeDTO getProjectNodeByRedundancyPath(QueryNodeDTO query);
     List<SimpleNodeDTO> listProjectRootNode(QueryNodeDTO query);
     SimpleNodeDTO getProjectNode(QueryNodeDTO query);
     SimpleNodeDTO getTaskNode(QueryNodeDTO query);

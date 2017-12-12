@@ -72,6 +72,15 @@
         group by project.id
     </select>
 
+    <select id="countProjectRootNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="java.lang.Integer">
+        select count(distinct project.id)
+        from <include refid="ProjectNodeTables"/>
+        where <include refid="ProjectNodeTablesFilter"/>
+            <if test="userId != null">
+                and (member.account_id = #{userId})
+            </if>
+    </select>
+
     <sql id="TaskNodeTables">
         maoding_web_project_task task
         left join maoding_web_project_task task_parent ON (task_parent.id=task.task_pid)
@@ -144,7 +153,6 @@
         limit 1
     </select>
 
-
     <select id="listTaskSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
         select <include refid="SimpleNodeForTaskNodeTables"/>
         from <include refid="TaskNodeTables"/>
@@ -153,6 +161,15 @@
                 and (ifnull(task.task_pid,task.project_id) = #{nodeId})
             </if>
         group by task.id
+    </select>
+
+    <select id="countTaskSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="java.lang.Integer">
+        select count(disctinct task.id)
+        from <include refid="TaskNodeTables"/>
+        where <include refid="TaskNodeTablesFilter"/>
+            <if test="nodeId != null">
+                and (ifnull(task.task_pid,task.project_id) = #{nodeId})
+            </if>
     </select>
 
     <sql id="StorageNodeTables">
@@ -231,6 +248,16 @@
         group by st.id
     </select>
 
+    <select id="countStorageRootNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="java.lang.Integer">
+        select count(distinct st.id)
+        from <include refid="StorageNodeTables"/>
+        where <include refid="StorageNodeTablesFilter"/>
+            and (st.pid is null)
+            <if test="userId != null">
+                and (st.last_modify_user_id = #{userId})
+            </if>
+    </select>
+
     <select id="listStorageSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
         select <include refid="SimpleNodeForStorageNodeTables"/>
         from <include refid="StorageNodeTables"/>
@@ -241,7 +268,24 @@
         group by st.id
     </select>
 
+    <select id="countStorageSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="java.lang.Integer">
+        select count(distinct st.id)
+        from <include refid="StorageNodeTables"/>
+        where <include refid="StorageNodeTablesFilter"/>
+            <if test="nodeId != null">
+                and (st.pid = #{nodeId})
+            </if>
+    </select>
 
+    <select id="countStorageSubNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
+        select count(distinct st.id)
+        from <include refid="StorageNodeTables"/>
+        where <include refid="StorageNodeTablesFilter"/>
+            <if test="nodeId != null">
+                and (st.pid = #{nodeId})
+            </if>
+        group by st.id
+    </select>
 
     <sql id="maoding_company">
         SELECT

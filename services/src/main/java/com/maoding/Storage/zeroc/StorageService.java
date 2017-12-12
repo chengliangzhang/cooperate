@@ -22,9 +22,7 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageService extends com.zeroc.Ice.Object
 {
-    com.maoding.FileServer.zeroc.FileRequestDTO openFileForCurrent(String path, com.zeroc.Ice.Current current);
-
-    com.maoding.FileServer.zeroc.FileRequestDTO openFileForAccount(com.maoding.User.zeroc.AccountDTO account, String path, com.zeroc.Ice.Current current);
+    boolean isDirectoryEmpty(String path, com.zeroc.Ice.Current current);
 
     boolean closeFileForCurrent(String path, com.zeroc.Ice.Current current);
 
@@ -52,7 +50,9 @@ public interface StorageService extends com.zeroc.Ice.Object
 
     String createNode(CreateNodeRequestDTO request, com.zeroc.Ice.Current current);
 
-    boolean isDirectoryEmpty(String path, com.zeroc.Ice.Current current);
+    com.maoding.FileServer.zeroc.FileRequestDTO openFileForCurrent(String path, com.zeroc.Ice.Current current);
+
+    com.maoding.FileServer.zeroc.FileRequestDTO openFileForAccount(com.maoding.User.zeroc.AccountDTO account, String path, com.zeroc.Ice.Current current);
 
     boolean setFileLength(String path, long fileLength, com.zeroc.Ice.Current current);
 
@@ -165,32 +165,16 @@ public interface StorageService extends com.zeroc.Ice.Object
         return "::zeroc::StorageService";
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_openFileForCurrent(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_isDirectoryEmpty(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         String iceP_path;
         iceP_path = istr.readString();
         inS.endReadParams();
-        com.maoding.FileServer.zeroc.FileRequestDTO ret = obj.openFileForCurrent(iceP_path, current);
+        boolean ret = obj.isDirectoryEmpty(iceP_path, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.FileServer.zeroc.FileRequestDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_openFileForAccount(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        String iceP_path;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_path = istr.readString();
-        inS.endReadParams();
-        com.maoding.FileServer.zeroc.FileRequestDTO ret = obj.openFileForAccount(iceP_account, iceP_path, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.FileServer.zeroc.FileRequestDTO.ice_write(ostr, ret);
+        ostr.writeBool(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -384,16 +368,32 @@ public interface StorageService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_isDirectoryEmpty(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_openFileForCurrent(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         String iceP_path;
         iceP_path = istr.readString();
         inS.endReadParams();
-        boolean ret = obj.isDirectoryEmpty(iceP_path, current);
+        com.maoding.FileServer.zeroc.FileRequestDTO ret = obj.openFileForCurrent(iceP_path, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
+        com.maoding.FileServer.zeroc.FileRequestDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_openFileForAccount(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        String iceP_path;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_path = istr.readString();
+        inS.endReadParams();
+        com.maoding.FileServer.zeroc.FileRequestDTO ret = obj.openFileForAccount(iceP_account, iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.FileServer.zeroc.FileRequestDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }

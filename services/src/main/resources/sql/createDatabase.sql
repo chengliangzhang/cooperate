@@ -207,9 +207,11 @@ BEGIN
   delete from maoding_const where classic_id = 14;
 	-- 存储节点类型
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,14,'存储节点类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,0,'主文件',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,1,'参考文件',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,10,'未定义系统目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,0,'未知类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,1,'主文件',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,2,'参考文件',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,3,'历史文件',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,10,'未知类型目录',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,11,'项目目录',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,12,'任务目录',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,13,'组织目录',null);
