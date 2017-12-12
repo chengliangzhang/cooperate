@@ -234,8 +234,7 @@ module zeroc {
 
     interface StorageService {
         //准备实现的接口
-        FileRequestDTO openFileForCurrent(string path); //打开文件准备上传及下载
-        FileRequestDTO openFileForAccount(AccountDTO account,string path); //打开文件准备上传及下载
+        bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
         bool closeFileForCurrent(string path); //关闭文件
         bool closeFileForAccount(AccountDTO account,string path); //关闭文件准备上传及下载
 
@@ -251,8 +250,9 @@ module zeroc {
         SimpleNodeList listSubNodeByPNodeIdForAccount(AccountDTO account,string pid); //获取指定用户指定节点的一层子节点
         SimpleNodeList listSubNodeByPNodeIdForCurrent(string pid); //获取当前用户指定节点的一层子节点
         string createNode(CreateNodeRequestDTO request); //创建树节点,返回目录树节点id
+        FileRequestDTO openFileForCurrent(string path); //打开文件准备上传及下载
+        FileRequestDTO openFileForAccount(AccountDTO account,string path); //打开文件准备上传及下载
 
-        bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
         bool setFileLength(string path,long fileLength); //调整文件大小
         bool canBeDeleted(string path); //判断节点是否可被删除
         long getUsage(StorageQueryDTO query); //获取已使用空间

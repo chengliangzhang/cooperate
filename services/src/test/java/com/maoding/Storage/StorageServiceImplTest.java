@@ -57,7 +57,7 @@ public class StorageServiceImplTest {
     private StorageServicePrx storageServicePrx = StorageServiceImpl.getInstance("192.168.17.168");
     @Autowired
     private FileService fileService;
-    private FileServicePrx fileServicePrx = FileServiceImpl.getInstance();
+    private FileServicePrx fileServicePrx = FileServiceImpl.getInstance("192.168.17.168");
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
     private Integer fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
@@ -68,19 +68,19 @@ public class StorageServiceImplTest {
     public void testMoveNode() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/123");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         storageService.createNode(request,null);
         request.setFullName("/456");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         storageService.createNode(request,null);
         request.setFullName("/456/789/321");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         storageService.createNode(request,null);
         request.setFullName("/456/789/654");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         storageService.createNode(request,null);
         request.setFullName("/456/789/987");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         storageService.createNode(request,null);
         Assert.assertTrue(storageService.moveNode("\\456\\789","\\789",null));
         Assert.assertNotNull(storageService.getSimpleNodeInfo("/789",null));
@@ -92,10 +92,10 @@ public class StorageServiceImplTest {
     public void testCreateNode() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/项目20171115/项目前期/自定义目录");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         Assert.assertNotNull(storageService.createNode(request,null));
         request.setFullName("/项目20171115/项目前期/自定义文件");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
         request.setFileTypeId(StorageConst.STORAGE_FILE_TYPE_UNKNOWN);
         Assert.assertNotNull(storageService.createNode(request,null));
     }
@@ -105,10 +105,10 @@ public class StorageServiceImplTest {
     public void testDeleteNode() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/x1/x11/x111");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
         storageService.createNode(request,null);
         request.setFullName("/x1/x11/x112");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         storageService.createNode(request,null);
         Assert.assertTrue(storageService.deleteNode("\\x1\\x11\\x111",true,null));
         Assert.assertNotNull(storageService.getSimpleNodeInfo("\\x1",null));
@@ -119,7 +119,7 @@ public class StorageServiceImplTest {
     public void testGetFileInfo() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/x/y/z");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
         storageService.createNode(request,null);
         Assert.assertTrue(storageService.getFileNodeInfo("\\x\\y\\z",null) != null);
         Assert.assertFalse(storageService.getFileNodeInfo("\\abcde",null) != null);
@@ -130,7 +130,7 @@ public class StorageServiceImplTest {
     public void testGetDirInfo() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/a/b/d");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         storageService.createNode(request,null);
         Assert.assertTrue(storageServicePrx.getDirNodeInfo("\\a\\b\\d").getIsValid());
         Assert.assertFalse(storageServicePrx.getDirNodeInfo("\\abcde").getIsValid());
@@ -139,11 +139,15 @@ public class StorageServiceImplTest {
     /** 获取当前用户一层子节点信息 */
     @Test
     public void testListSubNode() throws Exception {
+        List<SimpleNodeDTO> list = null;
+        SimpleNodeDTO node = null;
         AccountDTO account = new AccountDTO();
+
+        //本地服务测试
         account.setId("5ffee496fa814ea4b6d26a9208b00a0b");
-        List<SimpleNodeDTO> list = storageService.listSubNodeByPathForAccount(account,"/",null);
+        list = storageService.listSubNodeByPathForAccount(account,"/",null);
         Assert.assertNotNull(list);
-        SimpleNodeDTO node = storageService.getNodeByPathForAccount(account,"/项目20171115",null);
+        node = storageService.getNodeByPathForAccount(account,"/项目20171115",null);
         Assert.assertNotNull(node);
         list = storageService.listSubNodeByPathForAccount(account,"/项目20171115",null);
         Assert.assertNotNull(list);
@@ -151,6 +155,21 @@ public class StorageServiceImplTest {
         Assert.assertNotNull(node);
         list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期",null);
         Assert.assertNotNull(list);
+        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期/前期 01",null);
+        Assert.assertNotNull(list);
+
+        //远程服务测试
+//        account.setId("41d244733ec54f09a255836637f2b21d");
+//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/");
+//        Assert.assertNotNull(list);
+//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试");
+//        Assert.assertNotNull(list);
+//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段");
+//        Assert.assertNotNull(list);
+//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段/给排水施工图");
+//        Assert.assertNotNull(list);
+//        node = storageServicePrx.getNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段/给排水施工图/给排水系统图");
+//        Assert.assertNotNull(node);
     }
 
     /** 锁定文件 */
@@ -160,7 +179,7 @@ public class StorageServiceImplTest {
         final String USER_ID = "123";
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName(NODE_NAME);
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
         storageService.createNode(request,null);
         Boolean b = storageService.isLocking(NODE_NAME,null);
         Assert.assertFalse(b);
@@ -180,7 +199,7 @@ public class StorageServiceImplTest {
     public void testCanBeDeleted() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/x/y/z");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
         storageService.createNode(request,null);
         Boolean b = storageService.canBeDeleted("/x/y/z",null);
         Assert.assertTrue(b);
@@ -193,7 +212,7 @@ public class StorageServiceImplTest {
     public void testSetFileLength() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/x/y/z");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_MAIN_FILE);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
         storageService.createNode(request,null);
         Boolean b = storageService.setFileLength("/x/y/z",100,null);
         Assert.assertTrue(b);
@@ -202,16 +221,8 @@ public class StorageServiceImplTest {
     /** 判断目录是否为空 */
     @Test
     public void testIsDirectoryEmpty() throws Exception {
-        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
-        request.setFullName("/c1");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
-        storageService.createDirectory(request, null);
-        request.setFullName("/c11");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
-        storageService.createDirectory(request, null);
-        Assert.assertTrue(storageService.isDirectoryEmpty("/c1",null));
         Assert.assertFalse(storageService.isDirectoryEmpty("/",null));
-        Assert.assertTrue(storageService.isDirectoryEmpty("/x/x/x",null));
+        Assert.assertTrue(storageService.isDirectoryEmpty("/项目20171115/项目前期/前期 01",null));
     }
 
     /** 获取树节点信息 */
@@ -219,7 +230,7 @@ public class StorageServiceImplTest {
     public void testGetSimpleNodeInfo() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setFullName("/c/d/e");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         storageService.createDirectory(request,null);
         SimpleNodeDTO dto = storageService.getSimpleNodeInfo("/c/d",null);
         Assert.assertNotNull(dto);
@@ -273,7 +284,7 @@ public class StorageServiceImplTest {
     public void testCreateDirectory() throws Exception {
         CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
         request.setFullName("//a");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_SYS_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_UNKNOWN);
         String nodeId = storageService.createDirectory(request,null);
         request.setPNodeId(nodeId);
         request.setFullName("b");
@@ -285,7 +296,7 @@ public class StorageServiceImplTest {
     public void testDeleteDirectory() throws Exception {
         CreateNodeRequestDTO request = BeanUtils.cleanProperties(new CreateNodeRequestDTO());
         request.setFullName("m/n");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_USER_DIR);
+        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         String fullPath = storageService.createDirectory(request,null);
         String nodeId = StringUtils.getLastSplit(fullPath,StringUtils.SPLIT_ID);
         boolean b = storageService.deleteDirectory(nodeId,true,null);
@@ -347,13 +358,13 @@ public class StorageServiceImplTest {
     public void testWriteFileForLocal() throws Exception {
         fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
         fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
-        callServiceMethod = CALL_METHOD_LOCAL;
+//        callServiceMethod = CALL_METHOD_LOCAL;
+//        writeFile(testUploadLocalFile,StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile));
+        callServiceMethod = CALL_METHOD_ICE;
         writeFile(testUploadLocalFile,StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile));
-//        upload(FileServerConst.FILE_SERVER_MODE_RPC);
-//        upload(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
     }
 
-    public void writeFile(String localFile, String path) throws Exception {
+    private void writeFile(String localFile, String path) throws Exception {
         AccountDTO account = new AccountDTO();
         account.setId(localUserId);
 
@@ -362,6 +373,9 @@ public class StorageServiceImplTest {
         if (CALL_METHOD_LOCAL.equals(callServiceMethod)) {
             fileService.setFileServerType(fileServerType, null);
             fileRequestDTO = storageService.openFileForAccount(account,path,null);
+        } else if (CALL_METHOD_ICE.equals(callServiceMethod)) {
+            fileServicePrx.setFileServerType(fileServerType);
+            fileRequestDTO = storageServicePrx.openFileForAccount(account,path);
         }
 
         //实际写文件内容
@@ -370,6 +384,8 @@ public class StorageServiceImplTest {
         //释放文件服务器接口
         if (CALL_METHOD_LOCAL.equals(callServiceMethod)) {
             storageService.closeFileForAccount(account,path,null);
+        } else if (CALL_METHOD_ICE.equals(callServiceMethod)) {
+            storageServicePrx.closeFileForAccount(account,path);
         }
     }
 
@@ -389,6 +405,10 @@ public class StorageServiceImplTest {
                 fileService.setFileServerType(fileServerType,null);
                 if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode()))
                     realSize = writeLocalLocal(multipart);
+            } else if (CALL_METHOD_ICE.equals(callServiceMethod)){
+                fileServicePrx.setFileServerType(fileServerType);
+                if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode()))
+                    realSize = writeIceLocal(multipart);
             }
             Assert.assertEquals(realSize,multipart.getSize());
         }
@@ -397,6 +417,10 @@ public class StorageServiceImplTest {
 
     private int writeLocalLocal(FileMultipartDTO multipart) throws Exception {
         return fileService.writeFile(multipart,null);
+    }
+
+    private int writeIceLocal(FileMultipartDTO multipart) throws Exception {
+        return fileServicePrx.writeFile(multipart);
     }
 
     private FileMultipartDTO createFileMultipartDTO(FileRequestDTO fileRequestDTO, RandomAccessFile in, long pos, int size) throws Exception {
@@ -417,7 +441,9 @@ public class StorageServiceImplTest {
     public void testReadFileForLocal() throws Exception {
         fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
         fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
-        callServiceMethod = CALL_METHOD_LOCAL;
+//        callServiceMethod = CALL_METHOD_LOCAL;
+//        readFile(StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile),testDownloadLocalFile);
+        callServiceMethod = CALL_METHOD_ICE;
         readFile(StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile),testDownloadLocalFile);
     }
 
@@ -430,6 +456,9 @@ public class StorageServiceImplTest {
         if (CALL_METHOD_LOCAL.equals(callServiceMethod)) {
             fileService.setFileServerType(fileServerType, null);
             fileRequestDTO = storageService.openFileForAccount(account,path,null);
+        } else if (CALL_METHOD_ICE.equals(callServiceMethod)) {
+            fileServicePrx.setFileServerType(fileServerType);
+            fileRequestDTO = storageServicePrx.openFileForAccount(account,path);
         }
 
         //实际读文件内容
@@ -446,6 +475,10 @@ public class StorageServiceImplTest {
                 fileService.setFileServerType(fileServerType,null);
                 if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode()))
                     multipart = readLocalLocal(fileDTO,pos,size);
+            } else if (CALL_METHOD_ICE.equals(callServiceMethod)){
+                fileServicePrx.setFileServerType(fileServerType);
+                if (FileServerConst.FILE_SERVER_MODE_RPC.equals(fileRequestDTO.getMode()))
+                    multipart = readIceLocal(fileDTO,pos,size);
             }
 
             if (multipart == null) break;
@@ -468,6 +501,10 @@ public class StorageServiceImplTest {
 
     private FileMultipartDTO readLocalLocal(FileDTO fileDTO,long pos,int size) throws Exception{
         return fileService.readFile(fileDTO,pos,size,null);
+    }
+
+    private FileMultipartDTO readIceLocal(FileDTO fileDTO,long pos,int size) throws Exception{
+        return fileServicePrx.readFile(fileDTO,pos,size);
     }
 
     @Test

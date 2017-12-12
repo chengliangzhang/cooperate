@@ -29,8 +29,8 @@ public class LocalServer implements BasicFileServerInterface {
     /** 日志对象 */
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private static final Integer MAX_TRY_TIMES = 5;
-    private static final Integer TRY_DELAY = 50;
+    private static final Integer MAX_TRY_TIMES = 6;
+    private static final Integer TRY_DELAY = 100;
 
     public static final String FILE_NAME_SPLIT = "_";
     public static final String BASE_DIR_NAME = "scope";
@@ -153,7 +153,7 @@ public class LocalServer implements BasicFileServerInterface {
         if (!((new File(FILE_SERVER_PATH + "/" + multipart.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +multipart.getScope())).mkdirs();
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
-                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rw");
+                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rws");
                 break;
             } catch (IOException e) {
                 ExceptionUtils.logWarn(log,e,false,"打开文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "出错");
@@ -184,14 +184,14 @@ public class LocalServer implements BasicFileServerInterface {
             FileUtils.close(rf);
         }
 
-        if (pos > 0) {
-            long t = (System.currentTimeMillis() - t0);
-            assert (t > 0);
-            long rev = pos + len;
-            long cal = rev - pos0;
-            log.info("已写入" + StringUtils.calBytes(rev) + ":用时" + t + "ms，速度"
-                    + StringUtils.calSpeed(cal,t));
-        }
+//        if (pos > 0) {
+//            long t = (System.currentTimeMillis() - t0);
+//            assert (t > 0);
+//            long rev = pos + len;
+//            long cal = rev - pos0;
+//            log.info("已写入" + StringUtils.calBytes(rev) + ":用时" + t + "ms，速度"
+//                    + StringUtils.calSpeed(cal,t));
+//        }
         return result;
     }
 
@@ -215,16 +215,16 @@ public class LocalServer implements BasicFileServerInterface {
         int len = multipart.getSize();
         long pos = multipart.getPos();
 
-        if (pos == 0) {
-            t0 = System.currentTimeMillis();
-            pos0 = pos + len;
-            log.info("=====>接收到第一个数据包:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t0)));
-        }
+//        if (pos == 0) {
+//            t0 = System.currentTimeMillis();
+//            pos0 = pos + len;
+//            log.info("=====>接收到第一个数据包:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t0)));
+//        }
 
         if (!((new File(FILE_SERVER_PATH + "/" + multipart.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +multipart.getScope())).mkdirs();
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
-                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rw");
+                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rws");
                 break;
             } catch (IOException e) {
                 ExceptionUtils.logWarn(log,e,false,"打开文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "出错");
@@ -251,14 +251,14 @@ public class LocalServer implements BasicFileServerInterface {
             FileUtils.close(rf);
         }
 
-        if ((pos > 0) && (len > 0)) {
-            long t = (System.currentTimeMillis() - t0);
-            assert (t > 0);
-            long rev = pos + len;
-            long cal = rev - pos0;
-            log.info("已写入" + StringUtils.calBytes(rev) + ":用时" + t + "ms，速度"
-                    + StringUtils.calSpeed(cal,t));
-        }
+//        if ((pos > 0) && (len > 0)) {
+//            long t = (System.currentTimeMillis() - t0);
+//            assert (t > 0);
+//            long rev = pos + len;
+//            long cal = rev - pos0;
+//            log.info("已写入" + StringUtils.calBytes(rev) + ":用时" + t + "ms，速度"
+//                    + StringUtils.calSpeed(cal,t));
+//        }
         return len;
 
     }

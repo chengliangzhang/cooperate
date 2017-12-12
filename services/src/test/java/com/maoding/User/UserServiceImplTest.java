@@ -40,7 +40,7 @@ public class UserServiceImplTest {
 //        loginDTO.setPassword("123456");
 //        Assert.assertTrue(userService.login(loginDTO,null));
 //        Assert.assertEquals("5ffee496fa814ea4b6d26a9208b00a0b",userService.getCurrent(null).getId());
-        loginDTO.setCellphone("13922808965");
+        loginDTO.setCellphone("13680809727");
         loginDTO.setPassword("123456");
         Assert.assertTrue(userServicePrx.login(loginDTO));
         Assert.assertEquals("41d244733ec54f09a255836637f2b21d",userServicePrx.getCurrent().getId());

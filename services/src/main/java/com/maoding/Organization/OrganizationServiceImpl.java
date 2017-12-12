@@ -1,15 +1,10 @@
 package com.maoding.Organization;
 
 import com.maoding.Base.BaseLocalService;
-import com.maoding.Organization.Dao.OrganizationDao;
-import com.maoding.Organization.Entity.OrganizationEntity;
 import com.maoding.Organization.zeroc.*;
-import com.maoding.Utils.BeanUtils;
 import com.zeroc.Ice.Current;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,8 +15,8 @@ import java.util.List;
  */
 @Service("organizationService")
 public class OrganizationServiceImpl extends BaseLocalService<OrganizationServicePrx> implements OrganizationService,OrganizationServicePrx {
-    @Autowired
-    OrganizationDao organizationDao;
+//    @Autowired
+//    OrganizationDao organizationDao;
 
     /** 同步方式获取业务接口代理对象 */
     public static OrganizationServicePrx getInstance(String adapterName) {
@@ -44,13 +39,14 @@ public class OrganizationServiceImpl extends BaseLocalService<OrganizationServic
 
     @Override
     public List<CompanyDTO> listCompanyByUserId(String userId, Current current) {
-        List<OrganizationEntity> entityList = organizationDao.selectAll();
-        List<CompanyDTO> list = new ArrayList<>();
-        for (OrganizationEntity entity : entityList){
-            CompanyDTO dto = new CompanyDTO();
-            BeanUtils.copyProperties(entity,dto);
-            list.add(dto);
-        }
-        return list;
+        return null;
+//        List<OrganizationEntity> entityList = organizationDao.selectAll();
+//        List<CompanyDTO> list = new ArrayList<>();
+//        for (OrganizationEntity entity : entityList){
+//            CompanyDTO dto = new CompanyDTO();
+//            BeanUtils.copyProperties(entity,dto);
+//            list.add(dto);
+//        }
+//        return list;
     }
 }

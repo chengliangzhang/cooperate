@@ -22,68 +22,34 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
 {
-    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForCurrent(String path)
+    default boolean isDirectoryEmpty(String path)
     {
-        return openFileForCurrent(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return isDirectoryEmpty(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForCurrent(String path, java.util.Map<String, String> context)
+    default boolean isDirectoryEmpty(String path, java.util.Map<String, String> context)
     {
-        return _iceI_openFileForCurrentAsync(path, context, true).waitForResponse();
+        return _iceI_isDirectoryEmptyAsync(path, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForCurrentAsync(String path)
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isDirectoryEmptyAsync(String path)
     {
-        return _iceI_openFileForCurrentAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_isDirectoryEmptyAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForCurrentAsync(String path, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isDirectoryEmptyAsync(String path, java.util.Map<String, String> context)
     {
-        return _iceI_openFileForCurrentAsync(path, context, false);
+        return _iceI_isDirectoryEmptyAsync(path, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> _iceI_openFileForCurrentAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_isDirectoryEmptyAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "openFileForCurrent", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "isDirectoryEmpty", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      ostr.writeString(iceP_path);
                  }, istr -> {
-                     com.maoding.FileServer.zeroc.FileRequestDTO ret;
-                     ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
-                     return ret;
-                 });
-        return f;
-    }
-
-    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForAccount(com.maoding.User.zeroc.AccountDTO account, String path)
-    {
-        return openFileForAccount(account, path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForAccount(com.maoding.User.zeroc.AccountDTO account, String path, java.util.Map<String, String> context)
-    {
-        return _iceI_openFileForAccountAsync(account, path, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String path)
-    {
-        return _iceI_openFileForAccountAsync(account, path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String path, java.util.Map<String, String> context)
-    {
-        return _iceI_openFileForAccountAsync(account, path, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> _iceI_openFileForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, String iceP_path, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "openFileForAccount", null, sync, null);
-        f.invoke(true, context, null, ostr -> {
-                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
-                     ostr.writeString(iceP_path);
-                 }, istr -> {
-                     com.maoding.FileServer.zeroc.FileRequestDTO ret;
-                     ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
+                     boolean ret;
+                     ret = istr.readBool();
                      return ret;
                  });
         return f;
@@ -521,34 +487,68 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default boolean isDirectoryEmpty(String path)
+    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForCurrent(String path)
     {
-        return isDirectoryEmpty(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return openFileForCurrent(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default boolean isDirectoryEmpty(String path, java.util.Map<String, String> context)
+    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForCurrent(String path, java.util.Map<String, String> context)
     {
-        return _iceI_isDirectoryEmptyAsync(path, context, true).waitForResponse();
+        return _iceI_openFileForCurrentAsync(path, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isDirectoryEmptyAsync(String path)
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForCurrentAsync(String path)
     {
-        return _iceI_isDirectoryEmptyAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_openFileForCurrentAsync(path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isDirectoryEmptyAsync(String path, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForCurrentAsync(String path, java.util.Map<String, String> context)
     {
-        return _iceI_isDirectoryEmptyAsync(path, context, false);
+        return _iceI_openFileForCurrentAsync(path, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_isDirectoryEmptyAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> _iceI_openFileForCurrentAsync(String iceP_path, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "isDirectoryEmpty", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "openFileForCurrent", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      ostr.writeString(iceP_path);
                  }, istr -> {
-                     boolean ret;
-                     ret = istr.readBool();
+                     com.maoding.FileServer.zeroc.FileRequestDTO ret;
+                     ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForAccount(com.maoding.User.zeroc.AccountDTO account, String path)
+    {
+        return openFileForAccount(account, path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.FileServer.zeroc.FileRequestDTO openFileForAccount(com.maoding.User.zeroc.AccountDTO account, String path, java.util.Map<String, String> context)
+    {
+        return _iceI_openFileForAccountAsync(account, path, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String path)
+    {
+        return _iceI_openFileForAccountAsync(account, path, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.FileServer.zeroc.FileRequestDTO> openFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String path, java.util.Map<String, String> context)
+    {
+        return _iceI_openFileForAccountAsync(account, path, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> _iceI_openFileForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, String iceP_path, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.FileServer.zeroc.FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "openFileForAccount", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     ostr.writeString(iceP_path);
+                 }, istr -> {
+                     com.maoding.FileServer.zeroc.FileRequestDTO ret;
+                     ret = com.maoding.FileServer.zeroc.FileRequestDTO.ice_read(istr);
                      return ret;
                  });
         return f;
