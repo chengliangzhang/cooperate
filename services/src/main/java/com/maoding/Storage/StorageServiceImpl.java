@@ -295,10 +295,12 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         assert (fileLength >= 0);
         StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
         if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_NODE_TYPE_FILE_MAX)) return false;
-        StorageFileEntity fileEntity = new StorageFileEntity();
-        fileEntity.clear();
-        fileEntity.setFileLength(fileLength);
-        int n = storageFileDao.updateById(fileEntity,node.getId());
+        node.setFileLength(fileLength);
+        int n = storageDao.updateById(node,node.getId());
+//        StorageFileEntity fileEntity = new StorageFileEntity();
+//        fileEntity.clear();
+//        fileEntity.setFileLength(fileLength);
+//        int n = storageFileDao.updateById(fileEntity,node.getId());
         return (n > 0);
     }
 
@@ -319,7 +321,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             cnt += storageDao.countTaskSubNode(query);
             cnt += storageDao.countStorageSubNode(query);
         }
-        return (cnt <= 0);
+        return (cnt < 0);
     }
 
     @Override

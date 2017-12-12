@@ -65,9 +65,10 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
         if (!HttpUtils.isResponseOK(response)) return null;
         ApiResponse result = getResult(response);
         FileUtils.close(response);
-        assert ((result != null) && (result.getData() != null));
-        AccountDTO dto = new AccountDTO();
+        assert (result != null);
         Map<String,Object> data = (Map<String,Object>)result.getData();
+        if (data == null) return null;
+        AccountDTO dto = new AccountDTO();
         if (data.containsKey(USER_INFO_KEY)) data = (Map<String,Object>)data.get(USER_INFO_KEY);
         if (data.containsKey(USER_ID_KEY)) dto.setId((String)data.get(USER_ID_KEY));
         if (data.containsKey(USER_NAME_KEY)) dto.setName((String)data.get(USER_NAME_KEY));
