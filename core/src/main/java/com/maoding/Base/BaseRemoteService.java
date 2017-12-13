@@ -5,6 +5,7 @@ import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -15,6 +16,10 @@ import org.slf4j.LoggerFactory;
 public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
     /** 日志对象 */
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
+
+    /** ice配置对象 */
+    @Autowired
+    private IceConfig iceConfig;
 
     /** 查找远程服务线程 */
     private class ConnectThread extends Thread {
@@ -36,7 +41,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
         @Override
         public void run() {
             //初始化连接器
-            String gridLocation = IceConfig.getProperty(GRID_LOCATION);
+            String gridLocation = iceConfig.getProperty(GRID_LOCATION);
             if ((communicator == null) || !StringUtils.isSame(gridLocation, lastGridLocation)) {
                 communicator = (!StringUtils.isEmpty(gridLocation)) ?
                         Util.initialize(new String[]{"--" + GRID_LOCATION + "=" + gridLocation}) :
@@ -48,15 +53,15 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
             //补全代理地址参数
             if (StringUtils.isEmpty(adapterName)){
                 if (communicator.getDefaultLocator() != null) {
-                    String adapterId = IceConfig.getProperty(serviceName + "." + ADAPTER_ID);
+                    String adapterId = iceConfig.getProperty(serviceName + "." + ADAPTER_ID);
                     if (!StringUtils.isEmpty(adapterId)) adapterName = "@" + adapterId;
                 }
                 if (StringUtils.isEmpty(adapterName)){
-                    String endPoints = IceConfig.getProperty(serviceName + "." + END_POINTS);
+                    String endPoints = iceConfig.getProperty(serviceName + "." + END_POINTS);
                     if (!StringUtils.isEmpty(endPoints)) adapterName = ":" + endPoints;
                 }
             } else if (!ADAPTER_ID_PREFIX.equals(adapterName.charAt(0))){
-                String endPoints = IceConfig.getProperty(serviceName + "." + END_POINTS);
+                String endPoints = iceConfig.getProperty(serviceName + "." + END_POINTS);
                 adapterName = ":" + StringUtils.replaceParam(endPoints,"-h",adapterName);
             }
             assert (!StringUtils.isEmpty(adapterName));

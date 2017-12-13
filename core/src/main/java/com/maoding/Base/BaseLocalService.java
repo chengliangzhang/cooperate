@@ -21,7 +21,7 @@ public class BaseLocalService<P extends ObjectPrx> extends BaseRemoteService<P> 
     @Override
     public void start(String s, Communicator communicator, String[] strings) {
         adapter = communicator.createObjectAdapter(s);
-        adapter.add(SpringContextUtils.getApplicationContext().getBean(this.getClass()), Util.stringToIdentity(s));
+        adapter.add(SpringContextUtils.getBean(this.getClass()), Util.stringToIdentity(s));
         adapter.activate();
     }
 
