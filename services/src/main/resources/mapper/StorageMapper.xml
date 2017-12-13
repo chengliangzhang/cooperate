@@ -16,11 +16,22 @@
             <if test="nodeId != null">
                 and (pid = #{nodeId})
             </if>
+            <if test="userId != null">
+                and (find_in_set(#{userId},user_id_list))
+            </if>
         </where>
     </select>
 
     <select id="listAllNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
-        select * from maoding_storage_node
+        select *
+        from
+            maoding_storage_node node
+            inner join maoding_storage_root root
+        <where>
+            <if test="userId != null">
+                and (find_in_set(#{userId},root.user_id_list))
+            </if>
+        </where>
     </select>
 
     <select id="getNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
