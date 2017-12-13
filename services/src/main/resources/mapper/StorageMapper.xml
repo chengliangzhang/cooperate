@@ -32,6 +32,7 @@
                 and (find_in_set(#{userId},root.user_id_list))
             </if>
         </where>
+        group by node.id
     </select>
 
     <select id="getNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
