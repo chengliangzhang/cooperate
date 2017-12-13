@@ -2,7 +2,7 @@
 DROP PROCEDURE IF EXISTS createEmptyTables;
 CREATE PROCEDURE createEmptyTables()
 BEGIN
-  ----------- 建立存储表
+  -- >>>>>>>>> 建立表 <<<<<<<<<<<<<<<<
 	DROP TABLE IF EXISTS `maoding_const`;
 	-- maoding_const -- 常量定义
 	CREATE TABLE IF NOT EXISTS `maoding_const` (
@@ -83,7 +83,6 @@ BEGIN
 		`last_modify_duty_id` char(32) DEFAULT NULL COMMENT '记录最后修改者职责id',
     `file_id` char(32) DEFAULT NULL COMMENT '协同文件编号id',
     `action_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '校审动作类型',
-
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -96,8 +95,7 @@ BEGIN
 		`last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
 		`last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
 		`last_modify_duty_id` char(32) DEFAULT NULL COMMENT '记录最后修改者职责id',
-    `file_id` char(32) DEFAULT NULL COMMENT '协同文件编号id',
-
+    `file_path` varchar(255) DEFAULT NULL COMMENT '协同文件路径',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -146,7 +144,7 @@ BEGIN
     KEY `default_company_id` (`default_company_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='登录用户表';
 
-  -------------------- 建立视图
+  -- >>>>>>>>> 建立视图 <<<<<<<<<<<<<<<<
   -- maoding_storage_node -- 存储树节点通用视图
   CREATE OR REPLACE VIEW `maoding_storage_node` AS
       select

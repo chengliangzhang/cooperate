@@ -34,8 +34,6 @@ public class IceConfig {
     @Autowired
     private ResourceLoader resourceLoader;
 
-    protected static final String DEFAULT_CONFIG_FILE = "properties/ice-config.properties";
-
     private String config;
 
     public static Map<String, String> propertiesMap = null;

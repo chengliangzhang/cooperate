@@ -40,6 +40,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
                 (!isEmpty(a) && !isEmpty(b) && (a.equals(b)));
     }
 
+    /** 判断目录是否根目录 */
+    public static Boolean isRootPath(String path){
+        path = formatPath(path);
+        return (isEmpty(path) || isSame(SPLIT_PATH,path));
+    }
+
     /** 获取类似于-p 10000的参数值 */
     public static String getParam(String str, String prefix, String sp){
         if ((str == null) || (!str.contains(prefix))) return null;

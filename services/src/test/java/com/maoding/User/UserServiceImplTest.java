@@ -23,14 +23,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@SpringBootConfiguration //only enable when target module hasn't @SpringBootApplication
-@ComponentScan(basePackages = {"com.maoding"}) //only enable when target module hasn't @SpringBootApplication
+@SpringBootConfiguration
+@ComponentScan(basePackages = {"com.maoding"})
 
 public class UserServiceImplTest {
     @Autowired
     UserService userService;
-
-    private UserServicePrx userServicePrx = UserServiceImpl.getInstance("192.168.17.168");
+    private UserServicePrx userServicePrx = UserServiceImpl.getInstance(":tcp -h 192.168.17.168 -p 10005");
 
     /** for method: login(LoginDTO loginInfo, Current current) */
     @Test

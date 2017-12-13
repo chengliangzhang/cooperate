@@ -22,6 +22,8 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageService extends com.zeroc.Ice.Object
 {
+    java.util.List<SimpleNodeDTO> listAllNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.zeroc.Ice.Current current);
+
     boolean isDirectoryEmpty(String path, com.zeroc.Ice.Current current);
 
     boolean closeFileForCurrent(String path, com.zeroc.Ice.Current current);
@@ -163,6 +165,20 @@ public interface StorageService extends com.zeroc.Ice.Object
     static String ice_staticId()
     {
         return "::zeroc::StorageService";
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listAllNodeForAccount(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<SimpleNodeDTO> ret = obj.listAllNodeForAccount(iceP_account, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SimpleNodeListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_isDirectoryEmpty(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -1084,6 +1100,7 @@ public interface StorageService extends com.zeroc.Ice.Object
         "isDirectoryEmpty",
         "isFileLocking",
         "isLocking",
+        "listAllNodeForAccount",
         "listFileLink",
         "listRootNodeForAccount",
         "listRootNodeForCurrent",
@@ -1278,105 +1295,109 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 38:
             {
-                return _iceD_listFileLink(this, in, current);
+                return _iceD_listAllNodeForAccount(this, in, current);
             }
             case 39:
             {
-                return _iceD_listRootNodeForAccount(this, in, current);
+                return _iceD_listFileLink(this, in, current);
             }
             case 40:
             {
-                return _iceD_listRootNodeForCurrent(this, in, current);
+                return _iceD_listRootNodeForAccount(this, in, current);
             }
             case 41:
             {
-                return _iceD_listSubNode(this, in, current);
+                return _iceD_listRootNodeForCurrent(this, in, current);
             }
             case 42:
             {
-                return _iceD_listSubNodeByPNodeIdForAccount(this, in, current);
+                return _iceD_listSubNode(this, in, current);
             }
             case 43:
             {
-                return _iceD_listSubNodeByPNodeIdForCurrent(this, in, current);
+                return _iceD_listSubNodeByPNodeIdForAccount(this, in, current);
             }
             case 44:
             {
-                return _iceD_listSubNodeByPathForAccount(this, in, current);
+                return _iceD_listSubNodeByPNodeIdForCurrent(this, in, current);
             }
             case 45:
             {
-                return _iceD_listSubNodeByPathForCurrent(this, in, current);
+                return _iceD_listSubNodeByPathForAccount(this, in, current);
             }
             case 46:
             {
-                return _iceD_lockFile(this, in, current);
+                return _iceD_listSubNodeByPathForCurrent(this, in, current);
             }
             case 47:
             {
-                return _iceD_lockNode(this, in, current);
+                return _iceD_lockFile(this, in, current);
             }
             case 48:
             {
-                return _iceD_modifyFileInfo(this, in, current);
+                return _iceD_lockNode(this, in, current);
             }
             case 49:
             {
-                return _iceD_moveNode(this, in, current);
+                return _iceD_modifyFileInfo(this, in, current);
             }
             case 50:
             {
-                return _iceD_openFileForAccount(this, in, current);
+                return _iceD_moveNode(this, in, current);
             }
             case 51:
             {
-                return _iceD_openFileForCurrent(this, in, current);
+                return _iceD_openFileForAccount(this, in, current);
             }
             case 52:
             {
-                return _iceD_replaceFile(this, in, current);
+                return _iceD_openFileForCurrent(this, in, current);
             }
             case 53:
             {
-                return _iceD_requestDownload(this, in, current);
+                return _iceD_replaceFile(this, in, current);
             }
             case 54:
             {
-                return _iceD_requestDownloadByPath(this, in, current);
+                return _iceD_requestDownload(this, in, current);
             }
             case 55:
             {
-                return _iceD_requestDownloadFromLast(this, in, current);
+                return _iceD_requestDownloadByPath(this, in, current);
             }
             case 56:
             {
-                return _iceD_requestUpload(this, in, current);
+                return _iceD_requestDownloadFromLast(this, in, current);
             }
             case 57:
             {
-                return _iceD_requestUploadByPath(this, in, current);
+                return _iceD_requestUpload(this, in, current);
             }
             case 58:
             {
-                return _iceD_restoreDirectory(this, in, current);
+                return _iceD_requestUploadByPath(this, in, current);
             }
             case 59:
             {
-                return _iceD_restoreFile(this, in, current);
+                return _iceD_restoreDirectory(this, in, current);
             }
             case 60:
             {
-                return _iceD_setFileLength(this, in, current);
+                return _iceD_restoreFile(this, in, current);
             }
             case 61:
             {
-                return _iceD_unlockFile(this, in, current);
+                return _iceD_setFileLength(this, in, current);
             }
             case 62:
             {
-                return _iceD_unlockNode(this, in, current);
+                return _iceD_unlockFile(this, in, current);
             }
             case 63:
+            {
+                return _iceD_unlockNode(this, in, current);
+            }
+            case 64:
             {
                 return _iceD_uploadCallback(this, in, current);
             }
