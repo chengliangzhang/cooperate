@@ -73,7 +73,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
         List<SimpleNodeDTO> nodeList = storageDao.listAllNode(query);
 
-        log.info("===>listRootNodeForAccount:" + (System.currentTimeMillis()-t) + "ms");
+        log.info("===>listAllNodeForAccount:" + (System.currentTimeMillis()-t) + "ms");
         return nodeList;
     }
 

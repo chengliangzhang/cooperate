@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -143,11 +144,7 @@ public class LocalServer implements BasicFileServerInterface {
         int len = multipart.getSize();
         long pos = multipart.getPos();
 
-//        if (pos == 0) {
-//            t0 = System.currentTimeMillis();
-//            pos0 = pos + len;
-//            log.info("=====>接收到第一个数据包:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t0)));
-//        }
+        t0 = System.currentTimeMillis();
 
         if (!((new File(FILE_SERVER_PATH + "/" + multipart.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +multipart.getScope())).mkdirs();
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
@@ -183,14 +180,11 @@ public class LocalServer implements BasicFileServerInterface {
             FileUtils.close(rf);
         }
 
-//        if (pos > 0) {
-//            long t = (System.currentTimeMillis() - t0);
-//            assert (t > 0);
-//            long rev = pos + len;
-//            long cal = rev - pos0;
-//            log.info("已写入" + StringUtils.calBytes(rev) + ":用时" + t + "ms，速度"
-//                    + StringUtils.calSpeed(cal,t));
-//        }
+        long t = (System.currentTimeMillis() - t0);
+        long rev = pos + len;
+        long cal = rev - pos0;
+        log.info("写入" + StringUtils.calBytes(rev) + ":用时" + t + "ms，速度"
+                + StringUtils.calSpeed(cal,t));
         return result;
     }
 
@@ -214,11 +208,7 @@ public class LocalServer implements BasicFileServerInterface {
         int len = multipart.getSize();
         long pos = multipart.getPos();
 
-//        if (pos == 0) {
-//            t0 = System.currentTimeMillis();
-//            pos0 = pos + len;
-//            log.info("=====>接收到第一个数据包:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t0)));
-//        }
+        t0 = System.currentTimeMillis();
 
         if (!((new File(FILE_SERVER_PATH + "/" + multipart.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +multipart.getScope())).mkdirs();
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
@@ -250,14 +240,9 @@ public class LocalServer implements BasicFileServerInterface {
             FileUtils.close(rf);
         }
 
-//        if ((pos > 0) && (len > 0)) {
-//            long t = (System.currentTimeMillis() - t0);
-//            assert (t > 0);
-//            long rev = pos + len;
-//            long cal = rev - pos0;
-//            log.info("已写入" + StringUtils.calBytes(rev) + ":用时" + t + "ms，速度"
-//                    + StringUtils.calSpeed(cal,t));
-//        }
+        long t = (System.currentTimeMillis() - t0);
+        log.info("写入" + StringUtils.calBytes(len) + ":用时" + t + "ms，速度"
+                + StringUtils.calSpeed(len,t));
         return len;
 
     }
@@ -284,10 +269,11 @@ public class LocalServer implements BasicFileServerInterface {
 
         long pos = request.getPos();
         int size = request.getSize();
-//        if (pos == 0) {
-//            t1 = System.currentTimeMillis();
-//            log.info("=====>接收到下载请求:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t1)));
-//        }
+
+        if (pos == 0) {
+            t1 = System.currentTimeMillis();
+            log.info("=====>接收到下载请求:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t1)));
+        }
 
         //打开文件
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
@@ -337,12 +323,11 @@ public class LocalServer implements BasicFileServerInterface {
             FileUtils.close(rf);
         }
 
-//        if (result.getData() != null) {
-//            long t = (System.currentTimeMillis() - t1);
-//            assert (t > 0);
-//            long c = result.getData().getPos() + result.getData().getSize();
-//            log.info("已准备好" + StringUtils.calBytes(c) + "数据，用时" + t + "ms,速度" + StringUtils.calSpeed(c,t));
-//        }
+        if (result.getData() != null) {
+            long t = (System.currentTimeMillis() - t1);
+            long c = result.getData().getPos() + result.getData().getSize();
+            log.info("已准备好" + StringUtils.calBytes(c) + "数据，用时" + t + "ms,速度" + StringUtils.calSpeed(c,t));
+        }
         return result;
     }
 
@@ -361,10 +346,7 @@ public class LocalServer implements BasicFileServerInterface {
         BasicFileMultipartDTO result = BeanUtils.createFrom(file,BasicFileMultipartDTO.class);
         RandomAccessFile rf = null;
 
-//        if (pos == 0) {
-//            t1 = System.currentTimeMillis();
-//            log.info("=====>接收到下载请求:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t1)));
-//        }
+        t1 = System.currentTimeMillis();
 
         //打开文件
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
@@ -408,12 +390,11 @@ public class LocalServer implements BasicFileServerInterface {
             FileUtils.close(rf);
         }
 
-//        if (result != null) {
-//            long t = (System.currentTimeMillis() - t1);
-//            assert (t > 0);
-//            long c = result.getPos() + result.getSize();
-//            log.info("已准备好" + StringUtils.calBytes(c) + "数据，用时" + t + "ms,速度" + StringUtils.calSpeed(c,t));
-//        }
+        if (result != null) {
+            long t = (System.currentTimeMillis() - t1);
+            log.info("读取" + StringUtils.calBytes(result.getSize()) + "数据，用时" + t + "ms,速度"
+                    + StringUtils.calSpeed(result.getSize(),t));
+        }
         return result;
     }
 
