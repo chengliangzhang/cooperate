@@ -22,6 +22,39 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default java.util.List<SimpleNodeDTO> listAllNodeForAccount(com.maoding.User.zeroc.AccountDTO account)
+    {
+        return listAllNodeForAccount(account, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<SimpleNodeDTO> listAllNodeForAccount(com.maoding.User.zeroc.AccountDTO account, java.util.Map<String, String> context)
+    {
+        return _iceI_listAllNodeForAccountAsync(account, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listAllNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account)
+    {
+        return _iceI_listAllNodeForAccountAsync(account, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<SimpleNodeDTO>> listAllNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, java.util.Map<String, String> context)
+    {
+        return _iceI_listAllNodeForAccountAsync(account, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> _iceI_listAllNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listAllNodeForAccount", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                 }, istr -> {
+                     java.util.List<SimpleNodeDTO> ret;
+                     ret = SimpleNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default boolean isDirectoryEmpty(String path)
     {
         return isDirectoryEmpty(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);

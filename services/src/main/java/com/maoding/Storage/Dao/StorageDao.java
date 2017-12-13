@@ -19,26 +19,19 @@ import java.util.List;
 @Repository
 public interface StorageDao extends BaseDao<StorageEntity> {
     /** 正在实现的接口 */
-//    List<SimpleNodeDTO> listStorageRootNode2(QueryNodeDTO query);
-//    List<SimpleNodeDTO> listStorageSubNode2(QueryNodeDTO query);
-//    SimpleNodeDTO getStorageNode2(QueryNodeDTO query);
-//    SimpleNodeDTO getStorageNodeByRedundancyPath2(QueryNodeDTO query);
-    SimpleNodeDTO getTaskNodeByRedundancyPath2(QueryNodeDTO query);
-//    SimpleNodeDTO getProjectNodeByRedundancyPath2(QueryNodeDTO query);
-//    List<SimpleNodeDTO> listProjectRootNode2(QueryNodeDTO query);
-//    SimpleNodeDTO getProjectNode2(QueryNodeDTO query);
-    SimpleNodeDTO getTaskNode2(QueryNodeDTO query);
-    List<SimpleNodeDTO> listTaskSubNode2(QueryNodeDTO query);
-//    Integer countProjectRootNode2(QueryNodeDTO query);
-    Integer countTaskSubNode2(QueryNodeDTO query);
-//    Integer countStorageRootNode2(QueryNodeDTO query);
-//    Integer countStorageSubNode2(QueryNodeDTO query);
+    List<SimpleNodeDTO> listAllNode(QueryNodeDTO query);
+    SimpleNodeDTO getNode(QueryNodeDTO query);
+    Boolean hasChild(QueryNodeDTO query);
+    Boolean hasRootChild(QueryNodeDTO query);
 
     /** 准备实现的接口 */
     List<SimpleNodeDTO> listCompanyRootNode(QueryNodeDTO query);
     List<SimpleNodeDTO> listCompanySubNode(QueryNodeDTO query);
 
     /** 已经实现的接口 */
+    List<SimpleNodeDTO> listRootNode(QueryNodeDTO query);
+    List<SimpleNodeDTO> listSubNode(QueryNodeDTO query);
+
     List<SimpleNodeDTO> listStorageRootNode(QueryNodeDTO query);
     List<SimpleNodeDTO> listStorageSubNode(QueryNodeDTO query);
     SimpleNodeDTO getStorageNode(QueryNodeDTO query);
@@ -96,4 +89,8 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     StorageEntity selectByRedundancyPath(String path);
 
     /** 有可能被删除的接口 */
+    SimpleNodeDTO getTaskNodeByRedundancyPath2(QueryNodeDTO query);
+    SimpleNodeDTO getTaskNode2(QueryNodeDTO query);
+    List<SimpleNodeDTO> listTaskSubNode2(QueryNodeDTO query);
+    Integer countTaskSubNode2(QueryNodeDTO query);
 }

@@ -5,6 +5,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -60,6 +61,9 @@ public class HttpUtils {
         CloseableHttpResponse response = null;
         try {
             response = client.execute(post);
+        } catch (HttpHostConnectException e) {
+            log.warn("无法连接" + url);
+            response = null;
         } catch (IOException e) {
             ExceptionUtils.logError(log,e);
         }

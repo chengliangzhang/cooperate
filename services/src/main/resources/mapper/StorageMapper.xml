@@ -1,6 +1,64 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maoding.Storage.Dao.StorageDao" >
+    <select id="listRootNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select * from maoding_storage_root
+        <where>
+            <if test="userId != null">
+                and (find_in_set(#{userId},user_id_list))
+            </if>
+        </where>
+    </select>
+
+    <select id="listSubNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select * from maoding_storage_node
+        <where>
+            <if test="nodeId != null">
+                and (pid = #{nodeId})
+            </if>
+        </where>
+    </select>
+
+    <select id="listAllNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select * from maoding_storage_node
+    </select>
+
+    <select id="getNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select * from maoding_storage_node
+        <where>
+            <if test="nodeId != null">
+                and (id = #{nodeId})
+            </if>
+            <if test="path != null">
+                and (path = #{path})
+            </if>
+        </where>
+    </select>
+
+    <select id="hasChild" resultType="java.lang.Boolean" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select 1 from maoding_storage_node
+        <where>
+            <if test="nodeId != null">
+                and (pid = #{nodeId})
+            </if>
+            <if test="path != null">
+                and (path like concat(#{path},'/'))
+            </if>
+        </where>
+        limit 1
+    </select>
+
+    <select id="hasRootChild" resultType="java.lang.Boolean" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select 1 from maoding_storage_root
+        <where>
+            <if test="userId != null">
+                and (find_in_set(#{userId},user_id_list))
+            </if>
+        </where>
+        limit 1
+    </select>
+
+
     <sql id="ProjectNodeTables">
         maoding_web_project project
         inner join maoding_web_project_member member on (member.project_id= project.id)
@@ -411,14 +469,6 @@
         from <include refid="CompanyUnion"/>
         where <include refid="FixConditionForCompanyUnion"/>
             and (a.pid is null)
-    </select>
-
-    <select id="listSubNodeOfProject" parameterType="com.maoding.Storage.Dto.QuerySubNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
-
-    </select>
-
-    <select id="listSubNode" parameterType="com.maoding.Storage.Dto.QuerySubNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
-
     </select>
 
     <sql id="CommonDirFieldList">

@@ -234,6 +234,7 @@ module zeroc {
 
     interface StorageService {
         //准备实现的接口
+        SimpleNodeList listAllNodeForAccount(AccountDTO account); //获取指定账号所有节点
         bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
         bool closeFileForCurrent(string path); //关闭文件
         bool closeFileForAccount(AccountDTO account,string path); //关闭文件准备上传及下载

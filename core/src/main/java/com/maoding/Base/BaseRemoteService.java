@@ -24,8 +24,6 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
     /** 查找远程服务线程 */
     private class ConnectThread extends Thread {
         /** 配置环境 */
-        private static final String ADAPTER_ID_PREFIX = "@";
-
         private String serviceName;
         private String adapterName;
         private Class<P> proxy;
@@ -41,7 +39,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
         @Override
         public void run() {
             //初始化连接器
-            String gridLocation = iceConfig.getProperty(GRID_LOCATION);
+            String gridLocation = (iceConfig != null) ? iceConfig.getProperty(GRID_LOCATION) : null;
             if ((communicator == null) || !StringUtils.isSame(gridLocation, lastGridLocation)) {
                 communicator = (!StringUtils.isEmpty(gridLocation)) ?
                         Util.initialize(new String[]{"--" + GRID_LOCATION + "=" + gridLocation}) :
@@ -60,7 +58,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
                     String endPoints = iceConfig.getProperty(serviceName + "." + END_POINTS);
                     if (!StringUtils.isEmpty(endPoints)) adapterName = ":" + endPoints;
                 }
-            } else if (!ADAPTER_ID_PREFIX.equals(adapterName.charAt(0))){
+            } else if ((!adapterName.startsWith("@")) && (!adapterName.startsWith(":"))){
                 String endPoints = iceConfig.getProperty(serviceName + "." + END_POINTS);
                 adapterName = ":" + StringUtils.replaceParam(endPoints,"-h",adapterName);
             }
@@ -70,7 +68,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
 
             //查找服务代理
             P prx = null;
-            String svr = serviceName + adapterName;
+            String svr = (!adapterName.startsWith(serviceName)) ? serviceName + adapterName : adapterName;
             try {
                 prx = ObjectPrx._checkedCast(communicator.stringToProxy(svr),
                         P.ice_staticId(), proxy, impl);
