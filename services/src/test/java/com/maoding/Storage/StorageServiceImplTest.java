@@ -172,6 +172,8 @@ public class StorageServiceImplTest {
 //        Assert.assertNotNull(node);
         list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/方案设计");
         Assert.assertNotNull(node);
+        list = storageServicePrx.listAllNodeForAccount(account);
+        Assert.assertNotNull(node);
     }
 
     /** 锁定文件 */
