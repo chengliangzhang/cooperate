@@ -69,6 +69,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public List<SimpleNodeDTO> listRootNodeForAccount(AccountDTO account, Current current) {
+        long t = System.currentTimeMillis();
         QueryNodeDTO query = new QueryNodeDTO();
         query.setUserId(account.getId());
 
@@ -82,11 +83,14 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
 //        List<SimpleNodeDTO> companyList = storageDao.listRootNodeOfCompany(query);
 
+        log.info("===>closeFileForAccount:" + (System.currentTimeMillis()-t) + "ms");
         return nodeList;
     }
 
     @Override
     public SimpleNodeDTO getNodeByPathForAccount(AccountDTO account, String path, Current current) {
+        long t = System.currentTimeMillis();
+        SimpleNodeDTO node = null;
         path = StringUtils.formatPath(path);
         if (StringUtils.isEmpty(path) || StringUtils.isSame(StringUtils.SPLIT_PATH,path)) {
             SimpleNodeDTO root = new SimpleNodeDTO();
@@ -95,13 +99,15 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             root.setPath(StringUtils.SPLIT_PATH);
             root.setIsDirectory(true);
             root.setIsReadOnly(true);
-            return root;
+            node = root;
+        } else {
+            QueryNodeDTO query = new QueryNodeDTO();
+            //        query.setUserId(account.getId());
+            query.setPath(path);
+            node = getNode(query);
         }
-
-        QueryNodeDTO query = new QueryNodeDTO();
-//        query.setUserId(account.getId());
-        query.setPath(path);
-        return getNode(query);
+        log.info("===>getNodeByPathForAccount:" + (System.currentTimeMillis()-t) + "ms");
+        return node;
     }
 
     @Override
@@ -111,10 +117,13 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public SimpleNodeDTO getNodeByIdForAccount(AccountDTO account, String id, Current current) {
+        long t = System.currentTimeMillis();
         QueryNodeDTO query = new QueryNodeDTO();
         query.setNodeId(id);
 //        query.setUserId(account.getId());
-        return getNode(query);
+        SimpleNodeDTO node = getNode(query);
+        log.info("===>getNodeByIdForAccount:" + (System.currentTimeMillis()-t) + "ms");
+        return node;
     }
 
     @Override
@@ -133,6 +142,8 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     public List<SimpleNodeDTO> listSubNodeByPNodeIdForAccount(AccountDTO account, String pid, Current current) {
         if (pid == null) return listRootNodeForAccount(account,current);
 
+        long t = System.currentTimeMillis();
+
         QueryNodeDTO query = new QueryNodeDTO();
         query.setNodeId(pid);
         query.setUserId(account.getId());
@@ -145,6 +156,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         List<SimpleNodeDTO> storageList = storageDao.listStorageSubNode(query);
         nodeList.addAll(storageList);
 
+        log.info("===>listSubNodeByPNodeIdForAccount:" + (System.currentTimeMillis()-t) + "ms");
         return nodeList;
     }
 
@@ -155,15 +167,19 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public List<SimpleNodeDTO> listSubNodeByPathForAccount(AccountDTO account, String path, Current current) {
+        long t = System.currentTimeMillis();
+        List<SimpleNodeDTO> list = null;
         path = StringUtils.formatPath(path);
         if (StringUtils.isEmpty(path) || StringUtils.isSame(StringUtils.SPLIT_PATH,path)) {
-            return listRootNodeForAccount(account,current);
+            list = listRootNodeForAccount(account,current);
+        } else {
+            SimpleNodeDTO parent = getNodeByPathForAccount(account, path, current);
+            if (parent != null) {
+                list = listSubNodeByPNodeIdForAccount(account, parent.getId(), current);
+            }
         }
-
-        SimpleNodeDTO parent = getNodeByPathForAccount(account,path,current);
-        if (parent == null) return null;
-
-        return listSubNodeByPNodeIdForAccount(account,parent.getId(),current);
+        log.info("===>listSubNodeByPathForAccount:" + (System.currentTimeMillis()-t) + "ms");
+        return list;
     }
 
     @Override
@@ -291,23 +307,27 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public boolean setFileLength(String path, long fileLength, Current current) {
+        long t = System.currentTimeMillis();
         assert (path != null);
         assert (fileLength >= 0);
         StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
         if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_NODE_TYPE_FILE_MAX)) return false;
         node.setFileLength(fileLength);
         int n = storageDao.updateById(node,node.getId());
+        log.info("===>setFileLength:" + (System.currentTimeMillis()-t) + "ms");
         return (n > 0);
     }
 
     @Override
     public boolean isDirectoryEmpty(String path, Current current) {
+        long t = System.currentTimeMillis();
+
         path = StringUtils.formatPath(path);
 
         Integer cnt = 0;
         QueryNodeDTO query = new QueryNodeDTO();
-        AccountDTO account = userService.getCurrent(current);
-        if (account != null) query.setUserId(account.getId());
+//        AccountDTO account = userService.getCurrent(current);
+//        if (account != null) query.setUserId(account.getId());
         query.setPath(path);
 
         if (StringUtils.isEmpty(path) || StringUtils.isSame(StringUtils.SPLIT_PATH,path)){
@@ -317,7 +337,10 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             cnt += storageDao.countTaskSubNode2(query);
             cnt += storageDao.countStorageSubNode(query);
         }
-        return (cnt < 0);
+
+        log.info("===>isDirectoryEmpty:" + (System.currentTimeMillis()-t) + "ms");
+
+        return (cnt <= 0);
     }
 
     @Override
@@ -415,6 +438,8 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public boolean closeFileForAccount(AccountDTO account, String path, Current current) {
+        long t = System.currentTimeMillis();
+        log.info("===>closeFileForAccount:" + (System.currentTimeMillis()-t) + "ms");
         return true;
     }
 
@@ -425,6 +450,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public FileRequestDTO openFileForAccount(AccountDTO account, String path, Current current) {
+        long t = System.currentTimeMillis();
         assert (path != null);
         //获取节点信息
         String nodeId = null;
@@ -439,24 +465,27 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         } else if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_FILE_MAX){
             nodeId = node.getId();
         }
-        if (nodeId == null) return null;
 
-        //获取文件信息
-        StorageFileEntity fileEntity = storageFileDao.selectById(nodeId);
-        assert (fileEntity != null);
+        FileRequestDTO fileRequestDTO = null;
+        if (nodeId != null) {
+            //获取文件信息
+            StorageFileEntity fileEntity = storageFileDao.selectById(nodeId);
+            assert (fileEntity != null);
 
-        Boolean isCreator = StringUtils.isSame(account.getId(),fileEntity.getLastModifyUserId());
-        FileDTO fileDTO = getFileDtoByFileId(fileEntity,isCreator,path);
+            Boolean isCreator = StringUtils.isSame(account.getId(), fileEntity.getLastModifyUserId());
+            FileDTO fileDTO = getFileDtoByFileId(fileEntity, isCreator, path);
 
-        //组装上传申请结果
-        FileRequestDTO fileRequestDTO = fileService.getUploadRequest(fileDTO, FileServerConst.FILE_SERVER_MODE_DEFAULT,null,current);
-        fileRequestDTO.setId(nodeId);
-        fileRequestDTO.setNodeId(nodeId);
+            //组装上传申请结果
+            fileRequestDTO = fileService.getUploadRequest(fileDTO, FileServerConst.FILE_SERVER_MODE_DEFAULT, null, current);
+            fileRequestDTO.setId(nodeId);
+            fileRequestDTO.setNodeId(nodeId);
 
-        //保存上传的实际文件标志
-        fileEntity.setFileScope(fileRequestDTO.getScope());
-        fileEntity.setFileKey(fileRequestDTO.getKey());
-        storageFileDao.updateById(fileEntity,fileEntity.getId());
+            //保存上传的实际文件标志
+            fileEntity.setFileScope(fileRequestDTO.getScope());
+            fileEntity.setFileKey(fileRequestDTO.getKey());
+            storageFileDao.updateById(fileEntity, fileEntity.getId());
+        }
+        log.info("===>openFileForAccount:" + (System.currentTimeMillis()-t) + "ms");
         return fileRequestDTO;
     }
 
@@ -844,6 +873,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public String createNode(CreateNodeRequestDTO request, Current current) {
+        long t = System.currentTimeMillis();
         assert (request != null);
         assert (request.getFullName() != null);
 
@@ -941,6 +971,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         if (dirList.size() > 0) storageDirDao.insertList(dirList);
         if (nodeList.size() > 0) storageDao.insertList(nodeList);
 
+        log.info("===>createNode:" + (System.currentTimeMillis()-t) + "ms");
         return nodeEntity.getId();
     }
 
