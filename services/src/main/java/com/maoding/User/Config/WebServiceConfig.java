@@ -24,7 +24,7 @@ public class WebServiceConfig {
     }
 
     public String getLoginUrl() {
-        String LOGIN_URL = "iWork/sys/login";
+        String LOGIN_URL = "/iWork/sys/login";
         return url + LOGIN_URL;
     }
 
@@ -33,7 +33,7 @@ public class WebServiceConfig {
     }
 
     public String getGetCurrentUrl() {
-        String GET_WORK_URL = "iWork/sys/getCurrUserOfWork";
+        String GET_WORK_URL = "/iWork/sys/getCurrUserOfWork";
         return url + GET_WORK_URL;
     }
 
