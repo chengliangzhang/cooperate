@@ -25,15 +25,4 @@ public class Application extends SpringApplication {
         IceRunner iceRunner = SpringContextUtils.getBean(IceRunner.class);
         iceRunner.run(args);
     }
-
-//    @RequestMapping(value = "iWork/org/listCompanyByRemote", method = RequestMethod.GET)
-//    @ResponseBody
-//    public String listCompanyByRemote(){
-//        List<CompanyDTO> list = organizationService.listCompanyByUserId("",(Current)null);
-//        StringBuilder s = new StringBuilder();
-//        for (CompanyDTO dto : list) {
-//            s.append(dto.getId()).append(":").append(dto.getCompanyName()).append("<br/>");
-//        }
-//        return s.toString();
-//    }
 }

@@ -27,8 +27,6 @@ public class IceRunner {
     public void run(String[] args) {
         String configName = iceConfig.getConfigFileName();
 
-        log.info(iceConfig.getProperty("HelloWorldService.Endpoints"));
-
         if (configName != null) {
             List<String> params = new ArrayList<>();
             params.addAll(Arrays.asList(args));
