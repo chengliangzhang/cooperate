@@ -126,6 +126,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     //带单位计算字节传送速度
     public static String calSpeed(long length,long t,int digit){
+        if (t == 0) return "?";
         double speed = (length * KILO_MS) / t;
         String unit = "B/s";
         if (speed > KILO_BYTE){
