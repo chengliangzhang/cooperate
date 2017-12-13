@@ -16,9 +16,6 @@
             <if test="nodeId != null">
                 and (pid = #{nodeId})
             </if>
-            <if test="userId != null">
-                and (find_in_set(#{userId},user_id_list))
-            </if>
         </where>
     </select>
 
