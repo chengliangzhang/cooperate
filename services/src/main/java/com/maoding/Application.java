@@ -10,10 +10,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 @Configuration
 @Import({SpringContextUtils.class})
 @EnableAspectJAutoProxy(exposeProxy = true)
@@ -23,17 +19,11 @@ import java.util.List;
 @EnableAutoConfiguration
 @ComponentScan(basePackages = {"com.maoding"})
 public class Application extends SpringApplication {
-//    @Autowired
-//    private OrganizationService organizationService;
-
-
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-        List<String> params = new ArrayList<>();
-        params.addAll(Arrays.asList(args));
-        params.add("--Ice.Config=services/src/main/resources/properties/ice-config.properties");
-        com.zeroc.IceBox.Server.main(params.toArray(new String[params.size()]));
+        IceRunner iceRunner = SpringContextUtils.getBean(IceRunner.class);
+        iceRunner.run(args);
     }
 
 //    @RequestMapping(value = "iWork/org/listCompanyByRemote", method = RequestMethod.GET)

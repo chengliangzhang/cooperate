@@ -2,6 +2,7 @@ package com.maoding.User;
 
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Bean.ApiResponse;
+import com.maoding.User.Config.WebServiceConfig;
 import com.maoding.User.zeroc.*;
 import com.maoding.Utils.*;
 import com.zeroc.Ice.Current;
@@ -9,6 +10,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,6 +27,9 @@ import java.util.Map;
 public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements UserService,UserServicePrx {
 
     private CloseableHttpClient client = null;
+
+    @Autowired
+    private WebServiceConfig webServiceConfig;
 
     /** 同步方式获取业务接口代理对象 */
     public static UserServicePrx getInstance(String adapterName) {
@@ -46,7 +51,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
         assert (!StringUtils.isEmpty(loginInfo.getPassword()));
 
         if (client == null) client = HttpClients.createDefault();
-        CloseableHttpResponse response = HttpUtils.postData(client, LOGIN_URL, PARAMS_TYPE, loginInfo);
+        CloseableHttpResponse response = HttpUtils.postData(client, webServiceConfig.getLoginUrl(), webServiceConfig.getLoginParamsType(), loginInfo);
         if (!HttpUtils.isResponseOK(response)) return false;
         ApiResponse result = getResult(response);
         FileUtils.close(response);
@@ -61,7 +66,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
         final String USER_ID_KEY = "id";
         final String USER_NAME_KEY = "userName";
         if (client == null) client = HttpClients.createDefault();
-        CloseableHttpResponse response = HttpUtils.postData(client, LOGIN_URL);
+        CloseableHttpResponse response = HttpUtils.postData(client, webServiceConfig.getGetCurrentUrl());
         if (!HttpUtils.isResponseOK(response)) return null;
         ApiResponse result = getResult(response);
         FileUtils.close(response);
@@ -69,9 +74,9 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
         Map<String,Object> data = (Map<String,Object>)result.getData();
         if (data == null) return null;
         AccountDTO dto = new AccountDTO();
-        if (data.containsKey(USER_INFO_KEY)) data = (Map<String,Object>)data.get(USER_INFO_KEY);
-        if (data.containsKey(USER_ID_KEY)) dto.setId((String)data.get(USER_ID_KEY));
-        if (data.containsKey(USER_NAME_KEY)) dto.setName((String)data.get(USER_NAME_KEY));
+        if (data.containsKey(webServiceConfig.getGetCurrentInfoKey())) data = (Map<String,Object>)data.get(webServiceConfig.getGetCurrentInfoKey());
+        if (data.containsKey(webServiceConfig.getGetCurrentIdKey())) dto.setId((String)data.get(webServiceConfig.getGetCurrentIdKey()));
+        if (data.containsKey(webServiceConfig.getGetCurrentNameKey())) dto.setName((String)data.get(webServiceConfig.getGetCurrentNameKey()));
         return dto;
     }
 

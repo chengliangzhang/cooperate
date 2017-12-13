@@ -16,7 +16,7 @@ spring:
 # Druid
 # ===================================================================
 druid:
-    url: jdbc:mysql://172.16.6.71:3306/test
+    url: jdbc:mysql://172.16.6.71:3306/maoding_qa
     username: idccapp
     password: idccapp
     driverClassName: com.mysql.jdbc.Driver
@@ -54,6 +54,18 @@ mapper:
         - com.maoding.Base.BaseDao
     not-empty: false
     identity: MYSQL
+
+# ===================================================================
+# ICE
+# ===================================================================
+ice:
+    config: classpath:properties/ice-config-test.properties
+
+# ===================================================================
+# WEB SERVICE
+# ===================================================================
+webservice:
+    url: http://172.16.6.73/maoding
 
 # ===================================================================
 # OSS 阿里云文件服务

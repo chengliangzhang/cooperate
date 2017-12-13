@@ -2,11 +2,15 @@ package com.maoding.Config;
 
 
 import com.maoding.Utils.ExceptionUtils;
+import com.maoding.Utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,16 +25,41 @@ import java.util.Properties;
  * 日    期 : 2017/11/7 18:12
  * 描    述 :
  */
-@Configuration
+@Component
+@ConfigurationProperties(prefix = "ice")
 public class IceConfig {
     /** 日志对象 */
     protected static final Logger log = LoggerFactory.getLogger(IceConfig.class);
 
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     protected static final String DEFAULT_CONFIG_FILE = "properties/ice-config.properties";
+
+    private String config;
 
     public static Map<String, String> propertiesMap = null;
 
-    private static void processProperties(Properties props) throws BeansException {
+    public String getConfig() {
+        return config;
+    }
+
+    public void setConfig(String config) {
+        this.config = config;
+    }
+
+    public String getConfigFileName(){
+        String fileName = null;
+        try {
+            fileName = resourceLoader.getResource(config).getURI().toString();
+            fileName = StringUtils.getLastSplit(fileName,"file:/");
+        } catch (IOException e) {
+            log.error("初始化ice配置文件出错：" + config);
+        }
+        return fileName;
+    }
+
+    private void processProperties(Properties props) throws BeansException {
         if (props != null) {
             propertiesMap = new HashMap<>();
             for (Object key : props.keySet()) {
@@ -44,7 +73,7 @@ public class IceConfig {
         }
     }
 
-    public static void loadAllProperties(String propertyFileName) {
+    public void loadAllProperties(String propertyFileName) {
         try {
             Properties properties = PropertiesLoaderUtils.loadAllProperties(propertyFileName);
             processProperties(properties);
@@ -53,16 +82,21 @@ public class IceConfig {
         }
     }
 
-    public static void loadAllProperties() {
-        loadAllProperties(DEFAULT_CONFIG_FILE);
+    public void loadAllProperties() {
+        try {
+            Properties properties = PropertiesLoaderUtils.loadProperties(resourceLoader.getResource(config));
+            processProperties(properties);
+        } catch (IOException e) {
+            ExceptionUtils.logError(log,e);
+        }
     }
 
-    public static String getProperty(String name) {
+    public String getProperty(String name) {
         if (propertiesMap == null) loadAllProperties();
         return propertiesMap.get(name);
     }
 
-    public static Map<String, String> getAllProperty() {
+    public Map<String, String> getAllProperty() {
         if (propertiesMap == null) loadAllProperties();
         return propertiesMap;
     }

@@ -46,7 +46,7 @@ druid:
 # Mybatis
 # ===================================================================
 mybatis:
-    config-location: classpath:mybatis-config.xml
+    config-location: classpath:mybatis-config-dev.xml
     mapper-locations: classpath*:mapper/**/*.xml
 
 mapper:
@@ -54,6 +54,24 @@ mapper:
         - com.maoding.Base.BaseDao
     not-empty: false
     identity: MYSQL
+
+# ===================================================================
+# 日志
+# ===================================================================
+logging:
+    config: classpath:logback-dev.xml
+
+# ===================================================================
+# ICE
+# ===================================================================
+ice:
+    config: classpath:properties/ice-config-dev.properties
+
+# ===================================================================
+# WEB SERVICE
+# ===================================================================
+webservice:
+    url: http://localhost:8080
 
 # ===================================================================
 # OSS 阿里云文件服务
