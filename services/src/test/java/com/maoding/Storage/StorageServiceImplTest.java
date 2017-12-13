@@ -144,32 +144,32 @@ public class StorageServiceImplTest {
         AccountDTO account = new AccountDTO();
 
         //本地服务测试
-        account.setId("5ffee496fa814ea4b6d26a9208b00a0b");
-        list = storageService.listSubNodeByPathForAccount(account,"/",null);
-        Assert.assertNotNull(list);
-        node = storageService.getNodeByPathForAccount(account,"/项目20171115",null);
-        Assert.assertNotNull(node);
-        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115",null);
-        Assert.assertNotNull(list);
-        node = storageService.getNodeByPathForAccount(account,"/项目20171115/项目前期",null);
-        Assert.assertNotNull(node);
-        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期",null);
-        Assert.assertNotNull(list);
-        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期/前期 01",null);
-        Assert.assertNotNull(list);
+//        account.setId("5ffee496fa814ea4b6d26a9208b00a0b");
+//        list = storageService.listSubNodeByPathForAccount(account,"/",null);
+//        Assert.assertNotNull(list);
+//        node = storageService.getNodeByPathForAccount(account,"/项目20171115",null);
+//        Assert.assertNotNull(node);
+//        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115",null);
+//        Assert.assertNotNull(list);
+//        node = storageService.getNodeByPathForAccount(account,"/项目20171115/项目前期",null);
+//        Assert.assertNotNull(node);
+//        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期",null);
+//        Assert.assertNotNull(list);
+//        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期/前期 01",null);
+//        Assert.assertNotNull(list);
 
         //远程服务测试
-//        account.setId("41d244733ec54f09a255836637f2b21d");
-//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/");
-//        Assert.assertNotNull(list);
-//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试");
-//        Assert.assertNotNull(list);
-//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段");
-//        Assert.assertNotNull(list);
-//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段/给排水施工图");
-//        Assert.assertNotNull(list);
-//        node = storageServicePrx.getNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段/给排水施工图/给排水系统图");
-//        Assert.assertNotNull(node);
+        account.setId("41d244733ec54f09a255836637f2b21d");
+        list = storageServicePrx.listSubNodeByPathForAccount(account,"/");
+        Assert.assertNotNull(list);
+        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试");
+        Assert.assertNotNull(list);
+        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段");
+        Assert.assertNotNull(list);
+        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段/给排水施工图");
+        Assert.assertNotNull(list);
+        node = storageServicePrx.getNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段/给排水施工图/给排水系统图");
+        Assert.assertNotNull(node);
     }
 
     /** 锁定文件 */

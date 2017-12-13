@@ -195,7 +195,7 @@
         from maoding_task task
         <where>
             <if test="nodeId != null">
-                and (ifnull(task.task_pid,task.project_id) = #{nodeId})
+                and (task.pid = #{nodeId})
             </if>
         </where>
     </select>
@@ -223,7 +223,7 @@
         from maoding_task task
         <where>
             <if test="nodeId != null">
-                and (ifnull(task.task_pid,task.project_id) = #{nodeId})
+                and (task.pid = #{nodeId})
             </if>
             <if test="path != null">
                 and (task.path like concat(#{path},'/%'))
