@@ -195,29 +195,39 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public boolean moveNode(String oldPath, String newPath, Current current) {
-        assert (oldPath != null);
+        assert (oldPath != null) && (newPath != null);
 
         long t = System.currentTimeMillis();
 
+        int n = 0;
+
         oldPath = StringUtils.formatPath(oldPath);
         newPath = StringUtils.formatPath(newPath);
-        if (storageDao.selectByPath(newPath) != null) return false;
-        StorageEntity node = storageDao.selectByPath(oldPath);
-        if (node == null) return false;
-        String targetPath = StringUtils.getDirName(newPath);
-        String targetName = StringUtils.getFileName(newPath);
-        String targetPid = null;
-        if (!StringUtils.isEmpty(targetPath)) {
-            StorageEntity targetPNode = storageDao.selectByPath(StringUtils.formatPath(targetPath));
-            if (targetPNode == null) return false;
-            targetPid = targetPNode.getId();
-        }
-        node.setPid(targetPid);
-        node.setNodeName(targetName);
-        node.setPath(targetPath + StringUtils.SPLIT_PATH + targetName);
-        int n = storageDao.updateExactById(node,node.getId());
-        if (!StringUtils.isSame(oldPath,node.getPath())) {
-            n += storageDao.updateParentPath(oldPath, node.getPath());
+
+        QueryNodeDTO query = new QueryNodeDTO();
+        AccountDTO account = userService.getCurrent(current);
+        if (account != null) query.setUserId(account.getId());
+        query.setPath(newPath);
+        SimpleNodeDTO targetNode = storageDao.getNodeInfo(query);
+        if (targetNode == null) {
+            StorageEntity node = storageDao.selectByPath(oldPath);
+            if (node != null) {
+                String targetPath = StringUtils.getDirName(newPath);
+                String targetName = StringUtils.getFileName(newPath);
+                String targetPid = null;
+                if (!StringUtils.isEmpty(targetPath)) {
+                    query.setPath(targetPath);
+                    SimpleNodeDTO targetPNode = storageDao.getNodeInfo(query);
+                    if (targetPNode != null) {
+                        targetPid = targetPNode.getId();
+                    }
+                }
+                node.setPid(targetPid);
+                node.setNodeName(targetName);
+                node.setPath(targetPath + StringUtils.SPLIT_PATH + targetName);
+                n += storageDao.updateExactById(node, node.getId());
+                n += storageDao.updateParentPath(oldPath, newPath);
+            }
         }
 
         log.info("===>moveNode:" + (System.currentTimeMillis()-t) + "ms");
@@ -926,9 +936,10 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         query.setUserId(request.getUserId());
         query.setPath(fullName);
         SimpleNodeDTO rootNode = storageDao.getStorageNodeByRedundancyPath(query);
-        if (rootNode == null) rootNode = storageDao.getTaskNodeByRedundancyPath2(query);
-        if (rootNode == null) rootNode = storageDao.getProjectNodeByRedundancyPath(query);
-        if ((rootNode != null) && (StringUtils.isSame(rootNode.getPath(),fullName))) return rootNode.getId();
+        if ((rootNode != null) && (StringUtils.isSame(rootNode.getPath(),fullName))){
+            String s = rootNode.getId();
+            return s;
+        }
         String pid = null;
         Short pTypeId = StorageConst.STORAGE_NODE_TYPE_DIR_USER;
         StringBuilder path = new StringBuilder();
