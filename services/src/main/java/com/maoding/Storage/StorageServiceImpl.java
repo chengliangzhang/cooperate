@@ -211,7 +211,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         SimpleNodeDTO targetNode = storageDao.getNodeInfo(query);
         if (targetNode == null) {
             query.setPath(oldPath);
-            FileNodeDTO node = storageDao.getFileNodeInfo(query);
+            StorageEntity node = storageDao.selectByPath(oldPath);
             if (node != null) {
                 String targetPath = StringUtils.getDirName(newPath);
                 String targetName = StringUtils.getFileName(newPath);
@@ -226,30 +226,30 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                     }
                 }
                 node.setPid(targetPid);
-                node.setName(targetName);
+                node.setPidTypeId(targetPTypeId);
+                node.setNodeName(targetName);
                 node.setPath(targetPath + StringUtils.SPLIT_PATH + targetName);
-                FileDTO src = new FileDTO();
-                src.setScope(node.getFileScope());
-                src.setKey(node.getFileKey());
-                FileDTO dst = new FileDTO();
-                dst.setScope(StringUtils.getDirName(targetPath));
-                dst.setKey(StringUtils.getFileName(targetName));
-                FileDTO targetFile = fileService.moveFile(src,dst,current);
-                if ((targetFile != null) && (!StringUtils.isEmpty(targetFile.getKey()))){
-                    node.setFileScope(targetFile.getScope());
-                    node.setFileKey(targetFile.getKey());
-                    StorageFileEntity fileEntity = BeanUtils.createFrom(node,StorageFileEntity.class);
-                    fileEntity.clear();
-                    fileEntity.setFileScope(targetFile.getScope());
-                    fileEntity.setFileScope(targetFile.getKey());
-                    n += storageFileDao.updateById(fileEntity);
+                if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_FILE_MAX){
+                    StorageFileEntity fileEntity = storageFileDao.selectById(node.getId());
+                    FileDTO src = new FileDTO();
+                    src.setScope(fileEntity.getFileScope());
+                    src.setKey(fileEntity.getFileKey());
+                    FileDTO dst = new FileDTO();
+                    dst.setScope(targetPath);
+                    dst.setKey(targetName);
+                    FileDTO targetFile = fileService.moveFile(src,dst,current);
+                    if ((targetFile != null) && (!StringUtils.isEmpty(targetFile.getKey()))){
+                        fileEntity.setFileScope(targetFile.getScope());
+                        fileEntity.setFileKey(targetFile.getKey());
+                        fileEntity.update();
+                        n += storageFileDao.updateById(fileEntity);
+                        node.setFileLength(fileService.getFileLength(targetFile,current));
+                    } else {
+                        node.setFileLength(0L);
+                    }
                 }
-                StorageEntity entity = BeanUtils.createFrom(node,StorageEntity.class);
-                entity.clear();
-                entity.setPidTypeId(targetPTypeId);
-                entity.setNodeName(node.getName());
-                entity.setDeleted(0);
-                n += storageDao.updateExactById(entity, node.getId());
+                node.update();
+                n += storageDao.updateExactById(node, node.getId());
                 n += storageDao.updateParentPath(oldPath, newPath);
             }
         }
