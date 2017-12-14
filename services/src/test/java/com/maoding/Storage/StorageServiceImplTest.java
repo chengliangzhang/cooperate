@@ -111,7 +111,9 @@ public class StorageServiceImplTest {
         request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         storageService.createNode(request,null);
         Assert.assertTrue(storageService.deleteNode("\\x1\\x11\\x111",true,null));
+        Assert.assertTrue(storageService.deleteNode("/testForStorageService",true,null));
         Assert.assertNotNull(storageService.getSimpleNodeInfo("\\x1",null));
+
     }
 
     /** 获取文件信息 */

@@ -1,6 +1,7 @@
 package com.maoding.Storage.Dao;
 
 import com.maoding.Base.BaseDao;
+import com.maoding.FileServer.zeroc.FileDTO;
 import com.maoding.Storage.Dto.QueryByPidAndNameDTO;
 import com.maoding.Storage.Dto.QueryNodeDTO;
 import com.maoding.Storage.Entity.StorageEntity;
@@ -23,6 +24,7 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     SimpleNodeDTO getNodeInfo(QueryNodeDTO query);
     Boolean hasChild(QueryNodeDTO query);
     Boolean hasRootChild(QueryNodeDTO query);
+    FileDTO getRealFile(QueryNodeDTO query);
 
     /** 准备实现的接口 */
     List<SimpleNodeDTO> listCompanyRootNode(QueryNodeDTO query);
@@ -31,7 +33,7 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     /** 已经实现的接口 */
     List<SimpleNodeDTO> listRootNode(QueryNodeDTO query);
     List<SimpleNodeDTO> listSubNode(QueryNodeDTO query);
-
+    List<String> listAllSubNodeIdByPath(String path);
     List<SimpleNodeDTO> listStorageRootNode(QueryNodeDTO query);
     List<SimpleNodeDTO> listStorageSubNode(QueryNodeDTO query);
     SimpleNodeDTO getStorageNode(QueryNodeDTO query);

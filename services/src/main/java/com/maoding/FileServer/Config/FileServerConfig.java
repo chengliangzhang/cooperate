@@ -22,7 +22,7 @@ public class FileServerConfig {
     private BasicFileServerInterface ftpServer;
     private BasicFileServerInterface localServer;
 
-    private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_ALIYUN;
+    private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
 
     public void setFileServerType(Integer type) {
         fileServerType = type;

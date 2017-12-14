@@ -150,7 +150,6 @@
         ,node.last_modify_user_id as owner_user_id
     </sql>
 
-
     <select id="getFileNodeInfo" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
         select <include refid="FileNodeFixPtyListForFileTables"/>
             <choose>
@@ -176,6 +175,22 @@
                 and (node.path = #{path})
             </if>
     </select>
+
+    <select id="getRealFile" resultType="com.maoding.FileServer.zeroc.FileDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select file.file_scope as scope,file.file_key as key
+        from <include refid="FileTables"/>
+        where <include refid="FileTablesFixFilter"/>
+            <if test="nodeId != null">
+                and (node.id = #{nodeId})
+            </if>
+            <if test="path != null">
+                and (node.path = #{path})
+            </if>
+    </select>
+
+    <update id="updateParentPath" parameterType="java.util.Map">
+        update maoding_storage set path=replace(path,#{oldPath},#{newPath}) where path like concat(#{oldPath},'/%')
+    </update>
 
 
 
@@ -660,10 +675,6 @@
         ,'' as path
         ,3 as type_id
     </sql>
-
-    <update id="updateParentPath" parameterType="java.util.Map">
-        update maoding_storage set path=replace(path,#{oldPath},#{newPath}) where path like concat(#{oldPath},'/%')
-    </update>
 
     <select id="listSubNodeByNodeId" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
         select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>

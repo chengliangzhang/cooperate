@@ -102,8 +102,8 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         long t = System.currentTimeMillis();
 
         QueryNodeDTO query = new QueryNodeDTO();
-//        query.setUserId(account.getId());
-        query.setPath(path);
+        if (account != null) query.setUserId(account.getId());
+        query.setPath(StringUtils.formatPath(path));
 
         SimpleNodeDTO node = getNodeInfo(query);
 
@@ -122,7 +122,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
         QueryNodeDTO query = new QueryNodeDTO();
         query.setNodeId(id);
-//        query.setUserId(account.getId());
+        query.setUserId(account.getId());
 
         SimpleNodeDTO node = getNodeInfo(query);
 
@@ -210,22 +210,45 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         query.setPath(newPath);
         SimpleNodeDTO targetNode = storageDao.getNodeInfo(query);
         if (targetNode == null) {
-            StorageEntity node = storageDao.selectByPath(oldPath);
+            query.setPath(oldPath);
+            FileNodeDTO node = storageDao.getFileNodeInfo(query);
             if (node != null) {
                 String targetPath = StringUtils.getDirName(newPath);
                 String targetName = StringUtils.getFileName(newPath);
                 String targetPid = null;
+                Short targetPTypeId = StorageConst.STORAGE_NODE_TYPE_DIR_USER;
                 if (!StringUtils.isEmpty(targetPath)) {
                     query.setPath(targetPath);
                     SimpleNodeDTO targetPNode = storageDao.getNodeInfo(query);
                     if (targetPNode != null) {
                         targetPid = targetPNode.getId();
+                        targetPTypeId = targetPNode.getTypeId();
                     }
                 }
                 node.setPid(targetPid);
-                node.setNodeName(targetName);
+                node.setName(targetName);
                 node.setPath(targetPath + StringUtils.SPLIT_PATH + targetName);
-                n += storageDao.updateExactById(node, node.getId());
+                FileDTO src = new FileDTO();
+                src.setScope(node.getFileScope());
+                src.setKey(node.getFileKey());
+                FileDTO dst = new FileDTO();
+                dst.setScope(StringUtils.getDirName(targetPath));
+                dst.setKey(StringUtils.getFileName(targetName));
+                FileDTO targetFile = fileService.moveFile(src,dst,current);
+                if ((targetFile != null) && (!StringUtils.isEmpty(targetFile.getKey()))){
+                    node.setFileScope(targetFile.getScope());
+                    node.setFileKey(targetFile.getKey());
+                    StorageFileEntity fileEntity = BeanUtils.createFrom(node,StorageFileEntity.class);
+                    fileEntity.clear();
+                    fileEntity.setFileScope(targetFile.getScope());
+                    fileEntity.setFileScope(targetFile.getKey());
+                    n += storageFileDao.updateById(fileEntity);
+                }
+                StorageEntity entity = BeanUtils.createFrom(node,StorageEntity.class);
+                entity.clear();
+                entity.setPidTypeId(targetPTypeId);
+                entity.setNodeName(node.getName());
+                n += storageDao.updateExactById(entity, node.getId());
                 n += storageDao.updateParentPath(oldPath, newPath);
             }
         }
@@ -844,17 +867,34 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public boolean deleteNode(String path, boolean force, Current current) {
         assert (path != null);
+
+        long t = System.currentTimeMillis();
+
+        int n = 0;
+
         path = StringUtils.formatPath(path);
         StorageEntity node = storageDao.selectByPath(path);
-        if (node == null) return false;
-        int n = 0;
-        if (force || canBeDeleted(path,current)){
-//            List<String> idList = storageDao.listAllSubNodeIdByPath(node.getPath());
-//            idList.add(node.getId());
-//            n += storageDao.fakeDeleteById(idList);
-//            if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_FILE_MAX) n += storageFileDao.fakeDeleteById(idList);
-//            else if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_DIR_MAX) n += storageDirDao.fakeDeleteById(idList);
+        if (node != null) {
+            List<String> idList = storageDao.listAllSubNodeIdByPath(node.getPath());
+            idList.add(node.getId());
+            n += storageDao.fakeDeleteById(idList);
+            if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_FILE_MAX) {
+                StorageFileEntity fileNode = storageFileDao.selectById(node.getId());
+                FileDTO fileDTO = new FileDTO();
+                fileDTO.setScope(fileNode.getFileScope());
+                fileDTO.setKey(fileNode.getFileKey());
+                fileService.deleteFile(fileDTO,current);
+                n += storageFileDao.fakeDeleteById(idList);
+            } else if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_DIR_MAX){
+                FileDTO dir = new FileDTO();
+                dir.setScope(StringUtils.getDirName(node.getPath()));
+                dir.setKey(node.getNodeName());
+                fileService.deleteFile(dir,current);
+                n += storageDirDao.fakeDeleteById(idList);
+            }
         }
+
+        log.info("===>deleteNode:" + (System.currentTimeMillis()-t) + "ms");
         return (n > 0);
     }
 
