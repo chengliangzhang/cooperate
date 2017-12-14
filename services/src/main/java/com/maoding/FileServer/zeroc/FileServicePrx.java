@@ -56,6 +56,40 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default FileDTO moveFile(FileDTO src, FileDTO dst)
+    {
+        return moveFile(src, dst, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default FileDTO moveFile(FileDTO src, FileDTO dst, java.util.Map<String, String> context)
+    {
+        return _iceI_moveFileAsync(src, dst, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<FileDTO> moveFileAsync(FileDTO src, FileDTO dst)
+    {
+        return _iceI_moveFileAsync(src, dst, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<FileDTO> moveFileAsync(FileDTO src, FileDTO dst, java.util.Map<String, String> context)
+    {
+        return _iceI_moveFileAsync(src, dst, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<FileDTO> _iceI_moveFileAsync(FileDTO iceP_src, FileDTO iceP_dst, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<FileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "moveFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     FileDTO.ice_write(ostr, iceP_src);
+                     FileDTO.ice_write(ostr, iceP_dst);
+                 }, istr -> {
+                     FileDTO ret;
+                     ret = FileDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default int writeFile(FileMultipartDTO data)
     {
         return writeFile(data, com.zeroc.Ice.ObjectPrx.noExplicitContext);

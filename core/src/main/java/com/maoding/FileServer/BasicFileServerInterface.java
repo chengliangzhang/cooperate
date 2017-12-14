@@ -70,4 +70,6 @@ public interface BasicFileServerInterface {
             return null;
         }
     }
+
+    default BasicFileDTO moveFile(BasicFileDTO src,BasicFileDTO dst){return src;}
 }

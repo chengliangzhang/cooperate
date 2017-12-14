@@ -36,6 +36,14 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     }
 
     @Override
+    public FileDTO moveFile(FileDTO src, FileDTO dst, Current current) {
+        BasicFileDTO basicSrc = BeanUtils.createFrom(BeanUtils.cleanProperties(src),BasicFileDTO.class);
+        BasicFileDTO basicDst = BeanUtils.createFrom(BeanUtils.cleanProperties(dst),BasicFileDTO.class);
+        BasicFileDTO basicResult = fileServer.moveFile(basicSrc,basicDst);
+        return BeanUtils.createFrom(basicResult, FileDTO.class);
+    }
+
+    @Override
     public FileRequestDTO getFileRequest(FileDTO src, short mode, Current current) {
         BasicFileDTO basicFileDTO = BeanUtils.createFrom(BeanUtils.cleanProperties(src),BasicFileDTO.class);
         BasicFileRequestDTO basicFileRequest = fileServer.getFileRequest(basicFileDTO,mode);
