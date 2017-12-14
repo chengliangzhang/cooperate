@@ -248,6 +248,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                 entity.clear();
                 entity.setPidTypeId(targetPTypeId);
                 entity.setNodeName(node.getName());
+                entity.setDeleted(0);
                 n += storageDao.updateExactById(entity, node.getId());
                 n += storageDao.updateParentPath(oldPath, newPath);
             }
