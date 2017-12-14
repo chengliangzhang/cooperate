@@ -104,6 +104,13 @@ public class BaseEntity implements Serializable,Cloneable {
         return this;
     }
 
+    /** 准备更新 */
+    public BaseEntity update() {
+        resetDeleted();
+        resetLastModifyTime();
+        return this;
+    }
+
     /** 清理被初始化的字段 */
     public BaseEntity clear() {
         setId(null);
@@ -113,7 +120,7 @@ public class BaseEntity implements Serializable,Cloneable {
         return this;
     }
 
-    /** 重新初始化状态 */
+    /** 重新初始化时间 */
     public void resetTime(){
         resetDeleted();
         resetCreateTime();

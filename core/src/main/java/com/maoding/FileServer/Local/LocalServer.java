@@ -58,6 +58,27 @@ public class LocalServer implements BasicFileServerInterface {
     private static long t1 = 0; //下载计时器
     private static long pos1 = 0; //下载速度计算参数
 
+    @Override
+    public long getFileLength(BasicFileDTO basicSrc) {
+        if (!isExist(basicSrc)) return 0;
+        File src = new File(getPath(basicSrc.getScope(),basicSrc.getKey()));
+        return src.length();
+    }
+
+    /** 改名或移动文件 */
+    @Override
+    public BasicFileDTO moveFile(BasicFileDTO src, BasicFileDTO dst) {
+        if (isExist(dst)) {
+            dst.setKey(StringUtils.getTimeStamp() + FILE_NAME_SPLIT + dst.getKey());
+        }
+        File srcFile = new File(getPath(src.getScope(),src.getKey()));
+        File dstFile = new File(getPath(dst.getScope(),dst.getKey()));
+        makeDirs(FILE_SERVER_PATH + "/" + dst.getScope());
+        boolean isSuccess = srcFile.renameTo(dstFile);
+        assert (isSuccess);
+        return dst;
+    }
+
     /** 获取文件读写参数 */
     public BasicFileRequestDTO getFileRequest(BasicFileDTO src,short mode){
         if ((FileServerConst.OPEN_MODE_READ_ONLY.equals(mode)) && (!isExist(src))) return null;
@@ -231,7 +252,7 @@ public class LocalServer implements BasicFileServerInterface {
 
         t0 = System.currentTimeMillis();
 
-        if (!((new File(FILE_SERVER_PATH + "/" + multipart.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +multipart.getScope())).mkdirs();
+        makeDirs(FILE_SERVER_PATH + "/" + multipart.getScope());
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
                 rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rws");
@@ -266,6 +287,14 @@ public class LocalServer implements BasicFileServerInterface {
                 + StringUtils.calSpeed(len,t));
         return len;
 
+    }
+
+    private void makeDirs(String path){
+        File dir = new File(path);
+        if (!dir.exists()) {
+            boolean isSuccess = dir.mkdirs();
+            assert (isSuccess);
+        }
     }
 
     private String getPath(String scope,String key){
@@ -562,8 +591,10 @@ public class LocalServer implements BasicFileServerInterface {
     public void deleteFile(BasicFileDTO src) {
         if (isExist(src)){
             File f = new File(getPath(src.getScope(),src.getKey()));
-            boolean isSuccess = f.delete();
-            assert (isSuccess);
+            if (!f.isDirectory() || (f.listFiles() == null)){
+                boolean isSuccess = f.delete();
+                assert (isSuccess);
+            }
         }
     }
 }

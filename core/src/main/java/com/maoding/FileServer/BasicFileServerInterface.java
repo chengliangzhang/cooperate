@@ -72,4 +72,6 @@ public interface BasicFileServerInterface {
     }
 
     default BasicFileDTO moveFile(BasicFileDTO src,BasicFileDTO dst){return src;}
+
+    default long getFileLength(BasicFileDTO basicSrc){return 0;}
 }
