@@ -93,6 +93,26 @@
         limit 1
     </select>
 
+    <select id="getStorageNodeByRedundancyPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select node.*
+        <choose>
+            <when test="userId != null">
+                ,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1) as is_read_only
+            </when>
+            <otherwise>
+                ,1 as is_read_only
+            </otherwise>
+        </choose>
+        from maoding_storage_node node
+        <where>
+            <if test="path != null">
+                and (#{path} like concat(node.path,'%'))
+                and ((#{path} = node.path) or (substring(#{path},char_length(node.path)+1,1) = '/'))
+            </if>
+        </where>
+        order by char_length(node.path) DESC
+        limit 1
+    </select>
 
     <sql id="FileTables">
         maoding_storage_file file
@@ -464,21 +484,6 @@
         group by st.id
     </select>
 
-    <select id="getStorageNodeByRedundancyPath" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
-        select <include refid="SimpleNodeForStorageNodeTables"/>
-        from <include refid="StorageNodeTables"/>
-        where<include refid="StorageNodeTablesFilter"/>
-            <if test="userId != null">
-                and (st.last_modify_user_id = #{userId})
-            </if>
-            <if test="path != null">
-                and (#{path} like concat(st.path,'%'))
-                and ((#{path} = st.path) or (substring(#{path},char_length(st.path)+1,1) = '/'))
-            </if>
-        group by st.id
-        order by char_length(st.path) DESC
-        limit 1
-    </select>
 
     <select id="listStorageRootNode" parameterType="com.maoding.Storage.Dto.QueryNodeDTO" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO">
         select <include refid="SimpleNodeForStorageNodeTables"/>
