@@ -22,4 +22,7 @@ public interface FileServerConst {
     final static Integer FILE_SERVER_MODE_RPC = 6;
 
     final static Integer DEFAULT_CHUNK_SIZE = 8192;
+
+    final static Short OPEN_MODE_READ_ONLY = 0;
+    final static Short OPEN_MODE_READ_WRITE = 1;
 }

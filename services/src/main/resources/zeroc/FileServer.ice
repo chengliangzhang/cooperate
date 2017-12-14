@@ -88,22 +88,24 @@ module zeroc {
 
     interface FileService {
         //准备实现的接口
+        FileRequestDTO getFileRequest(FileDTO src,short mode); //使用只读或读写方式申请文件实际地址
+
+        //已经实现接口
         int writeFile(FileMultipartDTO data); //写入文件
         FileMultipartDTO readFile(FileDTO file,long pos,int size); //从文件读取数据
-
-
-
         void setFileServerType(int type); //设置文件服务器类型，1-FastDFS服务器，2-阿里云服务器
         int getFileServerType(); //读取文件服务器类型，1-FastDFS服务器，2-阿里云服务器
-        FileRequestDTO getUploadRequest(FileDTO src,int mode,CallbackDTO callback); //获取通过Multipart上传文件时的参数
-        FileRequestDTO getDownloadRequest(FileDTO src,int mode,CallbackDTO callback); //获取通过Multipart下载文件时的参数
-        UploadResultDTO upload(UploadRequestDTO request); //上传文件分片内容
-        DownloadResultDTO download(DownloadRequestDTO request); //下载文件分片内容
         string duplicateFile(FileDTO src); //复制文件，并返回新文件名
         void deleteFile(FileDTO src); //删除文件
         bool isExist(FileDTO src); //在文件服务器内查找指定的文件
         FileList listFile(string scope); //从文件服务器获取某空间所有文件名
         ScopeList listScope(); //从文件服务器获取某空间所有文件名
         void finishUpload(FileRequestDTO request); //结束上传过程
+
+        //准备删除接口
+        FileRequestDTO getUploadRequest(FileDTO src,int mode,CallbackDTO callback); //获取通过Multipart上传文件时的参数
+        FileRequestDTO getDownloadRequest(FileDTO src,int mode,CallbackDTO callback); //获取通过Multipart下载文件时的参数
+        UploadResultDTO upload(UploadRequestDTO request); //上传文件分片内容
+        DownloadResultDTO download(DownloadRequestDTO request); //下载文件分片内容
     };
 };

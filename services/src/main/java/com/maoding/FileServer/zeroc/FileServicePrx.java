@@ -22,6 +22,40 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default FileRequestDTO getFileRequest(FileDTO src, short mode)
+    {
+        return getFileRequest(src, mode, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default FileRequestDTO getFileRequest(FileDTO src, short mode, java.util.Map<String, String> context)
+    {
+        return _iceI_getFileRequestAsync(src, mode, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<FileRequestDTO> getFileRequestAsync(FileDTO src, short mode)
+    {
+        return _iceI_getFileRequestAsync(src, mode, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<FileRequestDTO> getFileRequestAsync(FileDTO src, short mode, java.util.Map<String, String> context)
+    {
+        return _iceI_getFileRequestAsync(src, mode, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> _iceI_getFileRequestAsync(FileDTO iceP_src, short iceP_mode, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFileRequest", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     FileDTO.ice_write(ostr, iceP_src);
+                     ostr.writeShort(iceP_mode);
+                 }, istr -> {
+                     FileRequestDTO ret;
+                     ret = FileRequestDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default int writeFile(FileMultipartDTO data)
     {
         return writeFile(data, com.zeroc.Ice.ObjectPrx.noExplicitContext);
@@ -145,142 +179,6 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(true, context, null, null, istr -> {
                      int ret;
                      ret = istr.readInt();
-                     return ret;
-                 });
-        return f;
-    }
-
-    default FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback)
-    {
-        return getUploadRequest(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
-    {
-        return _iceI_getUploadRequestAsync(src, mode, callback, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<FileRequestDTO> getUploadRequestAsync(FileDTO src, int mode, CallbackDTO callback)
-    {
-        return _iceI_getUploadRequestAsync(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<FileRequestDTO> getUploadRequestAsync(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
-    {
-        return _iceI_getUploadRequestAsync(src, mode, callback, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> _iceI_getUploadRequestAsync(FileDTO iceP_src, int iceP_mode, CallbackDTO iceP_callback, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getUploadRequest", null, sync, null);
-        f.invoke(true, context, null, ostr -> {
-                     FileDTO.ice_write(ostr, iceP_src);
-                     ostr.writeInt(iceP_mode);
-                     CallbackDTO.ice_write(ostr, iceP_callback);
-                 }, istr -> {
-                     FileRequestDTO ret;
-                     ret = FileRequestDTO.ice_read(istr);
-                     return ret;
-                 });
-        return f;
-    }
-
-    default FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback)
-    {
-        return getDownloadRequest(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
-    {
-        return _iceI_getDownloadRequestAsync(src, mode, callback, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<FileRequestDTO> getDownloadRequestAsync(FileDTO src, int mode, CallbackDTO callback)
-    {
-        return _iceI_getDownloadRequestAsync(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<FileRequestDTO> getDownloadRequestAsync(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
-    {
-        return _iceI_getDownloadRequestAsync(src, mode, callback, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> _iceI_getDownloadRequestAsync(FileDTO iceP_src, int iceP_mode, CallbackDTO iceP_callback, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getDownloadRequest", null, sync, null);
-        f.invoke(true, context, null, ostr -> {
-                     FileDTO.ice_write(ostr, iceP_src);
-                     ostr.writeInt(iceP_mode);
-                     CallbackDTO.ice_write(ostr, iceP_callback);
-                 }, istr -> {
-                     FileRequestDTO ret;
-                     ret = FileRequestDTO.ice_read(istr);
-                     return ret;
-                 });
-        return f;
-    }
-
-    default UploadResultDTO upload(UploadRequestDTO request)
-    {
-        return upload(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default UploadResultDTO upload(UploadRequestDTO request, java.util.Map<String, String> context)
-    {
-        return _iceI_uploadAsync(request, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<UploadResultDTO> uploadAsync(UploadRequestDTO request)
-    {
-        return _iceI_uploadAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<UploadResultDTO> uploadAsync(UploadRequestDTO request, java.util.Map<String, String> context)
-    {
-        return _iceI_uploadAsync(request, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<UploadResultDTO> _iceI_uploadAsync(UploadRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<UploadResultDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "upload", null, sync, null);
-        f.invoke(true, context, null, ostr -> {
-                     UploadRequestDTO.ice_write(ostr, iceP_request);
-                 }, istr -> {
-                     UploadResultDTO ret;
-                     ret = UploadResultDTO.ice_read(istr);
-                     return ret;
-                 });
-        return f;
-    }
-
-    default DownloadResultDTO download(DownloadRequestDTO request)
-    {
-        return download(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default DownloadResultDTO download(DownloadRequestDTO request, java.util.Map<String, String> context)
-    {
-        return _iceI_downloadAsync(request, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<DownloadResultDTO> downloadAsync(DownloadRequestDTO request)
-    {
-        return _iceI_downloadAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<DownloadResultDTO> downloadAsync(DownloadRequestDTO request, java.util.Map<String, String> context)
-    {
-        return _iceI_downloadAsync(request, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<DownloadResultDTO> _iceI_downloadAsync(DownloadRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<DownloadResultDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "download", null, sync, null);
-        f.invoke(true, context, null, ostr -> {
-                     DownloadRequestDTO.ice_write(ostr, iceP_request);
-                 }, istr -> {
-                     DownloadResultDTO ret;
-                     ret = DownloadResultDTO.ice_read(istr);
                      return ret;
                  });
         return f;
@@ -471,6 +369,142 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         f.invoke(false, context, null, ostr -> {
                      FileRequestDTO.ice_write(ostr, iceP_request);
                  }, null);
+        return f;
+    }
+
+    default FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback)
+    {
+        return getUploadRequest(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
+    {
+        return _iceI_getUploadRequestAsync(src, mode, callback, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<FileRequestDTO> getUploadRequestAsync(FileDTO src, int mode, CallbackDTO callback)
+    {
+        return _iceI_getUploadRequestAsync(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<FileRequestDTO> getUploadRequestAsync(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
+    {
+        return _iceI_getUploadRequestAsync(src, mode, callback, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> _iceI_getUploadRequestAsync(FileDTO iceP_src, int iceP_mode, CallbackDTO iceP_callback, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getUploadRequest", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     FileDTO.ice_write(ostr, iceP_src);
+                     ostr.writeInt(iceP_mode);
+                     CallbackDTO.ice_write(ostr, iceP_callback);
+                 }, istr -> {
+                     FileRequestDTO ret;
+                     ret = FileRequestDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback)
+    {
+        return getDownloadRequest(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
+    {
+        return _iceI_getDownloadRequestAsync(src, mode, callback, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<FileRequestDTO> getDownloadRequestAsync(FileDTO src, int mode, CallbackDTO callback)
+    {
+        return _iceI_getDownloadRequestAsync(src, mode, callback, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<FileRequestDTO> getDownloadRequestAsync(FileDTO src, int mode, CallbackDTO callback, java.util.Map<String, String> context)
+    {
+        return _iceI_getDownloadRequestAsync(src, mode, callback, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> _iceI_getDownloadRequestAsync(FileDTO iceP_src, int iceP_mode, CallbackDTO iceP_callback, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<FileRequestDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getDownloadRequest", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     FileDTO.ice_write(ostr, iceP_src);
+                     ostr.writeInt(iceP_mode);
+                     CallbackDTO.ice_write(ostr, iceP_callback);
+                 }, istr -> {
+                     FileRequestDTO ret;
+                     ret = FileRequestDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default UploadResultDTO upload(UploadRequestDTO request)
+    {
+        return upload(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default UploadResultDTO upload(UploadRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_uploadAsync(request, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<UploadResultDTO> uploadAsync(UploadRequestDTO request)
+    {
+        return _iceI_uploadAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<UploadResultDTO> uploadAsync(UploadRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_uploadAsync(request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<UploadResultDTO> _iceI_uploadAsync(UploadRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<UploadResultDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "upload", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     UploadRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     UploadResultDTO ret;
+                     ret = UploadResultDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default DownloadResultDTO download(DownloadRequestDTO request)
+    {
+        return download(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default DownloadResultDTO download(DownloadRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_downloadAsync(request, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<DownloadResultDTO> downloadAsync(DownloadRequestDTO request)
+    {
+        return _iceI_downloadAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<DownloadResultDTO> downloadAsync(DownloadRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_downloadAsync(request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<DownloadResultDTO> _iceI_downloadAsync(DownloadRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<DownloadResultDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "download", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     DownloadRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     DownloadResultDTO ret;
+                     ret = DownloadResultDTO.ice_read(istr);
+                     return ret;
+                 });
         return f;
     }
 

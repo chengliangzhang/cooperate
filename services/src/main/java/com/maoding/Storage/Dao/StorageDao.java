@@ -20,7 +20,7 @@ import java.util.List;
 public interface StorageDao extends BaseDao<StorageEntity> {
     /** 正在实现的接口 */
     List<SimpleNodeDTO> listAllNode(QueryNodeDTO query);
-    SimpleNodeDTO getNode(QueryNodeDTO query);
+    SimpleNodeDTO getNodeInfo(QueryNodeDTO query);
     Boolean hasChild(QueryNodeDTO query);
     Boolean hasRootChild(QueryNodeDTO query);
 
@@ -53,7 +53,7 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     CooperateDirNodeDTO getDirNodeInfo(CooperationQueryDTO query);
     CooperateDirNodeDTO getDirNodeInfoByNodeId(String nodeId);
     /** 获取本文件信息 */
-    FileNodeDTO getFileNodeInfo(CooperationQueryDTO query);
+    FileNodeDTO getFileNodeInfo(QueryNodeDTO query);
     FileNodeDTO getFileNodeInfoByNodeId(String nodeId);
     /** 查找协同子目录 */
     List<CooperateDirNodeDTO> listSubDir(CooperationQueryDTO query);
@@ -79,18 +79,18 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     FileNodeDTO getFileNodeInfoByPath(String path);
     /** 根据节点编号获取一层子节点简单信息 */
     List<SimpleNodeDTO> listSubNodeByNodeId(String nodeId);
-    /** 根据全路径名获取一层子节点简单信息 */
-    List<SimpleNodeDTO> listSubNodeByPath(String path);
-    /** 根据全路径名获取所有子节点编号 */
-    List<String> listAllSubNodeIdByPath(String path);
     /** 更改子节点全路径名 */
     int updateParentPath(@Param("oldPath") String oldPath,@Param("newPath") String newPath);
     /** 根据全路径名获取最靠近的节点 */
     StorageEntity selectByRedundancyPath(String path);
 
     /** 有可能被删除的接口 */
+    @Deprecated
     SimpleNodeDTO getTaskNodeByRedundancyPath2(QueryNodeDTO query);
+    @Deprecated
     SimpleNodeDTO getTaskNode2(QueryNodeDTO query);
+    @Deprecated
     List<SimpleNodeDTO> listTaskSubNode2(QueryNodeDTO query);
+    @Deprecated
     Integer countTaskSubNode2(QueryNodeDTO query);
 }

@@ -58,6 +58,27 @@ public class LocalServer implements BasicFileServerInterface {
     private static long t1 = 0; //下载计时器
     private static long pos1 = 0; //下载速度计算参数
 
+    /** 获取文件读写参数 */
+    public BasicFileRequestDTO getFileRequest(BasicFileDTO src,short mode){
+        if ((FileServerConst.OPEN_MODE_READ_ONLY.equals(mode)) && (!isExist(src))) return null;
+
+        BasicFileRequestDTO requestDTO = new BasicFileRequestDTO();
+        if (FileServerConst.OPEN_MODE_READ_WRITE.equals(mode)){
+            BasicFileDTO validSrc = getValidFileDTO(src);
+            requestDTO.setScope(validSrc.getScope());
+            requestDTO.setKey(validSrc.getKey());
+        } else {
+            requestDTO.setScope(src.getScope());
+            requestDTO.setKey(src.getKey());
+        }
+        requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_RPC);
+
+        //保持兼容性
+        requestDTO.putParam(BASE_DIR_NAME,requestDTO.getScope());
+        requestDTO.putParam(PATH_NAME,requestDTO.getKey());
+        return requestDTO;
+    }
+
     /**
      * 获取通过http方式上传文件数据库时的需要设置的部分参数
      *
@@ -247,6 +268,11 @@ public class LocalServer implements BasicFileServerInterface {
 
     }
 
+    private String getPath(String scope,String key){
+        assert (scope != null) && (key != null);
+        return FILE_SERVER_PATH + "/" + scope + "/" + key;
+    }
+
     /**
      * 下载文件分片内容
      *
@@ -398,6 +424,37 @@ public class LocalServer implements BasicFileServerInterface {
         return result;
     }
 
+    private BasicFileDTO getValidFileDTO(BasicFileDTO src){
+        if ((src == null) || (StringUtils.isEmpty(src.getScope())) || (StringUtils.isEmpty(src.getKey()))){
+            BasicFileDTO fileDTO = new BasicFileDTO();
+            fileDTO.setScope(getValidScope(src));
+            fileDTO.setKey(getValidKey(src));
+            if (isExist(fileDTO)){
+                fileDTO.setKey(StringUtils.getTimeStamp() + "_" + fileDTO.getKey());
+            }
+            return fileDTO;
+        } else {
+            return src;
+        }
+    }
+
+    private String getValidScope(BasicFileDTO src) {
+        if ((src == null) || (StringUtils.isEmpty(src.getScope()))){
+            return StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT);
+        } else {
+            return src.getScope();
+        }
+    }
+
+    private String getValidKey(BasicFileDTO src) {
+        if ((src == null) || (StringUtils.isEmpty(src.getKey()))){
+            return UUID.randomUUID().toString() + ".txt";
+        } else {
+            return src.getKey();
+        }
+    }
+
+    @Deprecated
     private String getValidScope(String scope){
         if (scope == null){
             scope = StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT);
@@ -405,6 +462,7 @@ public class LocalServer implements BasicFileServerInterface {
         return scope;
     }
 
+    @Deprecated
     private String getValidKey(String key){
         if (key == null){
             key = UUID.randomUUID().toString() + ".txt";
@@ -471,7 +529,10 @@ public class LocalServer implements BasicFileServerInterface {
      */
     @Override
     public Boolean isExist(BasicFileDTO src) {
-        return null;
+        if (src == null) return false;
+        if ((src.getScope() == null) || (src.getKey() == null)) return false;
+        File f = new File(getPath(src.getScope(),src.getKey()));
+        return f.exists();
     }
 
     /**
