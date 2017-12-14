@@ -66,25 +66,15 @@ public class StorageServiceImplTest {
     /** 重命名及移动节点 */
     @Test
     public void testMoveNode() throws Exception {
-        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
-        request.setFullName("/123");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
-        storageService.createNode(request,null);
-        request.setFullName("/456");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
-        storageService.createNode(request,null);
-        request.setFullName("/456/789/321");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
-        storageService.createNode(request,null);
-        request.setFullName("/456/789/654");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
-        storageService.createNode(request,null);
-        request.setFullName("/456/789/987");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
-        storageService.createNode(request,null);
-        Assert.assertTrue(storageService.moveNode("\\456\\789","\\789",null));
-        Assert.assertNotNull(storageService.getSimpleNodeInfo("/789",null));
-        Assert.assertNotNull(storageService.getSimpleNodeInfo("/789/321",null));
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setId(localUserId);
+        Assert.assertNotNull(storageService.getNodeByPathForAccount(accountDTO,"/testForStorageService/upload_test.txt",null));
+        Assert.assertNull(storageService.getNodeByPathForAccount(accountDTO,"/testForStorageService/123.txt",null));
+        Assert.assertTrue(storageService.moveNode("/testForStorageService/upload_test.txt","/testForStorageService/123.txt",null));
+        Assert.assertNotNull(storageService.getNodeByPathForAccount(accountDTO,"/testForStorageService/123.txt",null));
+        Assert.assertNull(storageService.getNodeByPathForAccount(accountDTO,"/test_rename/123.txt",null));
+        Assert.assertTrue(storageService.moveNode("/testForStorageService","/test_rename",null));
+        Assert.assertNotNull(storageService.getNodeByPathForAccount(accountDTO,"/test_rename/123.txt",null));
     }
 
     /** 创建树节点 */

@@ -247,6 +247,29 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                     } else {
                         node.setFileLength(0L);
                     }
+                } else if (StorageConst.STORAGE_NODE_TYPE_DIR_USER.equals(node.getTypeId())) {
+                    List<String> idList = storageDao.listAllSubNodeIdByPath(oldPath);
+                    if ((idList != null) && (!idList.isEmpty())) {
+                        List<StorageFileEntity> fileList = storageFileDao.listFileEntity(idList);
+                        for (StorageFileEntity file : fileList) {
+                            FileDTO src = new FileDTO();
+                            src.setScope(file.getFileScope());
+                            src.setKey(file.getFileKey());
+                            FileDTO dst = new FileDTO();
+                            dst.setScope(newPath);
+                            dst.setKey(file.getFileKey());
+                            FileDTO targetFile = fileService.moveFile(src, dst, current);
+                            if ((targetFile != null) && (!StringUtils.isEmpty(targetFile.getKey()))) {
+                                file.setFileScope(targetFile.getScope());
+                                file.setFileKey(targetFile.getKey());
+                                file.update();
+                                n += storageFileDao.updateById(file);
+                                node.setFileLength(fileService.getFileLength(targetFile, current));
+                            } else {
+                                node.setFileLength(0L);
+                            }
+                        }
+                    }
                 }
                 node.update();
                 n += storageDao.updateExactById(node, node.getId());
