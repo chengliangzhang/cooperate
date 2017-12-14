@@ -377,6 +377,12 @@ public class StorageServiceImplTest {
             account.setId(localUserId);
             fileService.setFileServerType(fileServerType, null);
             fileRequestDTO = storageService.openFileForAccount(account,path,null);
+            if (fileRequestDTO == null) {
+                CreateNodeRequestDTO dto = new CreateNodeRequestDTO();
+                dto.setFullName(path);
+                storageService.createNode(dto,null);
+                fileRequestDTO = storageService.openFileForAccount(account,path,null);
+            }
         } else if (CALL_METHOD_ICE.equals(callServiceMethod)) {
             account.setId(remoteUserId);
             fileServicePrx.setFileServerType(fileServerType);

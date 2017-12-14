@@ -64,8 +64,9 @@ public class LocalServer implements BasicFileServerInterface {
 
         BasicFileRequestDTO requestDTO = new BasicFileRequestDTO();
         if (FileServerConst.OPEN_MODE_READ_WRITE.equals(mode)){
-            requestDTO.setScope(getValidScope(requestDTO.getScope()));
-            requestDTO.setKey(getValidKey(src.getKey()));
+            BasicFileDTO validSrc = getValidFileDTO(src);
+            requestDTO.setScope(validSrc.getScope());
+            requestDTO.setKey(validSrc.getKey());
         } else {
             requestDTO.setScope(src.getScope());
             requestDTO.setKey(src.getKey());
@@ -423,6 +424,37 @@ public class LocalServer implements BasicFileServerInterface {
         return result;
     }
 
+    private BasicFileDTO getValidFileDTO(BasicFileDTO src){
+        if ((src == null) || (StringUtils.isEmpty(src.getScope())) || (StringUtils.isEmpty(src.getKey()))){
+            BasicFileDTO fileDTO = new BasicFileDTO();
+            fileDTO.setScope(getValidScope(src));
+            fileDTO.setKey(getValidKey(src));
+            if (isExist(fileDTO)){
+                fileDTO.setKey(StringUtils.getTimeStamp() + "_" + fileDTO.getKey());
+            }
+            return fileDTO;
+        } else {
+            return src;
+        }
+    }
+
+    private String getValidScope(BasicFileDTO src) {
+        if ((src == null) || (StringUtils.isEmpty(src.getScope()))){
+            return StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT);
+        } else {
+            return src.getScope();
+        }
+    }
+
+    private String getValidKey(BasicFileDTO src) {
+        if ((src == null) || (StringUtils.isEmpty(src.getKey()))){
+            return UUID.randomUUID().toString() + ".txt";
+        } else {
+            return src.getKey();
+        }
+    }
+
+    @Deprecated
     private String getValidScope(String scope){
         if (scope == null){
             scope = StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT);
@@ -430,6 +462,7 @@ public class LocalServer implements BasicFileServerInterface {
         return scope;
     }
 
+    @Deprecated
     private String getValidKey(String key){
         if (key == null){
             key = UUID.randomUUID().toString() + ".txt";

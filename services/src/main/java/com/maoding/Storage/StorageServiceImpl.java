@@ -196,6 +196,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public boolean moveNode(String oldPath, String newPath, Current current) {
         assert (oldPath != null);
+
+        long t = System.currentTimeMillis();
+
         oldPath = StringUtils.formatPath(oldPath);
         newPath = StringUtils.formatPath(newPath);
         if (storageDao.selectByPath(newPath) != null) return false;
@@ -216,6 +219,8 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         if (!StringUtils.isSame(oldPath,node.getPath())) {
             n += storageDao.updateParentPath(oldPath, node.getPath());
         }
+
+        log.info("===>moveNode:" + (System.currentTimeMillis()-t) + "ms");
         return (n > 0);
     }
 
@@ -455,41 +460,45 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
         long t = System.currentTimeMillis();
 
+        FileRequestDTO fileRequestDTO = null;
+
         //获取节点信息
         QueryNodeDTO query = new QueryNodeDTO();
         if (account != null) query.setUserId(account.getId());
         query.setPath(StringUtils.formatPath(path));
         FileNodeDTO fileNodeDTO = storageDao.getFileNodeInfo(query);
-        assert (fileNodeDTO != null);
-        FileDTO fileDTO = new FileDTO();
-        if (!StringUtils.isEmpty(fileNodeDTO.getFileScope())) {
-            fileDTO.setScope(fileNodeDTO.getFileScope());
-        } else {
-            fileDTO.setScope(StringUtils.getDirName(fileNodeDTO.getPath()));
-        }
-        if (!StringUtils.isEmpty(fileNodeDTO.getFileKey())) {
-            fileDTO.setKey(fileNodeDTO.getFileKey());
-        } else {
-            fileDTO.setKey(fileNodeDTO.getName());
-        }
+        if (fileNodeDTO != null) {
+            FileDTO fileDTO = new FileDTO();
+            if (!StringUtils.isEmpty(fileNodeDTO.getFileScope())) {
+                fileDTO.setScope(fileNodeDTO.getFileScope());
+            } else {
+                fileDTO.setScope(StringUtils.getDirName(fileNodeDTO.getPath()));
+            }
+            if (!StringUtils.isEmpty(fileNodeDTO.getFileKey())) {
+                fileDTO.setKey(fileNodeDTO.getFileKey());
+            } else {
+                fileDTO.setKey(fileNodeDTO.getName());
+            }
 
-        //获取文件服务器连接信息
+            //获取文件服务器连接信息
 //        short mode = (fileNodeDTO.getIsReadOnly()) ? FileServerConst.OPEN_MODE_READ_ONLY : FileServerConst.OPEN_MODE_READ_WRITE;
-        short mode = FileServerConst.OPEN_MODE_READ_WRITE;
-        FileRequestDTO fileRequestDTO = fileService.getFileRequest(fileDTO, mode, current);;
+            short mode = FileServerConst.OPEN_MODE_READ_WRITE;
+            fileRequestDTO = fileService.getFileRequest(fileDTO, mode, current);
+            ;
 
-        //组装上传申请结果
-        if ((fileRequestDTO != null) && (!StringUtils.isEmpty(fileRequestDTO.getKey()))) {
-            fileRequestDTO.setId(fileNodeDTO.getId());
-            fileRequestDTO.setNodeId(fileNodeDTO.getId());
+            //组装上传申请结果
+            if ((fileRequestDTO != null) && (!StringUtils.isEmpty(fileRequestDTO.getKey()))) {
+                fileRequestDTO.setId(fileNodeDTO.getId());
+                fileRequestDTO.setNodeId(fileNodeDTO.getId());
 
-            //如果实际文件有更新则保存
-            if (!isSameScopeAndKey(fileNodeDTO,fileRequestDTO)) {
-                StorageFileEntity fileEntity = BeanUtils.createFrom(fileNodeDTO, StorageFileEntity.class);
-                fileEntity.resetLastModifyTime();
-                fileEntity.setFileScope(fileRequestDTO.getScope());
-                fileEntity.setFileKey(fileRequestDTO.getKey());
-                storageFileDao.updateById(fileEntity, fileEntity.getId());
+                //如果实际文件有更新则保存
+                if (!isSameScopeAndKey(fileNodeDTO, fileRequestDTO)) {
+                    StorageFileEntity fileEntity = BeanUtils.createFrom(fileNodeDTO, StorageFileEntity.class);
+                    fileEntity.resetLastModifyTime();
+                    fileEntity.setFileScope(fileRequestDTO.getScope());
+                    fileEntity.setFileKey(fileRequestDTO.getKey());
+                    storageFileDao.updateById(fileEntity, fileEntity.getId());
+                }
             }
         }
 
