@@ -4,6 +4,8 @@ import com.maoding.Base.BaseDao;
 import com.maoding.Storage.Entity.StorageFileEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * 深圳市卯丁技术有限公司
  * 作    者 : 张成亮
@@ -12,4 +14,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface StorageFileDao extends BaseDao<StorageFileEntity> {
+    List<StorageFileEntity> listFileEntity(List<String> idList);
 }

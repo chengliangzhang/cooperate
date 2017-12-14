@@ -220,8 +220,6 @@
 
 
 
-
-
     <sql id="ProjectNodeTables">
         maoding_web_project project
         inner join maoding_web_project_member member on (member.project_id= project.id)
