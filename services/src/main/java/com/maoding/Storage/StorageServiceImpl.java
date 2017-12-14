@@ -102,8 +102,8 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         long t = System.currentTimeMillis();
 
         QueryNodeDTO query = new QueryNodeDTO();
-//        query.setUserId(account.getId());
-        query.setPath(path);
+        if (account != null) query.setUserId(account.getId());
+        query.setPath(StringUtils.formatPath(path));
 
         SimpleNodeDTO node = getNodeInfo(query);
 
@@ -122,7 +122,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
         QueryNodeDTO query = new QueryNodeDTO();
         query.setNodeId(id);
-//        query.setUserId(account.getId());
+        query.setUserId(account.getId());
 
         SimpleNodeDTO node = getNodeInfo(query);
 
@@ -867,17 +867,34 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public boolean deleteNode(String path, boolean force, Current current) {
         assert (path != null);
+
+        long t = System.currentTimeMillis();
+
+        int n = 0;
+
         path = StringUtils.formatPath(path);
         StorageEntity node = storageDao.selectByPath(path);
-        if (node == null) return false;
-        int n = 0;
-        if (force || canBeDeleted(path,current)){
-//            List<String> idList = storageDao.listAllSubNodeIdByPath(node.getPath());
-//            idList.add(node.getId());
-//            n += storageDao.fakeDeleteById(idList);
-//            if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_FILE_MAX) n += storageFileDao.fakeDeleteById(idList);
-//            else if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_DIR_MAX) n += storageDirDao.fakeDeleteById(idList);
+        if (node != null) {
+            List<String> idList = storageDao.listAllSubNodeIdByPath(node.getPath());
+            idList.add(node.getId());
+            n += storageDao.fakeDeleteById(idList);
+            if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_FILE_MAX) {
+                StorageFileEntity fileNode = storageFileDao.selectById(node.getId());
+                FileDTO fileDTO = new FileDTO();
+                fileDTO.setScope(fileNode.getFileScope());
+                fileDTO.setKey(fileNode.getFileKey());
+                fileService.deleteFile(fileDTO,current);
+                n += storageFileDao.fakeDeleteById(idList);
+            } else if (node.getTypeId() <= StorageConst.STORAGE_NODE_TYPE_DIR_MAX){
+                FileDTO dir = new FileDTO();
+                dir.setScope(StringUtils.getDirName(node.getPath()));
+                dir.setKey(node.getNodeName());
+                fileService.deleteFile(dir,current);
+                n += storageDirDao.fakeDeleteById(idList);
+            }
         }
+
+        log.info("===>deleteNode:" + (System.currentTimeMillis()-t) + "ms");
         return (n > 0);
     }
 

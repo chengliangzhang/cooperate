@@ -560,6 +560,10 @@ public class LocalServer implements BasicFileServerInterface {
      */
     @Override
     public void deleteFile(BasicFileDTO src) {
-
+        if (isExist(src)){
+            File f = new File(getPath(src.getScope(),src.getKey()));
+            boolean isSuccess = f.delete();
+            assert (isSuccess);
+        }
     }
 }
