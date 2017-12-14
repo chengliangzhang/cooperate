@@ -2,25 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maoding.Storage.Dao.StorageDao" >
     <select id="listRootNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
-        select * from maoding_storage_root
+        select root.* from maoding_storage_root root
         <where>
             <if test="userId != null">
-                and (find_in_set(#{userId},user_id_list))
+                and (find_in_set(#{userId},root.user_id_list))
             </if>
         </where>
     </select>
 
     <select id="listSubNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
-        select * from maoding_storage_node
+        select node.*
+            <choose>
+                <when test="userId != null">
+                    ,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1) as is_read_only
+                </when>
+                <otherwise>
+                    ,1 as is_read_only
+                </otherwise>
+            </choose>
+        from maoding_storage_node node
         <where>
             <if test="nodeId != null">
-                and (pid = #{nodeId})
+                and (node.pid = #{nodeId})
             </if>
         </where>
     </select>
 
     <select id="listAllNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
-        select *
+        select node.*
+            <choose>
+                <when test="userId != null">
+                    ,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1) as is_read_only
+                </when>
+                <otherwise>
+                    ,1 as is_read_only
+                </otherwise>
+            </choose>
         from
             maoding_storage_node node
             inner join maoding_storage_root root
@@ -32,40 +49,140 @@
         group by node.id
     </select>
 
-    <select id="getNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
-        select * from maoding_storage_node
+    <select id="getNodeInfo" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select node.*
+            <choose>
+                <when test="userId != null">
+                    ,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1) as is_read_only
+                </when>
+                <otherwise>
+                    ,1 as is_read_only
+                </otherwise>
+            </choose>
+        from maoding_storage_node node
         <where>
             <if test="nodeId != null">
-                and (id = #{nodeId})
+                and (node.id = #{nodeId})
             </if>
             <if test="path != null">
-                and (path = #{path})
+                and (node.path = #{path})
             </if>
         </where>
     </select>
 
     <select id="hasChild" resultType="java.lang.Boolean" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
-        select 1 from maoding_storage_node
+        select 1 from maoding_storage_node node
         <where>
             <if test="nodeId != null">
-                and (pid = #{nodeId})
+                and (node.pid = #{nodeId})
             </if>
             <if test="path != null">
-                and (path like concat(#{path},'/'))
+                and (node.path like concat(#{path},'/'))
             </if>
         </where>
         limit 1
     </select>
 
     <select id="hasRootChild" resultType="java.lang.Boolean" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
-        select 1 from maoding_storage_root
+        select 1 from maoding_storage_root root
         <where>
             <if test="userId != null">
-                and (find_in_set(#{userId},user_id_list))
+                and (find_in_set(#{userId},root.user_id_list))
             </if>
         </where>
         limit 1
     </select>
+
+
+    <sql id="FileTables">
+        maoding_storage_file file
+        inner join maoding_storage node on (file.id = node.id)
+        left join maoding_const cst on (node.type_id = cst.value_id)
+        left join maoding_const fcst on (file.file_type_id = fcst.value_id)
+    </sql>
+
+    <sql id="FileTablesFixFilter">
+        (file.deleted = 0) and (node.deleted = 0)
+        and (cst.classic_id = 14) and (fcst.classic_id = 5)
+    </sql>
+
+    <sql id="FileNodeFixPtyListForFileTables">
+        node.id
+        ,node.node_name as name
+        ,node.type_id as type_id
+        ,cst.content as type_name
+        ,node.pid as pid
+        ,node.path as path
+        ,unix_timestamp(ifnull(node.create_time,0)) as create_time_stamp
+        ,date_format(ifnull(node.create_time,0),'%Y-%m-%d %T') as create_time_text
+        ,unix_timestamp(ifnull(node.last_modify_time,0)) as last_modify_time_stamp
+        ,date_format(ifnull(node.last_modify_time,0),'%Y-%m-%d %T') as last_modify_time_text
+        ,node.last_modify_user_id as last_modify_user_id
+        ,node.file_length as file_length
+        ,node.path as full_name
+        ,file.file_checksum
+        ,file.file_version
+        ,file.last_modify_address
+        ,file.sync_mode_id
+        ,file.file_type_id
+        ,fcst.content as file_type_name
+        ,node.last_modify_duty_id as creator_duty_id
+        ,node.last_modify_user_id as owner_user_id
+    </sql>
+
+
+    <select id="getFileNodeInfo" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select <include refid="FileNodeFixPtyListForFileTables"/>
+            <choose>
+                <when test="userId != null">
+                    ,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1) as is_read_only
+                    ,file.file_server_type_id
+                    ,file.file_scope
+                    ,file.file_key
+                </when>
+                <otherwise>
+                    ,1 as is_read_only
+                    ,file.file_server_type_id
+                    ,file.file_scope
+                    ,file.file_key
+                </otherwise>
+            </choose>
+        from <include refid="FileTables"/>
+        where <include refid="FileTablesFixFilter"/>
+            <if test="nodeId != null">
+                and (node.id = #{nodeId})
+            </if>
+            <if test="path != null">
+                and (node.path = #{path})
+            </if>
+    </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     <sql id="ProjectNodeTables">
@@ -530,38 +647,6 @@
         ,b.task_id
     </sql>
 
-    <sql id="FileUnion">
-        maoding_storage a
-        inner join maoding_storage_file b on (a.id = b.id)
-        left join maoding_const c on (a.type_id = c.value_id)
-        left join maoding_const d on (b.file_type_id = d.value_id)
-        left join maoding_const e on (b.sync_mode_id = e.value_id)
-    </sql>
-
-    <sql id="FixConditionForFileUnion">
-        (a.deleted = 0) and (b.deleted = 0)
-        and (c.classic_id = 14) and (d.classic_id = 5) and (e.classic_id = 16)
-    </sql>
-
-    <sql id="SimpleNodeFieldListForFileUnion">
-        <include refid="CommonDirFieldList"/>
-        ,b.file_length
-    </sql>
-
-    <sql id="FileNodeFieldListForFileUnion">
-        <include refid="SimpleNodeFieldListForFileUnion"/>
-        ,a.path as full_name
-        ,b.file_checksum
-        ,b.file_version
-        ,b.last_modify_address
-        ,b.sync_mode_id
-        ,e.content as sync_mode_name
-        ,b.file_type_id
-        ,d.content as file_type_name
-        ,if(a.lock_user_id is null,0,1) as locking
-        ,b.creator_duty_id
-        ,b.last_modify_duty_id
-    </sql>
 
     <sql id="RootNodeFieldList">
         '' as id
@@ -589,37 +674,6 @@
             </choose>
     </select>
 
-    <select id="listSubNodeByPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
-        <choose>
-            <when test="_parameter == null">
-                    select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
-                    from <include refid="SimpleDirUnion"/>
-                    where <include refid="FixConditionForSimpleDirUnion"/>
-                        and (a.pid is null)
-                union all
-                    select <include refid="SimpleNodeFieldListForFileUnion"/>
-                    from <include refid="FileUnion"/>
-                    where <include refid="FixConditionForFileUnion"/>
-                        and (a.pid is null)
-            </when>
-            <otherwise>
-                    select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
-                    from <include refid="SimpleDirUnion"/>
-                        inner join maoding_storage x on (a.pid = x.id)
-                    where <include refid="FixConditionForSimpleDirUnion"/>
-                        and (ifnull(x.deleted,0) = 0)
-                        and (x.path = #{_parameter})
-                union all
-                    select <include refid="SimpleNodeFieldListForFileUnion"/>
-                    from <include refid="FileUnion"/>
-                        inner join maoding_storage x on (a.pid = x.id)
-                    where <include refid="FixConditionForFileUnion"/>
-                        and (ifnull(x.deleted,0) = 0)
-                        and (x.path = #{_parameter})
-            </otherwise>
-        </choose>
-    </select>
-
     <select id="listAllSubNodeIdByPath" resultType="java.lang.String" parameterType="java.lang.String">
         select a.id
         from maoding_storage a
@@ -627,29 +681,6 @@
             <if test="_parameter != null">
                 and (a.path like concat(#{_parameter},'/%'))
             </if>
-    </select>
-
-    <select id="getSimpleNodeByPath" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.lang.String">
-        <choose>
-            <when test="_parameter == null">
-                select <include refid="RootNodeFieldList"/>
-            </when>
-            <otherwise>
-                    select <include refid="SimpleNodeFieldListForSimpleDirUnion"/>
-                    from <include refid="SimpleDirUnion"/>
-                    where <include refid="FixConditionForSimpleDirUnion"/>
-                        and (a.path = #{_parameter})
-                    group by a.id
-                    limit 1
-                union all
-                    select <include refid="SimpleNodeFieldListForFileUnion"/>
-                    from <include refid="FileUnion"/>
-                    where <include refid="FixConditionForFileUnion"/>
-                        and (a.path = #{_parameter})
-                    group by a.id
-                    limit 1
-            </otherwise>
-        </choose>
     </select>
 
     <select id="getFirstChildTypeIdByPath" resultType="java.lang.Short" parameterType="java.lang.String">
@@ -736,9 +767,9 @@
     </select>
 
     <select id="getFileNodeInfoByPath" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="java.lang.String">
-        select <include refid="FileNodeFieldListForFileUnion"/>
-        from <include refid="FileUnion"/>
-        where <include refid="FixConditionForFileUnion"/>
+        select <include refid="FileNodeFixPtyListForFileTables"/>
+        from <include refid="FileTables"/>
+        where <include refid="FileTablesFixFilter"/>
             <if test="_parameter != null">
                 and (a.path = #{_parameter})
             </if>
@@ -772,63 +803,6 @@
             <if test="_parameter != null">
                 and (a.id = #{_parameter})
             </if>
-        group by a.id
-    </select>
-
-    <select id="getFileNodeInfo" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="com.maoding.Storage.zeroc.CooperationQueryDTO">
-        select
-            c.id
-            ,c.file_name as name
-            ,a.id as node_id
-            ,a.pid as p_node_id
-            ,group_concat(if(b.node_name is null,'',concat(b.node_name,'/')) order by length(b.path) separator '') as path_name
-            ,c.file_length
-            ,c.file_checksum
-            ,c.file_version
-            ,c.specialty_id
-            ,d.content as specialty_name
-            ,c.last_modify_address
-            ,c.sync_mode_id
-            ,e.content as sync_mode_name
-            ,c.type_id
-            ,f.content as type_name
-            ,c.locking
-            ,c.creator_duty_id
-            ,unix_timestamp(c.create_time) as create_time_stamp
-            ,date_format(c.create_time,'%Y-%m-%d %T') as create_time_text
-            ,c.last_modify_duty_id
-            ,unix_timestamp(c.last_modify_time) as last_modify_time_stamp
-            ,date_format(c.last_modify_time,'%Y-%m-%d %T') as last_modify_time_text
-        from
-            maoding_storage a
-            inner join maoding_storage b on (find_in_set(b.id,a.path))
-            inner join maoding_storage_file c on (a.detail_id = c.id)
-            left join maoding_const d on (c.specialty_id = d.value_id)
-            left join maoding_const e on (c.sync_mode_id = e.value_id)
-            left join maoding_const f on (c.type_id = f.value_id)
-        where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
-            and ((d.classic_id = 18) or (d.classic_id is null))
-            and ((e.classic_id = 16) or (e.classic_id is null))
-            and ((f.classic_id = 5) or (f.classic_id))
-            and (a.type_id = 0)
-            <choose>
-                <when test="nodeId != null">
-                    and (a.id = #{nodeId})
-                </when>
-                <otherwise>
-                    <choose>
-                        <when test="pNodeId != null">
-                            and (a.pid = #{pNodeId})
-                        </when>
-                        <otherwise>
-                            and (a.pid is null)
-                        </otherwise>
-                    </choose>
-                    <if test="nodeName != null">
-                        and (a.node_name = #{nodeName})
-                    </if>
-                </otherwise>
-            </choose>
         group by a.id
     </select>
 

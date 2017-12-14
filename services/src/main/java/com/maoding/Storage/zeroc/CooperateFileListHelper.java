@@ -42,7 +42,7 @@ public final class CooperateFileListHelper
     {
         final java.util.List<CooperateFileDTO> v;
         v = new java.util.ArrayList<CooperateFileDTO>();
-        final int len0 = istr.readAndCheckSeqSize(103);
+        final int len0 = istr.readAndCheckSeqSize(109);
         for(int i0 = 0; i0 < len0; i0++)
         {
             CooperateFileDTO elem;

@@ -144,24 +144,24 @@ public class StorageServiceImplTest {
         AccountDTO account = new AccountDTO();
 
         //本地服务测试
-//        account.setId("5ffee496fa814ea4b6d26a9208b00a0b");
-//        list = storageService.listSubNodeByPathForAccount(account,"/",null);
-//        Assert.assertNotNull(list);
-//        node = storageService.getNodeByPathForAccount(account,"/项目20171115",null);
-//        Assert.assertNotNull(node);
-//        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115",null);
-//        Assert.assertNotNull(list);
-//        node = storageService.getNodeByPathForAccount(account,"/项目20171115/项目前期",null);
-//        Assert.assertNotNull(node);
-//        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期",null);
-//        Assert.assertNotNull(list);
-//        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期/前期 01",null);
-//        Assert.assertNotNull(list);
+        account.setId("5ffee496fa814ea4b6d26a9208b00a0b");
+        list = storageService.listSubNodeByPathForAccount(account,"/",null);
+        Assert.assertNotNull(list);
+        node = storageService.getNodeByPathForAccount(account,"/项目20171115",null);
+        Assert.assertNotNull(node);
+        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115",null);
+        Assert.assertNotNull(list);
+        node = storageService.getNodeByPathForAccount(account,"/项目20171115/项目前期",null);
+        Assert.assertNotNull(node);
+        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期",null);
+        Assert.assertNotNull(list);
+        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期/前期 01",null);
+        Assert.assertNotNull(list);
 
         //远程服务测试
-        account.setId("41d244733ec54f09a255836637f2b21d");
-        list = storageServicePrx.listSubNodeByPathForAccount(account,"/");
-        Assert.assertNotNull(list);
+//        account.setId("41d244733ec54f09a255836637f2b21d");
+//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/");
+//        Assert.assertNotNull(list);
 //        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试");
 //        Assert.assertNotNull(list);
 //        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段");
@@ -170,10 +170,10 @@ public class StorageServiceImplTest {
 //        Assert.assertNotNull(list);
 //        node = storageServicePrx.getNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段/给排水施工图/给排水系统图");
 //        Assert.assertNotNull(node);
-        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/方案设计");
-        Assert.assertNotNull(list);
-        list = storageServicePrx.listAllNodeForAccount(account);
-        Assert.assertNotNull(list);
+//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/方案设计");
+//        Assert.assertNotNull(list);
+//        list = storageServicePrx.listAllNodeForAccount(account);
+//        Assert.assertNotNull(list);
     }
 
     /** 锁定文件 */
@@ -362,22 +362,23 @@ public class StorageServiceImplTest {
     public void testWriteFileForLocal() throws Exception {
         fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
         fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
-//        callServiceMethod = CALL_METHOD_LOCAL;
-//        writeFile(testUploadLocalFile,StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile));
-        callServiceMethod = CALL_METHOD_ICE;
+        callServiceMethod = CALL_METHOD_LOCAL;
         writeFile(testUploadLocalFile,StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile));
+//        callServiceMethod = CALL_METHOD_ICE;
+//        writeFile(testUploadLocalFile,StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile));
     }
 
     private void writeFile(String localFile, String path) throws Exception {
         AccountDTO account = new AccountDTO();
-        account.setId(localUserId);
 
         //获取文件服务器接口
         FileRequestDTO fileRequestDTO = null;
         if (CALL_METHOD_LOCAL.equals(callServiceMethod)) {
+            account.setId(localUserId);
             fileService.setFileServerType(fileServerType, null);
             fileRequestDTO = storageService.openFileForAccount(account,path,null);
         } else if (CALL_METHOD_ICE.equals(callServiceMethod)) {
+            account.setId(remoteUserId);
             fileServicePrx.setFileServerType(fileServerType);
             fileRequestDTO = storageServicePrx.openFileForAccount(account,path);
         }

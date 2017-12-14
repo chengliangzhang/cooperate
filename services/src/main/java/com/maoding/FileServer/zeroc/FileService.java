@@ -22,6 +22,8 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileService extends com.zeroc.Ice.Object
 {
+    FileRequestDTO getFileRequest(FileDTO src, short mode, com.zeroc.Ice.Current current);
+
     int writeFile(FileMultipartDTO data, com.zeroc.Ice.Current current);
 
     FileMultipartDTO readFile(FileDTO file, long pos, int size, com.zeroc.Ice.Current current);
@@ -29,14 +31,6 @@ public interface FileService extends com.zeroc.Ice.Object
     void setFileServerType(int type, com.zeroc.Ice.Current current);
 
     int getFileServerType(com.zeroc.Ice.Current current);
-
-    FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback, com.zeroc.Ice.Current current);
-
-    FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback, com.zeroc.Ice.Current current);
-
-    UploadResultDTO upload(UploadRequestDTO request, com.zeroc.Ice.Current current);
-
-    DownloadResultDTO download(DownloadRequestDTO request, com.zeroc.Ice.Current current);
 
     String duplicateFile(FileDTO src, com.zeroc.Ice.Current current);
 
@@ -49,6 +43,14 @@ public interface FileService extends com.zeroc.Ice.Object
     java.util.List<java.lang.String> listScope(com.zeroc.Ice.Current current);
 
     void finishUpload(FileRequestDTO request, com.zeroc.Ice.Current current);
+
+    FileRequestDTO getUploadRequest(FileDTO src, int mode, CallbackDTO callback, com.zeroc.Ice.Current current);
+
+    FileRequestDTO getDownloadRequest(FileDTO src, int mode, CallbackDTO callback, com.zeroc.Ice.Current current);
+
+    UploadResultDTO upload(UploadRequestDTO request, com.zeroc.Ice.Current current);
+
+    DownloadResultDTO download(DownloadRequestDTO request, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -71,6 +73,22 @@ public interface FileService extends com.zeroc.Ice.Object
     static String ice_staticId()
     {
         return "::zeroc::FileService";
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFileRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        FileDTO iceP_src;
+        short iceP_mode;
+        iceP_src = FileDTO.ice_read(istr);
+        iceP_mode = istr.readShort();
+        inS.endReadParams();
+        FileRequestDTO ret = obj.getFileRequest(iceP_src, iceP_mode, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        FileRequestDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -123,70 +141,6 @@ public interface FileService extends com.zeroc.Ice.Object
         int ret = obj.getFileServerType(current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         ostr.writeInt(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getUploadRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        FileDTO iceP_src;
-        int iceP_mode;
-        CallbackDTO iceP_callback;
-        iceP_src = FileDTO.ice_read(istr);
-        iceP_mode = istr.readInt();
-        iceP_callback = CallbackDTO.ice_read(istr);
-        inS.endReadParams();
-        FileRequestDTO ret = obj.getUploadRequest(iceP_src, iceP_mode, iceP_callback, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        FileRequestDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getDownloadRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        FileDTO iceP_src;
-        int iceP_mode;
-        CallbackDTO iceP_callback;
-        iceP_src = FileDTO.ice_read(istr);
-        iceP_mode = istr.readInt();
-        iceP_callback = CallbackDTO.ice_read(istr);
-        inS.endReadParams();
-        FileRequestDTO ret = obj.getDownloadRequest(iceP_src, iceP_mode, iceP_callback, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        FileRequestDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_upload(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        UploadRequestDTO iceP_request;
-        iceP_request = UploadRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        UploadResultDTO ret = obj.upload(iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        UploadResultDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_download(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        DownloadRequestDTO iceP_request;
-        iceP_request = DownloadRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        DownloadResultDTO ret = obj.download(iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        DownloadResultDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -266,6 +220,70 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(inS.writeEmptyParams());
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getUploadRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        FileDTO iceP_src;
+        int iceP_mode;
+        CallbackDTO iceP_callback;
+        iceP_src = FileDTO.ice_read(istr);
+        iceP_mode = istr.readInt();
+        iceP_callback = CallbackDTO.ice_read(istr);
+        inS.endReadParams();
+        FileRequestDTO ret = obj.getUploadRequest(iceP_src, iceP_mode, iceP_callback, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        FileRequestDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getDownloadRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        FileDTO iceP_src;
+        int iceP_mode;
+        CallbackDTO iceP_callback;
+        iceP_src = FileDTO.ice_read(istr);
+        iceP_mode = istr.readInt();
+        iceP_callback = CallbackDTO.ice_read(istr);
+        inS.endReadParams();
+        FileRequestDTO ret = obj.getDownloadRequest(iceP_src, iceP_mode, iceP_callback, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        FileRequestDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_upload(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        UploadRequestDTO iceP_request;
+        iceP_request = UploadRequestDTO.ice_read(istr);
+        inS.endReadParams();
+        UploadResultDTO ret = obj.upload(iceP_request, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        UploadResultDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_download(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        DownloadRequestDTO iceP_request;
+        iceP_request = DownloadRequestDTO.ice_read(istr);
+        inS.endReadParams();
+        DownloadResultDTO ret = obj.download(iceP_request, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        DownloadResultDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     final static String[] _iceOps =
     {
         "deleteFile",
@@ -273,6 +291,7 @@ public interface FileService extends com.zeroc.Ice.Object
         "duplicateFile",
         "finishUpload",
         "getDownloadRequest",
+        "getFileRequest",
         "getFileServerType",
         "getUploadRequest",
         "ice_id",
@@ -322,53 +341,57 @@ public interface FileService extends com.zeroc.Ice.Object
             }
             case 5:
             {
-                return _iceD_getFileServerType(this, in, current);
+                return _iceD_getFileRequest(this, in, current);
             }
             case 6:
             {
-                return _iceD_getUploadRequest(this, in, current);
+                return _iceD_getFileServerType(this, in, current);
             }
             case 7:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getUploadRequest(this, in, current);
             }
             case 8:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 9:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 10:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 11:
             {
-                return _iceD_isExist(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 12:
             {
-                return _iceD_listFile(this, in, current);
+                return _iceD_isExist(this, in, current);
             }
             case 13:
             {
-                return _iceD_listScope(this, in, current);
+                return _iceD_listFile(this, in, current);
             }
             case 14:
             {
-                return _iceD_readFile(this, in, current);
+                return _iceD_listScope(this, in, current);
             }
             case 15:
             {
-                return _iceD_setFileServerType(this, in, current);
+                return _iceD_readFile(this, in, current);
             }
             case 16:
             {
-                return _iceD_upload(this, in, current);
+                return _iceD_setFileServerType(this, in, current);
             }
             case 17:
+            {
+                return _iceD_upload(this, in, current);
+            }
+            case 18:
             {
                 return _iceD_writeFile(this, in, current);
             }

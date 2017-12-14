@@ -145,16 +145,16 @@ BEGIN
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='登录用户表';
 
   -- >>>>>>>>> 建立视图 <<<<<<<<<<<<<<<<
-  -- maoding_storage_node -- 存储树节点通用视图
-  CREATE OR REPLACE VIEW `maoding_storage_node` AS
-      select
+  -- maoding_storage_root -- 根节点通用视图，带有user_id_list
+  CREATE OR REPLACE VIEW `maoding_storage_root` AS
+    select
           project.id
           ,project.project_name as name
           ,if(project.id is null,null,11) as type_id
           ,if(project.id is null,null,'项目目录') as type_name
           ,null AS pid
           ,if(project.id is null,null,11) AS p_type_id
-          ,if(project.id is null,null,'项目目录') as p_type_name
+          ,if(project.id is null,null,'项目节点') as p_type_name
           ,if(project.id is null,null,concat('/',project.project_name)) as path
           ,if(project.id is null,null,unix_timestamp(ifnull(project.create_date,0))) as create_time_stamp
           ,if(project.id is null,null,date_format(ifnull(project.create_date,0),'%Y-%m-%a %T')) as create_time_text
@@ -166,12 +166,40 @@ BEGIN
           ,if(project.id is null,null,1) as is_directory
           ,if(project.id is null,null,1) as is_project_directory
           ,if(project.id is null,null,0) as is_task_directory
+          ,GROUP_CONCAT(distinct member.account_id) as user_id_list
       from
           maoding_web_project project
           inner join maoding_web_project_member member on (member.project_id= project.id)
       where
           (project.pstatus = '0')
           and (member.deleted = 0)
+      group by project.id
+
+  -- maoding_storage_node -- 树节点通用视图
+  CREATE OR REPLACE VIEW `maoding_storage_node` AS
+      select
+          project.id
+          ,project.project_name as name
+          ,if(project.id is null,null,11) as type_id
+          ,if(project.id is null,null,'项目目录') as type_name
+          ,null AS pid
+          ,if(project.id is null,null,11) AS p_type_id
+          ,if(project.id is null,null,'项目节点') as p_type_name
+          ,if(project.id is null,null,concat('/',project.project_name)) as path
+          ,if(project.id is null,null,unix_timestamp(ifnull(project.create_date,0))) as create_time_stamp
+          ,if(project.id is null,null,date_format(ifnull(project.create_date,0),'%Y-%m-%d %T')) as create_time_text
+          ,if(project.id is null,null,unix_timestamp(ifnull(ifnull(project.update_date,project.create_date),0))) as last_modify_time_stamp
+          ,if(project.id is null,null,date_format(ifnull(ifnull(project.update_date,project.create_date),0),'%Y-%m-%d %T')) as last_modify_time_text
+          ,if(project.id is null,null,ifnull(project.update_by,project.create_by)) as last_modify_user_id
+          ,if(project.id is null,null,1) as is_read_only
+          ,if(project.id is null,null,0) as file_length
+          ,if(project.id is null,null,1) as is_directory
+          ,if(project.id is null,null,1) as is_project_directory
+          ,if(project.id is null,null,0) as is_task_directory
+      from
+          maoding_web_project project
+      where
+          (project.pstatus = '0')
       group by project.id
 
       union all
@@ -183,16 +211,16 @@ BEGIN
           ,if(task.id is null,null,'任务目录') as type_name
           ,ifnull(task.task_pid,task.project_id) AS pid
           ,if(task.id is null,null,if(task.task_pid is null,11,12)) AS p_type_id
-          ,if(task.id is null,null,if(task.task_pid is null,'项目目录','任务目录')) AS p_type_name
+          ,if(task.id is null,null,if(task.task_pid is null,'项目节点','任务节点')) AS p_type_name
           ,if(task.id is null,null,concat('/',project.project_name,'/'
               ,if(task_parent3.id is not null,concat(task_parent3.task_name,'/'),'')
               ,if(task_parent2.id is not null,concat(task_parent2.task_name,'/'),'')
               ,if(task_parent.id is not null,concat(task_parent.task_name,'/'),'')
               ,task.task_name)) as path
           ,if(task.id is null,null,unix_timestamp(ifnull(task.create_date,0))) as create_time_stamp
-          ,if(task.id is null,null,date_format(ifnull(task.create_date,0),'%Y-%m-%a %T')) as create_time_text
+          ,if(task.id is null,null,date_format(ifnull(task.create_date,0),'%Y-%m-%d %T')) as create_time_text
           ,if(task.id is null,null,unix_timestamp(ifnull(ifnull(task.update_date,task.create_date),0))) as last_modify_time_stamp
-          ,if(task.id is null,null,date_format(ifnull(ifnull(task.update_date,task.create_date),0),'%Y-%m-%a %T')) as last_modify_time_text
+          ,if(task.id is null,null,date_format(ifnull(ifnull(task.update_date,task.create_date),0),'%Y-%m-%d %T')) as last_modify_time_text
           ,if(task.id is null,null,ifnull(task.update_by,task.create_by)) as last_modify_user_id
           ,if(task.id is null,null,if(task.task_type=0,0,1)) as is_read_only
           ,if(task.id is null,null,0) as file_length
@@ -201,45 +229,83 @@ BEGIN
           ,if(task.id is null,null,1) as is_task_directory
       from
           maoding_web_project_task task
-          left join maoding_web_project_task task_parent ON (task_parent.id=task.task_pid)
-          left join maoding_web_project_task task_parent2 ON (task_parent2.id=task_parent.task_pid)
-          left join maoding_web_project_task task_parent3 ON (task_parent3.id=task_parent2.task_pid)
-          inner join maoding_web_project project on ( task.project_id= project.id)
+          left join maoding_web_project_task task_parent ON (task_parent.id = task.task_pid)
+          left join maoding_web_project_task task_parent2 ON (task_parent2.id = task_parent.task_pid)
+          left join maoding_web_project_task task_parent3 ON (task_parent3.id = task_parent2.task_pid)
+          inner join maoding_web_project project on ( task.project_id = project.id)
       where
           (task.task_status = '0')
           and (task.task_type in (0,1,2))
+          and (project.pstatus = '0')
       group by task.id
 
       union all
 
       select
-          st.id
-          ,st.node_name as name
-          ,st.type_id as type_id
+          node.id
+          ,node.node_name as name
+          ,node.type_id as type_id
           ,cst.content as type_name
-          ,st.pid as pid
-          ,st.pid_type_id AS p_type_id
+          ,node.pid as pid
+          ,node.pid_type_id AS p_type_id
           ,pcst.content AS p_type_name
-          ,st.path as path
-          ,unix_timestamp(ifnull(st.create_time,0)) as create_time_stamp
-          ,date_format(ifnull(st.create_time,0),'%Y-%m-%a %T') as create_time_text
-          ,unix_timestamp(ifnull(st.last_modify_time,0)) as last_modify_time_stamp
-          ,date_format(ifnull(st.last_modify_time,0),'%Y-%m-%a %T') as last_modify_time_text
-          ,st.last_modify_user_id as last_modify_user_id
-          ,if(st.id is null,null,0) as is_read_only
-          ,st.file_length as file_length
-          ,if(st.type_id >= 10,1,0) as is_directory
-          ,if(st.id is null,null,0) as is_project_directory
-          ,if(st.id is null,null,0) as is_task_directory
+          ,node.path as path
+          ,unix_timestamp(ifnull(node.create_time,0)) as create_time_stamp
+          ,date_format(ifnull(node.create_time,0),'%Y-%m-%d %T') as create_time_text
+          ,unix_timestamp(ifnull(node.last_modify_time,0)) as last_modify_time_stamp
+          ,date_format(ifnull(node.last_modify_time,0),'%Y-%m-%d %T') as last_modify_time_text
+          ,node.last_modify_user_id as last_modify_user_id
+          ,if(node.id is null,null,0) as is_read_only
+          ,node.file_length as file_length
+          ,if(node.type_id >= 10,1,0) as is_directory
+          ,if(node.id is null,null,0) as is_project_directory
+          ,if(node.id is null,null,0) as is_task_directory
       from
-          maoding_storage st
-          left join maoding_const cst on (st.type_id = cst.value_id)
-          left join maoding_const pcst on (st.pid_type_id = pcst.value_id)
+          maoding_storage node
+          left join maoding_const cst on (node.type_id = cst.value_id)
+          left join maoding_const pcst on (node.pid_type_id = pcst.value_id)
       where
-          (st.deleted = '0')
+          (node.deleted = '0')
           and (cst.classic_id = 14)
-          and (pcst.classic_id = 14)
-      group by st.id
+          and (pcst.classic_id = 21)
+      group by node.id
+
+  -- maoding_storage_file_info -- 文件节点详细信息
+  CREATE OR REPLACE VIEW `maoding_storage_file_info` AS
+      select
+          node.id
+          ,node.node_name as file_name
+          ,node.type_id as type_id
+          ,cst.content as type_name
+          ,node.pid as pid
+          ,node.pid_type_id AS p_type_id
+          ,pcst.content AS p_type_name
+          ,node.path as path
+          ,unix_timestamp(ifnull(node.create_time,0)) as create_time_stamp
+          ,date_format(ifnull(node.create_time,0),'%Y-%m-%d %T') as create_time_text
+          ,unix_timestamp(ifnull(node.last_modify_time,0)) as last_modify_time_stamp
+          ,date_format(ifnull(node.last_modify_time,0),'%Y-%m-%d %T') as last_modify_time_text
+          ,node.last_modify_user_id as last_modify_user_id
+          ,0 as is_read_only
+          ,node.file_length as file_length
+          ,file.file_scope
+          ,file.file_key
+          ,file.file_version
+          ,file.file_type_id
+          ,fcst.content as file_type_name
+          ,file.last_modify_user_id as owner_user_id
+      from
+            maoding_storage_file file
+            inner join maoding_storage node on (file.id = node.id)
+            left join maoding_const cst on (node.type_id = cst.value_id)
+            left join maoding_const pcst on (node.pid_type_id = pcst.value_id)
+            left join maoding_const fcst on (file.file_type_id = fcst.value_id)
+      where
+            (file.deleted = 0)
+            and (node.id = 0)
+            and (cst.classic_id = 14)
+            and (pcst.classic_id = 21)
+            and (fcst.classic_id = 5)
 END;
 
 

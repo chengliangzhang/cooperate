@@ -13,8 +13,6 @@ module zeroc {
         string pid; //父节点编号
         short typeId; //节点类别编号
         string typeName; //节点类别名字
-        short pTypeId; //父节点类别编号
-        string pTypeName; //父节点类别名字
         string path; //节点全路径
         long createTimeStamp; //节点建立时间
         string createTimeText; //节点建立时间文字
@@ -22,6 +20,8 @@ module zeroc {
         string lastModifyTimeText; //节点最后修改时间文字
         bool isReadOnly; //节点是否只读（当前用户没有修改权限，或文件被其他用户锁定）
         long fileLength; //节点长度
+        string owner_duty_id; //节点所有者职责id
+        string owner_name; //节点所有者名称
 
         //节点特有信息
         bool isDirectory; //节点是否目录
@@ -45,36 +45,42 @@ module zeroc {
         //节点、文件、目录通用信息
         string id; //节点编号（树节点编号）
         string name; //节点名称（树节点名称或文件名称）
-        string pNodeId; //父节点编号
+        string pid; //父节点编号
         short typeId; //节点类别编号
         string typeName; //节点类别名字
+        string path; //节点全路径
         long createTimeStamp; //节点建立时间
         string createTimeText; //节点建立时间文字
         long lastModifyTimeStamp; //节点最后修改时间
         string lastModifyTimeText; //节点最后修改时间文字
         bool isReadOnly; //节点是否只读（当前用户没有修改权限，或文件被其他用户锁定）
         long fileLength; //节点长度
+        string owner_duty_id; //节点所有者职责id
+        string owner_name; //节点所有者名称
 
         //文件节点特有信息
-        string fullName; //文件全路径名
         string fileChecksum; //文件校验和
         string fileVersion; //文件版本号
         short fileTypeId; //文件类型
         string fileTypeName; //文件类型文字说明
-        string creatorDutyId; //协同创建者的用户职责id
-        string creatorDutyName; //协同创建者名字
-        string lastModifyDutyId; //最后更改协同的用户职责id
-        string lastModifyDutyName; //最后更改协同的用户名字
         string organizationId; //文件所属公司id
         string organizationName; //文件所属公司名称
         short syncModeId; //同步模式
         string syncModeName; //同步模式文字说明
         string lastModifyAddress; //最后上传的地址
+        string fileServerTypeId; //文件服务器类型id
+        string fileServerTypeName; //文件服务器类型名称
+        string fileScope; //在文件服务器上的存储位置
+        string fileKey; //在文件服务器上的存储名称
 
         //以下属性有可能被删除
         bool isValid; //节点是否有效
         bool locking; //是否锁定，false-不锁定，true-锁定
         string localFile; //本地文件路径，包含文件名
+        string creatorDutyId; //协同创建者的用户职责id
+        string creatorDutyName; //协同创建者名字
+        string lastModifyDutyId; //最后更改协同的用户职责id
+        string lastModifyDutyName; //最后更改协同的用户名字
     };
     ["java:type:java.util.ArrayList<FileNodeDTO>"] sequence<FileNodeDTO> RelatedFileList;
 
