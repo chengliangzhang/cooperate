@@ -123,6 +123,40 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default boolean setFileLength(FileDTO src, long fileLength)
+    {
+        return setFileLength(src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean setFileLength(FileDTO src, long fileLength, java.util.Map<String, String> context)
+    {
+        return _iceI_setFileLengthAsync(src, fileLength, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFileLengthAsync(FileDTO src, long fileLength)
+    {
+        return _iceI_setFileLengthAsync(src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFileLengthAsync(FileDTO src, long fileLength, java.util.Map<String, String> context)
+    {
+        return _iceI_setFileLengthAsync(src, fileLength, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_setFileLengthAsync(FileDTO iceP_src, long iceP_fileLength, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setFileLength", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     FileDTO.ice_write(ostr, iceP_src);
+                     ostr.writeLong(iceP_fileLength);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
     default int writeFile(FileMultipartDTO data)
     {
         return writeFile(data, com.zeroc.Ice.ObjectPrx.noExplicitContext);

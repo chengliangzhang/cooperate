@@ -28,6 +28,8 @@ public interface FileService extends com.zeroc.Ice.Object
 
     long getFileLength(FileDTO src, com.zeroc.Ice.Current current);
 
+    boolean setFileLength(FileDTO src, long fileLength, com.zeroc.Ice.Current current);
+
     int writeFile(FileMultipartDTO data, com.zeroc.Ice.Current current);
 
     FileMultipartDTO readFile(FileDTO file, long pos, int size, com.zeroc.Ice.Current current);
@@ -121,6 +123,22 @@ public interface FileService extends com.zeroc.Ice.Object
         long ret = obj.getFileLength(iceP_src, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         ostr.writeLong(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setFileLength(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        FileDTO iceP_src;
+        long iceP_fileLength;
+        iceP_src = FileDTO.ice_read(istr);
+        iceP_fileLength = istr.readLong();
+        inS.endReadParams();
+        boolean ret = obj.setFileLength(iceP_src, iceP_fileLength, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -338,6 +356,7 @@ public interface FileService extends com.zeroc.Ice.Object
         "listScope",
         "moveFile",
         "readFile",
+        "setFileLength",
         "setFileServerType",
         "upload",
         "writeFile"
@@ -429,13 +448,17 @@ public interface FileService extends com.zeroc.Ice.Object
             }
             case 18:
             {
-                return _iceD_setFileServerType(this, in, current);
+                return _iceD_setFileLength(this, in, current);
             }
             case 19:
             {
-                return _iceD_upload(this, in, current);
+                return _iceD_setFileServerType(this, in, current);
             }
             case 20:
+            {
+                return _iceD_upload(this, in, current);
+            }
+            case 21:
             {
                 return _iceD_writeFile(this, in, current);
             }

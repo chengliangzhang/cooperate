@@ -65,6 +65,27 @@ public class LocalServer implements BasicFileServerInterface {
         return src.length();
     }
 
+    @Override
+    public boolean setFileLength(BasicFileDTO basicSrc, long fileLength) {
+        if (!isExist(basicSrc)) return false;
+
+        boolean isOk = true;
+        RandomAccessFile file = null;
+        try {
+            file = new RandomAccessFile(getPath(basicSrc.getScope(),basicSrc.getKey()),"rw");
+            file.setLength(fileLength);
+        } catch (FileNotFoundException e) {
+            log.error("未找到文件" + getPath(basicSrc.getScope(),basicSrc.getKey()));
+            isOk = false;
+        } catch (IOException e) {
+            log.error("设置文件" + getPath(basicSrc.getScope(),basicSrc.getKey()) + "长度时出错");
+            isOk = false;
+        } finally {
+            FileUtils.close(file);
+        }
+        return isOk;
+    }
+
     /** 改名或移动文件 */
     @Override
     public BasicFileDTO moveFile(BasicFileDTO src, BasicFileDTO dst) {
