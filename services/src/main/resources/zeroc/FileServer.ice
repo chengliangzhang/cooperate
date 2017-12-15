@@ -91,6 +91,7 @@ module zeroc {
         FileRequestDTO getFileRequest(FileDTO src,short mode); //使用只读或读写方式申请文件实际地址
         FileDTO moveFile(FileDTO src,FileDTO dst); //移动目录或文件
         long getFileLength(FileDTO src); //取文件长度
+        bool setFileLength(FileDTO src,long fileLength); //设置文件长度
 
         //已经实现接口
         int writeFile(FileMultipartDTO data); //写入文件

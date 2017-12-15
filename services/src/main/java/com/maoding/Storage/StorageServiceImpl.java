@@ -374,13 +374,27 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public boolean setFileLength(String path, long fileLength, Current current) {
-        long t = System.currentTimeMillis();
         assert (path != null);
         assert (fileLength >= 0);
+
+        long t = System.currentTimeMillis();
+
         StorageEntity node = storageDao.selectByPath(StringUtils.formatPath(path));
         if ((node == null) || (node.getTypeId() > StorageConst.STORAGE_NODE_TYPE_FILE_MAX)) return false;
         node.setFileLength(fileLength);
         int n = storageDao.updateById(node,node.getId());
+
+        StorageFileEntity fileEntity = storageFileDao.selectById(node.getId());
+        if (fileEntity != null) {
+            if ((fileEntity.getFileScope() != null) && (fileEntity.getFileKey() != null)) {
+                FileDTO fileDTO = new FileDTO();
+                fileDTO.setScope(fileEntity.getFileScope());
+                fileDTO.setKey(fileEntity.getFileKey());
+                boolean isOk = fileService.setFileLength(fileDTO, fileLength, current);
+                assert (isOk);
+            }
+        }
+
         log.info("===>setFileLength:" + (System.currentTimeMillis()-t) + "ms");
         return (n > 0);
     }
@@ -502,8 +516,20 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public boolean closeFileForAccount(AccountDTO account, String path, Current current) {
         long t = System.currentTimeMillis();
+        boolean isOk = setFileLength(path,getRealFileLength(path),current);
         log.info("===>closeFileForAccount:" + (System.currentTimeMillis()-t) + "ms");
-        return true;
+        return isOk;
+    }
+
+    private long getRealFileLength(String path){
+        StorageEntity entity = storageDao.selectByPath(path);
+        assert (entity != null);
+        StorageFileEntity fileEntity = storageFileDao.selectById(entity.getId());
+        assert (fileEntity != null);
+        FileDTO fileDTO = new FileDTO();
+        fileDTO.setScope(fileEntity.getFileScope());
+        fileDTO.setKey(fileEntity.getFileKey());
+        return fileService.getFileLength(fileDTO,null);
     }
 
     @Override

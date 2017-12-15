@@ -206,11 +206,7 @@ public class StorageServiceImplTest {
     /** 调整文件大小 */
     @Test
     public void testSetFileLength() throws Exception {
-        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
-        request.setFullName("/x/y/z");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
-        storageService.createNode(request,null);
-        Boolean b = storageService.setFileLength("/x/y/z",100,null);
+        Boolean b = storageService.setFileLength("/testForStorageService/upload_test.txt",100,null);
         Assert.assertTrue(b);
     }
 
