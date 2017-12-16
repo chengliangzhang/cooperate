@@ -76,7 +76,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /** 标准化路径（所有路径分隔都用"/"） */
     public static String formatPath(String path,Boolean rootAsNull) {
         if (path == null) return null;
-        path = path.replaceAll("\\\\", "/").trim();
+        path = path.replaceAll("\\\\", SPLIT_PATH).trim();
+        path = path.replaceAll(SPLIT_PATH + SPLIT_PATH,SPLIT_PATH);
         if ((rootAsNull) && (isSame(path,SPLIT_PATH))){
             path = null;
         }
