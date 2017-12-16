@@ -243,7 +243,6 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                         fileEntity.setFileKey(targetFile.getKey());
                         fileEntity.update();
                         n += storageFileDao.updateById(fileEntity);
-                        node.setFileLength(fileService.getFileLength(targetFile,current));
                     } else {
                         node.setFileLength(0L);
                     }
@@ -264,7 +263,6 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                                 file.setFileKey(targetFile.getKey());
                                 file.update();
                                 n += storageFileDao.updateById(file);
-                                node.setFileLength(fileService.getFileLength(targetFile, current));
                             } else {
                                 node.setFileLength(0L);
                             }
@@ -522,7 +520,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     private long getRealFileLength(String path){
-        StorageEntity entity = storageDao.selectByPath(path);
+        StorageEntity entity = storageDao.selectByPath(StringUtils.formatPath(path));
         assert (entity != null);
         StorageFileEntity fileEntity = storageFileDao.selectById(entity.getId());
         assert (fileEntity != null);
