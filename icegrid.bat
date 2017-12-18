@@ -1,1 +1,1 @@
-icegridregistry --Ice.Config=services/src/main/resources/properties/ice-config.properties
+icegridregistry --Ice.Config=services/src/main/resources/properties/ice-config-test.properties

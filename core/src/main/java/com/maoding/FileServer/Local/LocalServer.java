@@ -61,14 +61,12 @@ public class LocalServer implements BasicFileServerInterface {
     @Override
     public long getFileLength(BasicFileDTO basicSrc) {
         if (!isExist(basicSrc)) return 0;
-        File src = new File(getPath(basicSrc.getScope(),basicSrc.getKey()));
+        File src = new File(getPath(basicSrc));
         return src.length();
     }
 
     @Override
     public boolean setFileLength(BasicFileDTO basicSrc, long fileLength) {
-        if (!isExist(basicSrc)) return false;
-
         boolean isOk = true;
         RandomAccessFile file = null;
         try {
@@ -90,11 +88,11 @@ public class LocalServer implements BasicFileServerInterface {
     @Override
     public BasicFileDTO moveFile(BasicFileDTO src, BasicFileDTO dst) {
         if (isExist(dst)) {
-            dst.setKey(StringUtils.getTimeStamp() + FILE_NAME_SPLIT + dst.getKey());
+            dst.setKey(getKeyWithStamp(dst.getKey()));
         }
-        File srcFile = new File(getPath(src.getScope(),src.getKey()));
-        File dstFile = new File(getPath(dst.getScope(),dst.getKey()));
-        makeDirs(FILE_SERVER_PATH + "/" + dst.getScope());
+        File srcFile = new File(getPath(src));
+        File dstFile = new File(getPath(dst));
+        makeDirs(dst.getScope());
         boolean isSuccess = srcFile.renameTo(dstFile);
         assert (isSuccess);
         return dst;
@@ -102,6 +100,7 @@ public class LocalServer implements BasicFileServerInterface {
 
     /** 获取文件读写参数 */
     public BasicFileRequestDTO getFileRequest(BasicFileDTO src,short mode){
+        assert (src != null);
         if ((FileServerConst.OPEN_MODE_READ_ONLY.equals(mode)) && (!isExist(src))) return null;
 
         BasicFileRequestDTO requestDTO = new BasicFileRequestDTO();
@@ -128,6 +127,7 @@ public class LocalServer implements BasicFileServerInterface {
      * @param callbackSetting
      */
     @Override
+    @Deprecated
     public BasicFileRequestDTO getUploadRequest(BasicFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
         //补全参数
         //建立申请上传参数对象
@@ -155,6 +155,7 @@ public class LocalServer implements BasicFileServerInterface {
      * @param callbackSetting
      */
     @Override
+    @Deprecated
     public BasicFileRequestDTO getDownloadRequest(BasicFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
         //检查参数
         assert (src != null);
@@ -184,6 +185,7 @@ public class LocalServer implements BasicFileServerInterface {
      * @param request
      */
     @Override
+    @Deprecated
     public BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
         //检查参数
         assert (request != null);
@@ -258,7 +260,6 @@ public class LocalServer implements BasicFileServerInterface {
         assert ((multipart.getPos() != null) && (multipart.getPos() >= 0));
         assert ((multipart.getSize() != null) && (multipart.getSize() > 0));
         assert (multipart.getData() != null);
-        assert (multipart.getScope() != null);
         assert (!StringUtils.isEmpty(multipart.getKey()));
 
         //补全参数
@@ -273,13 +274,13 @@ public class LocalServer implements BasicFileServerInterface {
 
         t0 = System.currentTimeMillis();
 
-        makeDirs(FILE_SERVER_PATH + "/" + multipart.getScope());
+        makeDirs(multipart.getScope());
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
-                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rws");
+                rf = new RandomAccessFile(getPath(multipart.getScope(),multipart.getKey()), "rw");
                 break;
             } catch (IOException e) {
-                ExceptionUtils.logWarn(log,e,false,"打开文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "出错");
+                ExceptionUtils.logWarn(log,e,false,"打开文件" + getPath(multipart.getScope(),multipart.getKey()) + "出错");
                 try {
                     Thread.sleep(TRY_DELAY);
                 } catch (InterruptedException e1) {
@@ -290,13 +291,14 @@ public class LocalServer implements BasicFileServerInterface {
         }
 
         try {
-            if (rf == null) throw new IOException();
-            assert ((pos >= 0) && (len > 0) && (data != null) && (len <= data.length));
-            if (rf.length() < pos) rf.setLength(pos + len);
-            rf.seek(pos);
-            rf.write(data,off,len);
+            if (rf != null) {
+                assert ((pos >= 0) && (len > 0) && (data != null) && (len <= data.length));
+                if (rf.length() < pos) rf.setLength(pos + len);
+                rf.seek(pos);
+                rf.write(data, off, len);
+            }
         } catch (IOException e) {
-            String msg = "写入文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "时出错";
+            String msg = "写入文件" + getPath(multipart.getScope(),multipart.getKey()) + "时出错";
             ExceptionUtils.logWarn(log,e,false,msg);
             len = 0;
         } finally {
@@ -310,17 +312,28 @@ public class LocalServer implements BasicFileServerInterface {
 
     }
 
-    private void makeDirs(String path){
-        File dir = new File(path);
+    private void makeDirs(String scope){
+        File dir = new File(getPath(scope));
         if (!dir.exists()) {
             boolean isSuccess = dir.mkdirs();
             assert (isSuccess);
         }
     }
 
+    private String getPath(String path){
+        return getPath(path,null);
+    }
+
+    private String getPath(BasicFileDTO file){
+        assert (file != null);
+        return getPath(file.getScope(),file.getKey());
+    }
+
     private String getPath(String scope,String key){
-        assert (scope != null) && (key != null);
-        return FILE_SERVER_PATH + "/" + scope + "/" + key;
+        StringBuilder pathBuilder = new StringBuilder(FILE_SERVER_PATH);
+        if (!StringUtils.isEmpty(scope)) pathBuilder.append(StringUtils.SPLIT_PATH).append(scope);
+        if (!StringUtils.isEmpty(key)) pathBuilder.append(StringUtils.SPLIT_PATH).append(key);
+        return StringUtils.formatPath(pathBuilder.toString());
     }
 
     /**
@@ -329,6 +342,7 @@ public class LocalServer implements BasicFileServerInterface {
      * @param request
      */
     @Override
+    @Deprecated
     public BasicDownloadResultDTO download(BasicDownloadRequestDTO request) {
         //检查参数
         assert (request != null);
@@ -411,15 +425,15 @@ public class LocalServer implements BasicFileServerInterface {
     public BasicFileMultipartDTO readFile(BasicFileDTO file, long pos, int size) {
         //检查参数
         assert (file != null);
-        assert (file.getKey() != null);
         assert (pos >= 0);
 
+        if (StringUtils.isEmpty(file.getKey())) return null;
+
         //补全参数
-        if (StringUtils.isEmpty(file.getScope())) file.setScope("");
         if (size <= 0) size = DEFAULT_CHUNK_PER_SIZE;
 
         //下载文件
-        BasicFileMultipartDTO result = BeanUtils.createFrom(file,BasicFileMultipartDTO.class);
+        BasicFileMultipartDTO result = null;
         RandomAccessFile rf = null;
 
         t1 = System.currentTimeMillis();
@@ -427,10 +441,10 @@ public class LocalServer implements BasicFileServerInterface {
         //打开文件
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
-                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + file.getScope() + "/" + file.getKey(), "r");
+                rf = new RandomAccessFile(getPath(file), "r");
                 break;
             } catch (IOException e) {
-                ExceptionUtils.logWarn(log, e, false, "打开文件" + FILE_SERVER_PATH + "/" + file.getScope() + "/" + file.getKey() + "出错");
+                ExceptionUtils.logWarn(log, e, false, "打开文件" + getPath(file) + "出错");
                 try {
                     Thread.sleep(TRY_DELAY);
                 } catch (InterruptedException e1) {
@@ -441,24 +455,23 @@ public class LocalServer implements BasicFileServerInterface {
         }
 
         try {
-            if (rf == null) throw new IOException("打开文件" + FILE_SERVER_PATH + "/" + file.getScope() + "/" + file.getKey() + "出错");
-            //定位
-            long length = rf.length();
-            if (pos >= length) throw new IOException("读文件申请超出边界:file=" + FILE_SERVER_PATH + "/" + file.getScope() + "/" + file.getKey() + ",length=" + length + ",pos=" + pos);
-            assert (size > 0);
-            rf.seek(pos);
-            //读取文件内容
-            byte[] bytes = new byte[size];
-            int n = rf.read(bytes);
-            assert (n > 0) && (n <= size);
-            bytes = Arrays.copyOfRange(bytes,0,n);
-            size = n;
+            if ((rf != null) && (pos < rf.length())) {
+                //定位
+                rf.seek(pos);
+                //读取文件内容
+                assert (size > 0);
+                byte[] bytes = new byte[size];
+                int n = rf.read(bytes);
+                assert (n > 0) && (n <= size);
+                bytes = Arrays.copyOfRange(bytes, 0, n);
+                size = n;
 
-            //设置返回参数
-            long posLast = pos + size;
-            result.setPos(pos);
-            result.setSize(size);
-            result.setData(bytes);
+                //设置返回参数
+                result = BeanUtils.createFrom(file,BasicFileMultipartDTO.class);
+                result.setPos(pos);
+                result.setSize(size);
+                result.setData(bytes);
+            }
         } catch (IOException e) {
             ExceptionUtils.logError(log,e);
             result = null;
@@ -466,10 +479,12 @@ public class LocalServer implements BasicFileServerInterface {
             FileUtils.close(rf);
         }
 
+        long t = (System.currentTimeMillis() - t1);
         if (result != null) {
-            long t = (System.currentTimeMillis() - t1);
             log.info("读取" + StringUtils.calBytes(result.getSize()) + "数据，用时" + t + "ms,速度"
                     + StringUtils.calSpeed(result.getSize(),t));
+        } else {
+            log.info("未能读取有效数据，用时" + t + "ms");
         }
         return result;
     }
@@ -480,12 +495,20 @@ public class LocalServer implements BasicFileServerInterface {
             fileDTO.setScope(getValidScope(src));
             fileDTO.setKey(getValidKey(src));
             if (isExist(fileDTO)){
-                fileDTO.setKey(StringUtils.getTimeStamp() + "_" + fileDTO.getKey());
+                fileDTO.setKey(getKeyWithStamp(fileDTO.getKey()));
             }
             return fileDTO;
         } else {
             return src;
         }
+    }
+
+    private String getKeyWithStamp(String key){
+        assert (!StringUtils.isEmpty(key));
+        int n = key.indexOf(FILE_NAME_SPLIT);
+        if (n == StringUtils.TIME_STAMP_FORMAT.length()) key = key.substring(n + FILE_NAME_SPLIT.length());
+        assert (!StringUtils.isEmpty(key));
+        return StringUtils.getTimeStamp(StringUtils.TIME_STAMP_FORMAT) + FILE_NAME_SPLIT + key;
     }
 
     private String getValidScope(BasicFileDTO src) {
@@ -506,7 +529,7 @@ public class LocalServer implements BasicFileServerInterface {
 
     @Deprecated
     private String getValidScope(String scope){
-        if (scope == null){
+        if (StringUtils.isEmpty(scope)){
             scope = StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT);
         }
         return scope;
@@ -514,7 +537,7 @@ public class LocalServer implements BasicFileServerInterface {
 
     @Deprecated
     private String getValidKey(String key){
-        if (key == null){
+        if (StringUtils.isEmpty(key)){
             key = UUID.randomUUID().toString() + ".txt";
         }
         return key;
@@ -529,27 +552,18 @@ public class LocalServer implements BasicFileServerInterface {
     public String duplicateFile(BasicFileDTO src) {
         final int BUFFER_SIZE = 2048 * 1024;
 
-        assert (src.getScope() != null);
-        assert (src.getKey() != null);
-//        assert (isExist(src));
+        assert (isExist(src));
 
-        //获取文件名
-        String scope = src.getScope();
-        String key = src.getKey();
-        String fullNameIn = FILE_SERVER_PATH + StringUtils.SPLIT_PATH  + scope + StringUtils.SPLIT_PATH  + key;
-        int tpos = key.indexOf(FILE_NAME_SPLIT);
-        if (tpos == StringUtils.TIME_STAMP_FORMAT.length()) key = key.substring(tpos + FILE_NAME_SPLIT.length());
-        String keyOut = StringUtils.getTimeStamp(StringUtils.TIME_STAMP_FORMAT) + "_" + key;
-        String fullNameOut = FILE_SERVER_PATH + StringUtils.SPLIT_PATH  + scope + StringUtils.SPLIT_PATH  + keyOut;
+        String keyOut = null;
 
         //复制文件
-        ByteBuffer buf = null;
         int length = BUFFER_SIZE;
         FileChannel in = null;
         FileChannel out = null;
         try {
-            in = (new FileInputStream(fullNameIn)).getChannel();
-            out = (new FileOutputStream(fullNameOut)).getChannel();
+            in = (new FileInputStream(getPath(src))).getChannel();
+            keyOut = getKeyWithStamp(src.getKey());
+            out = (new FileOutputStream(getPath(src.getScope(),keyOut))).getChannel();
             while (in.position() < in.size())
             {
                 if ((in.size() - in.position()) < length) {
@@ -557,14 +571,14 @@ public class LocalServer implements BasicFileServerInterface {
                 } else {
                     length = BUFFER_SIZE;
                 }
-                buf = ByteBuffer.allocateDirect(length);
+                ByteBuffer buf = ByteBuffer.allocateDirect(length);
                 in.read(buf);
                 buf.flip();
                 out.write(buf);
-                out.force(false);
+//                out.force(false);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("复制文件" + getPath(src) + "时出错");
         } finally {
             FileUtils.close(out);
             FileUtils.close(in);
@@ -579,9 +593,8 @@ public class LocalServer implements BasicFileServerInterface {
      */
     @Override
     public Boolean isExist(BasicFileDTO src) {
-        if (src == null) return false;
-        if ((src.getScope() == null) || (src.getKey() == null)) return false;
-        File f = new File(getPath(src.getScope(),src.getKey()));
+        if ((src == null) || (StringUtils.isEmpty(src.getKey()))) return false;
+        File f = new File(getPath(src));
         return f.exists();
     }
 
@@ -611,7 +624,7 @@ public class LocalServer implements BasicFileServerInterface {
     @Override
     public void deleteFile(BasicFileDTO src) {
         if (isExist(src)){
-            File f = new File(getPath(src.getScope(),src.getKey()));
+            File f = new File(getPath(src));
             if (!f.isDirectory() || (f.listFiles() == null)){
                 boolean isSuccess = f.delete();
                 assert (isSuccess);
