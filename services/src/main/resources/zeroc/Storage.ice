@@ -2,6 +2,7 @@
 #include <Common.ice>
 #include <FileServer.ice>
 #include <User.ice>
+#include <Project.ice>
 
 [["java:package:com.maoding.Storage"]]
 module zeroc {
@@ -240,10 +241,8 @@ module zeroc {
 
     interface StorageService {
         //准备实现的接口
-        SimpleNodeList listAllNodeForAccount(AccountDTO account); //获取指定账号所有节点
-        bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
-        bool closeFileForCurrent(string path); //关闭文件
-        bool closeFileForAccount(AccountDTO account,string path); //关闭文件准备上传及下载
+        ProjectDTO getProjectInfoByPath(string path);
+        ProjectDTO getProjectInfoByPathForAccount(AccountDTO account,string path);
 
         //已经实现的接口
         SimpleNodeList listRootNodeForAccount(AccountDTO account); //获取指定账号的根节点
@@ -259,8 +258,12 @@ module zeroc {
         string createNode(CreateNodeRequestDTO request); //创建树节点,返回目录树节点id
         FileRequestDTO openFileForCurrent(string path); //打开文件准备上传及下载
         FileRequestDTO openFileForAccount(AccountDTO account,string path); //打开文件准备上传及下载
-
+        SimpleNodeList listAllNodeForAccount(AccountDTO account); //获取指定账号所有节点
+        bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
+        bool closeFileForCurrent(string path); //关闭文件
+        bool closeFileForAccount(AccountDTO account,string path); //关闭文件准备上传及下载
         bool setFileLength(string path,long fileLength); //调整文件大小
+
         bool canBeDeleted(string path); //判断节点是否可被删除
         long getUsage(StorageQueryDTO query); //获取已使用空间
         bool lockNode(string path,string userId); //通过路径锁定树节点
