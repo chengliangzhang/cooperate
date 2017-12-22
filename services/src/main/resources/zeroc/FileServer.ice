@@ -7,14 +7,14 @@ module zeroc {
     ["java:type:java.util.ArrayList<String>"] sequence<string> ScopeList;
 
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct CallbackDTO {
         string url; //回调地址
         string name; //回调服务器名称
         Map params; //回调参数
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct FileRequestDTO {
         string id; //协同文件编号
         string nodeId; //协同文件树节点编号
@@ -25,13 +25,13 @@ module zeroc {
         Map params; //需要设置的参数（如OSSAccessKeyId等)
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct FileDTO {
         string scope; //空间(bucket或group)
         string key; //文件id(key或path)
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct FileMultipartDTO {
         string scope; //空间(bucket或group)
         string key; //文件id(key或path)
@@ -40,7 +40,7 @@ module zeroc {
         ByteArray data; //当前分片数据
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct UploadRequestDTO {
         int requestId; //上传申请的唯一编号
         string uploadId; //上传任务ID
@@ -52,7 +52,7 @@ module zeroc {
         Map params; //其他上传参数
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct UploadResultDTO {
         int status; //返回状态，等于0-正常，小于0-发生异常，大于0-存在警告
         string msg; //返回状态的文字说明
@@ -63,7 +63,7 @@ module zeroc {
         int chunkSize; //实际上传的分片大小
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct DownloadRequestDTO {
         int requestId; //下载申请的唯一编号
         string scope; //空间(bucket或group)
@@ -75,7 +75,7 @@ module zeroc {
         Map params; //其他下载参数
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct DownloadResultDTO {
         int status; //返回状态，等于0-正常，小于0-发生异常，大于0-存在警告
         string msg; //返回状态的文字说明
@@ -89,9 +89,10 @@ module zeroc {
     interface FileService {
         //准备实现的接口
         FileRequestDTO getFileRequest(FileDTO src,short mode); //使用只读或读写方式申请文件实际地址
-        FileDTO moveFile(FileDTO src,FileDTO dst); //移动目录或文件
+        FileDTO moveFile(FileDTO src,FileDTO dst); //移动文件
         long getFileLength(FileDTO src); //取文件长度
         bool setFileLength(FileDTO src,long fileLength); //设置文件长度
+        FileDTO copyFile(FileDTO src,FileDTO dst); //复制文件
 
         //已经实现接口
         int writeFile(FileMultipartDTO data); //写入文件

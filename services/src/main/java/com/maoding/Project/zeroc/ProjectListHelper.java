@@ -42,7 +42,7 @@ public final class ProjectListHelper
     {
         final java.util.List<ProjectDTO> v;
         v = new java.util.ArrayList<ProjectDTO>();
-        final int len0 = istr.readAndCheckSeqSize(2);
+        final int len0 = istr.readAndCheckSeqSize(165);
         for(int i0 = 0; i0 < len0; i0++)
         {
             ProjectDTO elem;

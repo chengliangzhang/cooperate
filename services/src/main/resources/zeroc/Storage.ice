@@ -6,7 +6,7 @@
 
 [["java:package:com.maoding.Storage"]]
 module zeroc {
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct SimpleNodeDTO { //节点信息（统一目录和文件信息）
         //节点、文件、目录通用信息
         string id; //节点编号（树节点编号）
@@ -35,13 +35,13 @@ module zeroc {
     };
     ["java:type:java.util.ArrayList<SimpleNodeDTO>"] sequence<SimpleNodeDTO> SimpleNodeList;
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct NodeDTO { //节点完整信息
         SimpleNodeDTO node; //本节点信息
         SimpleNodeList subNodeList; //子节点列表
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct FileNodeDTO { //文件信息
         //节点、文件、目录通用信息
         string id; //节点编号（树节点编号）
@@ -56,16 +56,12 @@ module zeroc {
         string lastModifyTimeText; //节点最后修改时间文字
         bool isReadOnly; //节点是否只读（当前用户没有修改权限，或文件被其他用户锁定）
         long fileLength; //节点长度
-        string owner_duty_id; //节点所有者职责id
-        string owner_name; //节点所有者名称
 
         //文件节点特有信息
         string fileChecksum; //文件校验和
         string fileVersion; //文件版本号
         short fileTypeId; //文件类型
         string fileTypeName; //文件类型文字说明
-        string organizationId; //文件所属公司id
-        string organizationName; //文件所属公司名称
         short syncModeId; //同步模式
         string syncModeName; //同步模式文字说明
         string lastModifyAddress; //最后上传的地址
@@ -73,6 +69,20 @@ module zeroc {
         string fileServerTypeName; //文件服务器类型名称
         string fileScope; //在文件服务器上的存储位置
         string fileKey; //在文件服务器上的存储名称
+        string scope; //实际使用的存储位置
+        string key; //实际使用的存储名称
+
+        string ownerUserId; //节点所有者用户id
+        string ownerDutyId; //节点所有者职责id
+        string ownerName; //节点所有者名称
+        string issueId; //所属签发任务id
+        string issueName; //所属签发任务名字
+        string taskId; //所属生产任务id
+        string taskName; //所属生产任务名字
+        string projectId; //所属项目id
+        string projectName; //所属项目名字
+
+        MemberList taskMemberList; //任务参与者列表
 
         //以下属性有可能被删除
         bool isValid; //节点是否有效
@@ -82,6 +92,8 @@ module zeroc {
         string creatorDutyName; //协同创建者名字
         string lastModifyDutyId; //最后更改协同的用户职责id
         string lastModifyDutyName; //最后更改协同的用户名字
+        string organizationId; //文件所属公司id
+        string organizationName; //文件所属公司名称
     };
     ["java:type:java.util.ArrayList<FileNodeDTO>"] sequence<FileNodeDTO> RelatedFileList;
 
@@ -98,6 +110,7 @@ module zeroc {
     ["java:type:java.util.ArrayList<FileReviewNodeDTO>"] sequence<FileReviewNodeDTO> FileReviewList;
 
     //此接口有可能被清除
+    ["java:getset","clr:property"]
     struct FileVersionDTO { //版本信息
         string id; //协同文件编号
         string nodeId; //协同文件树节点编号
@@ -114,7 +127,7 @@ module zeroc {
     ["java:type:java.util.ArrayList<FileVersionDTO>"] sequence<FileVersionDTO> FileVersionList;
 
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct CooperateFileDTO { //文件完整信息
         FileNodeDTO node; //本文件信息
         RelatedFileList referenceFileList; //参考文件列表
@@ -151,7 +164,7 @@ module zeroc {
     };
     ["java:type:java.util.ArrayList<CooperateFileDTO>"] sequence<CooperateFileDTO> CooperateFileList;
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct CooperateDirNodeDTO {
         //节点、文件、目录通用信息
         string id; //节点编号（树节点编号）
@@ -182,18 +195,19 @@ module zeroc {
         string userName; //所属用户名字
         string aliasName; //所属用户别名
         string orgId; //所属组织id
+        ["deprecate","protected"]
         string orgName; //所属组织名字
     };
     ["java:type:java.util.ArrayList<CooperateDirNodeDTO>"] sequence<CooperateDirNodeDTO> CooperateDirList;
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct CooperateDirDTO { //目录内容
         CooperateDirNodeDTO node; //本目录信息
         CooperateDirList subDirList; //子目录列表
         CooperateFileList fileList; //文件列表（包含子目录内的文件）
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct CreateNodeRequestDTO { //创建节点时的参数
         string pNodeId; //父节点编号
         short typeId; //目标节点类型Id
@@ -207,13 +221,13 @@ module zeroc {
     };
 
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct NodeModifyRequestDTO { //节点更改申请
         string name; //节点名称（树节点名称或文件名称）
         string pNodeId; //父节点编号
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct CooperationQueryDTO {
         string nodeId; //协同树节点id
         string pNodeId; //协同父节点id
@@ -228,7 +242,7 @@ module zeroc {
         int level; //要从树节点向下查找多少层
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct StorageQueryDTO {
         string nodeId; //所要查询的协同树节点id
         string fullName; //所要查询协同树节点全路径名
@@ -239,12 +253,28 @@ module zeroc {
         string taskId; //所要查询的任务id
     };
 
+    ["java:getset","clr:property"]
+    struct CommitRequestDTO {
+        string nodeId; //所要提资的树节点id
+        string path; //所要提资的树节点全路径名
+        string major; //专业名称
+        int commitTimes; //第几次提资
+    };
+
     interface StorageService {
         //准备实现的接口
-        ProjectDTO getProjectInfoByPath(string path);
-        ProjectDTO getProjectInfoByPathForAccount(AccountDTO account,string path);
+        SimpleNodeDTO commitFile(CommitRequestDTO request); //提资
+        SimpleNodeDTO commitFileForAccount(AccountDTO account, CommitRequestDTO request); //提资
+        StringList listMajor(); //列出可用专业
 
         //已经实现的接口
+        ["deprecate:尚未验证"]
+        ProjectDTO getProjectInfoByPath(string path);
+        ["deprecate:尚未验证"]
+        ProjectDTO getProjectInfoByPathForAccount(AccountDTO account,string path);
+        SimpleNodeDTO createStorageNode(CreateNodeRequestDTO request); //创建树节点,返回节点信息
+        SimpleNodeDTO createCustomerDir(CreateNodeRequestDTO request); //创建目录,返回节点信息
+        SimpleNodeDTO createCustomerFile(CreateNodeRequestDTO request); //创建文件,返回节点信息
         SimpleNodeList listRootNodeForAccount(AccountDTO account); //获取指定账号的根节点
         SimpleNodeList listRootNodeForCurrent(); //获取当前账号的根节点
         SimpleNodeDTO getNodeByPathForAccount(AccountDTO account,string path); //根据路径和指定用户获取指定节点信息
@@ -279,9 +309,11 @@ module zeroc {
 
 
         //有可能被删除的接口
+        ["deprecate:替换为listRootNodeForAccount"]
         SimpleNodeList listSubNode(string path); //获取一层子节点简单信息
+        ["deprecate:替换为getNodeByPathForAccount"]
         SimpleNodeDTO getSimpleNodeInfo(string path); //根据路径获取单节点简单信息
-
+        ["deprecate:替换为getProjectInfoByPathForAccount、getTaskInfoByPathForAccount等"]
         CooperateDirDTO getCooperateDirInfo(CooperationQueryDTO query); //获取目录详细信息
         bool lockFile(string fileId,string address); //锁定文件
         NodeDTO getNodeInfo(CooperationQueryDTO query); //获取节点简单信息

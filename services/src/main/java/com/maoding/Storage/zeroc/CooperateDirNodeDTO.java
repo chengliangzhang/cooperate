@@ -331,13 +331,22 @@ public class CooperateDirNodeDTO implements java.lang.Cloneable,
         this.orgId = orgId;
     }
 
+    /**
+     **/
+    @Deprecated
     public String orgName;
 
+    /**
+     **/
+    @Deprecated
     public String getOrgName()
     {
         return orgName;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setOrgName(String orgName)
     {
         this.orgName = orgName;

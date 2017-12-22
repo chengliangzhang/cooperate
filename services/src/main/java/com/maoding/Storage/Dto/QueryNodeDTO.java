@@ -9,6 +9,8 @@ package com.maoding.Storage.Dto;
 public class QueryNodeDTO {
     /** 节点id */
     private String nodeId;
+    /** 节点类型id */
+    private String typeId;
     /** 用户id */
     private String userId;
     /** 绝对路径 */
@@ -36,5 +38,13 @@ public class QueryNodeDTO {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
     }
 }

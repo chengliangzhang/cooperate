@@ -1,10 +1,11 @@
 #pragma once
 #include <Common.ice>
 #include <User.ice>
+#include <Organization.ice>
 
 [["java:package:com.maoding.Project"]]
 module zeroc {
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct ConstructionCateDTO {
         string id;
         string name;
@@ -12,11 +13,7 @@ module zeroc {
     };
     ["java:type:java.util.ArrayList<ConstructionCateDTO>"] sequence<ConstructionCateDTO> ConstructionList;
 
-    struct CompanyDTO {
-        string companyName;
-        string id;
-    };
-
+    ["java:getset","clr:property"]
     struct ManagerOfPartBDTO {
         string accountId;
         string cellphone;
@@ -29,6 +26,7 @@ module zeroc {
         string projectId;
     };
 
+    ["java:getset","clr:property"]
     struct LocationDTO{
         string city;
         string county;
@@ -36,6 +34,7 @@ module zeroc {
 
     };
 
+    ["java:getset","clr:property"]
     struct ProjectPropertyDTO{
         string fieldName;
         string fieldValue;
@@ -44,6 +43,17 @@ module zeroc {
     };
     ["java:type:java.util.ArrayList<ProjectPropertyDTO>"] sequence<ProjectPropertyDTO> PropertyList;
 
+    ["java:getset","clr:property"]
+    struct MemberDTO {
+        string id; //唯一编号
+        string userId; //用户编号
+        string userName; //用户名
+        short memberTypeId; //承担角色id
+        string memberTypeName; //承担角色名称
+    };
+    ["java:type:java.util.ArrayList<MemberDTO>"] sequence<MemberDTO> MemberList;
+
+    ["java:getset","clr:property"]
     struct ProjectDTO {
         string id; //唯一标识
         string projectNo;

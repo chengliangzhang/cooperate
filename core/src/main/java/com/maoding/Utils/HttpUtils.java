@@ -1,5 +1,6 @@
 package com.maoding.Utils;
 
+import com.maoding.Bean.ApiResponse;
 import com.maoding.Const.HttpConst;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -10,6 +11,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,4 +79,13 @@ public class HttpUtils {
         return (response != null) && (response.getStatusLine() != null) && (response.getStatusLine().getStatusCode() == HttpConst.HTTP_RESULT_OK);
     }
 
+    public static ApiResponse getResult(CloseableHttpResponse response){
+        ApiResponse result = null;
+        try {
+            result = JsonUtils.json2Obj(EntityUtils.toString(response.getEntity()),ApiResponse.class);
+        } catch (IOException e) {
+            ExceptionUtils.logError(log,e);
+        }
+        return result;
+    }
 }

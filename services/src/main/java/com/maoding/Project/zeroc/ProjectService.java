@@ -22,6 +22,8 @@ package com.maoding.Project.zeroc;
 
 public interface ProjectService extends com.zeroc.Ice.Object
 {
+    ProjectDTO getProjectInfoById(String id, com.zeroc.Ice.Current current);
+
     java.util.List<ProjectDTO> listProjectByAccount(com.maoding.User.zeroc.AccountDTO account, com.zeroc.Ice.Current current);
 
     java.util.List<ProjectDTO> listProjectForCurrent(com.zeroc.Ice.Current current);
@@ -47,6 +49,20 @@ public interface ProjectService extends com.zeroc.Ice.Object
     static String ice_staticId()
     {
         return "::zeroc::ProjectService";
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getProjectInfoById(ProjectService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_id;
+        iceP_id = istr.readString();
+        inS.endReadParams();
+        ProjectDTO ret = obj.getProjectInfoById(iceP_id, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ProjectDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listProjectByAccount(ProjectService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -76,6 +92,7 @@ public interface ProjectService extends com.zeroc.Ice.Object
 
     final static String[] _iceOps =
     {
+        "getProjectInfoById",
         "ice_id",
         "ice_ids",
         "ice_isA",
@@ -98,25 +115,29 @@ public interface ProjectService extends com.zeroc.Ice.Object
         {
             case 0:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getProjectInfoById(this, in, current);
             }
             case 1:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 2:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 3:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 4:
             {
-                return _iceD_listProjectByAccount(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 5:
+            {
+                return _iceD_listProjectByAccount(this, in, current);
+            }
+            case 6:
             {
                 return _iceD_listProjectForCurrent(this, in, current);
             }

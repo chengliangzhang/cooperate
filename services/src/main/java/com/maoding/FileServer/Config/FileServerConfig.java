@@ -6,7 +6,8 @@ import com.maoding.FileServer.FastFDS.FastFDSServer;
 import com.maoding.FileServer.Ftp.FtpServer;
 import com.maoding.FileServer.Jcifs.JcifsServer;
 import com.maoding.FileServer.Local.LocalServer;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -14,7 +15,8 @@ import org.springframework.context.annotation.Configuration;
  * 日    期 : 2017/11/1 12:09
  * 描    述 :
  */
-@Configuration
+@Component
+@ConfigurationProperties(prefix = "fileserver")
 public class FileServerConfig {
     private BasicFileServerInterface fastFDSServer;
     private BasicFileServerInterface aliyunServer;
@@ -22,30 +24,30 @@ public class FileServerConfig {
     private BasicFileServerInterface ftpServer;
     private BasicFileServerInterface localServer;
 
-    private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
+    private Integer type;
 
     public void setFileServerType(Integer type) {
-        fileServerType = type;
+        this.type = type;
     }
 
     public Integer getFileServerType() {
-        return fileServerType;
+        return type;
     }
 
     public BasicFileServerInterface getFileServer(){
-        if (FileServerConst.FILE_SERVER_TYPE_ALIYUN.equals(fileServerType)) {
+        if (FileServerConst.FILE_SERVER_TYPE_ALIYUN.equals(type)) {
 //            if (aliyunServer == null) aliyunServer = new AliyunServer();
             return aliyunServer;
-        } else if (FileServerConst.FILE_SERVER_TYPE_FASTFDS.equals(fileServerType)){
+        } else if (FileServerConst.FILE_SERVER_TYPE_FASTFDS.equals(type)){
             if (fastFDSServer == null) fastFDSServer= new FastFDSServer();
             return fastFDSServer;
-        } else if (FileServerConst.FILE_SERVER_TYPE_CIFS.equals(fileServerType)){
+        } else if (FileServerConst.FILE_SERVER_TYPE_CIFS.equals(type)){
             if (jcifsServer == null) jcifsServer = new JcifsServer();
             return jcifsServer;
-        } else if (FileServerConst.FILE_SERVER_TYPE_FTP.equals(fileServerType)){
+        } else if (FileServerConst.FILE_SERVER_TYPE_FTP.equals(type)){
             if (ftpServer == null) ftpServer = new FtpServer();
             return ftpServer;
-        } else if (FileServerConst.FILE_SERVER_TYPE_LOCAL.equals(fileServerType)){
+        } else if (FileServerConst.FILE_SERVER_TYPE_LOCAL.equals(type)){
             if (localServer == null) localServer = new LocalServer();
             return localServer;
         }

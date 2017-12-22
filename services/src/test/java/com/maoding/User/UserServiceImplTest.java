@@ -29,7 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class UserServiceImplTest {
     @Autowired
     UserService userService;
-    private UserServicePrx userServicePrx = UserServiceImpl.getInstance(":tcp -h 192.168.17.168 -p 10005");
+    private UserServicePrx userServicePrx = UserServiceImpl.getInstance(":tcp -h 192.168.13.140 -p 10005");
 
     /** for method: login(LoginDTO loginInfo, Current current) */
     @Test

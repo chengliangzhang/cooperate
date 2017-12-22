@@ -2,6 +2,8 @@ package com.maoding.Storage.Dao;
 
 import com.maoding.Base.BaseDao;
 import com.maoding.FileServer.zeroc.FileDTO;
+import com.maoding.Storage.Dto.DesignTaskDTO;
+import com.maoding.Storage.Dto.FileUnionDTO;
 import com.maoding.Storage.Dto.QueryByPidAndNameDTO;
 import com.maoding.Storage.Dto.QueryNodeDTO;
 import com.maoding.Storage.Entity.StorageEntity;
@@ -20,11 +22,20 @@ import java.util.List;
 @Repository
 public interface StorageDao extends BaseDao<StorageEntity> {
     /** 正在实现的接口 */
+    /** 获取本文件信息 */
+    FileNodeDTO getFileNodeInfo(QueryNodeDTO query);
+
+    List<String> listMajor();
+    SimpleNodeDTO getCommitRoot(QueryNodeDTO query);
+    DesignTaskDTO getDesignTaskInfo(QueryNodeDTO query);
+
     List<SimpleNodeDTO> listAllNode(QueryNodeDTO query);
     SimpleNodeDTO getNodeInfo(QueryNodeDTO query);
     Boolean hasChild(QueryNodeDTO query);
     Boolean hasRootChild(QueryNodeDTO query);
     FileDTO getRealFile(QueryNodeDTO query);
+
+    FileUnionDTO selectFileEntityUnion(QueryNodeDTO query);
 
     /** 准备实现的接口 */
     List<SimpleNodeDTO> listCompanyRootNode(QueryNodeDTO query);
@@ -54,8 +65,7 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     /** 获取本目录信息 */
     CooperateDirNodeDTO getDirNodeInfo(CooperationQueryDTO query);
     CooperateDirNodeDTO getDirNodeInfoByNodeId(String nodeId);
-    /** 获取本文件信息 */
-    FileNodeDTO getFileNodeInfo(QueryNodeDTO query);
+
     FileNodeDTO getFileNodeInfoByNodeId(String nodeId);
     /** 查找协同子目录 */
     List<CooperateDirNodeDTO> listSubDir(CooperationQueryDTO query);

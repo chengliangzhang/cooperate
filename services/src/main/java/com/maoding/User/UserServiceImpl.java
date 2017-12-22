@@ -2,13 +2,11 @@ package com.maoding.User;
 
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Bean.ApiResponse;
-import com.maoding.User.Config.WebServiceConfig;
+import com.maoding.Common.Config.WebServiceConfig;
 import com.maoding.User.zeroc.*;
 import com.maoding.Utils.*;
 import com.zeroc.Ice.Current;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +23,6 @@ import java.util.Map;
  */
 @Service("userService")
 public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements UserService,UserServicePrx {
-
-    private CloseableHttpClient client = null;
 
     @Autowired
     private WebServiceConfig webServiceConfig;
@@ -48,8 +44,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
         assert (!StringUtils.isEmpty(loginInfo.getCellphone()));
         assert (!StringUtils.isEmpty(loginInfo.getPassword()));
 
-        if (client == null) client = HttpClients.createDefault();
-        CloseableHttpResponse response = HttpUtils.postData(client, webServiceConfig.getLoginUrl(), webServiceConfig.getLoginParamsType(), loginInfo);
+        CloseableHttpResponse response = HttpUtils.postData(webServiceConfig.getClient(), webServiceConfig.getLoginUrl(), webServiceConfig.getLoginParamsType(), loginInfo);
         if (!HttpUtils.isResponseOK(response)) return false;
         ApiResponse result = getResult(response);
         FileUtils.close(response);
@@ -59,8 +54,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
 
     @Override
     public AccountDTO getCurrent(Current current) {
-        if (client == null) client = HttpClients.createDefault();
-        CloseableHttpResponse response = HttpUtils.postData(client, webServiceConfig.getGetCurrentUrl());
+        CloseableHttpResponse response = HttpUtils.postData(webServiceConfig.getClient(), webServiceConfig.getGetCurrentUrl());
         if (!HttpUtils.isResponseOK(response)) return null;
         ApiResponse result = getResult(response);
         FileUtils.close(response);
@@ -73,6 +67,8 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
         if (data.containsKey(webServiceConfig.getGetCurrentNameKey())) dto.setName((String)data.get(webServiceConfig.getGetCurrentNameKey()));
         return dto;
     }
+
+
 
     private ApiResponse getResult(CloseableHttpResponse response){
         ApiResponse result = null;

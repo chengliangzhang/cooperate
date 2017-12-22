@@ -21,9 +21,18 @@
                 </otherwise>
             </choose>
         from maoding_storage_node node
+        <if test="nodeId != null">
+            inner join maoding_storage detail on (node.id = detail.id)
+        </if>
         <where>
             <if test="nodeId != null">
                 and (node.pid = #{nodeId})
+            </if>
+            <if test="typeId != null">
+                and (detail.pid_type_id = #{typeId})
+            </if>
+            <if test="path != null">
+                and (#{path} = left(node.path,char_length(node.path)-char_length(substring_index(node.path, '/',-1))-1))
             </if>
         </where>
     </select>
@@ -32,15 +41,15 @@
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1) as is_read_only
+                    ,if(node.id is null,null,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1)) as is_read_only
                 </when>
                 <otherwise>
-                    ,1 as is_read_only
+                    ,if(node.id is null,null,1) as is_read_only
                 </otherwise>
             </choose>
         from
             maoding_storage_node node
-            inner join maoding_storage_root root
+            inner join maoding_storage_root root on (root.path=substring_index(node.path,'/',2))
         <where>
             <if test="userId != null">
                 and (find_in_set(#{userId},root.user_id_list))
@@ -53,10 +62,10 @@
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1) as is_read_only
+                    ,if(node.id is null,null,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1)) as is_read_only
                 </when>
                 <otherwise>
-                    ,1 as is_read_only
+                    ,if(node.id is null,null,1) as is_read_only
                 </otherwise>
             </choose>
         from maoding_storage_node node
@@ -77,7 +86,7 @@
                 and (node.pid = #{nodeId})
             </if>
             <if test="path != null">
-                and (node.path like concat(#{path},'/'))
+                and (node.path like concat(#{path},'/%'))
             </if>
         </where>
         limit 1
@@ -150,31 +159,49 @@
         ,node.last_modify_user_id as owner_user_id
     </sql>
 
-    <select id="getFileNodeInfo" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
-        select <include refid="FileNodeFixPtyListForFileTables"/>
+    <resultMap id="FileNodeDTOMap" type="com.maoding.Storage.zeroc.FileNodeDTO">
+        <association property="taskMemberList" select="selectMember" column="{taskId=task_id}" fetchType="eager"/>
+    </resultMap>
+
+    <select id="selectMember" resultType="com.maoding.Project.zeroc.MemberDTO" parameterType="com.maoding.Storage.Dto.QueryMemberDTO">
+        select * from maoding_task_member member
+        <where>
+            <if test="taskId != null">
+                and (member.task_id = #{taskId})
+            </if>
+            <if test="memberTypeId != null">
+                and (member.member_type_id = #{memberTypeId})
+            </if>
+        </where>
+        <if test="memberTypeId != null and memberTypeId == 3">
+            limit 1
+        </if>
+    </select>
+
+    <select id="getFileNodeInfo" resultMap="FileNodeDTOMap" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select *
             <choose>
                 <when test="userId != null">
-                    ,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1) as is_read_only
-                    ,file.file_server_type_id
-                    ,file.file_scope
-                    ,file.file_key
+                    ,if(file.id is null,null,if(file.last_modify_user_id=#{userId},0,1)) as is_read_only
+                    ,if(file.last_modify_user_id=#{userId},ifnull(file.upload_scope,file.file_scope),file.file_scope) as `scope`
+                    ,if(file.last_modify_user_id=#{userId},ifnull(file.upload_key,file.file_key),file.file_key) as `key`
                 </when>
                 <otherwise>
-                    ,1 as is_read_only
-                    ,file.file_server_type_id
-                    ,file.file_scope
-                    ,file.file_key
+                    ,if(file.id is null,null,1) as is_read_only
+                    ,file.file_scope as `scope`
+                    ,file.file_key as `key`
                 </otherwise>
             </choose>
-        from <include refid="FileTables"/>
-        where <include refid="FileTablesFixFilter"/>
+        from maoding_storage_file_info file
+        <where>
             <if test="nodeId != null">
-                and (node.id = #{nodeId})
+                and (file.id = #{nodeId})
             </if>
             <if test="path != null">
-                and (node.path = #{path})
+                and (file.path = #{path})
             </if>
-        group by file.id
+        </where>
+        limit 1
     </select>
 
     <select id="getRealFile" resultType="com.maoding.FileServer.zeroc.FileDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
@@ -195,7 +222,70 @@
     </update>
 
 
+    <resultMap id="FileEntityUnionMap" type="com.maoding.Storage.Dto.FileUnionDTO">
+        <association property="fileEntity" select="selectFileEntity" column="file_id" fetchType="eager"/>
+    </resultMap>
 
+    <select id="selectFileEntity" resultType="com.maoding.Storage.Entity.StorageFileEntity" parameterType="java.lang.String">
+        select * from maoding_storage_file file
+        where (file.deleted = 0)
+        <if test="_parameter != null">
+            and (file.id = #{_parameter})
+        </if>
+    </select>
+
+    <select id="selectFileEntityUnion" resultMap="FileEntityUnionMap" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select *,node.id as file_id from maoding_storage node
+        where (node.deleted = 0)
+        <if test="nodeId != null">
+            and (node.id = #{nodeId})
+        </if>
+        <if test="path != null">
+            and (node.path = #{path})
+        </if>
+    </select>
+
+    <select id="selectMajor" resultType="java.lang.String">
+        select content from maoding_const where classic_id=22
+    </select>
+
+    <select id="getCommitRoot" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select cmt.*
+        from
+            maoding_storage_node node
+            inner join maoding_storage_node_commit cmt on (cmt.id=node.id)
+        <where>
+            cmt.type_id = 31
+            <if test="path != null">
+                and (#{path} like concat(node.path,'/%'))
+            </if>
+        </where>
+        order by length(node.path) desc,length(cmt.path) desc
+        limit 1
+    </select>
+
+    <select id="getDesignTaskInfo" resultType="com.maoding.Storage.Dto.DesignTaskDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select *
+        from (
+            select task.*
+            from
+            maoding_storage_node_design_task task
+            inner join maoding_storage_node node on (task.id=node.id)
+            <where>
+                <if test="nodeId != null">
+                    and (node.id = #{nodeId})
+                </if>
+                <if test="path != null">
+                    and (#{path} like concat(node.path,'/%'))
+                </if>
+            </where>
+            <if test="path != null">
+                order by length(node.path) desc
+            </if>
+        ) info
+        group by id
+        limit 1
+    </select>
 
 
 
@@ -787,9 +877,9 @@
         from <include refid="FileTables"/>
         where <include refid="FileTablesFixFilter"/>
             <if test="_parameter != null">
-                and (a.path = #{_parameter})
+                and (node.path = #{_parameter})
             </if>
-        group by a.id
+        group by node.id
         limit 1
     </select>
 

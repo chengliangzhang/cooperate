@@ -37,7 +37,7 @@ public interface StorageConst {
 
     //默认值
     final static Short STORAGE_NODE_TYPE_FILE_MIN = STORAGE_NODE_TYPE_FILE_MAIN;
-    final static Short STORAGE_NODE_TYPE_FILE_MAX = STORAGE_NODE_TYPE_FILE_REF;
+    final static Short STORAGE_NODE_TYPE_FILE_MAX = STORAGE_NODE_TYPE_FILE_HIS;
     final static Short STORAGE_NODE_TYPE_DIR_MIN = STORAGE_NODE_TYPE_DIR_UNKNOWN;
     final static Short STORAGE_NODE_TYPE_DIR_MAX = STORAGE_NODE_TYPE_DIR_USER;
 

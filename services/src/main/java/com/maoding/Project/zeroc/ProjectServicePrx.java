@@ -22,6 +22,39 @@ package com.maoding.Project.zeroc;
 
 public interface ProjectServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default ProjectDTO getProjectInfoById(String id)
+    {
+        return getProjectInfoById(id, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default ProjectDTO getProjectInfoById(String id, java.util.Map<String, String> context)
+    {
+        return _iceI_getProjectInfoByIdAsync(id, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<ProjectDTO> getProjectInfoByIdAsync(String id)
+    {
+        return _iceI_getProjectInfoByIdAsync(id, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<ProjectDTO> getProjectInfoByIdAsync(String id, java.util.Map<String, String> context)
+    {
+        return _iceI_getProjectInfoByIdAsync(id, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<ProjectDTO> _iceI_getProjectInfoByIdAsync(String iceP_id, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<ProjectDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getProjectInfoById", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_id);
+                 }, istr -> {
+                     ProjectDTO ret;
+                     ret = ProjectDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default java.util.List<ProjectDTO> listProjectByAccount(com.maoding.User.zeroc.AccountDTO account)
     {
         return listProjectByAccount(account, com.zeroc.Ice.ObjectPrx.noExplicitContext);

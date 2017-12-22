@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -32,14 +33,14 @@ import java.util.Map;
 */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-//@SpringBootConfiguration //only enable when target module hasn't @SpringBootApplication
+@SpringBootConfiguration //only enable when target module hasn't @SpringBootApplication
 public class FileServiceLocalTest {
     private static final String testLocalFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer\\upload_test.txt";
     private static final String testDir = "testForFileService";
 
     @Autowired
     private FileService fileService;
-    private FileServicePrx fileServicePrx = FileServiceImpl.getInstance();
+    private FileServicePrx fileServicePrx = FileServiceImpl.getInstance(":tcp -h 192.168.13.140 -p 10002");
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
 

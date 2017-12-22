@@ -172,30 +172,6 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.fileLength = fileLength;
     }
 
-    public String owner_duty_id;
-
-    public String getOwner_duty_id()
-    {
-        return owner_duty_id;
-    }
-
-    public void setOwner_duty_id(String owner_duty_id)
-    {
-        this.owner_duty_id = owner_duty_id;
-    }
-
-    public String owner_name;
-
-    public String getOwner_name()
-    {
-        return owner_name;
-    }
-
-    public void setOwner_name(String owner_name)
-    {
-        this.owner_name = owner_name;
-    }
-
     public String fileChecksum;
 
     public String getFileChecksum()
@@ -242,30 +218,6 @@ public class FileNodeDTO implements java.lang.Cloneable,
     public void setFileTypeName(String fileTypeName)
     {
         this.fileTypeName = fileTypeName;
-    }
-
-    public String organizationId;
-
-    public String getOrganizationId()
-    {
-        return organizationId;
-    }
-
-    public void setOrganizationId(String organizationId)
-    {
-        this.organizationId = organizationId;
-    }
-
-    public String organizationName;
-
-    public String getOrganizationName()
-    {
-        return organizationName;
-    }
-
-    public void setOrganizationName(String organizationName)
-    {
-        this.organizationName = organizationName;
     }
 
     public short syncModeId;
@@ -350,6 +302,150 @@ public class FileNodeDTO implements java.lang.Cloneable,
     public void setFileKey(String fileKey)
     {
         this.fileKey = fileKey;
+    }
+
+    public String scope;
+
+    public String getScope()
+    {
+        return scope;
+    }
+
+    public void setScope(String scope)
+    {
+        this.scope = scope;
+    }
+
+    public String key;
+
+    public String getKey()
+    {
+        return key;
+    }
+
+    public void setKey(String key)
+    {
+        this.key = key;
+    }
+
+    public String ownerUserId;
+
+    public String getOwnerUserId()
+    {
+        return ownerUserId;
+    }
+
+    public void setOwnerUserId(String ownerUserId)
+    {
+        this.ownerUserId = ownerUserId;
+    }
+
+    public String ownerDutyId;
+
+    public String getOwnerDutyId()
+    {
+        return ownerDutyId;
+    }
+
+    public void setOwnerDutyId(String ownerDutyId)
+    {
+        this.ownerDutyId = ownerDutyId;
+    }
+
+    public String ownerName;
+
+    public String getOwnerName()
+    {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName)
+    {
+        this.ownerName = ownerName;
+    }
+
+    public String issueId;
+
+    public String getIssueId()
+    {
+        return issueId;
+    }
+
+    public void setIssueId(String issueId)
+    {
+        this.issueId = issueId;
+    }
+
+    public String issueName;
+
+    public String getIssueName()
+    {
+        return issueName;
+    }
+
+    public void setIssueName(String issueName)
+    {
+        this.issueName = issueName;
+    }
+
+    public String taskId;
+
+    public String getTaskId()
+    {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId)
+    {
+        this.taskId = taskId;
+    }
+
+    public String taskName;
+
+    public String getTaskName()
+    {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName)
+    {
+        this.taskName = taskName;
+    }
+
+    public String projectId;
+
+    public String getProjectId()
+    {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId)
+    {
+        this.projectId = projectId;
+    }
+
+    public String projectName;
+
+    public String getProjectName()
+    {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName)
+    {
+        this.projectName = projectName;
+    }
+
+    public java.util.List<com.maoding.Project.zeroc.MemberDTO> taskMemberList;
+
+    public java.util.List<com.maoding.Project.zeroc.MemberDTO> getTaskMemberList()
+    {
+        return taskMemberList;
+    }
+
+    public void setTaskMemberList(java.util.List<com.maoding.Project.zeroc.MemberDTO> taskMemberList)
+    {
+        this.taskMemberList = taskMemberList;
     }
 
     public boolean isValid;
@@ -446,6 +542,30 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.lastModifyDutyName = lastModifyDutyName;
     }
 
+    public String organizationId;
+
+    public String getOrganizationId()
+    {
+        return organizationId;
+    }
+
+    public void setOrganizationId(String organizationId)
+    {
+        this.organizationId = organizationId;
+    }
+
+    public String organizationName;
+
+    public String getOrganizationName()
+    {
+        return organizationName;
+    }
+
+    public void setOrganizationName(String organizationName)
+    {
+        this.organizationName = organizationName;
+    }
+
     public FileNodeDTO()
     {
         this.id = "";
@@ -455,27 +575,36 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.path = "";
         this.createTimeText = "";
         this.lastModifyTimeText = "";
-        this.owner_duty_id = "";
-        this.owner_name = "";
         this.fileChecksum = "";
         this.fileVersion = "";
         this.fileTypeName = "";
-        this.organizationId = "";
-        this.organizationName = "";
         this.syncModeName = "";
         this.lastModifyAddress = "";
         this.fileServerTypeId = "";
         this.fileServerTypeName = "";
         this.fileScope = "";
         this.fileKey = "";
+        this.scope = "";
+        this.key = "";
+        this.ownerUserId = "";
+        this.ownerDutyId = "";
+        this.ownerName = "";
+        this.issueId = "";
+        this.issueName = "";
+        this.taskId = "";
+        this.taskName = "";
+        this.projectId = "";
+        this.projectName = "";
         this.localFile = "";
         this.creatorDutyId = "";
         this.creatorDutyName = "";
         this.lastModifyDutyId = "";
         this.lastModifyDutyName = "";
+        this.organizationId = "";
+        this.organizationName = "";
     }
 
-    public FileNodeDTO(String id, String name, String pid, short typeId, String typeName, String path, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, String owner_duty_id, String owner_name, String fileChecksum, String fileVersion, short fileTypeId, String fileTypeName, String organizationId, String organizationName, short syncModeId, String syncModeName, String lastModifyAddress, String fileServerTypeId, String fileServerTypeName, String fileScope, String fileKey, boolean isValid, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, String lastModifyDutyId, String lastModifyDutyName)
+    public FileNodeDTO(String id, String name, String pid, short typeId, String typeName, String path, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, String fileChecksum, String fileVersion, short fileTypeId, String fileTypeName, short syncModeId, String syncModeName, String lastModifyAddress, String fileServerTypeId, String fileServerTypeName, String fileScope, String fileKey, String scope, String key, String ownerUserId, String ownerDutyId, String ownerName, String issueId, String issueName, String taskId, String taskName, String projectId, String projectName, java.util.List<com.maoding.Project.zeroc.MemberDTO> taskMemberList, boolean isValid, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, String lastModifyDutyId, String lastModifyDutyName, String organizationId, String organizationName)
     {
         this.id = id;
         this.name = name;
@@ -489,14 +618,10 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = lastModifyTimeText;
         this.isReadOnly = isReadOnly;
         this.fileLength = fileLength;
-        this.owner_duty_id = owner_duty_id;
-        this.owner_name = owner_name;
         this.fileChecksum = fileChecksum;
         this.fileVersion = fileVersion;
         this.fileTypeId = fileTypeId;
         this.fileTypeName = fileTypeName;
-        this.organizationId = organizationId;
-        this.organizationName = organizationName;
         this.syncModeId = syncModeId;
         this.syncModeName = syncModeName;
         this.lastModifyAddress = lastModifyAddress;
@@ -504,6 +629,18 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.fileServerTypeName = fileServerTypeName;
         this.fileScope = fileScope;
         this.fileKey = fileKey;
+        this.scope = scope;
+        this.key = key;
+        this.ownerUserId = ownerUserId;
+        this.ownerDutyId = ownerDutyId;
+        this.ownerName = ownerName;
+        this.issueId = issueId;
+        this.issueName = issueName;
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.projectId = projectId;
+        this.projectName = projectName;
+        this.taskMemberList = taskMemberList;
         this.isValid = isValid;
         this.locking = locking;
         this.localFile = localFile;
@@ -511,6 +648,8 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.creatorDutyName = creatorDutyName;
         this.lastModifyDutyId = lastModifyDutyId;
         this.lastModifyDutyName = lastModifyDutyName;
+        this.organizationId = organizationId;
+        this.organizationName = organizationName;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -596,20 +735,6 @@ public class FileNodeDTO implements java.lang.Cloneable,
             {
                 return false;
             }
-            if(this.owner_duty_id != r.owner_duty_id)
-            {
-                if(this.owner_duty_id == null || r.owner_duty_id == null || !this.owner_duty_id.equals(r.owner_duty_id))
-                {
-                    return false;
-                }
-            }
-            if(this.owner_name != r.owner_name)
-            {
-                if(this.owner_name == null || r.owner_name == null || !this.owner_name.equals(r.owner_name))
-                {
-                    return false;
-                }
-            }
             if(this.fileChecksum != r.fileChecksum)
             {
                 if(this.fileChecksum == null || r.fileChecksum == null || !this.fileChecksum.equals(r.fileChecksum))
@@ -631,20 +756,6 @@ public class FileNodeDTO implements java.lang.Cloneable,
             if(this.fileTypeName != r.fileTypeName)
             {
                 if(this.fileTypeName == null || r.fileTypeName == null || !this.fileTypeName.equals(r.fileTypeName))
-                {
-                    return false;
-                }
-            }
-            if(this.organizationId != r.organizationId)
-            {
-                if(this.organizationId == null || r.organizationId == null || !this.organizationId.equals(r.organizationId))
-                {
-                    return false;
-                }
-            }
-            if(this.organizationName != r.organizationName)
-            {
-                if(this.organizationName == null || r.organizationName == null || !this.organizationName.equals(r.organizationName))
                 {
                     return false;
                 }
@@ -695,6 +806,90 @@ public class FileNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.scope != r.scope)
+            {
+                if(this.scope == null || r.scope == null || !this.scope.equals(r.scope))
+                {
+                    return false;
+                }
+            }
+            if(this.key != r.key)
+            {
+                if(this.key == null || r.key == null || !this.key.equals(r.key))
+                {
+                    return false;
+                }
+            }
+            if(this.ownerUserId != r.ownerUserId)
+            {
+                if(this.ownerUserId == null || r.ownerUserId == null || !this.ownerUserId.equals(r.ownerUserId))
+                {
+                    return false;
+                }
+            }
+            if(this.ownerDutyId != r.ownerDutyId)
+            {
+                if(this.ownerDutyId == null || r.ownerDutyId == null || !this.ownerDutyId.equals(r.ownerDutyId))
+                {
+                    return false;
+                }
+            }
+            if(this.ownerName != r.ownerName)
+            {
+                if(this.ownerName == null || r.ownerName == null || !this.ownerName.equals(r.ownerName))
+                {
+                    return false;
+                }
+            }
+            if(this.issueId != r.issueId)
+            {
+                if(this.issueId == null || r.issueId == null || !this.issueId.equals(r.issueId))
+                {
+                    return false;
+                }
+            }
+            if(this.issueName != r.issueName)
+            {
+                if(this.issueName == null || r.issueName == null || !this.issueName.equals(r.issueName))
+                {
+                    return false;
+                }
+            }
+            if(this.taskId != r.taskId)
+            {
+                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
+                {
+                    return false;
+                }
+            }
+            if(this.taskName != r.taskName)
+            {
+                if(this.taskName == null || r.taskName == null || !this.taskName.equals(r.taskName))
+                {
+                    return false;
+                }
+            }
+            if(this.projectId != r.projectId)
+            {
+                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
+                {
+                    return false;
+                }
+            }
+            if(this.projectName != r.projectName)
+            {
+                if(this.projectName == null || r.projectName == null || !this.projectName.equals(r.projectName))
+                {
+                    return false;
+                }
+            }
+            if(this.taskMemberList != r.taskMemberList)
+            {
+                if(this.taskMemberList == null || r.taskMemberList == null || !this.taskMemberList.equals(r.taskMemberList))
+                {
+                    return false;
+                }
+            }
             if(this.isValid != r.isValid)
             {
                 return false;
@@ -738,6 +933,20 @@ public class FileNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.organizationId != r.organizationId)
+            {
+                if(this.organizationId == null || r.organizationId == null || !this.organizationId.equals(r.organizationId))
+                {
+                    return false;
+                }
+            }
+            if(this.organizationName != r.organizationName)
+            {
+                if(this.organizationName == null || r.organizationName == null || !this.organizationName.equals(r.organizationName))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
@@ -761,14 +970,10 @@ public class FileNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isReadOnly);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, owner_duty_id);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, owner_name);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileChecksum);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileVersion);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, organizationId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, organizationName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, syncModeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, syncModeName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyAddress);
@@ -776,6 +981,18 @@ public class FileNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileServerTypeName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileScope);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileKey);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, scope);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, key);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerDutyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issueId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issueName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskMemberList);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, locking);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, localFile);
@@ -783,6 +1000,8 @@ public class FileNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, creatorDutyName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyDutyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyDutyName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, organizationId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, organizationName);
         return h_;
     }
 
@@ -814,14 +1033,10 @@ public class FileNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.lastModifyTimeText);
         ostr.writeBool(this.isReadOnly);
         ostr.writeLong(this.fileLength);
-        ostr.writeString(this.owner_duty_id);
-        ostr.writeString(this.owner_name);
         ostr.writeString(this.fileChecksum);
         ostr.writeString(this.fileVersion);
         ostr.writeShort(this.fileTypeId);
         ostr.writeString(this.fileTypeName);
-        ostr.writeString(this.organizationId);
-        ostr.writeString(this.organizationName);
         ostr.writeShort(this.syncModeId);
         ostr.writeString(this.syncModeName);
         ostr.writeString(this.lastModifyAddress);
@@ -829,6 +1044,18 @@ public class FileNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.fileServerTypeName);
         ostr.writeString(this.fileScope);
         ostr.writeString(this.fileKey);
+        ostr.writeString(this.scope);
+        ostr.writeString(this.key);
+        ostr.writeString(this.ownerUserId);
+        ostr.writeString(this.ownerDutyId);
+        ostr.writeString(this.ownerName);
+        ostr.writeString(this.issueId);
+        ostr.writeString(this.issueName);
+        ostr.writeString(this.taskId);
+        ostr.writeString(this.taskName);
+        ostr.writeString(this.projectId);
+        ostr.writeString(this.projectName);
+        com.maoding.Project.zeroc.MemberListHelper.write(ostr, this.taskMemberList);
         ostr.writeBool(this.isValid);
         ostr.writeBool(this.locking);
         ostr.writeString(this.localFile);
@@ -836,6 +1063,8 @@ public class FileNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.creatorDutyName);
         ostr.writeString(this.lastModifyDutyId);
         ostr.writeString(this.lastModifyDutyName);
+        ostr.writeString(this.organizationId);
+        ostr.writeString(this.organizationName);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -852,14 +1081,10 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = istr.readString();
         this.isReadOnly = istr.readBool();
         this.fileLength = istr.readLong();
-        this.owner_duty_id = istr.readString();
-        this.owner_name = istr.readString();
         this.fileChecksum = istr.readString();
         this.fileVersion = istr.readString();
         this.fileTypeId = istr.readShort();
         this.fileTypeName = istr.readString();
-        this.organizationId = istr.readString();
-        this.organizationName = istr.readString();
         this.syncModeId = istr.readShort();
         this.syncModeName = istr.readString();
         this.lastModifyAddress = istr.readString();
@@ -867,6 +1092,18 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.fileServerTypeName = istr.readString();
         this.fileScope = istr.readString();
         this.fileKey = istr.readString();
+        this.scope = istr.readString();
+        this.key = istr.readString();
+        this.ownerUserId = istr.readString();
+        this.ownerDutyId = istr.readString();
+        this.ownerName = istr.readString();
+        this.issueId = istr.readString();
+        this.issueName = istr.readString();
+        this.taskId = istr.readString();
+        this.taskName = istr.readString();
+        this.projectId = istr.readString();
+        this.projectName = istr.readString();
+        this.taskMemberList = com.maoding.Project.zeroc.MemberListHelper.read(istr);
         this.isValid = istr.readBool();
         this.locking = istr.readBool();
         this.localFile = istr.readString();
@@ -874,6 +1111,8 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.creatorDutyName = istr.readString();
         this.lastModifyDutyId = istr.readString();
         this.lastModifyDutyName = istr.readString();
+        this.organizationId = istr.readString();
+        this.organizationName = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, FileNodeDTO v)
@@ -928,5 +1167,5 @@ public class FileNodeDTO implements java.lang.Cloneable,
 
     private static final FileNodeDTO _nullMarshalValue = new FileNodeDTO();
 
-    public static final long serialVersionUID = 1148621190L;
+    public static final long serialVersionUID = -1424247988L;
 }

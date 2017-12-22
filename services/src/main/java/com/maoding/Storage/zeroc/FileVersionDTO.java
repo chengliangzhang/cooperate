@@ -25,25 +25,140 @@ public class FileVersionDTO implements java.lang.Cloneable,
 {
     public String id;
 
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
     public String nodeId;
+
+    public String getNodeId()
+    {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId)
+    {
+        this.nodeId = nodeId;
+    }
 
     public String fileVersion;
 
+    public String getFileVersion()
+    {
+        return fileVersion;
+    }
+
+    public void setFileVersion(String fileVersion)
+    {
+        this.fileVersion = fileVersion;
+    }
+
     public String lastModifyAddress;
+
+    public String getLastModifyAddress()
+    {
+        return lastModifyAddress;
+    }
+
+    public void setLastModifyAddress(String lastModifyAddress)
+    {
+        this.lastModifyAddress = lastModifyAddress;
+    }
 
     public boolean locking;
 
+    public boolean getLocking()
+    {
+        return locking;
+    }
+
+    public void setLocking(boolean locking)
+    {
+        this.locking = locking;
+    }
+
+    public boolean isLocking()
+    {
+        return locking;
+    }
+
     public long createTimeStamp;
+
+    public long getCreateTimeStamp()
+    {
+        return createTimeStamp;
+    }
+
+    public void setCreateTimeStamp(long createTimeStamp)
+    {
+        this.createTimeStamp = createTimeStamp;
+    }
 
     public String createTimeText;
 
+    public String getCreateTimeText()
+    {
+        return createTimeText;
+    }
+
+    public void setCreateTimeText(String createTimeText)
+    {
+        this.createTimeText = createTimeText;
+    }
+
     public String lastModifyDutyId;
+
+    public String getLastModifyDutyId()
+    {
+        return lastModifyDutyId;
+    }
+
+    public void setLastModifyDutyId(String lastModifyDutyId)
+    {
+        this.lastModifyDutyId = lastModifyDutyId;
+    }
 
     public String lastModifyDutyName;
 
+    public String getLastModifyDutyName()
+    {
+        return lastModifyDutyName;
+    }
+
+    public void setLastModifyDutyName(String lastModifyDutyName)
+    {
+        this.lastModifyDutyName = lastModifyDutyName;
+    }
+
     public long lastModifyTimeStamp;
 
+    public long getLastModifyTimeStamp()
+    {
+        return lastModifyTimeStamp;
+    }
+
+    public void setLastModifyTimeStamp(long lastModifyTimeStamp)
+    {
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
+    }
+
     public String lastModifyTimeText;
+
+    public String getLastModifyTimeText()
+    {
+        return lastModifyTimeText;
+    }
+
+    public void setLastModifyTimeText(String lastModifyTimeText)
+    {
+        this.lastModifyTimeText = lastModifyTimeText;
+    }
 
     public FileVersionDTO()
     {

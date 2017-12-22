@@ -3,7 +3,7 @@
 
 [["java:package:com.maoding.User"]]
 module zeroc {
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct LoginDTO { //登录信息
         string accountId; //用户名
         string encryptPassword; //密码（已进行过加密算法）
@@ -14,7 +14,7 @@ module zeroc {
         string cellphone; //登录账号
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct AccountDTO {
         string id; //唯一编号
         string name; //用户名
@@ -23,7 +23,7 @@ module zeroc {
         string dutyId; //当前所用职责id
     };
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct DutyDTO {
         string id; //唯一编号
         string name; //职责名
@@ -32,6 +32,13 @@ module zeroc {
         string userId; //用户id
     };
     ["java:type:java.util.ArrayList<DutyDTO>"] sequence<DutyDTO> DutyList;
+
+    ["java:getset","clr:property"]
+    struct UserDTO {
+        string id; //唯一编号
+        string userName; //用户名
+    };
+    ["java:type:java.util.ArrayList<UserDTO>"] sequence<UserDTO> UserList;
 
     interface UserService {
         bool login(LoginDTO loginInfo); //登录

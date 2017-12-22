@@ -42,7 +42,7 @@ public final class RelatedFileListHelper
     {
         final java.util.List<FileNodeDTO> v;
         v = new java.util.ArrayList<FileNodeDTO>();
-        final int len0 = istr.readAndCheckSeqSize(58);
+        final int len0 = istr.readAndCheckSeqSize(68);
         for(int i0 = 0; i0 < len0; i0++)
         {
             FileNodeDTO elem;

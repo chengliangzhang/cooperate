@@ -10,4 +10,5 @@ module zeroc {
     ["java:serializable:java.lang.Boolean"] sequence<byte> Boolean;
     ["java:serializable:java.util.Date"] sequence<byte> Date;
     ["java:type:java.util.HashMap<String,String>"] dictionary<string,string> Map;
+    ["java:type:java.util.ArrayList<String>"] sequence<string> StringList;
 };

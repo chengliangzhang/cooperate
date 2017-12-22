@@ -4,12 +4,10 @@ import com.maoding.Const.FileServerConst;
 import com.maoding.Const.StorageConst;
 import com.maoding.FileServer.FileServiceImpl;
 import com.maoding.FileServer.zeroc.*;
+import com.maoding.Project.zeroc.ProjectDTO;
 import com.maoding.Storage.zeroc.*;
 import com.maoding.User.zeroc.AccountDTO;
-import com.maoding.Utils.BeanUtils;
-import com.maoding.Utils.HttpUtils;
-import com.maoding.Utils.JsonUtils;
-import com.maoding.Utils.StringUtils;
+import com.maoding.Utils.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -20,7 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
@@ -38,8 +38,8 @@ import java.util.Map;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-//@SpringBootConfiguration //only enable when target module hasn't @SpringBootApplication
-//@ComponentScan(basePackages = {"com.maoding"}) //only enable when target module hasn't @SpringBootApplication
+@SpringBootConfiguration //only enable when target module hasn't @SpringBootApplication
+@ComponentScan(basePackages = {"com.maoding"}) //only enable when target module hasn't @SpringBootApplication
 
 public class StorageServiceImplTest {
     private static final String testUploadLocalFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer\\upload_test.txt";
@@ -47,21 +47,40 @@ public class StorageServiceImplTest {
     private static final String testDir = "testForStorageService";
     private static final String localUserId = "5ffee496fa814ea4b6d26a9208b00a0b";
     private static final String remoteUserId = "41d244733ec54f09a255836637f2b21d";
-    
+
     private static final Integer CALL_METHOD_LOCAL = 0;
     private static final Integer CALL_METHOD_ICE = 1;
     private static final Integer CALL_METHOD_POST = 2;
 
     @Autowired
     private StorageService storageService;
-    private StorageServicePrx storageServicePrx = StorageServiceImpl.getInstance(":tcp -h 192.168.17.168 -p 10003");
+    private StorageServicePrx storageServicePrx = StorageServiceImpl.getInstance(":tcp -h 192.168.13.140 -p 10003");
     @Autowired
     private FileService fileService;
-    private FileServicePrx fileServicePrx = FileServiceImpl.getInstance(":tcp -h 192.168.17.168 -p 10002");
+    private FileServicePrx fileServicePrx = FileServiceImpl.getInstance(":tcp -h 192.168.13.140 -p 10002");
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
     private Integer fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
     private Integer callServiceMethod = CALL_METHOD_LOCAL;
+
+
+    /** 提资 */
+    @Test
+    public void testCommitFile() throws Exception {
+        //添加测试文件
+        fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
+        fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
+        callServiceMethod = CALL_METHOD_LOCAL;
+        writeFile(testUploadLocalFile,"/深圳市卯丁总部大厦/设计目录/方案设计/2222222/testCommit.txt");
+
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setId(localUserId);
+        CommitRequestDTO requestDTO = new CommitRequestDTO();
+        requestDTO.setCommitTimes(2);
+        requestDTO.setMajor("建筑");
+        requestDTO.setPath("/深圳市卯丁总部大厦/设计目录/方案设计/2222222/testCommit.txt");
+        storageService.commitFile(requestDTO,null);
+    }
 
     /** 重命名及移动节点 */
     @Test
@@ -81,10 +100,10 @@ public class StorageServiceImplTest {
     @Test
     public void testCreateNode() throws Exception {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
-        request.setFullName("/项目20171115/项目前期/自定义目录");
+        request.setFullName("/个人任务测试/设计目录/项目前期/任务1/任务1.1/自定义目录");
         request.setTypeId(StorageConst.STORAGE_NODE_TYPE_DIR_USER);
         Assert.assertNotNull(storageService.createNode(request,null));
-        request.setFullName("/项目20171115/项目前期/自定义文件");
+        request.setFullName("/个人任务测试/设计目录/项目前期/任务1/任务1.1/自定义文件.txt");
         request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
         request.setFileTypeId(StorageConst.STORAGE_FILE_TYPE_UNKNOWN);
         Assert.assertNotNull(storageService.createNode(request,null));
@@ -109,12 +128,8 @@ public class StorageServiceImplTest {
     /** 获取文件信息 */
     @Test
     public void testGetFileInfo() throws Exception {
-        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
-        request.setFullName("/x/y/z");
-        request.setTypeId(StorageConst.STORAGE_NODE_TYPE_FILE_MAIN);
-        storageService.createNode(request,null);
-        Assert.assertTrue(storageService.getFileNodeInfo("\\x\\y\\z",null) != null);
-        Assert.assertFalse(storageService.getFileNodeInfo("\\abcde",null) != null);
+        FileNodeDTO fileInfo = storageService.getFileNodeInfo("/深圳市卯丁总部大厦/设计目录/方案设计/2222222/upload_test.txt",null);
+        Assert.assertNotNull(fileInfo);
     }
 
     /** 获取目录信息 */
@@ -126,6 +141,26 @@ public class StorageServiceImplTest {
         storageService.createNode(request,null);
         Assert.assertTrue(storageServicePrx.getDirNodeInfo("\\a\\b\\d").getIsValid());
         Assert.assertFalse(storageServicePrx.getDirNodeInfo("\\abcde").getIsValid());
+    }
+
+    /** 获取项目信息 */
+    @Test
+    public void testGetProjectInfo() throws Exception{
+        AccountDTO account = new AccountDTO();
+        account.setId("5ffee496fa814ea4b6d26a9208b00a0b");
+        ProjectDTO project = null;
+        project = storageService.getProjectInfoByPathForAccount(account,"/深圳市卯丁总部大厦",null);
+        Assert.assertNotNull(project);
+    }
+
+    /** 获取所有信息 */
+    @Test
+    public void testListAllNode() throws Exception {
+        AccountDTO account = new AccountDTO();
+        account.setId("41d244733ec54f09a255836637f2b21d");
+        List<SimpleNodeDTO> list = null;
+        list = storageServicePrx.listAllNodeForAccount(account);
+        Assert.assertNotNull(list);
     }
 
     /** 获取当前用户一层子节点信息 */
@@ -143,11 +178,11 @@ public class StorageServiceImplTest {
         Assert.assertNotNull(node);
         list = storageService.listSubNodeByPathForAccount(account,"/项目20171115",null);
         Assert.assertNotNull(list);
-        node = storageService.getNodeByPathForAccount(account,"/项目20171115/项目前期",null);
+        node = storageService.getNodeByPathForAccount(account,"/项目20171115/设计目录/项目前期",null);
         Assert.assertNotNull(node);
-        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期",null);
+        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/设计目录/项目前期",null);
         Assert.assertNotNull(list);
-        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/项目前期/前期 01",null);
+        list = storageService.listSubNodeByPathForAccount(account,"/项目20171115/设计目录/项目前期/前期 01",null);
         Assert.assertNotNull(list);
 
         //远程服务测试
@@ -156,13 +191,13 @@ public class StorageServiceImplTest {
 //        Assert.assertNotNull(list);
 //        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试");
 //        Assert.assertNotNull(list);
-//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段");
+//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/设计目录/施工图设计阶段");
 //        Assert.assertNotNull(list);
-//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段/给排水施工图");
+//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/设计目录/施工图设计阶段/给排水施工图");
 //        Assert.assertNotNull(list);
-//        node = storageServicePrx.getNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/施工图设计阶段/给排水施工图/给排水系统图");
+//        node = storageServicePrx.getNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/设计目录/施工图设计阶段/给排水施工图/给排水系统图");
 //        Assert.assertNotNull(node);
-//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/方案设计");
+//        list = storageServicePrx.listSubNodeByPathForAccount(account,"/海狸大厦-生产安排设置人员测试/设计目录/方案设计");
 //        Assert.assertNotNull(list);
 //        list = storageServicePrx.listAllNodeForAccount(account);
 //        Assert.assertNotNull(list);
@@ -351,14 +386,15 @@ public class StorageServiceImplTest {
         fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
         fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;
         callServiceMethod = CALL_METHOD_LOCAL;
-        writeFile(testUploadLocalFile,StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile));
+        writeFile(testUploadLocalFile,"/深圳市卯丁总部大厦/设计目录/方案设计/2222222" + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile));
 //        callServiceMethod = CALL_METHOD_ICE;
-//        writeFile(testUploadLocalFile,StringUtils.SPLIT_PATH + testDir + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile));
+//        writeFile(testUploadLocalFile,"/项目20171115/项目前期/前期 01" + StringUtils.SPLIT_PATH + StringUtils.getFileName(testUploadLocalFile));
     }
 
     private void writeFile(String localFile, String path) throws Exception {
         AccountDTO account = new AccountDTO();
 
+        //建立文件
         //获取文件服务器接口
         FileRequestDTO fileRequestDTO = null;
         if (CALL_METHOD_LOCAL.equals(callServiceMethod)) {
@@ -375,6 +411,12 @@ public class StorageServiceImplTest {
             account.setId(remoteUserId);
             fileServicePrx.setFileServerType(fileServerType);
             fileRequestDTO = storageServicePrx.openFileForAccount(account,path);
+            if (StringUtils.isEmpty(fileRequestDTO.getId())) {
+                CreateNodeRequestDTO dto = new CreateNodeRequestDTO();
+                dto.setFullName(path);
+                storageServicePrx.createNode(dto);
+                fileRequestDTO = storageServicePrx.openFileForAccount(account,path);
+            }
         }
 
         //实际写文件内容
@@ -828,7 +870,7 @@ public class StorageServiceImplTest {
 
         return request;
     }
-    
+
     //实际上传文件内容
     public void uploadContent(File f, FileRequestDTO fileRequestDTO) throws Exception {
         long length = f.length();
@@ -917,4 +959,4 @@ public class StorageServiceImplTest {
     @After
     public void after() throws Exception {
     }
-} 
+}

@@ -13,27 +13,18 @@ import javax.persistence.Table;
  */
 @Table(name = "maoding_storage_file")
 public class StorageFileEntity extends BaseEntity {
-    /** 在文件服务器上的存储位置 */
+    /** 以只读方式打开的文件的实际存储位置名称 */
     @Column
     private String fileScope;
-    /** 在文件服务器上的存储名称 */
+    /** 以只读方式打开的文件的实际保存名称 */
     @Column
     private String fileKey;
-    /** 文件名 */
-    @Column
-    private String fileName;
-    /** 协同文件创建者的用户职责id */
-    @Column
-    private String creatorDutyId;
     /** 文件类型 */
     @Column
     private Short fileTypeId;
     /** 校验和 */
     @Column
     private String fileChecksum;
-    /** 文件大小 */
-    @Column
-    private Long fileLength;
     /** 最后上传的地址 */
     @Column
     private String lastModifyAddress;
@@ -43,15 +34,24 @@ public class StorageFileEntity extends BaseEntity {
     /** 同步模式，0-手动同步，1-自动更新 */
     @Column
     private Short syncModeId;
-    /** 当前有多少用户正在下载 */
+    /** 以读写方式打开的文件的实际存储位置名称 */
     @Column
-    private Integer downloading;
-    /** 已上传到文件服务器的新scope值 */
+    private String uploadScope;
+    /** 以读写方式打开的文件的实际保存名称 */
     @Column
-    private String uploadedScope;
-    /** 已上传到文件服务器的新key值 */
+    private String uploadKey;
+    /** 文件所属的项目id */
     @Column
-    private String uploadedKey;
+    private String projectId;
+    /** 文件所属的签发任务id */
+    @Column
+    private String issueId;
+    /** 文件所属的生产任务id */
+    @Column
+    private String taskId;
+    /** 文件所属的组织id */
+    @Column
+    private String organizationId;
 
     public String getFileScope() {
         return fileScope;
@@ -69,22 +69,6 @@ public class StorageFileEntity extends BaseEntity {
         this.fileKey = fileKey;
     }
 
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getCreatorDutyId() {
-        return creatorDutyId;
-    }
-
-    public void setCreatorDutyId(String creatorDutyId) {
-        this.creatorDutyId = creatorDutyId;
-    }
-
     public Short getFileTypeId() {
         return fileTypeId;
     }
@@ -99,14 +83,6 @@ public class StorageFileEntity extends BaseEntity {
 
     public void setFileChecksum(String fileChecksum) {
         this.fileChecksum = fileChecksum;
-    }
-
-    public Long getFileLength() {
-        return fileLength;
-    }
-
-    public void setFileLength(Long fileLength) {
-        this.fileLength = fileLength;
     }
 
     public String getLastModifyAddress() {
@@ -133,28 +109,52 @@ public class StorageFileEntity extends BaseEntity {
         this.syncModeId = syncModeId;
     }
 
-    public Integer getDownloading() {
-        return downloading;
+
+    public String getUploadScope() {
+        return uploadScope;
     }
 
-    public void setDownloading(Integer downloading) {
-        this.downloading = downloading;
+    public void setUploadScope(String uploadScope) {
+        this.uploadScope = uploadScope;
     }
 
-    public String getUploadedScope() {
-        return uploadedScope;
+    public String getUploadKey() {
+        return uploadKey;
     }
 
-    public void setUploadedScope(String uploadedScope) {
-        this.uploadedScope = uploadedScope;
+    public void setUploadKey(String uploadKey) {
+        this.uploadKey = uploadKey;
     }
 
-    public String getUploadedKey() {
-        return uploadedKey;
+    public String getProjectId() {
+        return projectId;
     }
 
-    public void setUploadedKey(String uploadedKey) {
-        this.uploadedKey = uploadedKey;
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 
+    public String getIssueId() {
+        return issueId;
+    }
+
+    public void setIssueId(String issueId) {
+        this.issueId = issueId;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
+    }
 }

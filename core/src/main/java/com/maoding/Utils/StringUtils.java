@@ -25,6 +25,9 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     public static final String SPLIT_ID = ",";
     public static final String SPLIT_PATH = "/";
+    public static final String SPLIT_PATH_WINDOWS = "\\\\";
+    public static final String SPLIT_EXT = ".";
+    public static final String SPLIT_NAME_PART = "_";
 
     private static final int KILO_BYTE = 1024;
     private static final int KILO_MS = 1000;
@@ -76,7 +79,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /** 标准化路径（所有路径分隔都用"/"） */
     public static String formatPath(String path,Boolean rootAsNull) {
         if (path == null) return null;
-        path = path.replaceAll("\\\\", SPLIT_PATH).trim();
+        path = path.replaceAll(SPLIT_PATH_WINDOWS, SPLIT_PATH).trim();
         path = path.replaceAll(SPLIT_PATH + SPLIT_PATH,SPLIT_PATH);
         if ((rootAsNull) && (isSame(path,SPLIT_PATH))){
             path = null;
@@ -99,6 +102,20 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         if (path == null) return null;
         path = formatPath(path);
         return getLastSplit(path, SPLIT_PATH);
+    }
+
+    public static String getFileNameWithoutExt(String path){
+        String fileName = getFileName(path);
+        if (fileName == null) return null;
+        int pos = fileName.lastIndexOf(SPLIT_EXT);
+        return (pos < 0) ? fileName : fileName.substring(0,pos);
+    }
+
+    public static String getFileExt(String path){
+        String fileName = getFileName(path);
+        if (fileName == null) return null;
+        int pos = fileName.lastIndexOf(SPLIT_EXT);
+        return (pos < 0) ? "" : fileName.substring(pos);
     }
 
     /** 获取路径名 */

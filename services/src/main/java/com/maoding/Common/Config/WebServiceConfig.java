@@ -1,5 +1,7 @@
-package com.maoding.User.Config;
+package com.maoding.Common.Config;
 
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class WebServiceConfig {
 
     private String url;
+    private CloseableHttpClient client = null;
 
     public String getUrl() {
         return url;
@@ -35,6 +38,21 @@ public class WebServiceConfig {
     public String getGetCurrentUrl() {
         String GET_WORK_URL = "/iWork/sys/getCurrUserOfWork";
         return url + GET_WORK_URL;
+    }
+
+    public String getLoadProjectDetailsUrl(){
+        return url + "/iWork/project/loadProjectDetails";
+    }
+
+    public CloseableHttpClient getClient() {
+        if (client == null){
+            client = HttpClients.createDefault();
+        }
+        return client;
+    }
+
+    public void setClient(CloseableHttpClient client) {
+        this.client = client;
     }
 
     public String getGetCurrentIdKey() {

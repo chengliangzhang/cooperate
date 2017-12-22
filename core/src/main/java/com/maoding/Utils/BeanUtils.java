@@ -106,25 +106,25 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     /** 创建数组 */
     public static <T,E> T createArrayFrom(final Object input, final Class<T> outputClass, final Class<E> eleClass, final Boolean allowNull) {
         assert ((outputClass != null) && (eleClass != null) && (outputClass.isArray()) && (outputClass.getComponentType() == eleClass));
-        if (input == null) return (allowNull) ? null : (T)((new ArrayList<E>()).toArray());
+        if (input == null) return (allowNull) ? null : outputClass.cast((new ArrayList<E>()).toArray());
 
-        if (eleClass == boolean.class) return (T)parseBooleanArray(input);
-        else if (eleClass == char.class) return (T)parseCharArray(input);
-        else if (eleClass == byte.class) return (T)parseByteArray(input);
-        else if (eleClass == short.class) return (T)parseShortArray(input);
-        else if (eleClass == int.class) return (T)parseIntArray(input);
-        else if (eleClass == long.class) return (T)parseLongArray(input);
-        else if (eleClass == float.class) return (T)parseFloatArray(input);
-        else if (eleClass == double.class) return (T)parseDoubleArray(input);
+        if (eleClass == boolean.class) return outputClass.cast(parseBooleanArray(input));
+        else if (eleClass == char.class) return outputClass.cast(parseCharArray(input));
+        else if (eleClass == byte.class) return outputClass.cast(parseByteArray(input));
+        else if (eleClass == short.class) return outputClass.cast(parseShortArray(input));
+        else if (eleClass == int.class) return outputClass.cast(parseIntArray(input));
+        else if (eleClass == long.class) return outputClass.cast(parseLongArray(input));
+        else if (eleClass == float.class) return outputClass.cast(parseFloatArray(input));
+        else if (eleClass == double.class) return outputClass.cast(parseDoubleArray(input));
 
         assert (input.getClass().isArray());
         int length = getArrayLength(input);
-        
+
         E[] output = (E[])((new ArrayList<E>()).toArray());
         for (int n=0;n<output.length;n++){
             output[n] = createFrom(((Object[])input)[n],eleClass,allowNull);
         }        
-        return (T)output;
+        return outputClass.cast(output);
     }
 
     /** 创建普通类 */

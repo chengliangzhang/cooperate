@@ -59,6 +59,48 @@ public class LocalServer implements BasicFileServerInterface {
     private static long pos1 = 0; //下载速度计算参数
 
     @Override
+    public BasicFileDTO copyFile(BasicFileDTO basicSrc, BasicFileDTO basicDst) {
+        final int BUFFER_SIZE = 2048 * 1024;
+        if (isExist(basicDst)) {
+            basicDst.setKey(getKeyWithStamp(basicDst.getKey()));
+        }
+        assert (isExist(basicSrc));
+        assert (!isExist(basicDst));
+
+        makeDirs(basicDst.getScope());
+
+        //复制文件
+        FileChannel in = null;
+        FileChannel out = null;
+        try {
+            File srcFile = new File(getPath(basicSrc));
+            assert (srcFile.exists());
+            in = (new FileInputStream(srcFile)).getChannel();
+            File dstFile = new File(getPath(basicDst));
+            assert (!dstFile.exists());
+            out = (new FileOutputStream(dstFile)).getChannel();
+            while (in.position() < in.size())
+            {
+                int length = BUFFER_SIZE;
+                if ((in.size() - in.position()) < length) {
+                    length = (int) (in.size() - in.position());
+                }
+                ByteBuffer buf = ByteBuffer.allocateDirect(length);
+                in.read(buf);
+                buf.flip();
+                out.write(buf);
+            }
+        } catch (IOException e) {
+            log.error("复制文件" + getPath(basicSrc) + "时出错");
+        } finally {
+            FileUtils.close(out);
+            FileUtils.close(in);
+        }
+
+        return basicDst;
+    }
+
+    @Override
     public long getFileLength(BasicFileDTO basicSrc) {
         if (!isExist(basicSrc)) return 0;
         File src = new File(getPath(basicSrc));

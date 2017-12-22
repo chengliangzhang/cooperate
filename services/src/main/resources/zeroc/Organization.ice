@@ -3,14 +3,14 @@
 
 [["java:package:com.maoding.Organization"]]
 module zeroc {
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct OrganizationDTO {
         string id; //唯一标识
         string name; //组织名称
     };
     ["java:type:java.util.ArrayList<OrganizationDTO>"] sequence<OrganizationDTO> OrganizationList;
 
-    ["java:getset"]
+    ["java:getset","clr:property"]
     struct CompanyDTO {
         string id; //唯一标识
         string token; //app使用的token标示
