@@ -102,6 +102,152 @@ BEGIN
     UNIQUE KEY `cellphone` (`cellphone`),
     KEY `default_company_id` (`default_company_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='登录用户表';
+
+  -- maoding_web_project -- 项目表
+  CREATE TABLE IF NOT EXISTS  `maoding_web_project` (
+    `id` varchar(32) NOT NULL COMMENT '主键id，uuid',
+    `company_id` varchar(32) DEFAULT NULL COMMENT '企业id',
+    `company_bid` varchar(32) DEFAULT NULL COMMENT '挂靠的大B id',
+    `project_type` varchar(32) DEFAULT NULL COMMENT '项目类别(冗余，目前没用到)',
+    `built_type` varchar(1000) DEFAULT NULL COMMENT '建筑功能',
+    `project_no` varchar(50) DEFAULT NULL COMMENT '项目编号',
+    `project_name` varchar(100) DEFAULT NULL COMMENT '项目名称',
+    `base_area` varchar(50) DEFAULT NULL,
+    `capacity_area` varchar(50) DEFAULT NULL,
+    `total_construction_area` varchar(50) DEFAULT NULL,
+    `increasing_area` varchar(50) DEFAULT NULL,
+    `coverage` varchar(50) DEFAULT NULL,
+    `greening_rate` varchar(50) DEFAULT NULL,
+    `built_height` varchar(20) DEFAULT NULL COMMENT '建筑高度',
+    `built_floor_up` varchar(10) DEFAULT NULL COMMENT '建筑层数(地上)',
+    `built_floor_down` varchar(10) DEFAULT NULL COMMENT '建筑层数(地下)',
+    `construct_company` varchar(32) DEFAULT NULL COMMENT '建设单位',
+    `investment_estimation` decimal(20,6) DEFAULT NULL COMMENT '投资估算',
+    `total_contract_amount` decimal(20,6) DEFAULT NULL COMMENT '合同总金额',
+    `status` varchar(1) DEFAULT '0' COMMENT '默认为0＝进行中，1＝已暂停，2＝已完成 ，3 = 已终止',
+    `pstatus` varchar(1) DEFAULT '0' COMMENT '0=生效，1=不生效',
+    `project_create_date` date DEFAULT NULL COMMENT '项目创建日期',
+    `is_history` int(1) DEFAULT '0' COMMENT '是否是历史导入的数据',
+    `design_range` varchar(1000) DEFAULT NULL COMMENT '设计范围',
+    `contract_date` date DEFAULT NULL,
+    `parent_projectid` varchar(32) DEFAULT '' COMMENT '项目拆分后的父Id',
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    `province` varchar(50) DEFAULT NULL,
+    `city` varchar(50) DEFAULT NULL,
+    `county` varchar(50) DEFAULT NULL COMMENT '县或镇或区',
+    `volume_ratio` varchar(50) DEFAULT NULL COMMENT '容积率',
+    `detail_address` varchar(255) DEFAULT NULL,
+    `helper_company_user_id` varchar(32) DEFAULT NULL COMMENT '帮助立项的人的id（company_user_id）',
+    PRIMARY KEY (`id`),
+    KEY `manager_id` (`helper_company_user_id`),
+    KEY `process_id` (`contract_date`),
+    KEY `company_id` (`company_id`),
+    KEY `helper_company_user_id` (`helper_company_user_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目信息表';
+
+    -- maoding_web_company -- 组织表
+  CREATE TABLE IF NOT EXISTS  `maoding_web_company` (
+    `id` varchar(32) NOT NULL COMMENT '主键id，uuid',
+    `company_name` varchar(100) NOT NULL COMMENT '企业名称',
+    `major_type` varchar(1000) DEFAULT NULL COMMENT '专业类别',
+    `certificate` varchar(1000) DEFAULT NULL COMMENT '技术资质',
+    `main_field` varchar(1000) DEFAULT NULL COMMENT '擅长领域',
+    `is_authentication` varchar(2) DEFAULT '0' COMMENT '是否认证(0.否，1.是，2申请认证)',
+    `operator_name` varchar(32) DEFAULT NULL COMMENT '经办人',
+    `reject_reason` varchar(1000) DEFAULT NULL COMMENT '认证不通过原因',
+    `company_type` varchar(2) DEFAULT NULL COMMENT '公司类型(0=小B，1＝超级大B,2=大B分公司)',
+    `company_email` varchar(50) DEFAULT NULL COMMENT '企业邮箱',
+    `company_short_name` varchar(100) DEFAULT NULL,
+    `company_fax` varchar(20) DEFAULT NULL COMMENT '企业传真',
+    `server_type` varchar(200) DEFAULT NULL COMMENT '服务类型',
+    `province` varchar(30) DEFAULT NULL COMMENT '企业所属省',
+    `city` varchar(30) DEFAULT NULL COMMENT '企业所属市',
+    `county` varchar(30) DEFAULT NULL,
+    `company_comment` longtext COMMENT '企业简介',
+    `legal_representative` varchar(30) DEFAULT NULL COMMENT '法人代表',
+    `company_phone` varchar(30) DEFAULT NULL COMMENT '联系电话',
+    `company_address` varchar(255) DEFAULT NULL COMMENT '企业地址',
+    `status` varchar(1) DEFAULT '0' COMMENT '企业状态（生效0，1不生效）',
+    `group_index` int(11) DEFAULT NULL COMMENT '团队排序',
+    `index_show` varchar(1) DEFAULT NULL COMMENT '是否首页展示(0展示，1不展示)',
+    `business_license_number` varchar(50) DEFAULT NULL COMMENT '工商营业执照号码',
+    `organization_code_number` varchar(50) DEFAULT NULL COMMENT '组织机构代码证号码',
+    `micro_url` varchar(100) DEFAULT '#micro/microNetworkone' COMMENT '微官网地址',
+    `micro_template` varchar(1) DEFAULT '1' COMMENT '微官网模板',
+    `group_id` varchar(32) DEFAULT NULL COMMENT '企业群ID',
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    PRIMARY KEY (`id`),
+    KEY `group_id` (`group_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='组织表';
+
+  -- maoding_web_project_task -- 任务表
+  CREATE TABLE IF NOT EXISTS  `maoding_web_project_task` (
+    `id` varchar(32) NOT NULL COMMENT '主键id，uuid',
+    `from_company_id` varchar(32) DEFAULT NULL,
+    `company_id` varchar(32) DEFAULT NULL COMMENT '组织id',
+    `project_id` varchar(32) NOT NULL COMMENT '项目id',
+    `org_id` varchar(32) DEFAULT NULL COMMENT '部门id',
+    `task_name` varchar(200) NOT NULL COMMENT '任务名称',
+    `task_pid` varchar(32) DEFAULT NULL COMMENT '父id',
+    `task_path` text COMMENT '任务完整路径id-id',
+    `task_type` int(1) DEFAULT NULL COMMENT '类型（签发设计阶段或服务内容\r\n1=设计阶段 \r\n2=签发\r\n0=生产\r\n3=签发（未发布）\r\n4=生产（未发布），5:=设计任务',
+    `task_level` int(11) DEFAULT NULL COMMENT '签发次数级别',
+    `task_status` varchar(1) DEFAULT '0' COMMENT '0生效，1删除,2:未发布，3：未发布（修改）',
+    `task_remark` varchar(1000) DEFAULT NULL COMMENT '备注',
+    `seq` int(4) DEFAULT NULL COMMENT '排序',
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    `is_operater_task` int(1) DEFAULT NULL COMMENT '是否是经营任务（1：经营任务，0：是经营任务，但是可以进行生产，或许直接是生产任务）',
+    `end_status` int(1) DEFAULT '0' COMMENT '结束状态：0=未开始，1=已完成，2=已终止',
+    `complete_date` date DEFAULT NULL COMMENT '完成时间',
+    `be_modify_id` varchar(32) DEFAULT NULL COMMENT '被修改记录的id，用于修改任务，新增一条未被发布的数据，该字段记录被修改记录的id',
+    `start_time` date DEFAULT NULL,
+    `end_time` date DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `from_company_id` (`from_company_id`),
+    KEY `company_id` (`company_id`),
+    KEY `project_id` (`project_id`),
+    KEY `org_id` (`org_id`),
+    KEY `task_pid` (`task_pid`),
+    KEY `be_modify_id` (`be_modify_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务表';
+
+  -- maoding_web_project_member -- 成员表
+  CREATE TABLE IF NOT EXISTS  `maoding_web_project_member` (
+    `id` varchar(32) NOT NULL,
+    `project_id` varchar(32) DEFAULT NULL COMMENT '项目id',
+    `company_id` varchar(32) DEFAULT NULL COMMENT 'company_user在的公司id',
+    `account_id` varchar(32) DEFAULT NULL COMMENT 'account表中的id',
+    `company_user_id` varchar(32) DEFAULT NULL COMMENT 'company_user表中的id',
+    `member_type` int(2) DEFAULT NULL COMMENT '0：立项人，1：经营负责人，2：设计负责人,3,任务负责人,4.设计，5，校对，6，审核',
+    `target_id` varchar(32) DEFAULT NULL COMMENT '目标id，所属节点id',
+    `node_id` varchar(32) DEFAULT NULL COMMENT '目标2id，冗余字段，便于查询',
+    `status` int(2) DEFAULT '0',
+    `deleted` int(1) DEFAULT '0' COMMENT '删除标示（0：未删除，1，删除）',
+    `seq` int(1) DEFAULT '0' COMMENT '排序字段（社校审人员才用到）',
+    `param1` varchar(255) DEFAULT NULL,
+    `param2` varchar(255) DEFAULT NULL,
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `id` (`id`) USING BTREE,
+    KEY `company_id` (`company_id`) USING BTREE,
+    KEY `company_user_id
+  company_user_id` (`company_user_id`) USING BTREE,
+    KEY `target_id` (`target_id`) USING BTREE,
+    KEY `member_type` (`member_type`) USING BTREE,
+    KEY `project_id` (`project_id`) USING BTREE
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目成员表';
 END;
 
 -- 建立创建视图的存储过程
@@ -142,38 +288,6 @@ BEGIN
         task_id
       from
         maoding_storage_file file;
-
-  -- maoding_storage_file_info -- 文件节点详细信息
-  CREATE OR REPLACE VIEW `maoding_storage_file_info` AS
-      select
-          file.*
-          ,file_type.content as file_type_name
-          ,node.name as file_name
-          ,node.type_id
-					,node.type_name
-          ,node.pid
-          ,node.path
-          ,node.create_time_stamp
-          ,node.create_time_text
-          ,node.last_modify_time_stamp
-          ,node.last_modify_time_text
-          ,node.last_modify_user_id
-          ,node.file_length
-          ,node.last_modify_user_id as owner_user_id
-					,task.project_name
-					,task.company_id
-					,task.company_name
-					,task.issue_name
-					,task.task_name
-      from
-            maoding_storage_file_tmp file
-						inner join maoding_const file_type on (file.file_type_id = file_type.value_id)
-            inner join maoding_storage_node node on (file.id = node.id)
-						left join maoding_storage_node_design_task task on (file.task_id = task.id)
-      where
-            (file.deleted = 0)
-						and (file_type.classic_id = 5)
-			group by file.id ;
 
   -- maoding_storage_node -- 树节点通用视图
   CREATE OR REPLACE VIEW `maoding_storage_node` AS
@@ -294,8 +408,8 @@ union all
           and (cst.classic_id = 14)
       group by node.id;
 
-  -- maoding_storage_node_commit -- 提资节点信息
-  CREATE OR REPLACE VIEW `maoding_storage_node_commit` AS
+  -- maoding_storage_node_design_task -- 设计任务节点信息
+  CREATE OR REPLACE VIEW `maoding_storage_node_design_task` AS
       select
           task.id
           ,task.task_name as task_name
@@ -338,8 +452,40 @@ union all
 					and (project.pstatus = '0')
       group by task.id;
 
-  -- maoding_storage_node_design_task -- 设计任务节点信息
-  CREATE OR REPLACE VIEW `maoding_storage_node_design_task` AS
+  -- maoding_storage_file_info -- 文件节点详细信息
+  CREATE OR REPLACE VIEW `maoding_storage_file_info` AS
+      select
+          file.*
+          ,file_type.content as file_type_name
+          ,node.name as file_name
+          ,node.type_id
+					,node.type_name
+          ,node.pid
+          ,node.path
+          ,node.create_time_stamp
+          ,node.create_time_text
+          ,node.last_modify_time_stamp
+          ,node.last_modify_time_text
+          ,node.last_modify_user_id
+          ,node.file_length
+          ,node.last_modify_user_id as owner_user_id
+					,task.project_name
+					,task.company_id
+					,task.company_name
+					,task.issue_name
+					,task.task_name
+      from
+            maoding_storage_file_tmp file
+						inner join maoding_const file_type on (file.file_type_id = file_type.value_id)
+            inner join maoding_storage_node node on (file.id = node.id)
+						left join maoding_storage_node_design_task task on (file.task_id = task.id)
+      where
+            (file.deleted = 0)
+						and (file_type.classic_id = 5)
+			group by file.id ;
+
+  -- maoding_storage_node_commit -- 提资节点信息
+  CREATE OR REPLACE VIEW `maoding_storage_node_commit` AS
       select
           task.id
           ,task.task_name as task_name
