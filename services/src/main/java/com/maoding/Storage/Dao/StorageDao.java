@@ -44,6 +44,7 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     /** 已经实现的接口 */
     List<SimpleNodeDTO> listRootNode(QueryNodeDTO query);
     List<SimpleNodeDTO> listSubNode(QueryNodeDTO query);
+    List<SimpleNodeDTO> listAllSubNode(QueryNodeDTO query);
     List<String> listAllSubNodeIdByPath(String path);
     List<SimpleNodeDTO> listStorageRootNode(QueryNodeDTO query);
     List<SimpleNodeDTO> listStorageSubNode(QueryNodeDTO query);

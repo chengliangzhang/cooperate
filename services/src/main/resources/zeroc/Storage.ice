@@ -263,11 +263,14 @@ module zeroc {
 
     interface StorageService {
         //准备实现的接口
+        SimpleNodeList listAllSubNodeByPath(string path); //获取指定用户指定路径的所有子节点
+        SimpleNodeList listAllSubNodeByPathForAccount(AccountDTO account,string path); //获取指定用户指定路径的所有子节点
+
+        //已经实现的接口
         SimpleNodeDTO commitFile(CommitRequestDTO request); //提资
         SimpleNodeDTO commitFileForAccount(AccountDTO account, CommitRequestDTO request); //提资
         StringList listMajor(); //列出可用专业
 
-        //已经实现的接口
         ["deprecate:尚未验证"]
         ProjectDTO getProjectInfoByPath(string path);
         ["deprecate:尚未验证"]

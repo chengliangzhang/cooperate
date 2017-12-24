@@ -22,6 +22,10 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageService extends com.zeroc.Ice.Object
 {
+    java.util.List<SimpleNodeDTO> listAllSubNodeByPath(String path, com.zeroc.Ice.Current current);
+
+    java.util.List<SimpleNodeDTO> listAllSubNodeByPathForAccount(com.maoding.User.zeroc.AccountDTO account, String path, com.zeroc.Ice.Current current);
+
     SimpleNodeDTO commitFile(CommitRequestDTO request, com.zeroc.Ice.Current current);
 
     SimpleNodeDTO commitFileForAccount(com.maoding.User.zeroc.AccountDTO account, CommitRequestDTO request, com.zeroc.Ice.Current current);
@@ -206,6 +210,36 @@ public interface StorageService extends com.zeroc.Ice.Object
     static String ice_staticId()
     {
         return "::zeroc::StorageService";
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listAllSubNodeByPath(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_path;
+        iceP_path = istr.readString();
+        inS.endReadParams();
+        java.util.List<SimpleNodeDTO> ret = obj.listAllSubNodeByPath(iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SimpleNodeListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listAllSubNodeByPathForAccount(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        String iceP_path;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_path = istr.readString();
+        inS.endReadParams();
+        java.util.List<SimpleNodeDTO> ret = obj.listAllSubNodeByPathForAccount(iceP_account, iceP_path, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SimpleNodeListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_commitFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -1267,6 +1301,8 @@ public interface StorageService extends com.zeroc.Ice.Object
         "isFileLocking",
         "isLocking",
         "listAllNodeForAccount",
+        "listAllSubNodeByPath",
+        "listAllSubNodeByPathForAccount",
         "listFileLink",
         "listMajor",
         "listRootNodeForAccount",
@@ -1495,109 +1531,117 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 46:
             {
-                return _iceD_listFileLink(this, in, current);
+                return _iceD_listAllSubNodeByPath(this, in, current);
             }
             case 47:
             {
-                return _iceD_listMajor(this, in, current);
+                return _iceD_listAllSubNodeByPathForAccount(this, in, current);
             }
             case 48:
             {
-                return _iceD_listRootNodeForAccount(this, in, current);
+                return _iceD_listFileLink(this, in, current);
             }
             case 49:
             {
-                return _iceD_listRootNodeForCurrent(this, in, current);
+                return _iceD_listMajor(this, in, current);
             }
             case 50:
             {
-                return _iceD_listSubNode(this, in, current);
+                return _iceD_listRootNodeForAccount(this, in, current);
             }
             case 51:
             {
-                return _iceD_listSubNodeByPNodeIdForAccount(this, in, current);
+                return _iceD_listRootNodeForCurrent(this, in, current);
             }
             case 52:
             {
-                return _iceD_listSubNodeByPNodeIdForCurrent(this, in, current);
+                return _iceD_listSubNode(this, in, current);
             }
             case 53:
             {
-                return _iceD_listSubNodeByPathForAccount(this, in, current);
+                return _iceD_listSubNodeByPNodeIdForAccount(this, in, current);
             }
             case 54:
             {
-                return _iceD_listSubNodeByPathForCurrent(this, in, current);
+                return _iceD_listSubNodeByPNodeIdForCurrent(this, in, current);
             }
             case 55:
             {
-                return _iceD_lockFile(this, in, current);
+                return _iceD_listSubNodeByPathForAccount(this, in, current);
             }
             case 56:
             {
-                return _iceD_lockNode(this, in, current);
+                return _iceD_listSubNodeByPathForCurrent(this, in, current);
             }
             case 57:
             {
-                return _iceD_modifyFileInfo(this, in, current);
+                return _iceD_lockFile(this, in, current);
             }
             case 58:
             {
-                return _iceD_moveNode(this, in, current);
+                return _iceD_lockNode(this, in, current);
             }
             case 59:
             {
-                return _iceD_openFileForAccount(this, in, current);
+                return _iceD_modifyFileInfo(this, in, current);
             }
             case 60:
             {
-                return _iceD_openFileForCurrent(this, in, current);
+                return _iceD_moveNode(this, in, current);
             }
             case 61:
             {
-                return _iceD_replaceFile(this, in, current);
+                return _iceD_openFileForAccount(this, in, current);
             }
             case 62:
             {
-                return _iceD_requestDownload(this, in, current);
+                return _iceD_openFileForCurrent(this, in, current);
             }
             case 63:
             {
-                return _iceD_requestDownloadByPath(this, in, current);
+                return _iceD_replaceFile(this, in, current);
             }
             case 64:
             {
-                return _iceD_requestDownloadFromLast(this, in, current);
+                return _iceD_requestDownload(this, in, current);
             }
             case 65:
             {
-                return _iceD_requestUpload(this, in, current);
+                return _iceD_requestDownloadByPath(this, in, current);
             }
             case 66:
             {
-                return _iceD_requestUploadByPath(this, in, current);
+                return _iceD_requestDownloadFromLast(this, in, current);
             }
             case 67:
             {
-                return _iceD_restoreDirectory(this, in, current);
+                return _iceD_requestUpload(this, in, current);
             }
             case 68:
             {
-                return _iceD_restoreFile(this, in, current);
+                return _iceD_requestUploadByPath(this, in, current);
             }
             case 69:
             {
-                return _iceD_setFileLength(this, in, current);
+                return _iceD_restoreDirectory(this, in, current);
             }
             case 70:
             {
-                return _iceD_unlockFile(this, in, current);
+                return _iceD_restoreFile(this, in, current);
             }
             case 71:
             {
-                return _iceD_unlockNode(this, in, current);
+                return _iceD_setFileLength(this, in, current);
             }
             case 72:
+            {
+                return _iceD_unlockFile(this, in, current);
+            }
+            case 73:
+            {
+                return _iceD_unlockNode(this, in, current);
+            }
+            case 74:
             {
                 return _iceD_uploadCallback(this, in, current);
             }

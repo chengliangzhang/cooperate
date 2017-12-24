@@ -63,6 +63,27 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return getInstance(null);
     }
 
+    @Override
+    public List<SimpleNodeDTO> listAllSubNodeByPath(String path, Current current) {
+        return listAllSubNodeByPathForAccount(userService.getCurrent(current),path,current);
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listAllSubNodeByPathForAccount(AccountDTO account, String path, Current current) {
+        path = StringUtils.formatPath(path);
+        if (StringUtils.isEmpty(path) || StringUtils.isSame(StringUtils.SPLIT_PATH,path)) return listRootNodeForAccount(account,current);
+
+        long t = System.currentTimeMillis();
+
+        QueryNodeDTO query = new QueryNodeDTO();
+        path = StringUtils.formatPath(path);
+        query.setPath(path);
+        query.setUserId(account.getId());
+        List<SimpleNodeDTO> list = storageDao.listAllSubNode(query);
+
+        log.info("===>listAllSubNodeByPathForAccount:" + (System.currentTimeMillis()-t) + "ms");
+        return list;
+    }
 
     @Override
     public SimpleNodeDTO commitFile(CommitRequestDTO request, Current current) {

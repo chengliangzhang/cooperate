@@ -14,25 +14,52 @@
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1) as is_read_only
+                    ,if(node.id is null,null,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1)) as is_read_only
                 </when>
                 <otherwise>
-                    ,1 as is_read_only
+                    ,if(node.id is null,null,1) as is_read_only
                 </otherwise>
             </choose>
         from maoding_storage_node node
-        <if test="nodeId != null">
-            inner join maoding_storage detail on (node.id = detail.id)
-        </if>
+            <if test="nodeId != null and typeId != null">
+                inner join maoding_storage parent on ((parent.path = left(node.path,char_length(node.path)-char_length(substring_index(node.path, '/',-1))-1)))
+            </if>
         <where>
             <if test="nodeId != null">
-                and (node.pid = #{nodeId})
+                and (parent.pid = #{nodeId})
             </if>
             <if test="typeId != null">
-                and (detail.pid_type_id = #{typeId})
+                and (parent.type_id = #{typeId})
             </if>
             <if test="path != null">
                 and (#{path} = left(node.path,char_length(node.path)-char_length(substring_index(node.path, '/',-1))-1))
+            </if>
+        </where>
+    </select>
+
+    <select id="listAllSubNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+        select node.*
+            <choose>
+                <when test="userId != null">
+                    ,if(node.id is null,null,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1)) as is_read_only
+                </when>
+                <otherwise>
+                    ,if(node.id is null,null,1) as is_read_only
+                </otherwise>
+            </choose>
+        from maoding_storage_node node
+            <if test="nodeId != null and typeId != null">
+                inner join maoding_storage parent on ((parent.path = left(node.path,char_length(node.path)-char_length(substring_index(node.path, '/',-1))-1)))
+            </if>
+        <where>
+            <if test="nodeId != null">
+                and (parent.id = #{nodeId})
+            </if>
+            <if test="typeId != null">
+                and (parent.type_id = #{typeId})
+            </if>
+            <if test="path != null">
+                and (node.path like concat(#{path},'/%'))
             </if>
         </where>
     </select>

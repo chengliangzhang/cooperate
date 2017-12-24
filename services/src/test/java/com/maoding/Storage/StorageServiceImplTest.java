@@ -203,6 +203,25 @@ public class StorageServiceImplTest {
 //        Assert.assertNotNull(list);
     }
 
+    /** 获取当前用户所有子节点信息 */
+    @Test
+    public void testListAllSubNode() throws Exception {
+        List<SimpleNodeDTO> list = null;
+        SimpleNodeDTO node = null;
+        AccountDTO account = new AccountDTO();
+
+        //本地服务测试
+        account.setId("5ffee496fa814ea4b6d26a9208b00a0b");
+        list = storageService.listAllSubNodeByPathForAccount(account,"/",null);
+        Assert.assertNotNull(list);
+        list = storageService.listAllSubNodeByPathForAccount(account,"/项目20171115",null);
+        Assert.assertNotNull(list);
+        list = storageService.listAllSubNodeByPathForAccount(account,"/项目20171115/设计目录/项目前期",null);
+        Assert.assertNotNull(list);
+        list = storageService.listAllSubNodeByPathForAccount(account,"/项目20171115/设计目录/项目前期/前期 01",null);
+        Assert.assertNotNull(list);
+   }
+
     /** 锁定文件 */
     @Test
     public void testLockNode() throws Exception {

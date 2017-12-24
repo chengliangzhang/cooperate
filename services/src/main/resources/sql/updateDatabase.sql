@@ -1,3 +1,12 @@
+DROP PROCEDURE IF EXISTS `clearFirstSubNode`;
+CREATE PROCEDURE `clearFirstSubNode`()
+BEGIN
+    -- 清除项目一级目录
+    delete from maoding_storage where (type_id = 20 or type_id = 30);
+    update maoding_storage set path = replace(path,'提资目录','提资');
+    update maoding_storage set path = replace(path,'设计目录','设计');
+END;
+
 DROP PROCEDURE IF EXISTS `createFirstSubNode`;
 CREATE PROCEDURE `createFirstSubNode`()
 BEGIN
@@ -171,7 +180,8 @@ BEGIN
   end if;
 
 	-- 添加项目下第一层子目录
-	call createFirstSubNode();
+-- 	call createFirstSubNode();
+    call clearFirstSubNode();
 
 	-- 更新文件的任务信息
 	update
