@@ -3,7 +3,7 @@ package com.maoding.Storage.Dao;
 import com.maoding.Base.BaseDao;
 import com.maoding.FileServer.zeroc.FileDTO;
 import com.maoding.Storage.Dto.DesignTaskDTO;
-import com.maoding.Storage.Dto.FileUnionDTO;
+import com.maoding.Storage.Dto.StorageEntityUnionDTO;
 import com.maoding.Storage.Dto.QueryByPidAndNameDTO;
 import com.maoding.Storage.Dto.QueryNodeDTO;
 import com.maoding.Storage.Entity.StorageEntity;
@@ -35,9 +35,15 @@ public interface StorageDao extends BaseDao<StorageEntity> {
     Boolean hasRootChild(QueryNodeDTO query);
     FileDTO getRealFile(QueryNodeDTO query);
 
-    FileUnionDTO selectFileEntityUnion(QueryNodeDTO query);
+    StorageEntityUnionDTO selectFileEntityUnion(QueryNodeDTO query);
+
+    StorageEntityUnionDTO selectStorageEntityUnion(StorageQueryDTO query);
 
     /** 准备实现的接口 */
+    FullNodeDTO getFullNodeInfo(StorageQueryDTO query);
+    FullNodeDTO getNearFullNodeInfo(StorageQueryDTO query);
+    SimpleNodeDTO getNearSimpleNodeInfo(StorageQueryDTO query);
+
     List<SimpleNodeDTO> listCompanyRootNode(QueryNodeDTO query);
     List<SimpleNodeDTO> listCompanySubNode(QueryNodeDTO query);
 

@@ -14,19 +14,19 @@
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if(node.id is null,null,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1)) as is_read_only
+                    ,if(node.id is null,null,if((node.last_modify_user_id is null) or (node.type_id in (0,1,18,23) and (node.last_modify_user_id=#{userId})),0,1)) as is_read_only
                 </when>
                 <otherwise>
                     ,if(node.id is null,null,1) as is_read_only
                 </otherwise>
             </choose>
         from maoding_storage_node node
-            <if test="nodeId != null and typeId != null">
+            <if test="id != null and typeId != null">
                 inner join maoding_storage parent on ((parent.path = left(node.path,char_length(node.path)-char_length(substring_index(node.path, '/',-1))-1)))
             </if>
         <where>
-            <if test="nodeId != null">
-                and (parent.pid = #{nodeId})
+            <if test="id != null">
+                and (parent.pid = #{id})
             </if>
             <if test="typeId != null">
                 and (parent.type_id = #{typeId})
@@ -41,19 +41,19 @@
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if(node.id is null,null,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1)) as is_read_only
+                    ,if(node.id is null,null,if((node.last_modify_user_id is null) or (node.type_id in (0,1,18,23) and (node.last_modify_user_id=#{userId})),0,1)) as is_read_only
                 </when>
                 <otherwise>
                     ,if(node.id is null,null,1) as is_read_only
                 </otherwise>
             </choose>
         from maoding_storage_node node
-            <if test="nodeId != null and typeId != null">
+            <if test="id != null and typeId != null">
                 inner join maoding_storage parent on ((parent.path = left(node.path,char_length(node.path)-char_length(substring_index(node.path, '/',-1))-1)))
             </if>
         <where>
-            <if test="nodeId != null">
-                and (parent.id = #{nodeId})
+            <if test="id != null">
+                and (parent.id = #{id})
             </if>
             <if test="typeId != null">
                 and (parent.type_id = #{typeId})
@@ -68,7 +68,7 @@
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if(node.id is null,null,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1)) as is_read_only
+                    ,if(node.id is null,null,if((node.last_modify_user_id is null) or (node.type_id in (0,1,18,23) and (node.last_modify_user_id=#{userId})),0,1)) as is_read_only
                 </when>
                 <otherwise>
                     ,if(node.id is null,null,1) as is_read_only
@@ -83,13 +83,14 @@
             </if>
         </where>
         group by node.id
+        order by node.path
     </select>
 
     <select id="getNodeInfo" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if(node.id is null,null,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1)) as is_read_only
+                    ,if(node.id is null,null,if((node.last_modify_user_id is null) or (node.type_id in (0,1,18,23) and (node.last_modify_user_id=#{userId})),0,1)) as is_read_only
                 </when>
                 <otherwise>
                     ,if(node.id is null,null,1) as is_read_only
@@ -97,8 +98,8 @@
             </choose>
         from maoding_storage_node node
         <where>
-            <if test="nodeId != null">
-                and (node.id = #{nodeId})
+            <if test="id != null">
+                and (node.id = #{id})
             </if>
             <if test="path != null">
                 and (node.path = #{path})
@@ -106,11 +107,169 @@
         </where>
     </select>
 
+    <resultMap id="FullNodeDTOMap" type="com.maoding.Storage.zeroc.FullNodeDTO" autoMapping="true">
+        <association property="basic" javaType="com.maoding.Storage.zeroc.SimpleNodeDTO" autoMapping="true" fetchType="eager"/>
+    </resultMap>
+
+    <select id="getFullNodeInfo" resultMap="FullNodeDTOMap" parameterType="com.maoding.Storage.zeroc.StorageQueryDTO">
+        select node.*
+            <choose>
+                <when test="userId != null">
+                    ,if(node.id is null,null,if((node.last_modify_user_id is null) or (node.type_id in (0,1,18,23) and (node.last_modify_user_id=#{userId})),0,1)) as is_read_only
+                </when>
+                <otherwise>
+                    ,if(node.id is null,null,1) as is_read_only
+                </otherwise>
+            </choose>
+            ,storage.path as storage_path
+            ,classic_type.content as classic_name
+            ,task.project_id
+            ,task.project_name
+            ,task.issue_id
+            ,task.issue_name
+            ,task.issue_path
+            ,task.task_name
+            ,task.task_path
+            ,task.company_id
+            ,task.company_name
+            ,account.user_name as owner_name
+        from maoding_storage_node node
+            left join maoding_storage storage on (node.id = storage.id)
+            left join maoding_const classic_type on (classic_type.classic_id = 24 and classic_type.value_id = node.classic_id)
+            left join maoding_task task on (node.task_id = task.id)
+            left join maoding_web_account account on (account.status = '0' and node.last_modify_user_id = account.id)
+        <where>
+            <if test="id != null">
+                and (node.id = #{id})
+            </if>
+            <if test="path != null">
+                and (node.path = #{path})
+            </if>
+            <if test="pid != null">
+                and (node.pid = #{pid})
+            </if>
+            <if test="typeId != null">
+                and (node.type_id = #{typeId})
+            </if>
+            <if test="projectId != null">
+                and (task.project_id = #{projectId})
+            </if>
+            <if test="classicId != null">
+                and (node.classic_id = #{classicId})
+            </if>
+            <if test="issueId != null">
+                and (task.issue_id = #{issueId})
+            </if>
+            <if test="taskId != null">
+                and (task.id = #{taskId})
+            </if>
+            <if test="companyId != null">
+                and (task.company_id = #{companyId})
+            </if>
+            <if test="userId != null">
+                and (account.id = #{userId})
+            </if>
+        </where>
+    </select>
+
+    <select id="getNearFullNodeInfo" resultMap="FullNodeDTOMap" parameterType="com.maoding.Storage.zeroc.StorageQueryDTO">
+        select node.*
+            <choose>
+                <when test="userId != null">
+                    ,if(node.id is null,null,if((node.last_modify_user_id is null) or (node.type_id in (0,1,18,23) and (node.last_modify_user_id=#{userId})),0,1)) as is_read_only
+                </when>
+                <otherwise>
+                    ,if(node.id is null,null,1) as is_read_only
+                </otherwise>
+            </choose>
+            ,storage.path as storage_path
+            ,classic_type.content as classic_name
+            ,task.project_id
+            ,task.project_name
+            ,task.issue_id
+            ,task.issue_name
+            ,task.issue_path
+            ,task.task_name
+            ,task.task_path
+            ,task.company_id
+            ,task.company_name
+            ,account.user_name as owner_name
+        from maoding_storage_node node
+            left join maoding_storage storage on (node.id = storage.id)
+            left join maoding_const classic_type on (classic_type.classic_id = 24 and classic_type.value_id = node.classic_id)
+            left join maoding_task task on (node.task_id = task.id)
+            left join maoding_web_account account on (account.status = '0' and node.last_modify_user_id = account.id)
+        <where>
+            <if test="path != null">
+                and (node.path = #{path} or #{path} like concat(node.path,'/%'))
+            </if>
+            <if test="pid != null">
+                and (node.pid = #{pid})
+            </if>
+            <if test="typeId != null">
+                and (node.type_id = #{typeId})
+            </if>
+            <if test="projectId != null">
+                and (task.project_id = #{projectId})
+            </if>
+            <if test="classicId != null">
+                and (node.classic_id = #{classicId})
+            </if>
+            <if test="issueId != null">
+                and (task.issue_id = #{issueId} or task.issue_id is null)
+            </if>
+            <if test="taskId != null">
+                and (task.id = #{taskId} or task.id is null)
+            </if>
+            <if test="companyId != null">
+                and (task.company_id = #{companyId} or task.company_id is null)
+            </if>
+            <if test="userId != null">
+                and (account.id = #{userId} or account.id is null)
+            </if>
+        </where>
+        <if test="path != null">
+            order by char_length(node.path) desc
+        </if>
+        limit 1
+    </select>
+
+    <select id="getNearSimpleNodeInfo" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.StorageQueryDTO">
+        select node.*
+            <choose>
+                <when test="userId != null">
+                    ,if(node.id is null,null,if((node.last_modify_user_id is null) or (node.type_id in (0,1,18,23) and (node.last_modify_user_id=#{userId})),0,1)) as is_read_only
+                </when>
+                <otherwise>
+                    ,if(node.id is null,null,1) as is_read_only
+                </otherwise>
+            </choose>
+        from maoding_storage_node node
+        <where>
+            <if test="path != null">
+                and (node.path = #{path} or #{path} like concat(node.path,'/%'))
+            </if>
+            <if test="pid != null">
+                and (node.pid = #{pid})
+            </if>
+            <if test="typeId != null">
+                and (node.type_id = #{typeId})
+            </if>
+            <if test="taskId != null">
+                and (node.task_id = #{taskId} or task.id is null)
+            </if>
+        </where>
+        <if test="path != null">
+            order by char_length(node.path) desc
+        </if>
+        limit 1
+    </select>
+
     <select id="hasChild" resultType="java.lang.Boolean" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
         select 1 from maoding_storage_node node
         <where>
-            <if test="nodeId != null">
-                and (node.pid = #{nodeId})
+            <if test="id != null">
+                and (node.pid = #{id})
             </if>
             <if test="path != null">
                 and (node.path like concat(#{path},'/%'))
@@ -133,10 +292,10 @@
         select node.*
         <choose>
             <when test="userId != null">
-                ,if((10>node.type_id or node.type_id=18) and (node.last_modify_user_id=#{userId}),0,1) as is_read_only
+                ,if(node.id is null,null,if((node.last_modify_user_id is null) or (node.type_id in (0,1,18,23) and (node.last_modify_user_id=#{userId})),0,1)) as is_read_only
             </when>
             <otherwise>
-                ,1 as is_read_only
+                ,if(node.id is null,null,1) as is_read_only
             </otherwise>
         </choose>
         from maoding_storage_node node
@@ -146,7 +305,9 @@
                 and ((#{path} = node.path) or (substring(#{path},char_length(node.path)+1,1) = '/'))
             </if>
         </where>
-        order by char_length(node.path) DESC
+        <if test="path != null">
+            order by char_length(node.path) desc
+        </if>
         limit 1
     </select>
 
@@ -206,10 +367,10 @@
     </select>
 
     <select id="getFileNodeInfo" resultMap="FileNodeDTOMap" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
-        select *
+        select file.*
             <choose>
                 <when test="userId != null">
-                    ,if(file.id is null,null,if(file.last_modify_user_id=#{userId},0,1)) as is_read_only
+                    ,if(file.id is null,null,if((file.last_modify_user_id is null) or (file.last_modify_user_id=#{userId}),0,1)) as is_read_only
                     ,if(file.last_modify_user_id=#{userId},ifnull(file.upload_scope,file.file_scope),file.file_scope) as `scope`
                     ,if(file.last_modify_user_id=#{userId},ifnull(file.upload_key,file.file_key),file.file_key) as `key`
                 </when>
@@ -221,8 +382,8 @@
             </choose>
         from maoding_storage_file_info file
         <where>
-            <if test="nodeId != null">
-                and (file.id = #{nodeId})
+            <if test="id != null">
+                and (file.id = #{id})
             </if>
             <if test="path != null">
                 and (file.path = #{path})
@@ -235,8 +396,8 @@
         select file.file_scope as scope,file.file_key as key
         from <include refid="FileTables"/>
         where <include refid="FileTablesFixFilter"/>
-            <if test="nodeId != null">
-                and (node.id = #{nodeId})
+            <if test="id != null">
+                and (node.id = #{id})
             </if>
             <if test="path != null">
                 and (node.path = #{path})
@@ -249,27 +410,43 @@
     </update>
 
 
-    <resultMap id="FileEntityUnionMap" type="com.maoding.Storage.Dto.FileUnionDTO">
-        <association property="fileEntity" select="selectFileEntity" column="file_id" fetchType="eager"/>
+    <resultMap id="StorageEntityUnionMap" type="com.maoding.Storage.Dto.StorageEntityUnionDTO">
+        <association property="fileEntity" select="selectFileEntityById" column="file_id" fetchType="eager"/>
     </resultMap>
 
-    <select id="selectFileEntity" resultType="com.maoding.Storage.Entity.StorageFileEntity" parameterType="java.lang.String">
+    <select id="selectFileEntityById" resultType="com.maoding.Storage.Entity.StorageFileEntity" parameterType="java.lang.String">
         select * from maoding_storage_file file
         where (file.deleted = 0)
-        <if test="_parameter != null">
-            and (file.id = #{_parameter})
-        </if>
+            <if test="_parameter != null">
+                and (file.id = #{_parameter})
+            </if>
     </select>
 
-    <select id="selectFileEntityUnion" resultMap="FileEntityUnionMap" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
+    <select id="selectFileEntityUnion" resultMap="StorageEntityUnionMap" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
         select *,node.id as file_id from maoding_storage node
         where (node.deleted = 0)
-        <if test="nodeId != null">
-            and (node.id = #{nodeId})
-        </if>
-        <if test="path != null">
-            and (node.path = #{path})
-        </if>
+            <if test="id != null">
+                and (node.id = #{id})
+            </if>
+            <if test="path != null">
+                and (node.path = #{path})
+            </if>
+    </select>
+
+    <select id="selectStorageEntityUnion" resultMap="StorageEntityUnionMap" parameterType="com.maoding.Storage.zeroc.StorageQueryDTO">
+        select node .*,node .id as file_id
+        from maoding_storage node 
+            inner join maoding_const classic_type on (classic_type.classic_id = 24
+                    and ((node .type_id in (0,1,18,23) and classic_type.value_id = 0)
+                    or (node .type_id in (2,3,33) and classic_type.value_id = 1)))
+            inner join maoding_task task on (node .task_id = task.id)
+        where (node .deleted = 0)
+            <if test="id != null">
+                and (node .id = #{id})
+            </if>
+            <if test="path != null">
+                and (#{path} = concat('/',task.project_name,'/',classic_type.content,'/',task.path,'/',node .path))
+            </if>
     </select>
 
     <select id="selectMajor" resultType="java.lang.String">
@@ -277,17 +454,18 @@
     </select>
 
     <select id="getCommitRoot" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
-        select cmt.*
+        select node.*
         from
             maoding_storage_node node
-            inner join maoding_storage_node_commit cmt on (cmt.id=node.id)
         <where>
-            cmt.type_id = 31
+            (node.type_id = 31)
             <if test="path != null">
-                and (#{path} like concat(node.path,'/%'))
+                and (replace(#{path},'/设计/','/提资/') like concat(node.path,'/%'))
             </if>
         </where>
-        order by length(node.path) desc,length(cmt.path) desc
+        <if test="path != null">
+            order by length(node.path) desc
+        </if>
         limit 1
     </select>
 
@@ -299,8 +477,8 @@
             maoding_storage_node_design_task task
             inner join maoding_storage_node node on (task.id=node.id)
             <where>
-                <if test="nodeId != null">
-                    and (node.id = #{nodeId})
+                <if test="id != null">
+                    and (node.id = #{id})
                 </if>
                 <if test="path != null">
                     and (#{path} like concat(node.path,'/%'))
@@ -372,8 +550,8 @@
         select <include refid="SimpleNodeForProjectNodeTables"/>
         from <include refid="ProjectNodeTables"/>
         where <include refid="ProjectNodeTablesFilter"/>
-            <if test="nodeId != null">
-                and (project.id = #{nodeId})
+            <if test="id != null">
+                and (project.id = #{id})
             </if>
             <if test="userId != null">
                 and (member.account_id = #{userId})
@@ -446,8 +624,8 @@
         ,if(task.id is null,null,if(task.task_type=0,0,1)) as is_read_only
         ,if(task.id is null,null,0) as file_length
         ,if(task.id is null,null,1) as is_directory
-        ,if(task.id is null,null,0) as is_project_directory
-        ,if(task.id is null,null,1) as is_task_directory
+        ,if(task.id is null,null,0) as is_project
+        ,if(task.id is null,null,1) as is_task
     </sql>
 
     <sql id="TaskNodeTablesFilter">
@@ -462,8 +640,8 @@
             select <include refid="SimpleNodeForTaskNodeTables"/>
             from <include refid="TaskNodeTables"/>
             where<include refid="TaskNodeTablesFilter"/>
-                <if test="nodeId != null">
-                    and (task.id = #{nodeId})
+                <if test="id != null">
+                    and (task.id = #{id})
                 </if>
             group by task.id
         <if test="path != null">
@@ -475,8 +653,8 @@
         select *
         from maoding_task task
         <where>
-            <if test="nodeId != null">
-                and (task.id = #{nodeId})
+            <if test="id != null">
+                and (task.id = #{id})
             </if>
             <if test="path != null">
                 and (task.path = #{path})
@@ -520,8 +698,8 @@
         select <include refid="SimpleNodeForTaskNodeTables"/>
         from <include refid="TaskNodeTables"/>
         where <include refid="TaskNodeTablesFilter"/>
-            <if test="nodeId != null">
-                and (ifnull(task.task_pid,task.project_id) = #{nodeId})
+            <if test="id != null">
+                and (ifnull(task.task_pid,task.project_id) = #{id})
             </if>
         group by task.id
     </select>
@@ -530,8 +708,8 @@
         select *
         from maoding_task task
         <where>
-            <if test="nodeId != null">
-                and (task.pid = #{nodeId})
+            <if test="id != null">
+                and (task.pid = #{id})
             </if>
         </where>
     </select>
@@ -543,8 +721,8 @@
             select <include refid="SimpleNodeForTaskNodeTables"/>
             from <include refid="TaskNodeTables"/>
             where <include refid="TaskNodeTablesFilter"/>
-                <if test="nodeId != null">
-                    and (ifnull(task.task_pid,task.project_id) = #{nodeId})
+                <if test="id != null">
+                    and (ifnull(task.task_pid,task.project_id) = #{id})
                 </if>
             group by task.id
         <if test="path != null">
@@ -558,8 +736,8 @@
         select count(distinct task.id)
         from maoding_task task
         <where>
-            <if test="nodeId != null">
-                and (task.pid = #{nodeId})
+            <if test="id != null">
+                and (task.pid = #{id})
             </if>
             <if test="path != null">
                 and (task.path like concat(#{path},'/%'))
@@ -590,8 +768,8 @@
         ,if(st.id is null,null,0) as is_read_only
         ,st.file_length as file_length
         ,if(st.type_id >= 10,1,0) as is_directory
-        ,if(st.id is null,null,0) as is_project_directory
-        ,if(st.id is null,null,0) as is_task_directory
+        ,if(st.id is null,null,0) as is_project
+        ,if(st.id is null,null,0) as is_task
     </sql>
 
     <sql id="StorageNodeTablesFilter">
@@ -604,8 +782,8 @@
         select <include refid="SimpleNodeForStorageNodeTables"/>
         from <include refid="StorageNodeTables"/>
         where<include refid="StorageNodeTablesFilter"/>
-            <if test="nodeId != null">
-                and (st.id = #{nodeId})
+            <if test="id != null">
+                and (st.id = #{id})
             </if>
             <if test="userId != null">
                 and (st.last_modify_user_id = #{userId})
@@ -642,8 +820,8 @@
         select <include refid="SimpleNodeForStorageNodeTables"/>
         from <include refid="StorageNodeTables"/>
         where <include refid="StorageNodeTablesFilter"/>
-            <if test="nodeId != null">
-                and (st.pid = #{nodeId})
+            <if test="id != null">
+                and (st.pid = #{id})
             </if>
         group by st.id
     </select>
@@ -652,8 +830,8 @@
         select count(distinct st.id)
         from <include refid="StorageNodeTables"/>
         where <include refid="StorageNodeTablesFilter"/>
-            <if test="nodeId != null">
-                and (st.pid = #{nodeId})
+            <if test="id != null">
+                and (st.pid = #{id})
             </if>
     </select>
 
@@ -808,12 +986,14 @@
     </select>
 
     <select id="listAllSubNodeIdByPath" resultType="java.lang.String" parameterType="java.lang.String">
-        select a.id
-        from maoding_storage a
-        where (a.deleted = 0)
+        select node.id
+        from maoding_storage node
+        <where>
+            (node.deleted = 0)
             <if test="_parameter != null">
-                and (a.path like concat(#{_parameter},'/%'))
+                and (node.path like concat(#{_parameter},'/%'))
             </if>
+        </where>
     </select>
 
     <select id="getFirstChildTypeIdByPath" resultType="java.lang.Short" parameterType="java.lang.String">
@@ -1004,9 +1184,9 @@
             inner join maoding_const d on (a.type_id = d.value_id)
         where (a.deleted = 0) and (b.deleted = 0) and (c.deleted = 0)
             and (d.classic_id = 14)
-            <if test="nodeId != null">
-                and (a.id != #{nodeId})
-                and find_in_set(#{nodeId},a.path)
+            <if test="id != null">
+                and (a.id != #{id})
+                and find_in_set(#{id},a.path)
             </if>
             <if test="userId != null">
                 and (c.last_modify_user_id = #{userId})
@@ -1025,8 +1205,8 @@
             </if>
             <if test="level > 0">
                 <choose>
-                    <when test="nodeId != null">
-                        and (((select length(path) from maoding_storage where id=#{nodeId} limit 1) + (33 * #{level}) + 1) > length(a.path))
+                    <when test="id != null">
+                        and (((select length(path) from maoding_storage where id=#{id} limit 1) + (33 * #{level}) + 1) > length(a.path))
                     </when>
                     <otherwise>
                         and ((33 * #{level}) > length(a.path))

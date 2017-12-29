@@ -172,30 +172,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.fileLength = fileLength;
     }
 
-    public String owner_duty_id;
-
-    public String getOwner_duty_id()
-    {
-        return owner_duty_id;
-    }
-
-    public void setOwner_duty_id(String owner_duty_id)
-    {
-        this.owner_duty_id = owner_duty_id;
-    }
-
-    public String owner_name;
-
-    public String getOwner_name()
-    {
-        return owner_name;
-    }
-
-    public void setOwner_name(String owner_name)
-    {
-        this.owner_name = owner_name;
-    }
-
     public boolean isDirectory;
 
     public boolean getIsDirectory()
@@ -213,64 +189,134 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         return isDirectory;
     }
 
-    public boolean isProjectDirectory;
+    public boolean isProject;
 
-    public boolean getIsProjectDirectory()
+    public boolean getIsProject()
     {
-        return isProjectDirectory;
+        return isProject;
     }
 
-    public void setIsProjectDirectory(boolean isProjectDirectory)
+    public void setIsProject(boolean isProject)
     {
-        this.isProjectDirectory = isProjectDirectory;
+        this.isProject = isProject;
     }
 
-    public boolean isIsProjectDirectory()
+    public boolean isIsProject()
     {
-        return isProjectDirectory;
+        return isProject;
     }
 
-    public boolean isTaskDirectory;
+    public boolean isTask;
 
-    public boolean getIsTaskDirectory()
+    public boolean getIsTask()
     {
-        return isTaskDirectory;
+        return isTask;
     }
 
-    public void setIsTaskDirectory(boolean isTaskDirectory)
+    public void setIsTask(boolean isTask)
     {
-        this.isTaskDirectory = isTaskDirectory;
+        this.isTask = isTask;
     }
 
-    public boolean isIsTaskDirectory()
+    public boolean isIsTask()
     {
-        return isTaskDirectory;
+        return isTask;
     }
 
+    public boolean isDesign;
+
+    public boolean getIsDesign()
+    {
+        return isDesign;
+    }
+
+    public void setIsDesign(boolean isDesign)
+    {
+        this.isDesign = isDesign;
+    }
+
+    public boolean isIsDesign()
+    {
+        return isDesign;
+    }
+
+    public boolean isCommit;
+
+    public boolean getIsCommit()
+    {
+        return isCommit;
+    }
+
+    public void setIsCommit(boolean isCommit)
+    {
+        this.isCommit = isCommit;
+    }
+
+    public boolean isIsCommit()
+    {
+        return isCommit;
+    }
+
+    public boolean isHistory;
+
+    public boolean getIsHistory()
+    {
+        return isHistory;
+    }
+
+    public void setIsHistory(boolean isHistory)
+    {
+        this.isHistory = isHistory;
+    }
+
+    public boolean isIsHistory()
+    {
+        return isHistory;
+    }
+
+    /**
+     **/
+    @Deprecated
     public boolean isValid;
 
+    /**
+     **/
+    @Deprecated
     public boolean getIsValid()
     {
         return isValid;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setIsValid(boolean isValid)
     {
         this.isValid = isValid;
     }
 
+    @Deprecated
     public boolean isIsValid()
     {
         return isValid;
     }
 
+    /**
+     **/
+    @Deprecated
     public String pNodeId;
 
+    /**
+     **/
+    @Deprecated
     public String getPNodeId()
     {
         return pNodeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setPNodeId(String pNodeId)
     {
         this.pNodeId = pNodeId;
@@ -285,12 +331,10 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.path = "";
         this.createTimeText = "";
         this.lastModifyTimeText = "";
-        this.owner_duty_id = "";
-        this.owner_name = "";
         this.pNodeId = "";
     }
 
-    public SimpleNodeDTO(String id, String name, String pid, short typeId, String typeName, String path, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, String owner_duty_id, String owner_name, boolean isDirectory, boolean isProjectDirectory, boolean isTaskDirectory, boolean isValid, String pNodeId)
+    public SimpleNodeDTO(String id, String name, String pid, short typeId, String typeName, String path, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, boolean isDirectory, boolean isProject, boolean isTask, boolean isDesign, boolean isCommit, boolean isHistory, boolean isValid, String pNodeId)
     {
         this.id = id;
         this.name = name;
@@ -304,11 +348,12 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = lastModifyTimeText;
         this.isReadOnly = isReadOnly;
         this.fileLength = fileLength;
-        this.owner_duty_id = owner_duty_id;
-        this.owner_name = owner_name;
         this.isDirectory = isDirectory;
-        this.isProjectDirectory = isProjectDirectory;
-        this.isTaskDirectory = isTaskDirectory;
+        this.isProject = isProject;
+        this.isTask = isTask;
+        this.isDesign = isDesign;
+        this.isCommit = isCommit;
+        this.isHistory = isHistory;
         this.isValid = isValid;
         this.pNodeId = pNodeId;
     }
@@ -396,29 +441,27 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
             {
                 return false;
             }
-            if(this.owner_duty_id != r.owner_duty_id)
-            {
-                if(this.owner_duty_id == null || r.owner_duty_id == null || !this.owner_duty_id.equals(r.owner_duty_id))
-                {
-                    return false;
-                }
-            }
-            if(this.owner_name != r.owner_name)
-            {
-                if(this.owner_name == null || r.owner_name == null || !this.owner_name.equals(r.owner_name))
-                {
-                    return false;
-                }
-            }
             if(this.isDirectory != r.isDirectory)
             {
                 return false;
             }
-            if(this.isProjectDirectory != r.isProjectDirectory)
+            if(this.isProject != r.isProject)
             {
                 return false;
             }
-            if(this.isTaskDirectory != r.isTaskDirectory)
+            if(this.isTask != r.isTask)
+            {
+                return false;
+            }
+            if(this.isDesign != r.isDesign)
+            {
+                return false;
+            }
+            if(this.isCommit != r.isCommit)
+            {
+                return false;
+            }
+            if(this.isHistory != r.isHistory)
             {
                 return false;
             }
@@ -456,11 +499,12 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isReadOnly);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, owner_duty_id);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, owner_name);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isDirectory);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isProjectDirectory);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskDirectory);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isProject);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTask);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isDesign);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isCommit);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isHistory);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
         return h_;
@@ -494,11 +538,12 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.lastModifyTimeText);
         ostr.writeBool(this.isReadOnly);
         ostr.writeLong(this.fileLength);
-        ostr.writeString(this.owner_duty_id);
-        ostr.writeString(this.owner_name);
         ostr.writeBool(this.isDirectory);
-        ostr.writeBool(this.isProjectDirectory);
-        ostr.writeBool(this.isTaskDirectory);
+        ostr.writeBool(this.isProject);
+        ostr.writeBool(this.isTask);
+        ostr.writeBool(this.isDesign);
+        ostr.writeBool(this.isCommit);
+        ostr.writeBool(this.isHistory);
         ostr.writeBool(this.isValid);
         ostr.writeString(this.pNodeId);
     }
@@ -517,11 +562,12 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = istr.readString();
         this.isReadOnly = istr.readBool();
         this.fileLength = istr.readLong();
-        this.owner_duty_id = istr.readString();
-        this.owner_name = istr.readString();
         this.isDirectory = istr.readBool();
-        this.isProjectDirectory = istr.readBool();
-        this.isTaskDirectory = istr.readBool();
+        this.isProject = istr.readBool();
+        this.isTask = istr.readBool();
+        this.isDesign = istr.readBool();
+        this.isCommit = istr.readBool();
+        this.isHistory = istr.readBool();
         this.isValid = istr.readBool();
         this.pNodeId = istr.readString();
     }
@@ -578,5 +624,5 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     private static final SimpleNodeDTO _nullMarshalValue = new SimpleNodeDTO();
 
-    public static final long serialVersionUID = -977593831L;
+    public static final long serialVersionUID = -951897204L;
 }

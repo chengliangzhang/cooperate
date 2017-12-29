@@ -23,28 +23,112 @@ package com.maoding.Storage.zeroc;
 public class StorageQueryDTO implements java.lang.Cloneable,
                                         java.io.Serializable
 {
-    public String nodeId;
+    public String id;
 
-    public String getNodeId()
+    public String getId()
     {
-        return nodeId;
+        return id;
     }
 
-    public void setNodeId(String nodeId)
+    public void setId(String id)
     {
-        this.nodeId = nodeId;
+        this.id = id;
     }
 
-    public String fullName;
+    public String pid;
 
-    public String getFullName()
+    public String getPid()
     {
-        return fullName;
+        return pid;
     }
 
-    public void setFullName(String fullName)
+    public void setPid(String pid)
     {
-        this.fullName = fullName;
+        this.pid = pid;
+    }
+
+    public String path;
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
+
+    public String typeId;
+
+    public String getTypeId()
+    {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId)
+    {
+        this.typeId = typeId;
+    }
+
+    public String projectId;
+
+    public String getProjectId()
+    {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId)
+    {
+        this.projectId = projectId;
+    }
+
+    public String classicId;
+
+    public String getClassicId()
+    {
+        return classicId;
+    }
+
+    public void setClassicId(String classicId)
+    {
+        this.classicId = classicId;
+    }
+
+    public String issueId;
+
+    public String getIssueId()
+    {
+        return issueId;
+    }
+
+    public void setIssueId(String issueId)
+    {
+        this.issueId = issueId;
+    }
+
+    public String taskId;
+
+    public String getTaskId()
+    {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId)
+    {
+        this.taskId = taskId;
+    }
+
+    public String companyId;
+
+    public String getCompanyId()
+    {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId)
+    {
+        this.companyId = companyId;
     }
 
     public String userId;
@@ -71,62 +155,103 @@ public class StorageQueryDTO implements java.lang.Cloneable,
         this.dutyId = dutyId;
     }
 
+    /**
+     **/
+    @Deprecated
     public String orgId;
 
+    /**
+     **/
+    @Deprecated
     public String getOrgId()
     {
         return orgId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setOrgId(String orgId)
     {
         this.orgId = orgId;
     }
 
-    public String projectId;
+    /**
+     **/
+    @Deprecated
+    public String nodeId;
 
-    public String getProjectId()
+    /**
+     **/
+    @Deprecated
+    public String getNodeId()
     {
-        return projectId;
+        return nodeId;
     }
 
-    public void setProjectId(String projectId)
+    /**
+     **/
+    @Deprecated
+    public void setNodeId(String nodeId)
     {
-        this.projectId = projectId;
+        this.nodeId = nodeId;
     }
 
-    public String taskId;
+    /**
+     **/
+    @Deprecated
+    public String fullName;
 
-    public String getTaskId()
+    /**
+     **/
+    @Deprecated
+    public String getFullName()
     {
-        return taskId;
+        return fullName;
     }
 
-    public void setTaskId(String taskId)
+    /**
+     **/
+    @Deprecated
+    public void setFullName(String fullName)
     {
-        this.taskId = taskId;
+        this.fullName = fullName;
     }
 
     public StorageQueryDTO()
     {
-        this.nodeId = "";
-        this.fullName = "";
+        this.id = "";
+        this.pid = "";
+        this.path = "";
+        this.typeId = "";
+        this.projectId = "";
+        this.classicId = "";
+        this.issueId = "";
+        this.taskId = "";
+        this.companyId = "";
         this.userId = "";
         this.dutyId = "";
         this.orgId = "";
-        this.projectId = "";
-        this.taskId = "";
+        this.nodeId = "";
+        this.fullName = "";
     }
 
-    public StorageQueryDTO(String nodeId, String fullName, String userId, String dutyId, String orgId, String projectId, String taskId)
+    public StorageQueryDTO(String id, String pid, String path, String typeId, String projectId, String classicId, String issueId, String taskId, String companyId, String userId, String dutyId, String orgId, String nodeId, String fullName)
     {
-        this.nodeId = nodeId;
-        this.fullName = fullName;
+        this.id = id;
+        this.pid = pid;
+        this.path = path;
+        this.typeId = typeId;
+        this.projectId = projectId;
+        this.classicId = classicId;
+        this.issueId = issueId;
+        this.taskId = taskId;
+        this.companyId = companyId;
         this.userId = userId;
         this.dutyId = dutyId;
         this.orgId = orgId;
-        this.projectId = projectId;
-        this.taskId = taskId;
+        this.nodeId = nodeId;
+        this.fullName = fullName;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -143,16 +268,65 @@ public class StorageQueryDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
-            if(this.nodeId != r.nodeId)
+            if(this.id != r.id)
             {
-                if(this.nodeId == null || r.nodeId == null || !this.nodeId.equals(r.nodeId))
+                if(this.id == null || r.id == null || !this.id.equals(r.id))
                 {
                     return false;
                 }
             }
-            if(this.fullName != r.fullName)
+            if(this.pid != r.pid)
             {
-                if(this.fullName == null || r.fullName == null || !this.fullName.equals(r.fullName))
+                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
+                {
+                    return false;
+                }
+            }
+            if(this.path != r.path)
+            {
+                if(this.path == null || r.path == null || !this.path.equals(r.path))
+                {
+                    return false;
+                }
+            }
+            if(this.typeId != r.typeId)
+            {
+                if(this.typeId == null || r.typeId == null || !this.typeId.equals(r.typeId))
+                {
+                    return false;
+                }
+            }
+            if(this.projectId != r.projectId)
+            {
+                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
+                {
+                    return false;
+                }
+            }
+            if(this.classicId != r.classicId)
+            {
+                if(this.classicId == null || r.classicId == null || !this.classicId.equals(r.classicId))
+                {
+                    return false;
+                }
+            }
+            if(this.issueId != r.issueId)
+            {
+                if(this.issueId == null || r.issueId == null || !this.issueId.equals(r.issueId))
+                {
+                    return false;
+                }
+            }
+            if(this.taskId != r.taskId)
+            {
+                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
+                {
+                    return false;
+                }
+            }
+            if(this.companyId != r.companyId)
+            {
+                if(this.companyId == null || r.companyId == null || !this.companyId.equals(r.companyId))
                 {
                     return false;
                 }
@@ -178,16 +352,16 @@ public class StorageQueryDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.projectId != r.projectId)
+            if(this.nodeId != r.nodeId)
             {
-                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
+                if(this.nodeId == null || r.nodeId == null || !this.nodeId.equals(r.nodeId))
                 {
                     return false;
                 }
             }
-            if(this.taskId != r.taskId)
+            if(this.fullName != r.fullName)
             {
-                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
+                if(this.fullName == null || r.fullName == null || !this.fullName.equals(r.fullName))
                 {
                     return false;
                 }
@@ -203,13 +377,20 @@ public class StorageQueryDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::StorageQueryDTO");
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, nodeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, classicId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issueId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dutyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, nodeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
         return h_;
     }
 
@@ -229,24 +410,38 @@ public class StorageQueryDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeString(this.nodeId);
-        ostr.writeString(this.fullName);
+        ostr.writeString(this.id);
+        ostr.writeString(this.pid);
+        ostr.writeString(this.path);
+        ostr.writeString(this.typeId);
+        ostr.writeString(this.projectId);
+        ostr.writeString(this.classicId);
+        ostr.writeString(this.issueId);
+        ostr.writeString(this.taskId);
+        ostr.writeString(this.companyId);
         ostr.writeString(this.userId);
         ostr.writeString(this.dutyId);
         ostr.writeString(this.orgId);
-        ostr.writeString(this.projectId);
-        ostr.writeString(this.taskId);
+        ostr.writeString(this.nodeId);
+        ostr.writeString(this.fullName);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.nodeId = istr.readString();
-        this.fullName = istr.readString();
+        this.id = istr.readString();
+        this.pid = istr.readString();
+        this.path = istr.readString();
+        this.typeId = istr.readString();
+        this.projectId = istr.readString();
+        this.classicId = istr.readString();
+        this.issueId = istr.readString();
+        this.taskId = istr.readString();
+        this.companyId = istr.readString();
         this.userId = istr.readString();
         this.dutyId = istr.readString();
         this.orgId = istr.readString();
-        this.projectId = istr.readString();
-        this.taskId = istr.readString();
+        this.nodeId = istr.readString();
+        this.fullName = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, StorageQueryDTO v)
@@ -301,5 +496,5 @@ public class StorageQueryDTO implements java.lang.Cloneable,
 
     private static final StorageQueryDTO _nullMarshalValue = new StorageQueryDTO();
 
-    public static final long serialVersionUID = -777180422L;
+    public static final long serialVersionUID = 1706530370L;
 }

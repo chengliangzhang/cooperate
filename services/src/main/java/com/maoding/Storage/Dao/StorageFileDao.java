@@ -14,5 +14,9 @@ import java.util.List;
  */
 @Repository
 public interface StorageFileDao extends BaseDao<StorageFileEntity> {
-    List<StorageFileEntity> listFileEntity(List<String> idList);
+    /** 使用id查找fileEntity */
+    @Deprecated
+    List<StorageFileEntity> listFileEntityById(List<String> idList);
+    /** 使用路径查找fileEntity */
+    List<StorageFileEntity> listFileEntityByPath(String path);
 }

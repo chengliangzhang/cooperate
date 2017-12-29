@@ -1,5 +1,6 @@
 package com.maoding.Utils;
 
+import com.maoding.Base.BaseEntity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 */
 class F {
     private Integer i;
+
 
     public F(){}
     public F(Integer i){
@@ -63,6 +65,7 @@ class X{
     private int m;
     private Map<String,String> mp;
     private byte[] b;
+    private BaseEntity entity;
 
     public X(){}
     X(Integer i, String s, C c, Integer n){
@@ -127,6 +130,14 @@ class X{
     public void setB(byte[] b) {
         this.b = b;
     }
+
+    public BaseEntity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(BaseEntity entity) {
+        this.entity = entity;
+    }
 }
 
 class Y{
@@ -137,6 +148,8 @@ class Y{
     private long m;
     private Map<String,Object> mp;
     private int[] b;
+
+    private BaseEntity entity;
 
     public Y(){}
     public Y(Integer i,String s,F c,Long n){
@@ -201,6 +214,14 @@ class Y{
     public void setB(int[] b) {
         this.b = b;
     }
+
+    public BaseEntity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(BaseEntity entity) {
+        this.entity = entity;
+    }
 }
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -212,25 +233,37 @@ public class BeanUtilsTest {
     /** for method: createFrom(final Object input, final Class<D> outputClass) */
     @Test
     public void testCreateFrom() throws Exception {
-        X x = new X(1,"sss",new C(2,"ccc"), 5);
-        x.setM(3);
-        Map<String,String> mp = new HashMap<>();
-        mp.put("aaa","aaa");
-        x.setMp(mp);
-        byte[] b = new byte[1];
-        b[0] = 7;
-        x.setB(b);
-        Y y = BeanUtils.createFrom(x,Y.class);
-        BeanUtils.copyProperties(x,y);
-        assert y != null;
-        assertEquals((Integer)1,y.getI());
-        assertEquals("sss",y.getS());
-        assertEquals(new Long(5),y.getN());
-        assertEquals((Integer)2,y.getC().getI());
-        assertEquals(3,y.getM());
-        assertEquals("aaa",y.getMp().get("aaa").toString());
-        assertEquals(7,y.getB()[0]);
-    } 
+        long t = System.currentTimeMillis();
+
+        for (int i=0; i<1000; i++) {
+            X x = new X(1, "sss", new C(2, "ccc"), 5);
+            x.setM(3);
+            Map<String, String> mp = new HashMap<>();
+            mp.put("aaa", "aaa");
+            x.setMp(mp);
+            byte[] b = new byte[1];
+            b[0] = 7;
+            x.setB(b);
+            BaseEntity entity = new BaseEntity();
+            entity.setLastModifyUserId("abcde");
+            x.setEntity(entity);
+
+            Y y = BeanUtils.createFromNew(x, Y.class);
+//        BeanUtils.copyProperties(x,y);
+            assert y != null;
+            assertEquals((Integer) 1, y.getI());
+            assertEquals("sss", y.getS());
+            assertEquals(new Long(5), y.getN());
+            assertEquals((Integer) 2, y.getC().getI());
+            assertEquals(3, y.getM());
+            assertEquals("aaa", y.getMp().get("aaa").toString());
+            assertEquals(7, y.getB()[0]);
+            assertEquals(entity.getId(), y.getEntity().getId());
+            assertEquals(entity.getLastModifyTime(), y.getEntity().getLastModifyTime());
+            assertEquals(entity.getLastModifyUserId(), y.getEntity().getLastModifyUserId());
+        }
+        System.out.println("===>testCreateFrom:" + (System.currentTimeMillis()-t) + "ms");
+    }
     /** for method: copyProperties(final Map<String, Object> input, final Object output) */ 
     @Test
     public void testCopyPropertiesForInputOutput() throws Exception { 
@@ -241,14 +274,14 @@ public class BeanUtilsTest {
         m.put("m",5);
         m.put("c",new C(2,"ccc"));
         X x = new X();
-        BeanUtils.copyProperties(m,x);
+        BeanUtils.copyPropertiesNew(m,x);
         assertEquals((Integer)1,x.getI());
         assertEquals("sss",x.getS());
         assertEquals((Integer)5,x.getN());
         assertEquals((Integer)2,x.getC().getI());
         assertEquals("ccc",x.getC().getS());
         Y y = new Y();
-        BeanUtils.copyProperties(m,y);
+        BeanUtils.copyPropertiesNew(m,y);
         assertEquals((Integer)1,y.getI());
         assertEquals("sss",y.getS());
         assertEquals(new Long(5),y.getN());

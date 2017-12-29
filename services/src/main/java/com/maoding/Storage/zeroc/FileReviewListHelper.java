@@ -22,7 +22,7 @@ package com.maoding.Storage.zeroc;
 
 public final class FileReviewListHelper
 {
-    public static void write(com.zeroc.Ice.OutputStream ostr, java.util.List<FileReviewNodeDTO> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, java.util.List<FileReviewDTO> v)
     {
         if(v == null)
         {
@@ -31,28 +31,28 @@ public final class FileReviewListHelper
         else
         {
             ostr.writeSize(v.size());
-            for(FileReviewNodeDTO elem : v)
+            for(FileReviewDTO elem : v)
             {
-                FileReviewNodeDTO.ice_write(ostr, elem);
+                FileReviewDTO.ice_write(ostr, elem);
             }
         }
     }
 
-    public static java.util.List<FileReviewNodeDTO> read(com.zeroc.Ice.InputStream istr)
+    public static java.util.List<FileReviewDTO> read(com.zeroc.Ice.InputStream istr)
     {
-        final java.util.List<FileReviewNodeDTO> v;
-        v = new java.util.ArrayList<FileReviewNodeDTO>();
-        final int len0 = istr.readAndCheckSeqSize(16);
+        final java.util.List<FileReviewDTO> v;
+        v = new java.util.ArrayList<FileReviewDTO>();
+        final int len0 = istr.readAndCheckSeqSize(1);
         for(int i0 = 0; i0 < len0; i0++)
         {
-            FileReviewNodeDTO elem;
-            elem = FileReviewNodeDTO.ice_read(istr);
+            FileReviewDTO elem;
+            elem = FileReviewDTO.ice_read(istr);
             v.add(elem);
         }
         return v;
     }
 
-    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<java.util.List<FileReviewNodeDTO>> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<java.util.List<FileReviewDTO>> v)
     {
         if(v != null && v.isPresent())
         {
@@ -60,7 +60,7 @@ public final class FileReviewListHelper
         }
     }
 
-    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.List<FileReviewNodeDTO> v)
+    public static void write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.List<FileReviewDTO> v)
     {
         if(ostr.writeOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
@@ -70,12 +70,12 @@ public final class FileReviewListHelper
         }
     }
 
-    public static java.util.Optional<java.util.List<FileReviewNodeDTO>> read(com.zeroc.Ice.InputStream istr, int tag)
+    public static java.util.Optional<java.util.List<FileReviewDTO>> read(com.zeroc.Ice.InputStream istr, int tag)
     {
         if(istr.readOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
             istr.skip(4);
-            java.util.List<FileReviewNodeDTO> v;
+            java.util.List<FileReviewDTO> v;
             v = FileReviewListHelper.read(istr);
             return java.util.Optional.of(v);
         }

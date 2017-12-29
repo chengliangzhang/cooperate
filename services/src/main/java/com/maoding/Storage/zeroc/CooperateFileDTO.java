@@ -20,6 +20,9 @@
 
 package com.maoding.Storage.zeroc;
 
+/**
+ **/
+@Deprecated
 public class CooperateFileDTO implements java.lang.Cloneable,
                                          java.io.Serializable
 {
@@ -47,14 +50,14 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.referenceFileList = referenceFileList;
     }
 
-    public java.util.List<FileReviewNodeDTO> reviewList;
+    public java.util.List<FileReviewDTO> reviewList;
 
-    public java.util.List<FileReviewNodeDTO> getReviewList()
+    public java.util.List<FileReviewDTO> getReviewList()
     {
         return reviewList;
     }
 
-    public void setReviewList(java.util.List<FileReviewNodeDTO> reviewList)
+    public void setReviewList(java.util.List<FileReviewDTO> reviewList)
     {
         this.reviewList = reviewList;
     }
@@ -400,7 +403,7 @@ public class CooperateFileDTO implements java.lang.Cloneable,
         this.lastModifyTimeText = "";
     }
 
-    public CooperateFileDTO(FileNodeDTO node, java.util.List<FileNodeDTO> referenceFileList, java.util.List<FileReviewNodeDTO> reviewList, java.util.List<FileVersionDTO> versionList, String id, String name, String nodeId, String pNodeId, String pathName, long fileLength, String fileChecksum, String fileVersion, String specialtyId, String specialtyName, String lastModifyAddress, short syncModeId, String syncModeName, short typeId, String typeName, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, long createTimeStamp, String createTimeText, String lastModifyDutyId, String lastModifyDutyName, long lastModifyTimeStamp, String lastModifyTimeText)
+    public CooperateFileDTO(FileNodeDTO node, java.util.List<FileNodeDTO> referenceFileList, java.util.List<FileReviewDTO> reviewList, java.util.List<FileVersionDTO> versionList, String id, String name, String nodeId, String pNodeId, String pathName, long fileLength, String fileChecksum, String fileVersion, String specialtyId, String specialtyName, String lastModifyAddress, short syncModeId, String syncModeName, short typeId, String typeName, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, long createTimeStamp, String createTimeText, String lastModifyDutyId, String lastModifyDutyName, long lastModifyTimeStamp, String lastModifyTimeText)
     {
         this.node = node;
         this.referenceFileList = referenceFileList;

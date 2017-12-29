@@ -9,7 +9,8 @@ import com.maoding.Storage.Entity.StorageFileEntity;
  * 日    期 : 2017/12/18 20:09
  * 描    述 :
  */
-public class FileUnionDTO extends StorageEntity {
+public class StorageEntityUnionDTO extends StorageEntity {
+    /** 节点对应文件信息 */
     private StorageFileEntity fileEntity;
 
     public StorageFileEntity getFileEntity() {

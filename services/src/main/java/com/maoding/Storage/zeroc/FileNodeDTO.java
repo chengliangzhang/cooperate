@@ -23,150 +23,271 @@ package com.maoding.Storage.zeroc;
 public class FileNodeDTO implements java.lang.Cloneable,
                                     java.io.Serializable
 {
+    public SimpleNodeDTO basic;
+
+    public SimpleNodeDTO getBasic()
+    {
+        return basic;
+    }
+
+    public void setBasic(SimpleNodeDTO basic)
+    {
+        this.basic = basic;
+    }
+
+    /**
+     **/
+    @Deprecated
     public String id;
 
+    /**
+     **/
+    @Deprecated
     public String getId()
     {
         return id;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setId(String id)
     {
         this.id = id;
     }
 
+    /**
+     **/
+    @Deprecated
     public String name;
 
+    /**
+     **/
+    @Deprecated
     public String getName()
     {
         return name;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setName(String name)
     {
         this.name = name;
     }
 
+    /**
+     **/
+    @Deprecated
     public String pid;
 
+    /**
+     **/
+    @Deprecated
     public String getPid()
     {
         return pid;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setPid(String pid)
     {
         this.pid = pid;
     }
 
+    /**
+     **/
+    @Deprecated
     public short typeId;
 
+    /**
+     **/
+    @Deprecated
     public short getTypeId()
     {
         return typeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setTypeId(short typeId)
     {
         this.typeId = typeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public String typeName;
 
+    /**
+     **/
+    @Deprecated
     public String getTypeName()
     {
         return typeName;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setTypeName(String typeName)
     {
         this.typeName = typeName;
     }
 
+    /**
+     **/
+    @Deprecated
     public String path;
 
+    /**
+     **/
+    @Deprecated
     public String getPath()
     {
         return path;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setPath(String path)
     {
         this.path = path;
     }
 
+    /**
+     **/
+    @Deprecated
     public long createTimeStamp;
 
+    /**
+     **/
+    @Deprecated
     public long getCreateTimeStamp()
     {
         return createTimeStamp;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setCreateTimeStamp(long createTimeStamp)
     {
         this.createTimeStamp = createTimeStamp;
     }
 
+    /**
+     **/
+    @Deprecated
     public String createTimeText;
 
+    /**
+     **/
+    @Deprecated
     public String getCreateTimeText()
     {
         return createTimeText;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setCreateTimeText(String createTimeText)
     {
         this.createTimeText = createTimeText;
     }
 
+    /**
+     **/
+    @Deprecated
     public long lastModifyTimeStamp;
 
+    /**
+     **/
+    @Deprecated
     public long getLastModifyTimeStamp()
     {
         return lastModifyTimeStamp;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setLastModifyTimeStamp(long lastModifyTimeStamp)
     {
         this.lastModifyTimeStamp = lastModifyTimeStamp;
     }
 
+    /**
+     **/
+    @Deprecated
     public String lastModifyTimeText;
 
+    /**
+     **/
+    @Deprecated
     public String getLastModifyTimeText()
     {
         return lastModifyTimeText;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setLastModifyTimeText(String lastModifyTimeText)
     {
         this.lastModifyTimeText = lastModifyTimeText;
     }
 
+    /**
+     **/
+    @Deprecated
     public boolean isReadOnly;
 
+    /**
+     **/
+    @Deprecated
     public boolean getIsReadOnly()
     {
         return isReadOnly;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setIsReadOnly(boolean isReadOnly)
     {
         this.isReadOnly = isReadOnly;
     }
 
+    @Deprecated
     public boolean isIsReadOnly()
     {
         return isReadOnly;
     }
 
+    /**
+     **/
+    @Deprecated
     public long fileLength;
 
+    /**
+     **/
+    @Deprecated
     public long getFileLength()
     {
         return fileLength;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setFileLength(long fileLength)
     {
         this.fileLength = fileLength;
@@ -220,25 +341,43 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.fileTypeName = fileTypeName;
     }
 
+    /**
+     **/
+    @Deprecated
     public short syncModeId;
 
+    /**
+     **/
+    @Deprecated
     public short getSyncModeId()
     {
         return syncModeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setSyncModeId(short syncModeId)
     {
         this.syncModeId = syncModeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public String syncModeName;
 
+    /**
+     **/
+    @Deprecated
     public String getSyncModeName()
     {
         return syncModeName;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setSyncModeName(String syncModeName)
     {
         this.syncModeName = syncModeName;
@@ -448,119 +587,214 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.taskMemberList = taskMemberList;
     }
 
+    public java.util.List<HistoryDTO> historyList;
+
+    public java.util.List<HistoryDTO> getHistoryList()
+    {
+        return historyList;
+    }
+
+    public void setHistoryList(java.util.List<HistoryDTO> historyList)
+    {
+        this.historyList = historyList;
+    }
+
+    /**
+     **/
+    @Deprecated
     public boolean isValid;
 
+    /**
+     **/
+    @Deprecated
     public boolean getIsValid()
     {
         return isValid;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setIsValid(boolean isValid)
     {
         this.isValid = isValid;
     }
 
+    @Deprecated
     public boolean isIsValid()
     {
         return isValid;
     }
 
+    /**
+     **/
+    @Deprecated
     public boolean locking;
 
+    /**
+     **/
+    @Deprecated
     public boolean getLocking()
     {
         return locking;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setLocking(boolean locking)
     {
         this.locking = locking;
     }
 
+    @Deprecated
     public boolean isLocking()
     {
         return locking;
     }
 
+    /**
+     **/
+    @Deprecated
     public String localFile;
 
+    /**
+     **/
+    @Deprecated
     public String getLocalFile()
     {
         return localFile;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setLocalFile(String localFile)
     {
         this.localFile = localFile;
     }
 
+    /**
+     **/
+    @Deprecated
     public String creatorDutyId;
 
+    /**
+     **/
+    @Deprecated
     public String getCreatorDutyId()
     {
         return creatorDutyId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setCreatorDutyId(String creatorDutyId)
     {
         this.creatorDutyId = creatorDutyId;
     }
 
+    /**
+     **/
+    @Deprecated
     public String creatorDutyName;
 
+    /**
+     **/
+    @Deprecated
     public String getCreatorDutyName()
     {
         return creatorDutyName;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setCreatorDutyName(String creatorDutyName)
     {
         this.creatorDutyName = creatorDutyName;
     }
 
+    /**
+     **/
+    @Deprecated
     public String lastModifyDutyId;
 
+    /**
+     **/
+    @Deprecated
     public String getLastModifyDutyId()
     {
         return lastModifyDutyId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setLastModifyDutyId(String lastModifyDutyId)
     {
         this.lastModifyDutyId = lastModifyDutyId;
     }
 
+    /**
+     **/
+    @Deprecated
     public String lastModifyDutyName;
 
+    /**
+     **/
+    @Deprecated
     public String getLastModifyDutyName()
     {
         return lastModifyDutyName;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setLastModifyDutyName(String lastModifyDutyName)
     {
         this.lastModifyDutyName = lastModifyDutyName;
     }
 
+    /**
+     **/
+    @Deprecated
     public String organizationId;
 
+    /**
+     **/
+    @Deprecated
     public String getOrganizationId()
     {
         return organizationId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setOrganizationId(String organizationId)
     {
         this.organizationId = organizationId;
     }
 
+    /**
+     **/
+    @Deprecated
     public String organizationName;
 
+    /**
+     **/
+    @Deprecated
     public String getOrganizationName()
     {
         return organizationName;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setOrganizationName(String organizationName)
     {
         this.organizationName = organizationName;
@@ -568,6 +802,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
 
     public FileNodeDTO()
     {
+        this.basic = new SimpleNodeDTO();
         this.id = "";
         this.name = "";
         this.pid = "";
@@ -604,8 +839,9 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.organizationName = "";
     }
 
-    public FileNodeDTO(String id, String name, String pid, short typeId, String typeName, String path, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, String fileChecksum, String fileVersion, short fileTypeId, String fileTypeName, short syncModeId, String syncModeName, String lastModifyAddress, String fileServerTypeId, String fileServerTypeName, String fileScope, String fileKey, String scope, String key, String ownerUserId, String ownerDutyId, String ownerName, String issueId, String issueName, String taskId, String taskName, String projectId, String projectName, java.util.List<com.maoding.Project.zeroc.MemberDTO> taskMemberList, boolean isValid, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, String lastModifyDutyId, String lastModifyDutyName, String organizationId, String organizationName)
+    public FileNodeDTO(SimpleNodeDTO basic, String id, String name, String pid, short typeId, String typeName, String path, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, boolean isReadOnly, long fileLength, String fileChecksum, String fileVersion, short fileTypeId, String fileTypeName, short syncModeId, String syncModeName, String lastModifyAddress, String fileServerTypeId, String fileServerTypeName, String fileScope, String fileKey, String scope, String key, String ownerUserId, String ownerDutyId, String ownerName, String issueId, String issueName, String taskId, String taskName, String projectId, String projectName, java.util.List<com.maoding.Project.zeroc.MemberDTO> taskMemberList, java.util.List<HistoryDTO> historyList, boolean isValid, boolean locking, String localFile, String creatorDutyId, String creatorDutyName, String lastModifyDutyId, String lastModifyDutyName, String organizationId, String organizationName)
     {
+        this.basic = basic;
         this.id = id;
         this.name = name;
         this.pid = pid;
@@ -641,6 +877,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.projectId = projectId;
         this.projectName = projectName;
         this.taskMemberList = taskMemberList;
+        this.historyList = historyList;
         this.isValid = isValid;
         this.locking = locking;
         this.localFile = localFile;
@@ -666,6 +903,13 @@ public class FileNodeDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
+            if(this.basic != r.basic)
+            {
+                if(this.basic == null || r.basic == null || !this.basic.equals(r.basic))
+                {
+                    return false;
+                }
+            }
             if(this.id != r.id)
             {
                 if(this.id == null || r.id == null || !this.id.equals(r.id))
@@ -890,6 +1134,13 @@ public class FileNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.historyList != r.historyList)
+            {
+                if(this.historyList == null || r.historyList == null || !this.historyList.equals(r.historyList))
+                {
+                    return false;
+                }
+            }
             if(this.isValid != r.isValid)
             {
                 return false;
@@ -958,6 +1209,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::FileNodeDTO");
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, basic);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
@@ -993,6 +1245,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskMemberList);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, historyList);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isValid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, locking);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, localFile);
@@ -1021,6 +1274,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
+        SimpleNodeDTO.ice_write(ostr, this.basic);
         ostr.writeString(this.id);
         ostr.writeString(this.name);
         ostr.writeString(this.pid);
@@ -1056,6 +1310,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.projectId);
         ostr.writeString(this.projectName);
         com.maoding.Project.zeroc.MemberListHelper.write(ostr, this.taskMemberList);
+        HistoryListHelper.write(ostr, this.historyList);
         ostr.writeBool(this.isValid);
         ostr.writeBool(this.locking);
         ostr.writeString(this.localFile);
@@ -1069,6 +1324,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
+        this.basic = SimpleNodeDTO.ice_read(istr);
         this.id = istr.readString();
         this.name = istr.readString();
         this.pid = istr.readString();
@@ -1104,6 +1360,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.projectId = istr.readString();
         this.projectName = istr.readString();
         this.taskMemberList = com.maoding.Project.zeroc.MemberListHelper.read(istr);
+        this.historyList = HistoryListHelper.read(istr);
         this.isValid = istr.readBool();
         this.locking = istr.readBool();
         this.localFile = istr.readString();
@@ -1167,5 +1424,5 @@ public class FileNodeDTO implements java.lang.Cloneable,
 
     private static final FileNodeDTO _nullMarshalValue = new FileNodeDTO();
 
-    public static final long serialVersionUID = -1424247988L;
+    public static final long serialVersionUID = -1648008554L;
 }

@@ -18,10 +18,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
 
     public static final String STAMP_FORMAT_FULL = "yyyyMMddHHmmss";
-    public static final String DATA_STAMP_FORMAT = "yyyyMMdd";
+    public static final String DATE_STAMP_FORMAT = "yyyyMMdd";
     public static final String TIME_STAMP_FORMAT = "yyyyMMddHHmmss";
     public static final String MS_STAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.sss";
     public static final String DEFAULT_STAMP_FORMAT = STAMP_FORMAT_FULL;
+
+    public static final Integer DEFAULT_ID_LENGTH = 32;
 
     public static final String SPLIT_ID = ",";
     public static final String SPLIT_PATH = "/";
@@ -140,6 +142,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             }
         }
         return length + unit;
+    }
+
+    public static String left(String str,int length){
+        if ((str == null) || (length <= 0)) return null;
+        return (str.substring(0,length));
     }
 
     //带单位计算字节传送速度

@@ -555,7 +555,7 @@ public class LocalServer implements BasicFileServerInterface {
 
     private String getValidScope(BasicFileDTO src) {
         if ((src == null) || (StringUtils.isEmpty(src.getScope()))){
-            return StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT);
+            return StringUtils.getTimeStamp(StringUtils.DATE_STAMP_FORMAT);
         } else {
             return src.getScope();
         }
@@ -572,7 +572,7 @@ public class LocalServer implements BasicFileServerInterface {
     @Deprecated
     private String getValidScope(String scope){
         if (StringUtils.isEmpty(scope)){
-            scope = StringUtils.getTimeStamp(StringUtils.DATA_STAMP_FORMAT);
+            scope = StringUtils.getTimeStamp(StringUtils.DATE_STAMP_FORMAT);
         }
         return scope;
     }

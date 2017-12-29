@@ -20,6 +20,9 @@
 
 package com.maoding.Storage.zeroc;
 
+/**
+ **/
+@Deprecated
 public class FileVersionDTO implements java.lang.Cloneable,
                                        java.io.Serializable
 {

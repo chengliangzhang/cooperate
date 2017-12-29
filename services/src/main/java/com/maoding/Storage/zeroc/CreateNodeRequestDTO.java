@@ -23,40 +23,88 @@ package com.maoding.Storage.zeroc;
 public class CreateNodeRequestDTO implements java.lang.Cloneable,
                                              java.io.Serializable
 {
-    public String pNodeId;
+    public String pid;
 
-    public String getPNodeId()
+    public String getPid()
     {
-        return pNodeId;
+        return pid;
     }
 
-    public void setPNodeId(String pNodeId)
+    public void setPid(String pid)
     {
-        this.pNodeId = pNodeId;
+        this.pid = pid;
     }
 
-    public short typeId;
+    public String path;
 
-    public short getTypeId()
+    public String getPath()
     {
-        return typeId;
+        return path;
     }
 
-    public void setTypeId(short typeId)
+    public void setPath(String path)
     {
-        this.typeId = typeId;
+        this.path = path;
     }
 
-    public short fileTypeId;
+    public String projectId;
 
-    public short getFileTypeId()
+    public String getProjectId()
     {
-        return fileTypeId;
+        return projectId;
     }
 
-    public void setFileTypeId(short fileTypeId)
+    public void setProjectId(String projectId)
     {
-        this.fileTypeId = fileTypeId;
+        this.projectId = projectId;
+    }
+
+    public String classicId;
+
+    public String getClassicId()
+    {
+        return classicId;
+    }
+
+    public void setClassicId(String classicId)
+    {
+        this.classicId = classicId;
+    }
+
+    public String issueId;
+
+    public String getIssueId()
+    {
+        return issueId;
+    }
+
+    public void setIssueId(String issueId)
+    {
+        this.issueId = issueId;
+    }
+
+    public String taskId;
+
+    public String getTaskId()
+    {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId)
+    {
+        this.taskId = taskId;
+    }
+
+    public String companyId;
+
+    public String getCompanyId()
+    {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId)
+    {
+        this.companyId = companyId;
     }
 
     public String userId;
@@ -83,49 +131,124 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
         this.dutyId = dutyId;
     }
 
+    public short typeId;
+
+    public short getTypeId()
+    {
+        return typeId;
+    }
+
+    public void setTypeId(short typeId)
+    {
+        this.typeId = typeId;
+    }
+
+    public short fileTypeId;
+
+    public short getFileTypeId()
+    {
+        return fileTypeId;
+    }
+
+    public void setFileTypeId(short fileTypeId)
+    {
+        this.fileTypeId = fileTypeId;
+    }
+
+    public long fileLength;
+
+    public long getFileLength()
+    {
+        return fileLength;
+    }
+
+    public void setFileLength(long fileLength)
+    {
+        this.fileLength = fileLength;
+    }
+
+    public String fileVersion;
+
+    public String getFileVersion()
+    {
+        return fileVersion;
+    }
+
+    public void setFileVersion(String fileVersion)
+    {
+        this.fileVersion = fileVersion;
+    }
+
+    public String remark;
+
+    public String getRemark()
+    {
+        return remark;
+    }
+
+    public void setRemark(String remark)
+    {
+        this.remark = remark;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public String pNodeId;
+
+    /**
+     **/
+    @Deprecated
+    public String getPNodeId()
+    {
+        return pNodeId;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public void setPNodeId(String pNodeId)
+    {
+        this.pNodeId = pNodeId;
+    }
+
+    /**
+     **/
+    @Deprecated
     public String orgId;
 
+    /**
+     **/
+    @Deprecated
     public String getOrgId()
     {
         return orgId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setOrgId(String orgId)
     {
         this.orgId = orgId;
     }
 
-    public String projectId;
-
-    public String getProjectId()
-    {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId)
-    {
-        this.projectId = projectId;
-    }
-
-    public String taskId;
-
-    public String getTaskId()
-    {
-        return taskId;
-    }
-
-    public void setTaskId(String taskId)
-    {
-        this.taskId = taskId;
-    }
-
+    /**
+     **/
+    @Deprecated
     public String fullName;
 
+    /**
+     **/
+    @Deprecated
     public String getFullName()
     {
         return fullName;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setFullName(String fullName)
     {
         this.fullName = fullName;
@@ -133,25 +256,40 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
 
     public CreateNodeRequestDTO()
     {
-        this.pNodeId = "";
+        this.pid = "";
+        this.path = "";
+        this.projectId = "";
+        this.classicId = "";
+        this.issueId = "";
+        this.taskId = "";
+        this.companyId = "";
         this.userId = "";
         this.dutyId = "";
+        this.fileVersion = "";
+        this.remark = "";
+        this.pNodeId = "";
         this.orgId = "";
-        this.projectId = "";
-        this.taskId = "";
         this.fullName = "";
     }
 
-    public CreateNodeRequestDTO(String pNodeId, short typeId, short fileTypeId, String userId, String dutyId, String orgId, String projectId, String taskId, String fullName)
+    public CreateNodeRequestDTO(String pid, String path, String projectId, String classicId, String issueId, String taskId, String companyId, String userId, String dutyId, short typeId, short fileTypeId, long fileLength, String fileVersion, String remark, String pNodeId, String orgId, String fullName)
     {
-        this.pNodeId = pNodeId;
-        this.typeId = typeId;
-        this.fileTypeId = fileTypeId;
+        this.pid = pid;
+        this.path = path;
+        this.projectId = projectId;
+        this.classicId = classicId;
+        this.issueId = issueId;
+        this.taskId = taskId;
+        this.companyId = companyId;
         this.userId = userId;
         this.dutyId = dutyId;
+        this.typeId = typeId;
+        this.fileTypeId = fileTypeId;
+        this.fileLength = fileLength;
+        this.fileVersion = fileVersion;
+        this.remark = remark;
+        this.pNodeId = pNodeId;
         this.orgId = orgId;
-        this.projectId = projectId;
-        this.taskId = taskId;
         this.fullName = fullName;
     }
 
@@ -169,20 +307,54 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
-            if(this.pNodeId != r.pNodeId)
+            if(this.pid != r.pid)
             {
-                if(this.pNodeId == null || r.pNodeId == null || !this.pNodeId.equals(r.pNodeId))
+                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
                 {
                     return false;
                 }
             }
-            if(this.typeId != r.typeId)
+            if(this.path != r.path)
             {
-                return false;
+                if(this.path == null || r.path == null || !this.path.equals(r.path))
+                {
+                    return false;
+                }
             }
-            if(this.fileTypeId != r.fileTypeId)
+            if(this.projectId != r.projectId)
             {
-                return false;
+                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
+                {
+                    return false;
+                }
+            }
+            if(this.classicId != r.classicId)
+            {
+                if(this.classicId == null || r.classicId == null || !this.classicId.equals(r.classicId))
+                {
+                    return false;
+                }
+            }
+            if(this.issueId != r.issueId)
+            {
+                if(this.issueId == null || r.issueId == null || !this.issueId.equals(r.issueId))
+                {
+                    return false;
+                }
+            }
+            if(this.taskId != r.taskId)
+            {
+                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
+                {
+                    return false;
+                }
+            }
+            if(this.companyId != r.companyId)
+            {
+                if(this.companyId == null || r.companyId == null || !this.companyId.equals(r.companyId))
+                {
+                    return false;
+                }
             }
             if(this.userId != r.userId)
             {
@@ -198,23 +370,42 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.typeId != r.typeId)
+            {
+                return false;
+            }
+            if(this.fileTypeId != r.fileTypeId)
+            {
+                return false;
+            }
+            if(this.fileLength != r.fileLength)
+            {
+                return false;
+            }
+            if(this.fileVersion != r.fileVersion)
+            {
+                if(this.fileVersion == null || r.fileVersion == null || !this.fileVersion.equals(r.fileVersion))
+                {
+                    return false;
+                }
+            }
+            if(this.remark != r.remark)
+            {
+                if(this.remark == null || r.remark == null || !this.remark.equals(r.remark))
+                {
+                    return false;
+                }
+            }
+            if(this.pNodeId != r.pNodeId)
+            {
+                if(this.pNodeId == null || r.pNodeId == null || !this.pNodeId.equals(r.pNodeId))
+                {
+                    return false;
+                }
+            }
             if(this.orgId != r.orgId)
             {
                 if(this.orgId == null || r.orgId == null || !this.orgId.equals(r.orgId))
-                {
-                    return false;
-                }
-            }
-            if(this.projectId != r.projectId)
-            {
-                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
-                {
-                    return false;
-                }
-            }
-            if(this.taskId != r.taskId)
-            {
-                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
                 {
                     return false;
                 }
@@ -237,14 +428,22 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CreateNodeRequestDTO");
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, classicId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issueId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, dutyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileVersion);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, remark);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pNodeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, orgId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);
         return h_;
     }
@@ -265,27 +464,43 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeString(this.pNodeId);
-        ostr.writeShort(this.typeId);
-        ostr.writeShort(this.fileTypeId);
+        ostr.writeString(this.pid);
+        ostr.writeString(this.path);
+        ostr.writeString(this.projectId);
+        ostr.writeString(this.classicId);
+        ostr.writeString(this.issueId);
+        ostr.writeString(this.taskId);
+        ostr.writeString(this.companyId);
         ostr.writeString(this.userId);
         ostr.writeString(this.dutyId);
+        ostr.writeShort(this.typeId);
+        ostr.writeShort(this.fileTypeId);
+        ostr.writeLong(this.fileLength);
+        ostr.writeString(this.fileVersion);
+        ostr.writeString(this.remark);
+        ostr.writeString(this.pNodeId);
         ostr.writeString(this.orgId);
-        ostr.writeString(this.projectId);
-        ostr.writeString(this.taskId);
         ostr.writeString(this.fullName);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.pNodeId = istr.readString();
-        this.typeId = istr.readShort();
-        this.fileTypeId = istr.readShort();
+        this.pid = istr.readString();
+        this.path = istr.readString();
+        this.projectId = istr.readString();
+        this.classicId = istr.readString();
+        this.issueId = istr.readString();
+        this.taskId = istr.readString();
+        this.companyId = istr.readString();
         this.userId = istr.readString();
         this.dutyId = istr.readString();
+        this.typeId = istr.readShort();
+        this.fileTypeId = istr.readShort();
+        this.fileLength = istr.readLong();
+        this.fileVersion = istr.readString();
+        this.remark = istr.readString();
+        this.pNodeId = istr.readString();
         this.orgId = istr.readString();
-        this.projectId = istr.readString();
-        this.taskId = istr.readString();
         this.fullName = istr.readString();
     }
 
@@ -341,5 +556,5 @@ public class CreateNodeRequestDTO implements java.lang.Cloneable,
 
     private static final CreateNodeRequestDTO _nullMarshalValue = new CreateNodeRequestDTO();
 
-    public static final long serialVersionUID = 878446730L;
+    public static final long serialVersionUID = 1021177929L;
 }

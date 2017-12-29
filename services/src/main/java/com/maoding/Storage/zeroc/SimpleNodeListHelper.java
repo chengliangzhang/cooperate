@@ -42,7 +42,7 @@ public final class SimpleNodeListHelper
     {
         final java.util.List<SimpleNodeDTO> v;
         v = new java.util.ArrayList<SimpleNodeDTO>();
-        final int len0 = istr.readAndCheckSeqSize(41);
+        final int len0 = istr.readAndCheckSeqSize(42);
         for(int i0 = 0; i0 < len0; i0++)
         {
             SimpleNodeDTO elem;

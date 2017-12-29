@@ -23,18 +23,6 @@ package com.maoding.Storage.zeroc;
 public class CommitRequestDTO implements java.lang.Cloneable,
                                          java.io.Serializable
 {
-    public String nodeId;
-
-    public String getNodeId()
-    {
-        return nodeId;
-    }
-
-    public void setNodeId(String nodeId)
-    {
-        this.nodeId = nodeId;
-    }
-
     public String path;
 
     public String getPath()
@@ -59,31 +47,44 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         this.major = major;
     }
 
-    public int commitTimes;
+    public String title;
 
-    public int getCommitTimes()
+    public String getTitle()
     {
-        return commitTimes;
+        return title;
     }
 
-    public void setCommitTimes(int commitTimes)
+    public void setTitle(String title)
     {
-        this.commitTimes = commitTimes;
+        this.title = title;
+    }
+
+    public String remark;
+
+    public String getRemark()
+    {
+        return remark;
+    }
+
+    public void setRemark(String remark)
+    {
+        this.remark = remark;
     }
 
     public CommitRequestDTO()
     {
-        this.nodeId = "";
         this.path = "";
         this.major = "";
+        this.title = "";
+        this.remark = "";
     }
 
-    public CommitRequestDTO(String nodeId, String path, String major, int commitTimes)
+    public CommitRequestDTO(String path, String major, String title, String remark)
     {
-        this.nodeId = nodeId;
         this.path = path;
         this.major = major;
-        this.commitTimes = commitTimes;
+        this.title = title;
+        this.remark = remark;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -100,13 +101,6 @@ public class CommitRequestDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
-            if(this.nodeId != r.nodeId)
-            {
-                if(this.nodeId == null || r.nodeId == null || !this.nodeId.equals(r.nodeId))
-                {
-                    return false;
-                }
-            }
             if(this.path != r.path)
             {
                 if(this.path == null || r.path == null || !this.path.equals(r.path))
@@ -121,9 +115,19 @@ public class CommitRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.commitTimes != r.commitTimes)
+            if(this.title != r.title)
             {
-                return false;
+                if(this.title == null || r.title == null || !this.title.equals(r.title))
+                {
+                    return false;
+                }
+            }
+            if(this.remark != r.remark)
+            {
+                if(this.remark == null || r.remark == null || !this.remark.equals(r.remark))
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -136,10 +140,10 @@ public class CommitRequestDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CommitRequestDTO");
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, nodeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, major);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, commitTimes);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, title);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, remark);
         return h_;
     }
 
@@ -159,18 +163,18 @@ public class CommitRequestDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeString(this.nodeId);
         ostr.writeString(this.path);
         ostr.writeString(this.major);
-        ostr.writeInt(this.commitTimes);
+        ostr.writeString(this.title);
+        ostr.writeString(this.remark);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.nodeId = istr.readString();
         this.path = istr.readString();
         this.major = istr.readString();
-        this.commitTimes = istr.readInt();
+        this.title = istr.readString();
+        this.remark = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CommitRequestDTO v)
@@ -225,5 +229,5 @@ public class CommitRequestDTO implements java.lang.Cloneable,
 
     private static final CommitRequestDTO _nullMarshalValue = new CommitRequestDTO();
 
-    public static final long serialVersionUID = -1171241159L;
+    public static final long serialVersionUID = 2146881473L;
 }
