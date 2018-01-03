@@ -248,7 +248,7 @@ public class BeanUtilsTest {
             entity.setLastModifyUserId("abcde");
             x.setEntity(entity);
 
-            Y y = BeanUtils.createFromNew(x, Y.class);
+            Y y = BeanUtils.createFrom(x, Y.class);
 //        BeanUtils.copyProperties(x,y);
             assert y != null;
             assertEquals((Integer) 1, y.getI());
@@ -274,14 +274,14 @@ public class BeanUtilsTest {
         m.put("m",5);
         m.put("c",new C(2,"ccc"));
         X x = new X();
-        BeanUtils.copyPropertiesNew(m,x);
+        BeanUtils.copyProperties(m,x);
         assertEquals((Integer)1,x.getI());
         assertEquals("sss",x.getS());
         assertEquals((Integer)5,x.getN());
         assertEquals((Integer)2,x.getC().getI());
         assertEquals("ccc",x.getC().getS());
         Y y = new Y();
-        BeanUtils.copyPropertiesNew(m,y);
+        BeanUtils.copyProperties(m,y);
         assertEquals((Integer)1,y.getI());
         assertEquals("sss",y.getS());
         assertEquals(new Long(5),y.getN());
@@ -297,6 +297,17 @@ public class BeanUtilsTest {
         assertEquals(5,BeanUtils.getProperty(x,"n"));
         assertEquals((Integer)2,((C)BeanUtils.getProperty(x,"c")).getI());
         assertEquals("ccc",((C)BeanUtils.getProperty(x,"c")).getS());
+    }
+
+    @Test
+    public void testCleanProperties() throws Exception {
+        X x = new X(1,"",new C(2,""),5);
+        x = BeanUtils.cleanProperties(x);
+        assertEquals((Integer)1,BeanUtils.getProperty(x,"i"));
+        assertEquals(null,BeanUtils.getProperty(x,"s"));
+        assertEquals(5,BeanUtils.getProperty(x,"n"));
+        assertEquals((Integer)2,((C)BeanUtils.getProperty(x,"c")).getI());
+        assertEquals(null,((C)BeanUtils.getProperty(x,"c")).getS());
     }
 
     /** action before each test */

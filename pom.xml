@@ -897,7 +897,11 @@
             <artifactId>icebox</artifactId>
             <version>${ice.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.zeroc</groupId>
+            <artifactId>icestorm</artifactId>
+            <version>3.6.3</version>
+        </dependency>
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

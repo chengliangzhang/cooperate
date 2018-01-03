@@ -273,7 +273,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             dstFile.setFileScope(realDst.getScope());
             dstFile.setFileKey(realDst.getKey());
             dstFile.setFileTypeId(srcFile.getFileTypeId());
-            storageFileDao.updateById(dstFile);
+            dstFile.setUploadScope(null);
+            dstFile.setUploadKey(null);
+            storageFileDao.updateExactById(dstFile,dstFile.getId());
             if (!StringUtils.isSame(realDst.getKey(),dst.getKey())) {
                 fileService.deleteFile(dst, current);
             }
@@ -346,14 +348,17 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         //添加历史记录
         StorageFileEntity hisFile = hisUnion.getFileEntity();
         assert (hisFile != null);
-        StorageFileHisEntity his = new StorageFileHisEntity();
-        his.setFileId(hisFile.getId());
+        StorageFileHisEntity his = BeanUtils.createFrom(hisFile,StorageFileHisEntity.class);
+        assert (srcNode.getBasic() != null);
+        his.setFileId(srcNode.getBasic().getId());
         his.setActionId(StorageConst.STORAGE_ACTION_TYPE_COMMIT);
         his.setRemark(request.getRemark());
         his.setLastModifyUserId(hisFile.getLastModifyUserId());
         storageFileHisDao.insert(his);
 
-        return convertToSimpleNodeDTO(dstUnion);
+        SimpleNodeDTO dto = convertToSimpleNodeDTO(dstUnion);
+        dto.setPath(path);
+        return dto;
     }
 
     private FileDTO getRealFile(StorageFileEntity fileEntity, boolean isReadOnly){
@@ -1453,7 +1458,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public SimpleNodeDTO createStorageNode(CreateNodeRequestDTO request, Current current) {
         StorageEntity nodeEntity = createNodeEntity(request,current);
-        return convertToSimpleNodeDTO(nodeEntity);
+        SimpleNodeDTO dto = convertToSimpleNodeDTO(nodeEntity);
+        dto.setPath(request.getPath());
+        return dto;
     }
 
     @Override

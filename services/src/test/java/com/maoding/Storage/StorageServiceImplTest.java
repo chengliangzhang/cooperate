@@ -2,12 +2,14 @@ package com.maoding.Storage;
 
 import com.maoding.Const.FileServerConst;
 import com.maoding.Const.StorageConst;
-import com.maoding.FileServer.FileServiceImpl;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Project.zeroc.ProjectDTO;
 import com.maoding.Storage.zeroc.*;
 import com.maoding.User.zeroc.AccountDTO;
-import com.maoding.Utils.*;
+import com.maoding.Utils.BeanUtils;
+import com.maoding.Utils.HttpUtils;
+import com.maoding.Utils.JsonUtils;
+import com.maoding.Utils.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -54,10 +56,10 @@ public class StorageServiceImplTest {
 
     @Autowired
     private StorageService storageService;
-    private StorageServicePrx storageServicePrx = StorageServiceImpl.getInstance(":tcp -h 192.168.13.140 -p 10003");
+    private StorageServicePrx storageServicePrx = null;//StorageServiceImpl.getInstance(":tcp -h 192.168.13.140 -p 10003");
     @Autowired
     private FileService fileService;
-    private FileServicePrx fileServicePrx = FileServiceImpl.getInstance(":tcp -h 192.168.13.140 -p 10002");
+    private FileServicePrx fileServicePrx = null;//FileServiceImpl.getInstance(":tcp -h 192.168.13.140 -p 10002");
 
     private Integer fileServerType = FileServerConst.FILE_SERVER_TYPE_LOCAL;
     private Integer fileTransMode = FileServerConst.FILE_SERVER_MODE_DEFAULT;

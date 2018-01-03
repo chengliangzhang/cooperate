@@ -434,7 +434,7 @@
     </select>
 
     <select id="selectStorageEntityUnion" resultMap="StorageEntityUnionMap" parameterType="com.maoding.Storage.zeroc.StorageQueryDTO">
-        select node .*,node .id as file_id
+        select node.*,node .id as file_id
         from maoding_storage node 
             inner join maoding_const classic_type on (classic_type.classic_id = 24
                     and ((node .type_id in (0,1,18,23) and classic_type.value_id = 0)

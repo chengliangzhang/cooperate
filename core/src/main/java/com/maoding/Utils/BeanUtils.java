@@ -32,20 +32,28 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         synchronized (clazz) {
             MethodAccess methodAccess = MethodAccess.get(clazz);
             Field[] fields = clazz.getDeclaredFields();
+            Method[] methods = clazz.getDeclaredMethods();
             assert (fields != null);
             if (fields.length > 0) {
                 List<String> fieldList = new ArrayList<>(fields.length);
                 for (Field field : fields) {
-                    if (Modifier.isPrivate(field.getModifiers())
-                            && !Modifier.isStatic(field.getModifiers())) { // 是否是私有的，是否是静态的
+                    if (!Modifier.isStatic(field.getModifiers())) { //是否是静态的
                         // 非公共私有变量
                         String fieldName = StringUtils.capitalize(field.getName()); // 获取属性名称
-                        int getIndex = methodAccess.getIndex(GET + fieldName); // 获取get方法的下标
-                        int setIndex = methodAccess.getIndex(SET + fieldName); // 获取set方法的下标
-                        methodIndexMap.put(clazz.getName() + DOT + GET
-                                + fieldName, getIndex); // 将类名get方法名，方法下标注册到map中
-                        methodIndexMap.put(clazz.getName() + DOT + SET
-                                + fieldName, setIndex); // 将类名set方法名，方法下标注册到map中
+                        String getKey = GET + fieldName;
+                        String setKey = SET + fieldName;
+                        int n = 0;
+                        for (Method m : methods) {
+                            if (StringUtils.isSame(m.getName(),getKey) && Modifier.isPublic(m.getModifiers()) && m.getParameterCount() == 0){
+                                int getIndex = methodAccess.getIndex(getKey); // 获取get方法的下标
+                                methodIndexMap.put(clazz.getName() + DOT + getKey, getIndex); // 将类名get方法名，方法下标注册到map中
+                                if (++n > 2) break;
+                            } else if (StringUtils.isSame(m.getName(),setKey) && Modifier.isPublic(m.getModifiers()) && m.getParameterCount() == 1) {
+                                int setIndex = methodAccess.getIndex(setKey); // 获取set方法的下标
+                                methodIndexMap.put(clazz.getName() + DOT + setKey, setIndex); // 将类名set方法名，方法下标注册到map中
+                                if (++n > 2) break;
+                            }
+                        }
                         fieldList.add(fieldName); // 将属性名称放入集合里
                     }
                 }
@@ -57,7 +65,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         }
     }
 
-    public static void copyPropertiesNew(final Object input, Map<String,Object> output, boolean isClean) {
+    public static void copyProperties(final Object input, Map<String,Object> output, boolean isClean) {
         assert (output != null) && (!output.getClass().isPrimitive()) && (!output.getClass().isArray());
         if ((input == null) || (input.getClass().isPrimitive()) || input.getClass().isArray()) return;
 
@@ -79,14 +87,14 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             }
         }
     }
-    public static void copyPropertiesNew(final Object input, Map<String,Object> output) {
-        copyPropertiesNew(input,output,false);
+    public static void copyProperties(final Object input, Map<String,Object> output) {
+        copyProperties(input,output,false);
     }
-    public static void cleanCopyPropertiesNew(final Object input, Map<String,Object> output) {
-        copyPropertiesNew(input,output,true);
+    public static void copyCleanProperties(final Object input, Map<String,Object> output) {
+        copyProperties(input,output,true);
     }
 
-    public static void copyPropertiesNew(final Map<String,Object> input, Object output, boolean isClean) {
+    public static void copyProperties(final Map<String,Object> input, Object output, boolean isClean) {
         assert (output != null) && (!output.getClass().isPrimitive()) && (!output.getClass().isArray());
         if ((input == null) || (input.getClass().isPrimitive()) || input.getClass().isArray()) return;
 
@@ -122,28 +130,28 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                     else if (fieldClass == double.class) outputMethodAccess.invoke(output, setIndex,
                             parseDouble(val));
                     else if (isClean && fieldClass.isAssignableFrom(String.class)) {
-                        Object tmp = createFromNew(val, fieldClass, true);
+                        Object tmp = createFrom(val, fieldClass, true);
                         if ((tmp != null) && (!StringUtils.isEmpty(tmp.toString()))){
                             outputMethodAccess.invoke(output, setIndex,
-                                    createFromNew(val, fieldClass, true));
+                                    createFrom(val, fieldClass, true));
                         }
                     } else {
                         outputMethodAccess.invoke(output, setIndex,
-                                createFromNew(val,fieldClass,isClean));
+                                createFrom(val,fieldClass,isClean));
                     }
                 }
             }
         }
 
     }
-    public static void copyPropertiesNew(final Map<String,Object> input, Object output) {
-        copyPropertiesNew(input,output,false);
+    public static void copyProperties(final Map<String,Object> input, Object output) {
+        copyProperties(input,output,false);
     }
-    public static void cleanCopyPropertiesNew(final Map<String,Object> input, Object output) {
-        copyPropertiesNew(input,output,true);
+    public static void copyCleanProperties(final Map<String,Object> input, Object output) {
+        copyProperties(input,output,true);
     }
 
-    public static void copyPropertiesNew(final Object input, Object output, boolean isClean) {
+    public static void copyProperties(final Object input, Object output, boolean isClean) {
         assert (output != null) && (!output.getClass().isPrimitive()) && (!output.getClass().isArray());
         if ((input == null) || (input.getClass().isPrimitive()) || input.getClass().isArray()) return;
 
@@ -184,28 +192,28 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                         else if (fieldClass == double.class) outputMethodAccess.invoke(output, setIndex,
                                 parseDouble(inputMethodAccess.invoke(input, getIndex)));
                         else if (isClean && fieldClass.isAssignableFrom(String.class)) {
-                            Object tmp = createFromNew(inputMethodAccess.invoke(input, getIndex), fieldClass, true);
+                            Object tmp = createFrom(inputMethodAccess.invoke(input, getIndex), fieldClass, true);
                             if ((tmp != null) && (!StringUtils.isEmpty(tmp.toString()))){
                                 outputMethodAccess.invoke(output, setIndex,
-                                        createFromNew(inputMethodAccess.invoke(input, getIndex), fieldClass, true));
+                                        createFrom(inputMethodAccess.invoke(input, getIndex), fieldClass, true));
                             }
                         } else {
                             outputMethodAccess.invoke(output, setIndex,
-                                    createFromNew(inputMethodAccess.invoke(input, getIndex),fieldClass,isClean));
+                                    createFrom(inputMethodAccess.invoke(input, getIndex),fieldClass,isClean));
                         }
                     }
                 }
             }
         }
     }
-    public static void copyPropertiesNew(final Object input, Object output) {
-        copyPropertiesNew(input,output,false);
+    public static void copyProperties(final Object input, Object output) {
+        copyProperties(input,output,false);
     }
-    public static void cleanCopyPropertiesNew(final Object input, Object output){
-        copyPropertiesNew(input,output,true);
+    public static void copyCleanProperties(final Object input, Object output){
+        copyProperties(input,output,true);
     }
 
-    public static <D> D createFromNew(Object input, Class<? extends D> outputClass,boolean isClean){
+    public static <D> D createFrom(Object input, Class<? extends D> outputClass,boolean isClean){
         assert ((outputClass != null) && (!outputClass.isPrimitive()));
         if (input == null) {
             return null;
@@ -241,29 +249,34 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             } else if (elementClass == double.class) {
                 return outputClass.cast(parseDoubleArray(input));
             } else {
-                List<?> outputList = createListFromNew(input,outputClass.getComponentType());
+                List<?> outputList = createListFrom(input,outputClass.getComponentType());
                 return outputClass.cast(outputList.toArray());
             }
         } else {
             return constructFrom(input,outputClass, isClean);
         }
     }
-    public static <D> D createFromNew(Object input, Class<? extends D> outputClass){
-        return createFromNew(input,outputClass,false);
+    public static <D> D createFrom(Object input, Class<? extends D> outputClass){
+        return createFrom(input,outputClass,false);
     }
-    public static <D> D cleanCreateFromNew(Object input, Class<? extends D> outputClass){
-        return createFromNew(input,outputClass,true);
+    public static <D> D createCleanFrom(Object input, Class<? extends D> outputClass){
+        return createFrom(input,outputClass,true);
     }
 
-    public static <D> List<D> createListFromNew(Object input, Class<? extends D> elementClass){
+    public static <D> List<D> createListFrom(Object input, Class<? extends D> elementClass){
         assert (elementClass != null) && (!elementClass.isPrimitive());
         List<D> outputList = null;
         if (input != null) {
             outputList = new ArrayList<>();
             if (elementClass.isInstance(input)) {
                 outputList.add(elementClass.cast(input));
+            } else if (input.getClass().isArray()) {
+                for (int i=0; i<Array.getLength(input); i++){
+                    outputList.add(createFrom(Array.get(input,i),elementClass));
+                }
+            } else {
+                outputList.add(createFrom(input,elementClass));
             }
-            //todo 考虑input是数组的情况
         }
         return outputList;
     }
@@ -316,7 +329,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
 
         if (output == null){
             output = constructNull(outputClass);
-            copyPropertiesNew(input,output,isClean);
+            copyProperties(input,output,isClean);
         }
 
         return output;
@@ -343,86 +356,169 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
      */
     public static <T> T cleanProperties(T obj){
         if (obj == null) return null;
-        assert isBean(obj.getClass());
+        if (obj.getClass().isPrimitive()) return obj;
+        if (obj.getClass().isArray()){
+            for (int i=0; i<Array.getLength(obj); i++){
+                cleanProperties(Array.get(obj,i));
+            }
+        }
 
-        try {
-            BeanInfo srcInfo = Introspector.getBeanInfo(obj.getClass(),Object.class);
-            PropertyDescriptor[] srcProperties = srcInfo.getPropertyDescriptors();
+        MethodAccess objMethodAccess = methodMap.get(obj.getClass());
+        if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
 
-            for (PropertyDescriptor srcPty : srcProperties) {
-                if (srcPty.getPropertyType() == String.class){
-                    String value = (String)srcPty.getReadMethod().invoke(obj);
-                    if (StringUtils.isEmpty(value)){
-                        srcPty.getWriteMethod().invoke(obj,(String)null);
+        List<String> fieldList = fieldMap.get(obj.getClass());
+        if (fieldList != null) {
+            assert (objMethodAccess != null);
+            Class[][] objParameterTypes = objMethodAccess.getParameterTypes();
+            for (String field : fieldList) {
+                String getKey = obj.getClass().getName() + DOT + GET + field;
+                String setKey = obj.getClass().getName() + DOT + SET + field;
+                Integer getIndex = methodIndexMap.get(getKey);
+                Integer setIndex = methodIndexMap.get(setKey);
+                if ((setIndex != null) && (getIndex != null)) {
+                    //获取参数类型
+                    assert (objParameterTypes != null);
+                    Class<?> fieldClass = objParameterTypes[setIndex][0];
+                    if (fieldClass.isAssignableFrom(String.class)) {
+                        String tmp = (String)objMethodAccess.invoke(obj, getIndex);
+                        if (StringUtils.isEmpty(tmp)){
+                            objMethodAccess.invoke(obj, setIndex,(String)null);
+                        }
+                    } else if (fieldMap.containsKey(obj.getClass())){
+                        objMethodAccess.invoke(obj, setIndex,cleanProperties(objMethodAccess.invoke(obj,getIndex)));
                     }
                 }
             }
-        } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
-            ExceptionUtils.logError(log,e);
         }
         return obj;
     }
 
     /**
+     * 写入Bean属性
+     */
+    public static void putProperty(Object obj, final String ptyName, final Object value){
+        assert (obj != null) && (!obj.getClass().isPrimitive()) && (!obj.getClass().isArray());
+        assert (!StringUtils.isEmpty(ptyName));
+
+        MethodAccess objMethodAccess = methodMap.get(obj.getClass());
+        if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
+
+        List<String> fieldList = fieldMap.get(obj.getClass());
+        if (fieldList != null) {
+            assert (objMethodAccess != null);
+            String setKey = obj.getClass().getName() + DOT + SET + StringUtils.capitalize(ptyName);
+            Integer setIndex = methodIndexMap.get(setKey);
+            if (setIndex != null) {
+                //获取参数类型
+                Class[][] objParameterTypes = objMethodAccess.getParameterTypes();
+                assert (objParameterTypes != null);
+                Class<?> fieldClass = objParameterTypes[setIndex][0];
+                if (fieldClass == boolean.class)
+                    objMethodAccess.invoke(obj,setIndex,parseBoolean(value));
+                else if (fieldClass == char.class)
+                    objMethodAccess.invoke(obj,setIndex,parseChar(value));
+                else if (fieldClass == byte.class)
+                    objMethodAccess.invoke(obj,setIndex,parseByte(value));
+                else if (fieldClass == short.class)
+                    objMethodAccess.invoke(obj,setIndex,parseShort(value));
+                else if (fieldClass == int.class)
+                    objMethodAccess.invoke(obj,setIndex,parseInt(value));
+                else if (fieldClass == long.class)
+                    objMethodAccess.invoke(obj,setIndex,parseLong(value));
+                else if (fieldClass == float.class)
+                    objMethodAccess.invoke(obj,setIndex,parseFloat(value));
+                else if (fieldClass == double.class)
+                    objMethodAccess.invoke(obj,setIndex,parseDouble(value));
+                else
+                    objMethodAccess.invoke(obj,setIndex,createFrom(value,fieldClass));
+            }
+        }
+    }
+
+    /**
+     * 读取Bean属性
+     */
+    public static Object getProperty(final Object obj, final String ptyName) {
+        assert (obj != null) && (!obj.getClass().isPrimitive()) && (!obj.getClass().isArray());
+        assert (!StringUtils.isEmpty(ptyName));
+
+        MethodAccess objMethodAccess = methodMap.get(obj.getClass());
+        if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
+
+        List<String> fieldList = fieldMap.get(obj.getClass());
+        if (fieldList != null) {
+            assert (objMethodAccess != null);
+            String getKey = obj.getClass().getName() + DOT + GET + StringUtils.capitalize(ptyName);
+            Integer getIndex = methodIndexMap.get(getKey);
+            if (getIndex != null) {
+                //获取参数类型
+                return objMethodAccess.invoke(obj,getIndex);
+            }
+        }
+        return null;
+    }
+
+
+    /**
      * 根据某个Bean的属性创建另一个Bean
      */
     /** 根据Bean创建Map */
-    public static <DK,DV> Map<DK,DV> createMapFrom(final Object input, final Class<DK> dkClass,final Class<DV> dvClass, Boolean allowNull) {
+    public static <DK,DV> Map<DK,DV> oldCreateMapFrom(final Object input, final Class<DK> dkClass,final Class<DV> dvClass, Boolean allowNull) {
         if (input == null) return (allowNull) ? null : new HashMap<>();
 
         Map<DK, DV> output = new HashMap<>();
-        copyProperties(input,output,dkClass,dvClass);
+        oldCopyProperties(input,output,dkClass,dvClass);
         return output;
     }
-    public static <DK,DV> Map<DK,DV> createMapFrom(final Object input, final Class<DK> dkClass,final Class<DV> dvClass){
-        return createMapFrom(input,dkClass,dvClass,true);
+    public static <DK,DV> Map<DK,DV> oldCreateMapFrom(final Object input, final Class<DK> dkClass,final Class<DV> dvClass){
+        return oldCreateMapFrom(input,dkClass,dvClass,true);
     }
-    public static <DK,DV> Map<DK,DV> createMapFrom(final Object input, final Class<Map<DK,DV>> outputClass, final Class<DK> dkClass,final Class<DV> dvClass, Boolean allowNull){
-        return createMapFrom(input,dkClass,dvClass,allowNull);
+    public static <DK,DV> Map<DK,DV> oldCreateMapFrom(final Object input, final Class<Map<DK,DV>> outputClass, final Class<DK> dkClass,final Class<DV> dvClass, Boolean allowNull){
+        return oldCreateMapFrom(input,dkClass,dvClass,allowNull);
     }
-    public static <DK,DV> Map<DK,DV> createMapFrom(final Object input, final Class<Map<DK,DV>> outputClass, final Class<DK> dkClass,final Class<DV> dvClass){
-        return createMapFrom(input,outputClass,dkClass,dvClass,true);
+    public static <DK,DV> Map<DK,DV> oldCreateMapFrom(final Object input, final Class<Map<DK,DV>> outputClass, final Class<DK> dkClass,final Class<DV> dvClass){
+        return oldCreateMapFrom(input,outputClass,dkClass,dvClass,true);
     }
-    public static <DK,DV> Map<DK,DV> createMapFrom(final Object input, final Map<DK,DV> outputClass, Boolean allowNull){
-        return createMapFrom(input,(Class<DK>)String.class,(Class<DV>)Object.class,allowNull);
+    public static <DK,DV> Map<DK,DV> oldCreateMapFrom(final Object input, final Map<DK,DV> outputClass, Boolean allowNull){
+        return oldCreateMapFrom(input,(Class<DK>)String.class,(Class<DV>)Object.class,allowNull);
     }
-    public static <DK,DV> Map<DK,DV> createMapFrom(final Object input, final Map<DK,DV> outputClass){
-        return createMapFrom(input,(Class<DK>)String.class,(Class<DV>)Object.class,true);
+    public static <DK,DV> Map<DK,DV> oldCreateMapFrom(final Object input, final Map<DK,DV> outputClass){
+        return oldCreateMapFrom(input,(Class<DK>)String.class,(Class<DV>)Object.class,true);
     }
 
     /** 创建List */
-    public static <SV,DV> List<DV> createListFrom(final List<SV> input, final Class<DV> dvClass, final Boolean allowNull){
+    public static <SV,DV> List<DV> oldCreateListFrom(final List<SV> input, final Class<DV> dvClass, final Boolean allowNull){
         if (input == null) return (allowNull) ? null : new ArrayList<>();
         List<DV> output = new ArrayList<>();
         for (SV item : input){
-            DV v = createFrom(item, dvClass, allowNull);
+            DV v = oldCreateFrom(item, dvClass, allowNull);
             output.add(v);
         }
         return output;
     }
-    public static <SV,DV> List<DV> createListFrom(final List<SV> input, final Class<List<DV>> outputClass, final Class<DV> dvClass, final Boolean allowNull){
-        return createListFrom(input,dvClass,allowNull);
+    public static <SV,DV> List<DV> oldCreateListFrom(final List<SV> input, final Class<List<DV>> outputClass, final Class<DV> dvClass, final Boolean allowNull){
+        return oldCreateListFrom(input,dvClass,allowNull);
     }
-    public static <SV,DV> List<DV> createListFrom(final List<SV> input, final Class<List<DV>> outputClass, final Class<DV> dvClass){
-        return createListFrom(input,outputClass,dvClass,true);
+    public static <SV,DV> List<DV> oldCreateListFrom(final List<SV> input, final Class<List<DV>> outputClass, final Class<DV> dvClass){
+        return oldCreateListFrom(input,outputClass,dvClass,true);
     }
-    public static <SV,DV> List<DV> createListFrom(final List<SV> input, final Class<List<DV>> outputClass){
-        return createListFrom(input,(Class<DV>)String.class,true);
+    public static <SV,DV> List<DV> oldCreateListFrom(final List<SV> input, final Class<List<DV>> outputClass){
+        return oldCreateListFrom(input,(Class<DV>)String.class,true);
     }
-    public static <DV> List<DV> createListFrom(final Object input,  final Class<List<DV>> outputClass, final Class<DV> dvClass, final Boolean allowNull){
+    public static <DV> List<DV> oldCreateListFrom(final Object input,  final Class<List<DV>> outputClass, final Class<DV> dvClass, final Boolean allowNull){
         if (input == null) return (allowNull) ? null : new ArrayList<>();
         assert (input instanceof List);
-        return createListFrom((List<?>)input,dvClass,true);
+        return oldCreateListFrom((List<?>)input,dvClass,true);
     }
-    public static <DV> List<DV> createListFrom(final Object input,  final Class<List<DV>> outputClass, final Class<DV> dvClass){
-        return createListFrom((List<?>)input,outputClass,dvClass,true);
+    public static <DV> List<DV> oldCreateListFrom(final Object input,  final Class<List<DV>> outputClass, final Class<DV> dvClass){
+        return oldCreateListFrom((List<?>)input,outputClass,dvClass,true);
     }
-    public static <DV> List<DV> createListFrom(final Object input,  final Class<List<DV>> outputClass){
-        return createListFrom((List<?>)input,(Class<DV>)String.class,true);
+    public static <DV> List<DV> oldCreateListFrom(final Object input,  final Class<List<DV>> outputClass){
+        return oldCreateListFrom((List<?>)input,(Class<DV>)String.class,true);
     }
 
     /** 创建数组 */
-    public static <T,E> T createArrayFrom(final Object input, final Class<T> outputClass, final Class<E> eleClass, final Boolean allowNull) {
+    public static <T,E> T oldCreateArrayFrom(final Object input, final Class<T> outputClass, final Class<E> eleClass, final Boolean allowNull) {
         assert ((outputClass != null) && (eleClass != null) && (outputClass.isArray()) && (outputClass.getComponentType() == eleClass));
         if (input == null) return (allowNull) ? null : outputClass.cast((new ArrayList<E>()).toArray());
 
@@ -440,27 +536,27 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
 
         E[] output = (E[])((new ArrayList<E>()).toArray());
         for (int n=0;n<output.length;n++){
-            output[n] = createFrom(((Object[])input)[n],eleClass,allowNull);
+            output[n] = oldCreateFrom(((Object[])input)[n],eleClass,allowNull);
         }        
         return outputClass.cast(output);
     }
 
     /** 创建普通类 */
-    public static <T> T createFrom(final Object input, final Class<T> outputClass, final Boolean allowNull) {
+    public static <T> T oldCreateFrom(final Object input, final Class<T> outputClass, final Boolean allowNull) {
         assert ((outputClass != null) && !outputClass.isPrimitive());
 
         //创建非单一元素
         if (outputClass.isArray()) {
-            return (T)createArrayFrom(input,outputClass,outputClass.getComponentType(),allowNull);
+            return (T)oldCreateArrayFrom(input,outputClass,outputClass.getComponentType(),allowNull);
         } else if (Map.class.isAssignableFrom(outputClass)){
-            return (T)createMapFrom(input,(Class<?>)String.class,(Class<?>)Object.class,allowNull);
+            return (T)oldCreateMapFrom(input,(Class<?>)String.class,(Class<?>)Object.class,allowNull);
         } else if (List.class.isAssignableFrom(outputClass)) {
             assert (input instanceof List);
-            return (T)createListFrom((List<?>)input,(Class<?>)Object.class,true);
+            return (T)oldCreateListFrom((List<?>)input,(Class<?>)Object.class,true);
         }
 
         //创建单一元素
-        if (input == null) return createNullFrom(outputClass, allowNull);
+        if (input == null) return oldCreateNullFrom(outputClass, allowNull);
 
         T output = null;
         if (outputClass == input.getClass()){
@@ -469,21 +565,21 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         //如果outputClass是input的基类
         if (output == null) {
             if (outputClass.isInstance(input)) {
-                output = createByCloneFrom(input, outputClass);
+                output = oldCreateByCloneFrom(input, outputClass);
             }
         }
 
         //如果outputClass有以input类型为参数,或String为参数的构造函数
         if (output == null) {
-            output = createByConstructorFrom(input,outputClass);
+            output = oldCreateByConstructorFrom(input,outputClass);
         }
 
         //outputClass是Bean
         if (output == null) {
-            if (isBean(outputClass)){
+            if (oldIsBean(outputClass)){
                 try {
                     output = outputClass.newInstance();
-                    copyProperties(input, output);
+                    oldCopyProperties(input, output);
 //                    copyPropertiesByCommon(input,output);
                 } catch ( InstantiationException | IllegalAccessException e) {
                     ExceptionUtils.logWarn(log, e,false,"从" + input.getClass().getName() + "复制属性到" + outputClass.getName() + "时出错");
@@ -498,12 +594,12 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         }
         return output;
     }
-    public static <T> T createFrom(final Object input, final Class<T> outputClass){
-        return createFrom(input,outputClass,false);
+    public static <T> T oldCreateFrom(final Object input, final Class<T> outputClass){
+        return oldCreateFrom(input,outputClass,false);
     }
 
     //创建空对象
-    private static <T> T createNullFrom(final Class<T> outputClass, final Boolean allowNull){
+    private static <T> T oldCreateNullFrom(final Class<T> outputClass, final Boolean allowNull){
         T output = null;
         try {
             output = (allowNull) ? null : outputClass.newInstance();
@@ -515,7 +611,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     }
 
     //通过clone创建
-    private static <T> T createByCloneFrom(final Object input, final Class<T> outputClass){
+    private static <T> T oldCreateByCloneFrom(final Object input, final Class<T> outputClass){
         assert ((input != null) && (outputClass != null));
 
         final String CLONE_INTERFACE_NAME = "Cloneable";
@@ -539,7 +635,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     }
 
     //通过构造函数创建
-    private static <T> T createByConstructorFrom(final Object input, final Class<T> outputClass){
+    private static <T> T oldCreateByConstructorFrom(final Object input, final Class<T> outputClass){
         assert ((input != null) && (outputClass != null));
 
         T output = null;
@@ -586,9 +682,9 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
      * 复制Bean属性
      */
     /** 从Map复制到Bean */
-    public static <SK,SV> void copyProperties(final Map<SK,SV> input, Object output, final Class<SK> skClass) {
+    public static <SK,SV> void oldCopyProperties(final Map<SK,SV> input, Object output, final Class<SK> skClass) {
         if (input == null || output == null) return;
-        assert (isBean(output.getClass()));
+        assert (oldIsBean(output.getClass()));
 
         try {
             BeanInfo info = Introspector.getBeanInfo(output.getClass(),Object.class);
@@ -598,7 +694,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 SV val = input.get(sk);
                 for (PropertyDescriptor pty : properties) {
                     if (pty.getName().equals(sk.toString())) {
-                        putProperty(output, pty.getWriteMethod(), pty.getPropertyType(), val);
+                        oldPutProperty(output, pty.getWriteMethod(), pty.getPropertyType(), val);
                     }
                 }
             }
@@ -606,41 +702,41 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             ExceptionUtils.logError(log, e);
         }
     }
-    public static <SK,SV> void copyProperties(final Map<SK,SV> input, Object output){
-        copyProperties(input,output,(Class<SK>)String.class);
+    public static <SK,SV> void oldCopyProperties(final Map<SK,SV> input, Object output){
+        oldCopyProperties(input,output,(Class<SK>)String.class);
     }
 
     /** 从List复制到List */
-    public static <SV,DV> void copyProperties(final List<SV> input, List<DV> output, final Class<SV> svClass, final Class<DV> dvClass) {
+    public static <SV,DV> void oldCopyProperties(final List<SV> input, List<DV> output, final Class<SV> svClass, final Class<DV> dvClass) {
         if (input == null || output == null) return;
 
         if (svClass == dvClass) {
             output.addAll((List<DV>)input);
         } else {
             for (SV sv : input) {
-                DV dv = createFrom(sv, dvClass,true);
+                DV dv = oldCreateFrom(sv, dvClass,true);
                 output.add(dv);
             }
         }
     }
-    public static <SV,DV> void copyProperties(final List<SV> input, List<DV> output) {
-        copyProperties(input,output,(Class<SV>)Object.class,(Class<DV>)Object.class);
+    public static <SV,DV> void oldCopyProperties(final List<SV> input, List<DV> output) {
+        oldCopyProperties(input,output,(Class<SV>)Object.class,(Class<DV>)Object.class);
     }
 
     /** 从Bean复制到List */
-    public static <DV> void copyProperties(final Object input, List<DV> output, final Class<DV> dvClass) {
+    public static <DV> void oldCopyProperties(final Object input, List<DV> output, final Class<DV> dvClass) {
         if (input == null || output == null) return;
 
         if (input instanceof List) {
-            copyProperties((List<?>)input,output);
+            oldCopyProperties((List<?>)input,output);
         } else {
-            DV dv = (dvClass == input.getClass()) ? (DV)input : createFrom(input,dvClass,true);
+            DV dv = (dvClass == input.getClass()) ? (DV)input : oldCreateFrom(input,dvClass,true);
             output.add(dv);
         }
     }
 
     /** 从Map复制到Map */
-    public static <SK,SV,DK,DV> void copyProperties(final Map<SK,SV> input, Map<DK,DV> output, final Class<SK> skClass, final Class<SV> svClass, final Class<DK> dkClass, final Class<DV> dvClass) {
+    public static <SK,SV,DK,DV> void oldCopyProperties(final Map<SK,SV> input, Map<DK,DV> output, final Class<SK> skClass, final Class<SV> svClass, final Class<DK> dkClass, final Class<DV> dvClass) {
         if (input == null || output == null) return;
 
         if ((skClass == dkClass) && (svClass == dvClass)) {
@@ -648,28 +744,28 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         } else {
             for (SK sk : input.keySet()) {
                 SV sv = input.get(sk);
-                DK dk = (skClass == dkClass) ? (DK) sk : createFrom(sk, dkClass,true);
-                DV dv = (svClass == dvClass) ? (DV) sv : createFrom(sv, dvClass,true);
+                DK dk = (skClass == dkClass) ? (DK) sk : oldCreateFrom(sk, dkClass,true);
+                DV dv = (svClass == dvClass) ? (DV) sv : oldCreateFrom(sv, dvClass,true);
                 output.put(dk, dv);
             }
         }
     }
-    public static <SK,SV,DK,DV> void copyProperties(final Map<SK,SV> input, Map<DK,DV> output, final Class<SK> skClass, final Class<DK> dkClass, final Class<DV> dvClass) {
-        copyProperties(input,output,skClass,(Class<SV>)Object.class,dkClass,dvClass);
+    public static <SK,SV,DK,DV> void oldCopyProperties(final Map<SK,SV> input, Map<DK,DV> output, final Class<SK> skClass, final Class<DK> dkClass, final Class<DV> dvClass) {
+        oldCopyProperties(input,output,skClass,(Class<SV>)Object.class,dkClass,dvClass);
     }
-    public static <SK,SV,DK,DV> void copyProperties(final Map<SK,SV> input, Map<DK,DV> output, final Class<DK> dkClass, final Class<DV> dvClass) {
-        copyProperties(input,output,(Class<SK>)String.class,dkClass,dvClass);
+    public static <SK,SV,DK,DV> void oldCopyProperties(final Map<SK,SV> input, Map<DK,DV> output, final Class<DK> dkClass, final Class<DV> dvClass) {
+        oldCopyProperties(input,output,(Class<SK>)String.class,dkClass,dvClass);
     }
-    public static <SK,SV,DK,DV> void copyProperties(final Map<SK,SV> input, Map<DK,DV> output) {
-        copyProperties(input,output,(Class<DK>)String.class,(Class<DV>)Object.class);
+    public static <SK,SV,DK,DV> void oldCopyProperties(final Map<SK,SV> input, Map<DK,DV> output) {
+        oldCopyProperties(input,output,(Class<DK>)String.class,(Class<DV>)Object.class);
     }
 
     /** 从Bean复制到Map */
-    public static <DK,DV> void copyProperties(final Object input, Map<DK,DV> output, final Class<DK> dkClass, final Class<DV> dvClass) {
+    public static <DK,DV> void oldCopyProperties(final Object input, Map<DK,DV> output, final Class<DK> dkClass, final Class<DV> dvClass) {
         if (input == null || output == null) return;
-        assert (isBean(input.getClass()));
+        assert (oldIsBean(input.getClass()));
         if (input instanceof Map) {
-            copyProperties((Map<?, ?>) input, (Map<?, ?>) output);
+            oldCopyProperties((Map<?, ?>) input, (Map<?, ?>) output);
         } else {
             try {
                 BeanInfo info = Introspector.getBeanInfo(input.getClass(),Object.class);
@@ -678,8 +774,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 for (PropertyDescriptor pty : properties) {
                     Object val = pty.getReadMethod().invoke(input);
                     if (val != null) {
-                        DK key = createFrom(pty, dkClass,true);
-                        DV value = createFrom(val, dvClass,true);
+                        DK key = oldCreateFrom(pty, dkClass,true);
+                        DV value = oldCreateFrom(val, dvClass,true);
                         output.put(key, value);
                     }
                 }
@@ -688,23 +784,20 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             }
         }
     }
-    public static <DK,DV> void copyProperties(final Object input, Map<DK,DV> output, final Class<DK> dkClass) {
-        copyProperties(input,output,dkClass,(Class<DV>)Object.class);
-    }
-    public static <DK,DV> void copyProperties(final Object input, Map<DK,DV> output) {
-        copyProperties(input,output,String.class);
+    public static <DK,DV> void oldCopyProperties(final Object input, Map<DK,DV> output, final Class<DK> dkClass) {
+        oldCopyProperties(input,output,dkClass,(Class<DV>)Object.class);
     }
 
 
     /** 从Bean复制到Bean */
-    public static void copyProperties(final Object input, Object output) {
+    public static void oldCopyProperties(final Object input, Object output) {
         if ((input == null) || (output == null)) return;
-        assert isBean(output.getClass());
+        assert oldIsBean(output.getClass());
 
         if (output instanceof Map) {
-            copyProperties(input,(Map<?,?>)output);
+            oldCopyProperties(input,(Map<?,?>)output);
         } else if (input instanceof Map) {
-            copyProperties((Map<?,?>)input,output);
+            oldCopyProperties((Map<?,?>)input,output);
         } else {
             try {
                 BeanInfo srcInfo = Introspector.getBeanInfo(input.getClass(),Object.class);
@@ -717,7 +810,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                         if (srcPty.getName().equals(desPty.getName())) {
                             Object value = srcPty.getReadMethod().invoke(input);
                             if (value != null) {
-                                putProperty(output, desPty.getWriteMethod(), desPty.getPropertyType(), value);
+                                oldPutProperty(output, desPty.getWriteMethod(), desPty.getPropertyType(), value);
                             }
                             break;
                         }
@@ -732,8 +825,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     /**
      * 写入Bean属性
      */
-    public static <T> void putProperty(Object output, final Method m, final Class<T> ptyClass, final Object value){
-        assert ((output != null) && isBean(output.getClass()) && (m != null) && (ptyClass != null));
+    public static <T> void oldPutProperty(Object output, final Method m, final Class<T> ptyClass, final Object value){
+        assert ((output != null) && oldIsBean(output.getClass()) && (m != null) && (ptyClass != null));
         try {
             if (ptyClass.isPrimitive()) { //如果ptyClass是基本类型
                 if (ptyClass == char.class) m.invoke(output, parseChar(value));
@@ -745,7 +838,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 else if (ptyClass == double.class) m.invoke(output, parseDouble(value));
                 else m.invoke(output, 0);
             } else {
-                m.invoke(output,createFrom(value,ptyClass,true));
+                m.invoke(output,oldCreateFrom(value,ptyClass,true));
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
             ExceptionUtils.logError(log,e);
@@ -755,8 +848,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     /**
      * 读取Bean属性
      */
-    public static Object getProperty(final Object obj, final String ptyName) {
-        if ((obj == null) || (ptyName == null) || !isBean(obj.getClass())) return null;
+    public static Object oldGetProperty(final Object obj, final String ptyName) {
+        if ((obj == null) || (ptyName == null) || !oldIsBean(obj.getClass())) return null;
 
         try {
             BeanInfo info = Introspector.getBeanInfo(obj.getClass(), Object.class);
@@ -774,7 +867,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     }
 
     /** 判断是否Bean */
-    public static Boolean isBean(final Class<?> objClass){
+    public static Boolean oldIsBean(final Class<?> objClass){
         assert (objClass != null);
         return (!objClass.isPrimitive()
                 && !objClass.isArray()
