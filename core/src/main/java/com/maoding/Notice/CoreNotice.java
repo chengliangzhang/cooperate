@@ -2,6 +2,7 @@ package com.maoding.Notice;
 
 import com.maoding.Bean.CoreMessageDTO;
 import com.maoding.Bean.CoreReceiverDTO;
+import com.zeroc.Ice.ObjectPrx;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -15,9 +16,9 @@ public interface CoreNotice {
     /** 创建通告频道 */
     default void createTopic(String topic){}
     /** 订阅通告频道 */
-    default void subscribeTopic(String topic){}
+    default void subscribeTopic(String topic, ObjectPrx handler){}
     /** 取消订阅 */
-    default void unSubscribeTopic(String topic){}
+    default void unSubscribeTopic(String topic, ObjectPrx handler){}
     /** 发布通告 */
     default void sendMessage(CoreMessageDTO msg, CoreReceiverDTO receiver){}
 }

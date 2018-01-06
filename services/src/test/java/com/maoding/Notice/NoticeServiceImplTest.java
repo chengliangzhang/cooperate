@@ -1,6 +1,6 @@
 package com.maoding.Notice;
 
-import com.maoding.Notice.zeroc.NoticeService;
+import com.maoding.Notice.zeroc.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +10,9 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** 
 * NoticeServiceImpl Tester. 
@@ -27,10 +30,21 @@ public class NoticeServiceImplTest {
     @Autowired
     NoticeService noticeService;
 
+    @Autowired
+    NoticeClient noticeClient;
+
     /** for method: sendMessage(MessageDTO message, List<ReceiverDTO> receiverList, Current current) */
     @Test
     public void testSendMessage() throws Exception { 
-        //TODO: Test goes here... 
+        noticeService.createTopic("aaa",null);
+        noticeClient.subscribeTopicForAccount(null,"aaa",null);
+        MessageDTO msg = new MessageDTO();
+        msg.setTitle("bbbbb");
+        List<ReceiverDTO> list = new ArrayList<>();
+        ReceiverDTO receiver = new ReceiverDTO();
+        receiver.setTopic("aaa");
+        list.add(receiver);
+        noticeService.sendMessageForAccount(null,msg,list,null);
     } 
     /** for method: createTopic(String topic, Current current) */ 
     @Test

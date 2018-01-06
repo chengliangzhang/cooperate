@@ -20,94 +20,92 @@
 
 package com.maoding.Notice.zeroc;
 
-public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
+public interface NoticeClientPrx extends com.zeroc.Ice.ObjectPrx
 {
-    default void createTopic(java.lang.String topic)
+    default void subscribeTopic(java.lang.String topic)
     {
-        createTopic(topic, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        subscribeTopic(topic, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void createTopic(java.lang.String topic, java.util.Map<String, String> context)
+    default void subscribeTopic(java.lang.String topic, java.util.Map<String, String> context)
     {
-        _iceI_createTopicAsync(topic, context, true).waitForResponse();
+        _iceI_subscribeTopicAsync(topic, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> createTopicAsync(java.lang.String topic)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicAsync(java.lang.String topic)
     {
-        return _iceI_createTopicAsync(topic, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_subscribeTopicAsync(topic, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> createTopicAsync(java.lang.String topic, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicAsync(java.lang.String topic, java.util.Map<String, String> context)
     {
-        return _iceI_createTopicAsync(topic, context, false);
+        return _iceI_subscribeTopicAsync(topic, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_createTopicAsync(java.lang.String iceP_topic, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicAsync(java.lang.String iceP_topic, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createTopic", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopic", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      ostr.writeSerializable(iceP_topic);
                  }, null);
         return f;
     }
 
-    default void sendMessage(MessageDTO message, java.util.List<ReceiverDTO> receiverList)
+    default void subscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, java.lang.String topic)
     {
-        sendMessage(message, receiverList, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        subscribeTopicForAccount(account, topic, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void sendMessage(MessageDTO message, java.util.List<ReceiverDTO> receiverList, java.util.Map<String, String> context)
+    default void subscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, java.lang.String topic, java.util.Map<String, String> context)
     {
-        _iceI_sendMessageAsync(message, receiverList, context, true).waitForResponse();
+        _iceI_subscribeTopicForAccountAsync(account, topic, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> sendMessageAsync(MessageDTO message, java.util.List<ReceiverDTO> receiverList)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO account, java.lang.String topic)
     {
-        return _iceI_sendMessageAsync(message, receiverList, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_subscribeTopicForAccountAsync(account, topic, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> sendMessageAsync(MessageDTO message, java.util.List<ReceiverDTO> receiverList, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO account, java.lang.String topic, java.util.Map<String, String> context)
     {
-        return _iceI_sendMessageAsync(message, receiverList, context, false);
+        return _iceI_subscribeTopicForAccountAsync(account, topic, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_sendMessageAsync(MessageDTO iceP_message, java.util.List<ReceiverDTO> iceP_receiverList, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, java.lang.String iceP_topic, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "sendMessage", null, sync, null);
-        f.invoke(false, context, null, ostr -> {
-                     MessageDTO.ice_write(ostr, iceP_message);
-                     ReceiverListHelper.write(ostr, iceP_receiverList);
-                 }, null);
-        return f;
-    }
-
-    default void sendMessageForAccount(com.maoding.User.zeroc.AccountDTO account, MessageDTO message, java.util.List<ReceiverDTO> receiverList)
-    {
-        sendMessageForAccount(account, message, receiverList, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default void sendMessageForAccount(com.maoding.User.zeroc.AccountDTO account, MessageDTO message, java.util.List<ReceiverDTO> receiverList, java.util.Map<String, String> context)
-    {
-        _iceI_sendMessageForAccountAsync(account, message, receiverList, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<Void> sendMessageForAccountAsync(com.maoding.User.zeroc.AccountDTO account, MessageDTO message, java.util.List<ReceiverDTO> receiverList)
-    {
-        return _iceI_sendMessageForAccountAsync(account, message, receiverList, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<Void> sendMessageForAccountAsync(com.maoding.User.zeroc.AccountDTO account, MessageDTO message, java.util.List<ReceiverDTO> receiverList, java.util.Map<String, String> context)
-    {
-        return _iceI_sendMessageForAccountAsync(account, message, receiverList, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_sendMessageForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, MessageDTO iceP_message, java.util.List<ReceiverDTO> iceP_receiverList, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "sendMessageForAccount", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForAccount", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
-                     MessageDTO.ice_write(ostr, iceP_message);
-                     ReceiverListHelper.write(ostr, iceP_receiverList);
+                     ostr.writeSerializable(iceP_topic);
+                 }, null);
+        return f;
+    }
+
+    default void gotEvent(MessageDTO msg)
+    {
+        gotEvent(msg, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void gotEvent(MessageDTO msg, java.util.Map<String, String> context)
+    {
+        _iceI_gotEventAsync(msg, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> gotEventAsync(MessageDTO msg)
+    {
+        return _iceI_gotEventAsync(msg, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> gotEventAsync(MessageDTO msg, java.util.Map<String, String> context)
+    {
+        return _iceI_gotEventAsync(msg, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_gotEventAsync(MessageDTO iceP_msg, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "gotEvent", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     MessageDTO.ice_write(ostr, iceP_msg);
                  }, null);
         return f;
     }
@@ -118,9 +116,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @param obj The untyped proxy.
      * @return A proxy for this type, or null if the object does not support this type.
      **/
-    static NoticeServicePrx checkedCast(com.zeroc.Ice.ObjectPrx obj)
+    static NoticeClientPrx checkedCast(com.zeroc.Ice.ObjectPrx obj)
     {
-        return com.zeroc.Ice.ObjectPrx._checkedCast(obj, ice_staticId(), NoticeServicePrx.class, _NoticeServicePrxI.class);
+        return com.zeroc.Ice.ObjectPrx._checkedCast(obj, ice_staticId(), NoticeClientPrx.class, _NoticeClientPrxI.class);
     }
 
     /**
@@ -130,9 +128,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @param context The Context map to send with the invocation.
      * @return A proxy for this type, or null if the object does not support this type.
      **/
-    static NoticeServicePrx checkedCast(com.zeroc.Ice.ObjectPrx obj, java.util.Map<String, String> context)
+    static NoticeClientPrx checkedCast(com.zeroc.Ice.ObjectPrx obj, java.util.Map<String, String> context)
     {
-        return com.zeroc.Ice.ObjectPrx._checkedCast(obj, context, ice_staticId(), NoticeServicePrx.class, _NoticeServicePrxI.class);
+        return com.zeroc.Ice.ObjectPrx._checkedCast(obj, context, ice_staticId(), NoticeClientPrx.class, _NoticeClientPrxI.class);
     }
 
     /**
@@ -142,9 +140,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @param facet The name of the desired facet.
      * @return A proxy for this type, or null if the object does not support this type.
      **/
-    static NoticeServicePrx checkedCast(com.zeroc.Ice.ObjectPrx obj, String facet)
+    static NoticeClientPrx checkedCast(com.zeroc.Ice.ObjectPrx obj, String facet)
     {
-        return com.zeroc.Ice.ObjectPrx._checkedCast(obj, facet, ice_staticId(), NoticeServicePrx.class, _NoticeServicePrxI.class);
+        return com.zeroc.Ice.ObjectPrx._checkedCast(obj, facet, ice_staticId(), NoticeClientPrx.class, _NoticeClientPrxI.class);
     }
 
     /**
@@ -155,9 +153,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @param context The Context map to send with the invocation.
      * @return A proxy for this type, or null if the object does not support this type.
      **/
-    static NoticeServicePrx checkedCast(com.zeroc.Ice.ObjectPrx obj, String facet, java.util.Map<String, String> context)
+    static NoticeClientPrx checkedCast(com.zeroc.Ice.ObjectPrx obj, String facet, java.util.Map<String, String> context)
     {
-        return com.zeroc.Ice.ObjectPrx._checkedCast(obj, facet, context, ice_staticId(), NoticeServicePrx.class, _NoticeServicePrxI.class);
+        return com.zeroc.Ice.ObjectPrx._checkedCast(obj, facet, context, ice_staticId(), NoticeClientPrx.class, _NoticeClientPrxI.class);
     }
 
     /**
@@ -165,9 +163,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @param obj The untyped proxy.
      * @return A proxy for this type.
      **/
-    static NoticeServicePrx uncheckedCast(com.zeroc.Ice.ObjectPrx obj)
+    static NoticeClientPrx uncheckedCast(com.zeroc.Ice.ObjectPrx obj)
     {
-        return com.zeroc.Ice.ObjectPrx._uncheckedCast(obj, NoticeServicePrx.class, _NoticeServicePrxI.class);
+        return com.zeroc.Ice.ObjectPrx._uncheckedCast(obj, NoticeClientPrx.class, _NoticeClientPrxI.class);
     }
 
     /**
@@ -176,9 +174,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @param facet The name of the desired facet.
      * @return A proxy for this type.
      **/
-    static NoticeServicePrx uncheckedCast(com.zeroc.Ice.ObjectPrx obj, String facet)
+    static NoticeClientPrx uncheckedCast(com.zeroc.Ice.ObjectPrx obj, String facet)
     {
-        return com.zeroc.Ice.ObjectPrx._uncheckedCast(obj, facet, NoticeServicePrx.class, _NoticeServicePrxI.class);
+        return com.zeroc.Ice.ObjectPrx._uncheckedCast(obj, facet, NoticeClientPrx.class, _NoticeClientPrxI.class);
     }
 
     /**
@@ -187,9 +185,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified per-proxy context.
      **/
     @Override
-    default NoticeServicePrx ice_context(java.util.Map<String, String> newContext)
+    default NoticeClientPrx ice_context(java.util.Map<String, String> newContext)
     {
-        return (NoticeServicePrx)_ice_context(newContext);
+        return (NoticeClientPrx)_ice_context(newContext);
     }
 
     /**
@@ -198,9 +196,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified adapter ID.
      **/
     @Override
-    default NoticeServicePrx ice_adapterId(String newAdapterId)
+    default NoticeClientPrx ice_adapterId(String newAdapterId)
     {
-        return (NoticeServicePrx)_ice_adapterId(newAdapterId);
+        return (NoticeClientPrx)_ice_adapterId(newAdapterId);
     }
 
     /**
@@ -209,9 +207,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified endpoints.
      **/
     @Override
-    default NoticeServicePrx ice_endpoints(com.zeroc.Ice.Endpoint[] newEndpoints)
+    default NoticeClientPrx ice_endpoints(com.zeroc.Ice.Endpoint[] newEndpoints)
     {
-        return (NoticeServicePrx)_ice_endpoints(newEndpoints);
+        return (NoticeClientPrx)_ice_endpoints(newEndpoints);
     }
 
     /**
@@ -220,9 +218,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified locator cache timeout.
      **/
     @Override
-    default NoticeServicePrx ice_locatorCacheTimeout(int newTimeout)
+    default NoticeClientPrx ice_locatorCacheTimeout(int newTimeout)
     {
-        return (NoticeServicePrx)_ice_locatorCacheTimeout(newTimeout);
+        return (NoticeClientPrx)_ice_locatorCacheTimeout(newTimeout);
     }
 
     /**
@@ -231,9 +229,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified invocation timeout.
      **/
     @Override
-    default NoticeServicePrx ice_invocationTimeout(int newTimeout)
+    default NoticeClientPrx ice_invocationTimeout(int newTimeout)
     {
-        return (NoticeServicePrx)_ice_invocationTimeout(newTimeout);
+        return (NoticeClientPrx)_ice_invocationTimeout(newTimeout);
     }
 
     /**
@@ -242,9 +240,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified caching policy.
      **/
     @Override
-    default NoticeServicePrx ice_connectionCached(boolean newCache)
+    default NoticeClientPrx ice_connectionCached(boolean newCache)
     {
-        return (NoticeServicePrx)_ice_connectionCached(newCache);
+        return (NoticeClientPrx)_ice_connectionCached(newCache);
     }
 
     /**
@@ -253,9 +251,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified endpoint selection policy.
      **/
     @Override
-    default NoticeServicePrx ice_endpointSelection(com.zeroc.Ice.EndpointSelectionType newType)
+    default NoticeClientPrx ice_endpointSelection(com.zeroc.Ice.EndpointSelectionType newType)
     {
-        return (NoticeServicePrx)_ice_endpointSelection(newType);
+        return (NoticeClientPrx)_ice_endpointSelection(newType);
     }
 
     /**
@@ -266,9 +264,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified selection policy.
      **/
     @Override
-    default NoticeServicePrx ice_secure(boolean b)
+    default NoticeClientPrx ice_secure(boolean b)
     {
-        return (NoticeServicePrx)_ice_secure(b);
+        return (NoticeClientPrx)_ice_secure(b);
     }
 
     /**
@@ -277,9 +275,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified encoding version.
      **/
     @Override
-    default NoticeServicePrx ice_encodingVersion(com.zeroc.Ice.EncodingVersion e)
+    default NoticeClientPrx ice_encodingVersion(com.zeroc.Ice.EncodingVersion e)
     {
-        return (NoticeServicePrx)_ice_encodingVersion(e);
+        return (NoticeClientPrx)_ice_encodingVersion(e);
     }
 
     /**
@@ -290,9 +288,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified selection policy.
      **/
     @Override
-    default NoticeServicePrx ice_preferSecure(boolean b)
+    default NoticeClientPrx ice_preferSecure(boolean b)
     {
-        return (NoticeServicePrx)_ice_preferSecure(b);
+        return (NoticeClientPrx)_ice_preferSecure(b);
     }
 
     /**
@@ -301,9 +299,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified router.
      **/
     @Override
-    default NoticeServicePrx ice_router(com.zeroc.Ice.RouterPrx router)
+    default NoticeClientPrx ice_router(com.zeroc.Ice.RouterPrx router)
     {
-        return (NoticeServicePrx)_ice_router(router);
+        return (NoticeClientPrx)_ice_router(router);
     }
 
     /**
@@ -312,9 +310,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified locator.
      **/
     @Override
-    default NoticeServicePrx ice_locator(com.zeroc.Ice.LocatorPrx locator)
+    default NoticeClientPrx ice_locator(com.zeroc.Ice.LocatorPrx locator)
     {
-        return (NoticeServicePrx)_ice_locator(locator);
+        return (NoticeClientPrx)_ice_locator(locator);
     }
 
     /**
@@ -323,9 +321,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified collocation optimization.
      **/
     @Override
-    default NoticeServicePrx ice_collocationOptimized(boolean b)
+    default NoticeClientPrx ice_collocationOptimized(boolean b)
     {
-        return (NoticeServicePrx)_ice_collocationOptimized(b);
+        return (NoticeClientPrx)_ice_collocationOptimized(b);
     }
 
     /**
@@ -333,9 +331,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy that uses twoway invocations.
      **/
     @Override
-    default NoticeServicePrx ice_twoway()
+    default NoticeClientPrx ice_twoway()
     {
-        return (NoticeServicePrx)_ice_twoway();
+        return (NoticeClientPrx)_ice_twoway();
     }
 
     /**
@@ -343,9 +341,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy that uses oneway invocations.
      **/
     @Override
-    default NoticeServicePrx ice_oneway()
+    default NoticeClientPrx ice_oneway()
     {
-        return (NoticeServicePrx)_ice_oneway();
+        return (NoticeClientPrx)_ice_oneway();
     }
 
     /**
@@ -353,9 +351,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy that uses batch oneway invocations.
      **/
     @Override
-    default NoticeServicePrx ice_batchOneway()
+    default NoticeClientPrx ice_batchOneway()
     {
-        return (NoticeServicePrx)_ice_batchOneway();
+        return (NoticeClientPrx)_ice_batchOneway();
     }
 
     /**
@@ -363,9 +361,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy that uses datagram invocations.
      **/
     @Override
-    default NoticeServicePrx ice_datagram()
+    default NoticeClientPrx ice_datagram()
     {
-        return (NoticeServicePrx)_ice_datagram();
+        return (NoticeClientPrx)_ice_datagram();
     }
 
     /**
@@ -373,9 +371,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy that uses batch datagram invocations.
      **/
     @Override
-    default NoticeServicePrx ice_batchDatagram()
+    default NoticeClientPrx ice_batchDatagram()
     {
-        return (NoticeServicePrx)_ice_batchDatagram();
+        return (NoticeClientPrx)_ice_batchDatagram();
     }
 
     /**
@@ -384,9 +382,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified compression setting.
      **/
     @Override
-    default NoticeServicePrx ice_compress(boolean co)
+    default NoticeClientPrx ice_compress(boolean co)
     {
-        return (NoticeServicePrx)_ice_compress(co);
+        return (NoticeClientPrx)_ice_compress(co);
     }
 
     /**
@@ -395,9 +393,9 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified timeout.
      **/
     @Override
-    default NoticeServicePrx ice_timeout(int t)
+    default NoticeClientPrx ice_timeout(int t)
     {
-        return (NoticeServicePrx)_ice_timeout(t);
+        return (NoticeClientPrx)_ice_timeout(t);
     }
 
     /**
@@ -406,13 +404,13 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
      * @return A proxy with the specified connection ID.
      **/
     @Override
-    default NoticeServicePrx ice_connectionId(String connectionId)
+    default NoticeClientPrx ice_connectionId(String connectionId)
     {
-        return (NoticeServicePrx)_ice_connectionId(connectionId);
+        return (NoticeClientPrx)_ice_connectionId(connectionId);
     }
 
     static String ice_staticId()
     {
-        return "::zeroc::NoticeService";
+        return "::zeroc::NoticeClient";
     }
 }

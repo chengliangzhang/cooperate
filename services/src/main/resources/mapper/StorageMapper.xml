@@ -21,15 +21,15 @@
                 </otherwise>
             </choose>
         from maoding_storage_node node
-            <if test="id != null and typeId != null">
-                inner join maoding_storage parent on ((parent.path = left(node.path,char_length(node.path)-char_length(substring_index(node.path, '/',-1))-1)))
-            </if>
         <where>
             <if test="id != null">
-                and (parent.pid = #{id})
+                and (node.pid = #{id})
             </if>
             <if test="typeId != null">
-                and (parent.type_id = #{typeId})
+                and (node.type_id = #{typeId})
+            </if>
+            <if test="pid != null">
+                and (node.pid = #{pid})
             </if>
             <if test="path != null">
                 and (#{path} = left(node.path,char_length(node.path)-char_length(substring_index(node.path, '/',-1))-1))
@@ -48,16 +48,7 @@
                 </otherwise>
             </choose>
         from maoding_storage_node node
-            <if test="id != null and typeId != null">
-                inner join maoding_storage parent on ((parent.path = left(node.path,char_length(node.path)-char_length(substring_index(node.path, '/',-1))-1)))
-            </if>
         <where>
-            <if test="id != null">
-                and (parent.id = #{id})
-            </if>
-            <if test="typeId != null">
-                and (parent.type_id = #{typeId})
-            </if>
             <if test="path != null">
                 and (node.path like concat(#{path},'/%'))
             </if>
@@ -83,7 +74,6 @@
             </if>
         </where>
         group by node.id
-        order by node.path
     </select>
 
     <select id="getNodeInfo" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.Dto.QueryNodeDTO">
@@ -200,6 +190,9 @@
             left join maoding_task task on (node.task_id = task.id)
             left join maoding_web_account account on (account.status = '0' and node.last_modify_user_id = account.id)
         <where>
+            <if test="id != null">
+                and (node.id = #{id})
+            </if>
             <if test="path != null">
                 and (node.path = #{path} or #{path} like concat(node.path,'/%'))
             </if>

@@ -1,16 +1,19 @@
 package com.maoding.Notice.Storm;
 
-import IceStorm.TopicManagerPrx;
-import IceStorm.TopicPrx;
 import com.maoding.Bean.CoreMessageDTO;
 import com.maoding.Bean.CoreReceiverDTO;
 import com.maoding.Config.IceConfig;
 import com.maoding.Notice.CoreNotice;
-import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.Communicator;
-import com.zeroc.Ice.Util;
+import com.zeroc.Ice.ObjectPrx;
+import com.zeroc.IceStorm.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -20,24 +23,25 @@ import org.springframework.stereotype.Service;
  */
 @Service("stormNotice")
 public class StormNotice implements CoreNotice {
-    /** 配置文件字段名 */
-    private final static String GRID_LOCATION = "Ice.Default.Locator";
-    private final static String ADAPTER_ID = "AdapterId";
-    private final static String END_POINTS = "Endpoints";
+    /** 日志对象 */
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    /** ice配置对象 */
     @Autowired
-    private IceConfig iceConfig;
+    IceConfig iceConfig;
 
-    private TopicManagerPrx topicManager;
-    private TopicPrx topic;
+    private static Communicator communicator = null;
+    private static TopicManagerPrx topicManager = null;
 
-    public void init(){
-        //初始化连接器
-        String gridLocation = (iceConfig != null) ? iceConfig.getProperty(GRID_LOCATION) : null;
-        Communicator communicator = (!StringUtils.isEmpty(gridLocation)) ?
-                    Util.initialize(new String[]{"--" + GRID_LOCATION + "=" + gridLocation}) :
-                    Util.initialize();
+    private TopicManagerPrx getTopicManager(){
+        if (topicManager == null) {
+            if (communicator == null) {
+                assert (iceConfig != null);
+                communicator = iceConfig.getCommunicator();
+            }
+            assert (communicator != null);
+            topicManager = TopicManagerPrx.checkedCast(communicator.stringToProxy("IceStorm/TopicManager@StormSvr"));
+        }
+        return topicManager;
     }
 
     /**
@@ -47,7 +51,16 @@ public class StormNotice implements CoreNotice {
      */
     @Override
     public void createTopic(String topic) {
-        if (topic == null) init();
+        TopicPrx topicPrx;
+        try {
+            topicPrx = getTopicManager().retrieve(topic);
+        } catch(NoSuchTopic e) {
+            try {
+                topicPrx = getTopicManager().create(topic);
+            } catch(TopicExists ex) {
+                log.warn("无法创建" + topic + "频道" + e.getMessage());
+            }
+        }
     }
 
     /**
@@ -56,8 +69,16 @@ public class StormNotice implements CoreNotice {
      * @param topic
      */
     @Override
-    public void subscribeTopic(String topic) {
-
+    public void subscribeTopic(String topic,ObjectPrx handler) {
+        try {
+            Map<String,String> qos = new HashMap<>();
+            qos.put("retryCount","1");
+            qos.put("reliability","ordered");
+            TopicPrx topicPrx = getTopicManager().retrieve(topic);
+            topicPrx.subscribeAndGetPublisher(qos,handler);
+        } catch (NoSuchTopic | AlreadySubscribed | InvalidSubscriber | BadQoS e) {
+            log.warn("无法订阅" + topic + "频道，" + e.getMessage());
+        }
     }
 
     /**
@@ -66,7 +87,13 @@ public class StormNotice implements CoreNotice {
      * @param topic
      */
     @Override
-    public void unSubscribeTopic(String topic) {
+    public void unSubscribeTopic(String topic, ObjectPrx handler) {
+        try {
+            TopicPrx topicPrx = getTopicManager().retrieve(topic);
+            topicPrx.unsubscribe(handler);
+        } catch (NoSuchTopic e) {
+            log.warn("无法取消订阅" + topic + "频道，" + e.getMessage());
+        }
 
     }
 

@@ -6,6 +6,45 @@ module zeroc {
     ["java:type:java.util.ArrayList<String>"] sequence<string> FileList;
     ["java:type:java.util.ArrayList<String>"] sequence<string> ScopeList;
 
+    ["java:getset","clr:property"]
+    struct NodeDTO { //节点信息（目录和文件通用信息）
+        string id; //节点编号（树节点编号）
+        string name; //节点名称（树节点名称或文件名称）
+        string pid; //父节点编号
+        short typeId; //节点类别编号
+        string path; //节点全路径
+        long createTimeStamp; //节点建立时间
+        string createTimeText; //节点建立时间文字
+        long lastModifyTimeStamp; //节点最后修改时间
+        string lastModifyTimeText; //节点最后修改时间文字
+        bool isReadOnly; //节点是否只读
+        long fileLength; //节点长度
+
+        bool isDirectory; //节点是否目录
+        bool isProject; //节点是否项目目录
+        bool isTask; //节点是否任务目录
+        bool isDesign; //节点是否设计资料
+        bool isCommit; //节点是否提资资料
+        bool isHistory; //节点是否历史版本
+
+        //加速所需属性
+        string projectId; //节点所属项目id
+        string projectName; //节点所属项目名称
+        string issueId; //节点所属签发任务id
+        string issueName; //节点所属签发任务名称
+        string taskId; //节点所属生产任务id
+        string taskName; //节点所属生产任务名称
+        string companyId; //节点生产组织id
+        string companyName; //节点生产组织名称
+        string classicId; //节点所属分类id
+        string classicName; //节点所属分类名称
+        string storagePath; //节点相对路径
+        string ownerUserId; //节点所有者用户id
+        string ownerRoleId; //节点所有者职责id
+        string ownerName; //节点所有者名称
+    };
+    ["java:type:java.util.ArrayList<NodeDTO>"] sequence<NodeDTO> NodeList;
+
 
     ["java:getset","clr:property"]
     struct CallbackDTO {

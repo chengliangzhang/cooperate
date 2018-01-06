@@ -3,6 +3,8 @@ package com.maoding.Config;
 
 import com.maoding.Utils.ExceptionUtils;
 import com.maoding.Utils.StringUtils;
+import com.zeroc.Ice.Communicator;
+import com.zeroc.Ice.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -31,12 +33,15 @@ public class IceConfig {
     /** 日志对象 */
     protected static final Logger log = LoggerFactory.getLogger(IceConfig.class);
 
+    private final static String GRID_LOCATION = "Ice.Default.Locator";
+
     @Autowired
     private ResourceLoader resourceLoader;
 
     private String config;
 
     public static Map<String, String> propertiesMap = null;
+    public static Communicator communicator = null;
 
     public String getConfig() {
         return config;
@@ -97,5 +102,18 @@ public class IceConfig {
     public Map<String, String> getAllProperty() {
         if (propertiesMap == null) loadAllProperties();
         return propertiesMap;
+    }
+
+    public Communicator getCommunicator(){
+        if (communicator == null) {
+            String gridLocation = getProperty(GRID_LOCATION);
+            if (!StringUtils.isEmpty(gridLocation)) {
+                communicator = Util.initialize(new String[]{"--" + GRID_LOCATION + "=" + gridLocation});
+                log.info("使用" + gridLocation + "的IceGrid服务器");
+            } else {
+                Util.initialize();
+            }
+        }
+        return communicator;
     }
 }

@@ -900,7 +900,7 @@
         <dependency>
             <groupId>com.zeroc</groupId>
             <artifactId>icestorm</artifactId>
-            <version>3.6.3</version>
+            <version>${ice.version}</version>
         </dependency>
         <!-- Spring -->
         <dependency>

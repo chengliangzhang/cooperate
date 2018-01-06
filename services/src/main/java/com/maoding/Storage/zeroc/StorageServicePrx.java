@@ -22,6 +22,144 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default int writeFile(SimpleNodeDTO node)
+    {
+        return writeFile(node, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default int writeFile(SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_writeFileAsync(node, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileAsync(SimpleNodeDTO node)
+    {
+        return _iceI_writeFileAsync(node, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileAsync(SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_writeFileAsync(node, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> _iceI_writeFileAsync(SimpleNodeDTO iceP_node, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "writeFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     SimpleNodeDTO.ice_write(ostr, iceP_node);
+                 }, istr -> {
+                     int ret;
+                     ret = istr.readInt();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default int writeFileForAccount(com.maoding.User.zeroc.AccountDTO account, SimpleNodeDTO node)
+    {
+        return writeFileForAccount(account, node, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default int writeFileForAccount(com.maoding.User.zeroc.AccountDTO account, SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_writeFileForAccountAsync(account, node, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, SimpleNodeDTO node)
+    {
+        return _iceI_writeFileForAccountAsync(account, node, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_writeFileForAccountAsync(account, node, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> _iceI_writeFileForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, SimpleNodeDTO iceP_node, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "writeFileForAccount", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     SimpleNodeDTO.ice_write(ostr, iceP_node);
+                 }, istr -> {
+                     int ret;
+                     ret = istr.readInt();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default byte[] readFile(SimpleNodeDTO node, long pos, int size)
+    {
+        return readFile(node, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default byte[] readFile(SimpleNodeDTO node, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readFileAsync(node, pos, size, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<byte[]> readFileAsync(SimpleNodeDTO node, long pos, int size)
+    {
+        return _iceI_readFileAsync(node, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<byte[]> readFileAsync(SimpleNodeDTO node, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readFileAsync(node, pos, size, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<byte[]> _iceI_readFileAsync(SimpleNodeDTO iceP_node, long iceP_pos, int iceP_size, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<byte[]> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "readFile", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     SimpleNodeDTO.ice_write(ostr, iceP_node);
+                     ostr.writeLong(iceP_pos);
+                     ostr.writeInt(iceP_size);
+                 }, istr -> {
+                     byte[] ret;
+                     ret = istr.readByteSeq();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default byte[] readFileForAccount(com.maoding.User.zeroc.AccountDTO account, SimpleNodeDTO node, long pos, int size)
+    {
+        return readFileForAccount(account, node, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default byte[] readFileForAccount(com.maoding.User.zeroc.AccountDTO account, SimpleNodeDTO node, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readFileForAccountAsync(account, node, pos, size, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<byte[]> readFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, SimpleNodeDTO node, long pos, int size)
+    {
+        return _iceI_readFileForAccountAsync(account, node, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<byte[]> readFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, SimpleNodeDTO node, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readFileForAccountAsync(account, node, pos, size, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<byte[]> _iceI_readFileForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, SimpleNodeDTO iceP_node, long iceP_pos, int iceP_size, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<byte[]> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "readFileForAccount", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     SimpleNodeDTO.ice_write(ostr, iceP_node);
+                     ostr.writeLong(iceP_pos);
+                     ostr.writeInt(iceP_size);
+                 }, istr -> {
+                     byte[] ret;
+                     ret = istr.readByteSeq();
+                     return ret;
+                 });
+        return f;
+    }
+
     default FullNodeDTO getFullNodeInfoByPath(String path)
     {
         return getFullNodeInfoByPath(path, com.zeroc.Ice.ObjectPrx.noExplicitContext);
@@ -776,41 +914,21 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    /**
-     * @deprecated 转为私有
-     **/
-    @Deprecated
     default SimpleNodeDTO createStorageNode(CreateNodeRequestDTO request)
     {
         return createStorageNode(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    /**
-     * @param context The Context map to send with the invocation.
-     * @deprecated 转为私有
-     **/
-    @Deprecated
     default SimpleNodeDTO createStorageNode(CreateNodeRequestDTO request, java.util.Map<String, String> context)
     {
         return _iceI_createStorageNodeAsync(request, context, true).waitForResponse();
     }
 
-    /**
-     * @return A future that will be completed with the result.
-     * @deprecated 转为私有
-     **/
-    @Deprecated
     default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createStorageNodeAsync(CreateNodeRequestDTO request)
     {
         return _iceI_createStorageNodeAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    /**
-     * @param context The Context map to send with the invocation.
-     * @return A future that will be completed with the result.
-     * @deprecated 转为私有
-     **/
-    @Deprecated
     default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createStorageNodeAsync(CreateNodeRequestDTO request, java.util.Map<String, String> context)
     {
         return _iceI_createStorageNodeAsync(request, context, false);
@@ -820,6 +938,40 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
     {
         com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createStorageNode", null, sync, null);
         f.invoke(true, context, null, ostr -> {
+                     CreateNodeRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     SimpleNodeDTO ret;
+                     ret = SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default SimpleNodeDTO createStorageNodeForAccount(com.maoding.User.zeroc.AccountDTO account, CreateNodeRequestDTO request)
+    {
+        return createStorageNodeForAccount(account, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default SimpleNodeDTO createStorageNodeForAccount(com.maoding.User.zeroc.AccountDTO account, CreateNodeRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createStorageNodeForAccountAsync(account, request, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createStorageNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, CreateNodeRequestDTO request)
+    {
+        return _iceI_createStorageNodeForAccountAsync(account, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createStorageNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, CreateNodeRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createStorageNodeForAccountAsync(account, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_createStorageNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, CreateNodeRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createStorageNodeForAccount", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
                      CreateNodeRequestDTO.ice_write(ostr, iceP_request);
                  }, istr -> {
                      SimpleNodeDTO ret;
@@ -2378,70 +2530,70 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default boolean moveNode(String oldPath, String newPath)
+    default SimpleNodeDTO moveNode(String oldPath, String newPath)
     {
         return moveNode(oldPath, newPath, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default boolean moveNode(String oldPath, String newPath, java.util.Map<String, String> context)
+    default SimpleNodeDTO moveNode(String oldPath, String newPath, java.util.Map<String, String> context)
     {
         return _iceI_moveNodeAsync(oldPath, newPath, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> moveNodeAsync(String oldPath, String newPath)
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> moveNodeAsync(String oldPath, String newPath)
     {
         return _iceI_moveNodeAsync(oldPath, newPath, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> moveNodeAsync(String oldPath, String newPath, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> moveNodeAsync(String oldPath, String newPath, java.util.Map<String, String> context)
     {
         return _iceI_moveNodeAsync(oldPath, newPath, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_moveNodeAsync(String iceP_oldPath, String iceP_newPath, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_moveNodeAsync(String iceP_oldPath, String iceP_newPath, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "moveNode", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "moveNode", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      ostr.writeString(iceP_oldPath);
                      ostr.writeString(iceP_newPath);
                  }, istr -> {
-                     boolean ret;
-                     ret = istr.readBool();
+                     SimpleNodeDTO ret;
+                     ret = SimpleNodeDTO.ice_read(istr);
                      return ret;
                  });
         return f;
     }
 
-    default boolean moveNodeForAccount(com.maoding.User.zeroc.AccountDTO account, String oldPath, String newPath)
+    default SimpleNodeDTO moveNodeForAccount(com.maoding.User.zeroc.AccountDTO account, String oldPath, String newPath)
     {
         return moveNodeForAccount(account, oldPath, newPath, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default boolean moveNodeForAccount(com.maoding.User.zeroc.AccountDTO account, String oldPath, String newPath, java.util.Map<String, String> context)
+    default SimpleNodeDTO moveNodeForAccount(com.maoding.User.zeroc.AccountDTO account, String oldPath, String newPath, java.util.Map<String, String> context)
     {
         return _iceI_moveNodeForAccountAsync(account, oldPath, newPath, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> moveNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String oldPath, String newPath)
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> moveNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String oldPath, String newPath)
     {
         return _iceI_moveNodeForAccountAsync(account, oldPath, newPath, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> moveNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String oldPath, String newPath, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> moveNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String oldPath, String newPath, java.util.Map<String, String> context)
     {
         return _iceI_moveNodeForAccountAsync(account, oldPath, newPath, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_moveNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, String iceP_oldPath, String iceP_newPath, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_moveNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, String iceP_oldPath, String iceP_newPath, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "moveNodeForAccount", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "moveNodeForAccount", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
                      ostr.writeString(iceP_oldPath);
                      ostr.writeString(iceP_newPath);
                  }, istr -> {
-                     boolean ret;
-                     ret = istr.readBool();
+                     SimpleNodeDTO ret;
+                     ret = SimpleNodeDTO.ice_read(istr);
                      return ret;
                  });
         return f;
@@ -2866,55 +3018,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
                  }, istr -> {
                      boolean ret;
                      ret = istr.readBool();
-                     return ret;
-                 });
-        return f;
-    }
-
-    /**
-     **/
-    @Deprecated
-    default NodeDTO getNodeInfo(CooperationQueryDTO query)
-    {
-        return getNodeInfo(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    /**
-     * @param context The Context map to send with the invocation.
-     **/
-    @Deprecated
-    default NodeDTO getNodeInfo(CooperationQueryDTO query, java.util.Map<String, String> context)
-    {
-        return _iceI_getNodeInfoAsync(query, context, true).waitForResponse();
-    }
-
-    /**
-     * @return A future that will be completed with the result.
-     **/
-    @Deprecated
-    default java.util.concurrent.CompletableFuture<NodeDTO> getNodeInfoAsync(CooperationQueryDTO query)
-    {
-        return _iceI_getNodeInfoAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    /**
-     * @param context The Context map to send with the invocation.
-     * @return A future that will be completed with the result.
-     **/
-    @Deprecated
-    default java.util.concurrent.CompletableFuture<NodeDTO> getNodeInfoAsync(CooperationQueryDTO query, java.util.Map<String, String> context)
-    {
-        return _iceI_getNodeInfoAsync(query, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<NodeDTO> _iceI_getNodeInfoAsync(CooperationQueryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<NodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getNodeInfo", null, sync, null);
-        f.invoke(true, context, null, ostr -> {
-                     CooperationQueryDTO.ice_write(ostr, iceP_query);
-                 }, istr -> {
-                     NodeDTO ret;
-                     ret = NodeDTO.ice_read(istr);
                      return ret;
                  });
         return f;

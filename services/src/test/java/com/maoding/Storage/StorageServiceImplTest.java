@@ -1,10 +1,12 @@
 package com.maoding.Storage;
 
+import com.maoding.Bean.BasicFileMultipartDTO;
 import com.maoding.Const.FileServerConst;
 import com.maoding.Const.StorageConst;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Project.zeroc.ProjectDTO;
 import com.maoding.Storage.zeroc.*;
+import com.maoding.Storage.zeroc.SimpleNodeDTO;
 import com.maoding.User.zeroc.AccountDTO;
 import com.maoding.Utils.BeanUtils;
 import com.maoding.Utils.HttpUtils;
@@ -66,6 +68,20 @@ public class StorageServiceImplTest {
     private Integer callServiceMethod = CALL_METHOD_LOCAL;
 
 
+    /** 测试BeanUtils */
+    @Test
+    public void testBeanUtils() throws Exception {
+        long t = System.currentTimeMillis();
+        byte[] b = new byte[8192];
+        for (int i=0; i<1000; i++) {
+            FileMultipartDTO multipart = new FileMultipartDTO();
+            multipart.setKey("abcde");
+            multipart.setData(b);
+            BasicFileMultipartDTO basic = BeanUtils.createFrom(multipart, BasicFileMultipartDTO.class);
+            Assert.assertEquals(multipart.getKey(), basic.getKey());
+        }
+        System.out.println("===>testBeanUtils:" + (System.currentTimeMillis()-t) + "ms");
+    }
     /** 获取详细信息 */
     @Test
     public void testGetFullNodeInfo() throws Exception{
@@ -124,7 +140,7 @@ public class StorageServiceImplTest {
         accountDTO.setId(localUserId);
 //        Assert.assertNotNull(storageService.getNodeByPathForAccount(accountDTO,"\\深圳市卯丁总部大厦\\设计\\方案设计\\2222222\\abce\\dd\\testCommit.txt",null));
 //        Assert.assertNull(storageService.getNodeByPathForAccount(accountDTO,"\\深圳市卯丁总部大厦\\设计\\方案设计\\2222222\\abce\\1234.txt",null));
-        Assert.assertTrue(storageService.moveNode("\\深圳市卯丁总部大厦\\设计\\方案设计\\2222222\\abce\\dd\\testCommit.txt","\\深圳市卯丁总部大厦\\提资\\方案设计\\2222222\\abce\\1234.txt",null));
+        Assert.assertNotNull(storageService.moveNode("\\深圳市卯丁总部大厦\\设计\\方案设计\\2222222\\abce\\dd\\testCommit.txt","\\深圳市卯丁总部大厦\\设计\\方案设计\\2222222\\abce\\dd\\1234.txt",null));
 //        Assert.assertNotNull(storageService.getNodeByPathForAccount(accountDTO,"/testForStorageService/123.txt",null));
 //        Assert.assertNull(storageService.getNodeByPathForAccount(accountDTO,"/test_rename/123.txt",null));
 //        Assert.assertTrue(storageService.moveNode("/testForStorageService","/test_rename",null));
@@ -429,19 +445,6 @@ public class StorageServiceImplTest {
         Assert.assertNotNull(dirInfo);
     }
 
-    @Test
-    public void testGetNodeInfo() throws Exception {
-        CooperationQueryDTO query = new CooperationQueryDTO();
-        NodeDTO nodeInfo = storageService.getNodeInfo(query,null);
-        Assert.assertNotNull(nodeInfo);
-        List<SimpleNodeDTO> subNodeList = nodeInfo.getSubNodeList();
-        Assert.assertNotNull(subNodeList);
-        Assert.assertTrue(subNodeList.size() > 0);
-        query.setNodeId(subNodeList.get(0).getId());
-        nodeInfo = storageService.getNodeInfo(query,null);
-        Assert.assertNotNull(nodeInfo);
-    }
-
     /** 文件服务器使用LocalServer,使用多个调用文件服务器接口 */
     @Test
     public void testWriteFileForLocal() throws Exception {
@@ -465,8 +468,11 @@ public class StorageServiceImplTest {
             fileRequestDTO = storageService.openFileForAccount(account,path,null);
             if (fileRequestDTO == null) {
                 CreateNodeRequestDTO dto = new CreateNodeRequestDTO();
-                dto.setFullName(path);
-                storageService.createNode(dto,null);
+                dto.setPid("000114aac76b47e183e27477ac42cd6d0");
+                dto.setParentPath("/深圳市卯丁总部大厦/设计/方案设计/2222222");
+                dto.setTaskId("000114aac76b47e183e27477ac42cd6d");
+                dto.setFullName(StringUtils.substring(path,StringUtils.length(dto.getParentPath())));
+                storageService.createStorageNode(dto,null);
                 fileRequestDTO = storageService.openFileForAccount(account,path,null);
             }
         } else if (CALL_METHOD_ICE.equals(callServiceMethod)) {

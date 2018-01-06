@@ -43,7 +43,7 @@ public class LocalServer implements BasicFileServerInterface {
     private static final String KEY_SIZE = "size";
     private static final String KEY_UPLOAD_ID = "uploadId";
 
-    private static final Map<Integer,Integer> modeMapConst = new HashMap(){
+    private static final HashMap<Integer,Integer> modeMapConst = new HashMap<Integer,Integer>(){
         {
             put(FileServerConst.FILE_SERVER_MODE_DEFAULT, FileServerConst.FILE_SERVER_MODE_RPC);
             put(FileServerConst.FILE_SERVER_MODE_DEFAULT_COM, FileServerConst.FILE_SERVER_MODE_RPC);
@@ -177,11 +177,7 @@ public class LocalServer implements BasicFileServerInterface {
         requestDTO.setUrl(FILE_UPLOAD_URL);
         requestDTO.setScope(getValidScope(src.getScope()));
         requestDTO.setKey(getValidKey(src.getKey()));
-        if (modeMapConst.containsKey(mode)){
-            requestDTO.setMode(modeMapConst.get(mode));
-        } else {
-            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_RPC);
-        }
+        requestDTO.setMode(modeMapConst.getOrDefault(mode, FileServerConst.FILE_SERVER_MODE_RPC));
         requestDTO.putParam(KEY_UPLOAD_ID,UUID.randomUUID().toString());
 
         //保持兼容性
@@ -211,11 +207,7 @@ public class LocalServer implements BasicFileServerInterface {
         requestDTO.setUrl(FILE_DOWNLOAD_URL);
         requestDTO.putParam(BASE_DIR_NAME,src.getScope());
         requestDTO.putParam(PATH_NAME,src.getKey());
-        if (modeMapConst.containsKey(mode)){
-            requestDTO.setMode(modeMapConst.get(mode));
-        } else {
-            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_RPC);
-        }
+        requestDTO.setMode(modeMapConst.getOrDefault(mode, FileServerConst.FILE_SERVER_MODE_RPC));
         File f = new File(FILE_SERVER_PATH + "/" + src.getKey());
         requestDTO.putParam(KEY_SIZE,((Long)f.length()).toString());
         return requestDTO;

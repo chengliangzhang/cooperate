@@ -22,16 +22,6 @@ public class StorageEntity extends BaseTreeEntity {
     @Deprecated
     private Short pidTypeId;
 
-    /** （取消，因只需锁定文件）锁定树节点的用户id */
-    @Column
-    @Deprecated
-    private String lockUserId;
-
-    /** （取消，因唯一编号同id）对应file/dir内的唯一编号 */
-    @Column
-    @Deprecated
-    private String detailId;
-
     /** 相关联的任务id */
     @Column
     private String taskId;
@@ -42,14 +32,6 @@ public class StorageEntity extends BaseTreeEntity {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
-    }
-
-    public String getLockUserId() {
-        return lockUserId;
-    }
-
-    public void setLockUserId(String lockUserId) {
-        this.lockUserId = lockUserId;
     }
 
     public Long getFileLength() {
@@ -68,11 +50,4 @@ public class StorageEntity extends BaseTreeEntity {
         this.pidTypeId = pidTypeId;
     }
 
-    public String getDetailId() {
-        return detailId;
-    }
-
-    public void setDetailId(String detailId) {
-        this.detailId = detailId;
-    }
 }

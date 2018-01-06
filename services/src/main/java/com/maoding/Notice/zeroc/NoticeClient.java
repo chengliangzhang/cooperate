@@ -20,18 +20,18 @@
 
 package com.maoding.Notice.zeroc;
 
-public interface NoticeService extends com.zeroc.Ice.Object
+public interface NoticeClient extends com.zeroc.Ice.Object
 {
-    void createTopic(java.lang.String topic, com.zeroc.Ice.Current current);
+    void subscribeTopic(java.lang.String topic, com.zeroc.Ice.Current current);
 
-    void sendMessage(MessageDTO message, java.util.List<ReceiverDTO> receiverList, com.zeroc.Ice.Current current);
+    void subscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, java.lang.String topic, com.zeroc.Ice.Current current);
 
-    void sendMessageForAccount(com.maoding.User.zeroc.AccountDTO account, MessageDTO message, java.util.List<ReceiverDTO> receiverList, com.zeroc.Ice.Current current);
+    void gotEvent(MessageDTO msg, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
         "::Ice::Object",
-        "::zeroc::NoticeService"
+        "::zeroc::NoticeClient"
     };
 
     @Override
@@ -48,57 +48,53 @@ public interface NoticeService extends com.zeroc.Ice.Object
 
     static String ice_staticId()
     {
-        return "::zeroc::NoticeService";
+        return "::zeroc::NoticeClient";
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createTopic(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopic(NoticeClient obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         java.lang.String iceP_topic;
         iceP_topic = istr.readSerializable(java.lang.String.class);
         inS.endReadParams();
-        obj.createTopic(iceP_topic, current);
+        obj.subscribeTopic(iceP_topic, current);
         return inS.setResult(inS.writeEmptyParams());
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_sendMessage(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        MessageDTO iceP_message;
-        java.util.List<ReceiverDTO> iceP_receiverList;
-        iceP_message = MessageDTO.ice_read(istr);
-        iceP_receiverList = ReceiverListHelper.read(istr);
-        inS.endReadParams();
-        obj.sendMessage(iceP_message, iceP_receiverList, current);
-        return inS.setResult(inS.writeEmptyParams());
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_sendMessageForAccount(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopicForAccount(NoticeClient obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.User.zeroc.AccountDTO iceP_account;
-        MessageDTO iceP_message;
-        java.util.List<ReceiverDTO> iceP_receiverList;
+        java.lang.String iceP_topic;
         iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_message = MessageDTO.ice_read(istr);
-        iceP_receiverList = ReceiverListHelper.read(istr);
+        iceP_topic = istr.readSerializable(java.lang.String.class);
         inS.endReadParams();
-        obj.sendMessageForAccount(iceP_account, iceP_message, iceP_receiverList, current);
+        obj.subscribeTopicForAccount(iceP_account, iceP_topic, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_gotEvent(NoticeClient obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        MessageDTO iceP_msg;
+        iceP_msg = MessageDTO.ice_read(istr);
+        inS.endReadParams();
+        obj.gotEvent(iceP_msg, current);
         return inS.setResult(inS.writeEmptyParams());
     }
 
     final static String[] _iceOps =
     {
-        "createTopic",
+        "gotEvent",
         "ice_id",
         "ice_ids",
         "ice_isA",
         "ice_ping",
-        "sendMessage",
-        "sendMessageForAccount"
+        "subscribeTopic",
+        "subscribeTopicForAccount"
     };
 
     @Override
@@ -115,7 +111,7 @@ public interface NoticeService extends com.zeroc.Ice.Object
         {
             case 0:
             {
-                return _iceD_createTopic(this, in, current);
+                return _iceD_gotEvent(this, in, current);
             }
             case 1:
             {
@@ -135,11 +131,11 @@ public interface NoticeService extends com.zeroc.Ice.Object
             }
             case 5:
             {
-                return _iceD_sendMessage(this, in, current);
+                return _iceD_subscribeTopic(this, in, current);
             }
             case 6:
             {
-                return _iceD_sendMessageForAccount(this, in, current);
+                return _iceD_subscribeTopicForAccount(this, in, current);
             }
         }
 

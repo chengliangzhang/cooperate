@@ -31,9 +31,6 @@ public class StorageFileEntity extends BaseEntity {
     /** 用户自定义版本 */
     @Column
     private String fileVersion;
-    /** 同步模式，0-手动同步，1-自动更新 */
-    @Column
-    private Short syncModeId;
     /** 以读写方式打开的文件的实际存储位置名称 */
     @Column
     private String uploadScope;
@@ -41,17 +38,6 @@ public class StorageFileEntity extends BaseEntity {
     @Column
     private String uploadKey;
     /** 文件所属的项目id */
-    @Column
-    private String projectId;
-    /** 文件所属的签发任务id */
-    @Column
-    private String issueId;
-    /** 文件所属的生产任务id */
-    @Column
-    private String taskId;
-    /** 文件所属的组织id */
-    @Column
-    private String organizationId;
 
     public String getFileScope() {
         return fileScope;
@@ -101,15 +87,6 @@ public class StorageFileEntity extends BaseEntity {
         this.fileVersion = fileVersion;
     }
 
-    public Short getSyncModeId() {
-        return syncModeId;
-    }
-
-    public void setSyncModeId(Short syncModeId) {
-        this.syncModeId = syncModeId;
-    }
-
-
     public String getUploadScope() {
         return uploadScope;
     }
@@ -124,37 +101,5 @@ public class StorageFileEntity extends BaseEntity {
 
     public void setUploadKey(String uploadKey) {
         this.uploadKey = uploadKey;
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getIssueId() {
-        return issueId;
-    }
-
-    public void setIssueId(String issueId) {
-        this.issueId = issueId;
-    }
-
-    public String getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
-
-    public String getOrganizationId() {
-        return organizationId;
-    }
-
-    public void setOrganizationId(String organizationId) {
-        this.organizationId = organizationId;
     }
 }

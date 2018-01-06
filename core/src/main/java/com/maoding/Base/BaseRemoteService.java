@@ -40,13 +40,8 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
         @Override
         public void run() {
             //初始化连接器
-            String gridLocation = (iceConfig != null) ? iceConfig.getProperty(GRID_LOCATION) : null;
-            if ((communicator == null) || !StringUtils.isSame(gridLocation, lastGridLocation)) {
-                communicator = (!StringUtils.isEmpty(gridLocation)) ?
-                        Util.initialize(new String[]{"--" + GRID_LOCATION + "=" + gridLocation}) :
-                        Util.initialize();
-                lastGridLocation = gridLocation;
-                if (gridLocation != null) log.info("IceGrid服务器切换到" + gridLocation);
+            if (communicator == null) {
+                communicator = (iceConfig != null) ? iceConfig.getCommunicator() : Util.initialize();
             }
 
             //补全代理地址参数
@@ -104,7 +99,6 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
 
     /** ice 连接对象 */
     private static Communicator communicator = null;
-    private static String lastGridLocation = null;
 
     /** 远程服务代理 */
     private volatile P remotePrx = null;

@@ -62,6 +62,15 @@ BEGIN
 		`write_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '用于更改的文件服务器类型',
 		`write_file_scope` varchar(255) DEFAULT NULL COMMENT '用于更改的文件服务器存储位置',
 		`write_file_key` varchar(255) DEFAULT NULL COMMENT '用于更改的文件服务器存储名称',
+
+    `creator_duty_id` char(32) DEFAULT NULL COMMENT '',
+		`file_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '文件服务器类型',
+		`file_scope` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储位置',
+		`file_key` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储名称',
+		`upload_file_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '文件服务器类型',
+		`uploaded_scope` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储位置',
+		`uploaded_key` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储名称',
+		`last_modify_address` varchar(255) DEFAULT NULL COMMENT '',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -246,6 +255,44 @@ BEGIN
     KEY `member_type` (`member_type`) USING BTREE,
     KEY `project_id` (`project_id`) USING BTREE
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目成员表';
+
+  -- maoding_web_company -- 组织信息表
+  CREATE TABLE IF NOT EXISTS `maoding_web_company` (
+    `id` varchar(32) NOT NULL COMMENT '主键id，uuid',
+    `company_name` varchar(100) NOT NULL COMMENT '企业名称',
+    `major_type` varchar(1000) DEFAULT NULL COMMENT '专业类别',
+    `certificate` varchar(1000) DEFAULT NULL COMMENT '技术资质',
+    `main_field` varchar(1000) DEFAULT NULL COMMENT '擅长领域',
+    `is_authentication` varchar(2) DEFAULT '0' COMMENT '是否认证(0.否，1.是，2申请认证)',
+    `operator_name` varchar(32) DEFAULT NULL COMMENT '经办人',
+    `reject_reason` varchar(1000) DEFAULT NULL COMMENT '认证不通过原因',
+    `company_type` varchar(2) DEFAULT NULL COMMENT '公司类型(0=小B，1＝超级大B,2=大B分公司)',
+    `company_email` varchar(50) DEFAULT NULL COMMENT '企业邮箱',
+    `company_short_name` varchar(100) DEFAULT NULL,
+    `company_fax` varchar(20) DEFAULT NULL COMMENT '企业传真',
+    `server_type` varchar(200) DEFAULT NULL COMMENT '服务类型',
+    `province` varchar(30) DEFAULT NULL COMMENT '企业所属省',
+    `city` varchar(30) DEFAULT NULL COMMENT '企业所属市',
+    `county` varchar(30) DEFAULT NULL,
+    `company_comment` longtext COMMENT '企业简介',
+    `legal_representative` varchar(30) DEFAULT NULL COMMENT '法人代表',
+    `company_phone` varchar(30) DEFAULT NULL COMMENT '联系电话',
+    `company_address` varchar(255) DEFAULT NULL COMMENT '企业地址',
+    `status` varchar(1) DEFAULT '0' COMMENT '企业状态（生效0，1不生效）',
+    `group_index` int(11) DEFAULT NULL COMMENT '团队排序',
+    `index_show` varchar(1) DEFAULT NULL COMMENT '是否首页展示(0展示，1不展示)',
+    `business_license_number` varchar(50) DEFAULT NULL COMMENT '工商营业执照号码',
+    `organization_code_number` varchar(50) DEFAULT NULL COMMENT '组织机构代码证号码',
+    `micro_url` varchar(100) DEFAULT '#micro/microNetworkone' COMMENT '微官网地址',
+    `micro_template` varchar(1) DEFAULT '1' COMMENT '微官网模板',
+    `group_id` varchar(32) DEFAULT NULL COMMENT '企业群ID',
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    PRIMARY KEY (`id`),
+    KEY `group_id` (`group_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='组织表';
 END;
 
 -- 建立创建视图的存储过程
@@ -262,22 +309,14 @@ BEGIN
         last_modify_duty_id,
         file_scope,
         file_key,
-        creator_duty_id,
-        specialty_id,
         file_checksum,
         file_version,
         last_modify_address,
-        locking,
-        sync_mode_id,
-        downloading,
         uploaded_scope,
         uploaded_key,
         file_server_type_id,
         file_type_id,
-        upload_file_server_type_id,
-        upload_scope,
-        upload_key,
-        upload_id
+        upload_file_server_type_id
       from
         maoding_storage_file file;
 
@@ -288,6 +327,11 @@ BEGIN
           ,task.task_name
           ,task.task_type as type_id
           ,task.task_pid as pid
+--           ,null as path
+--           ,null as issue_id
+--           ,null as issue_name
+--           ,null as issue_path
+--           ,null as task_path
           ,concat(if(task_parent4.task_name is null,'',concat(task_parent4.task_name,'/'))
               ,if(task_parent3.task_name is null,'',concat(task_parent3.task_name,'/'))
               ,if(task_parent2.task_name is null,'',concat(task_parent2.task_name,'/'))
@@ -357,6 +401,7 @@ BEGIN
 					,if(project.id is null,null,1) as is_history
 					,null as classic_id
           ,null as task_id
+          ,null as storage_path
       from
           maoding_web_project project
 					inner join maoding_const node_type on (node_type.classic_id = 14 and node_type.value_id=11)
@@ -387,6 +432,7 @@ union all
 					,if(classic_type.value_id is null,null,if(classic_type.value_id=1,1,0)) as is_history
 					,classic_type.value_id as classic_id
           ,null as task_id
+          ,null as storage_path
       from
           maoding_const classic_type
 					inner join maoding_web_project project on (project.pstatus = '0')
@@ -416,6 +462,7 @@ union all
 					,if(task.id is null,null,0) as is_history
 					,classic_type.value_id as classic_id
           ,task.id as task_id
+          ,null as storage_path
       from
           maoding_task task
 					inner join maoding_const classic_type on (classic_type.classic_id = 24 and classic_type.value_id = 0)
@@ -445,6 +492,7 @@ union all
 					,if(task.id is null,null,1) as is_history
 					,classic_type.value_id as classic_id
           ,task.id as task_id
+          ,null as storage_path
       from
           maoding_task task
 					inner join maoding_const classic_type on (classic_type.classic_id = 24 and classic_type.value_id = 1)
@@ -475,6 +523,7 @@ union all
 					,if(node.id is null,null,if(node.type_id in (3,32),1,0)) as is_history
 					,classic_type.value_id as classic_id
           ,task.id as task_id
+          ,node.path as storage_path
       from
           maoding_storage node
 					inner join maoding_const classic_type on (classic_type.classic_id = 24
@@ -892,3 +941,7 @@ BEGIN
 	end while;
 	close curTable;
 END;
+
+call updateTables();
+call updateViews();
+call initConst();
