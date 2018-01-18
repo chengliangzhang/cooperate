@@ -1,15 +1,8 @@
 #pragma once
 #include <Common.ice>
 
-[["java:package:com.maoding.Organization"]]
+[["java:package:com.maoding.Company"]]
 module zeroc {
-    ["java:getset","clr:property"]
-    struct OrganizationDTO {
-        string id; //唯一标识
-        string name; //组织名称
-    };
-    ["java:type:java.util.ArrayList<OrganizationDTO>"] sequence<OrganizationDTO> OrganizationList;
-
     ["java:getset","clr:property"]
     struct CompanyDTO {
         string id; //唯一标识
@@ -56,12 +49,6 @@ module zeroc {
         Integer companyStartFlag; //公司开始标识:1
         Integer isInCompanyFlag; //是否在公司标识:1：在，0：不在
     };
-    ["java:type:java.util.ArrayList<CompanyDTO>"] sequence<CompanyDTO> CompanyDTOList;
+    ["java:type:java.util.ArrayList<CompanyDTO>"] sequence<CompanyDTO> CompanyList;
 
-    interface OrganizationService {
-        OrganizationList listOrganizationByUserId(string userId); //获取指定用户所属组织
-        OrganizationList listOrganizationForCurrent(); //获取当前账号所属组织
-
-        CompanyDTOList listCompanyByUserId(string userId);
-    };
 };

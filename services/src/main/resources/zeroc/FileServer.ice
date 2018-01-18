@@ -1,154 +1,115 @@
 #pragma once
 #include <Common.ice>
+#include <FileServerData.ice>
+#include <StorageData.ice>
+
+#include <Notice.ice>
+#include <User.ice>
 
 [["java:package:com.maoding.FileServer"]]
 module zeroc {
-    ["java:type:java.util.ArrayList<String>"] sequence<string> FileList;
-    ["java:type:java.util.ArrayList<String>"] sequence<string> ScopeList;
-
-    ["java:getset","clr:property"]
-    struct NodeDTO { //节点信息（目录和文件通用信息）
-        string id; //节点编号（树节点编号）
-        string name; //节点名称（树节点名称或文件名称）
-        string pid; //父节点编号
-        short typeId; //节点类别编号
-        string path; //节点全路径
-        long createTimeStamp; //节点建立时间
-        string createTimeText; //节点建立时间文字
-        long lastModifyTimeStamp; //节点最后修改时间
-        string lastModifyTimeText; //节点最后修改时间文字
-        bool isReadOnly; //节点是否只读
-        long fileLength; //节点长度
-
-        bool isDirectory; //节点是否目录
-        bool isProject; //节点是否项目目录
-        bool isTask; //节点是否任务目录
-        bool isDesign; //节点是否设计资料
-        bool isCommit; //节点是否提资资料
-        bool isHistory; //节点是否历史版本
-
-        //加速所需属性
-        string projectId; //节点所属项目id
-        string projectName; //节点所属项目名称
-        string issueId; //节点所属签发任务id
-        string issueName; //节点所属签发任务名称
-        string taskId; //节点所属生产任务id
-        string taskName; //节点所属生产任务名称
-        string companyId; //节点生产组织id
-        string companyName; //节点生产组织名称
-        string classicId; //节点所属分类id
-        string classicName; //节点所属分类名称
-        string storagePath; //节点相对路径
-        string ownerUserId; //节点所有者用户id
-        string ownerRoleId; //节点所有者职责id
-        string ownerName; //节点所有者名称
-    };
-    ["java:type:java.util.ArrayList<NodeDTO>"] sequence<NodeDTO> NodeList;
-
-
-    ["java:getset","clr:property"]
-    struct CallbackDTO {
-        string url; //回调地址
-        string name; //回调服务器名称
-        Map params; //回调参数
-    };
-
-    ["java:getset","clr:property"]
-    struct FileRequestDTO {
-        string id; //协同文件编号
-        string nodeId; //协同文件树节点编号
-        string url; //文件服务的连接地址
-        string scope; //文件在文件服务器内的存储空间
-        string key; //文件在文件服务器内的存储名称
-        int mode; //文件服务器连接方式，2-Http Get,3-Http Post,4-阿里云OSS,...
-        Map params; //需要设置的参数（如OSSAccessKeyId等)
-    };
-
-    ["java:getset","clr:property"]
-    struct FileDTO {
-        string scope; //空间(bucket或group)
-        string key; //文件id(key或path)
-    };
-
-    ["java:getset","clr:property"]
-    struct FileMultipartDTO {
-        string scope; //空间(bucket或group)
-        string key; //文件id(key或path)
-        long pos; //数据所在起始位置，为0则为从文件头开始
-        int size; //数据有效字节数，为0则所有字节都有效
-        ByteArray data; //当前分片数据
-    };
-
-    ["java:getset","clr:property"]
-    struct UploadRequestDTO {
-        int requestId; //上传申请的唯一编号
-        string uploadId; //上传任务ID
-        int chunkCount; //总分片数量
-        int chunkPerSize; //每个分片的约定大小
-        int chunkId; //要上传的分片序号
-        int chunkSize; //要上传的分片大小
-        FileMultipartDTO multipart; //要上传的文件数据
-        Map params; //其他上传参数
-    };
-
-    ["java:getset","clr:property"]
-    struct UploadResultDTO {
-        int status; //返回状态，等于0-正常，小于0-发生异常，大于0-存在警告
-        string msg; //返回状态的文字说明
-        FileDTO data; //上传文件在文件服务器内的标识
-        int requestId; //上传申请的唯一编号
-        string uploadId; //上传任务ID
-        int chunkId; //当前上传的分片序号
-        int chunkSize; //实际上传的分片大小
-    };
-
-    ["java:getset","clr:property"]
-    struct DownloadRequestDTO {
-        int requestId; //下载申请的唯一编号
-        string scope; //空间(bucket或group)
-        string key; //文件id(key或path)
-        int chunkId; //申请下载的分片序号，与分片大小相乘计算出文件起始位置
-        int chunkSize; //申请下载的分片大小，如果为0则chunkId失效，下载文件所有内容
-        long pos; //申请下载的文件内起始地址
-        int size; //申请下载的大小
-        Map params; //其他下载参数
-    };
-
-    ["java:getset","clr:property"]
-    struct DownloadResultDTO {
-        int status; //返回状态，等于0-正常，小于0-发生异常，大于0-存在警告
-        string msg; //返回状态的文字说明
-        FileMultipartDTO data; //已下载的文件数据
-        int requestId; //下载申请的唯一编号
-        Integer chunkId; //当前下载的分片序号
-        int chunkSize; //当前下载的分片大小
-        int chunkCount; //后续内容分片数量，为0则已经下载完毕
-    };
-
     interface FileService {
-        //准备实现的接口
-        FileRequestDTO getFileRequest(FileDTO src,short mode); //使用只读或读写方式申请文件实际地址
-        FileDTO moveFile(FileDTO src,FileDTO dst); //移动文件
-        long getFileLength(FileDTO src); //取文件长度
-        bool setFileLength(FileDTO src,long fileLength); //设置文件长度
-        FileDTO copyFile(FileDTO src,FileDTO dst); //复制文件
+        UserService* getUserService(); //获取UserService代理
+        NoticeService* getNoticeService(); //获取NoticeService代理
 
-        //已经实现接口
-        int writeFile(FileMultipartDTO data); //写入文件
-        FileMultipartDTO readFile(FileDTO file,long pos,int size); //从文件读取数据
-        void setFileServerType(int type); //设置文件服务器类型，1-FastDFS服务器，2-阿里云服务器
-        int getFileServerType(); //读取文件服务器类型，1-FastDFS服务器，2-阿里云服务器
-        string duplicateFile(FileDTO src); //复制文件，并返回新文件名
-        void deleteFile(FileDTO src); //删除文件
-        bool isExist(FileDTO src); //在文件服务器内查找指定的文件
-        FileList listFile(string scope); //从文件服务器获取某空间所有文件名
-        ScopeList listScope(); //从文件服务器获取某空间所有文件名
-        void finishUpload(FileRequestDTO request); //结束上传过程
+        ["deprecate:尚未验证"] ProjectDTO getProjectInfoByPath(string path);
+        ["deprecate:尚未验证"] ProjectDTO getProjectInfoByPathForAccount(AccountDTO account,string path);
 
-        //准备删除接口
-        FileRequestDTO getUploadRequest(FileDTO src,int mode,CallbackDTO callback); //获取通过Multipart上传文件时的参数
-        FileRequestDTO getDownloadRequest(FileDTO src,int mode,CallbackDTO callback); //获取通过Multipart下载文件时的参数
-        UploadResultDTO upload(UploadRequestDTO request); //上传文件分片内容
-        DownloadResultDTO download(DownloadRequestDTO request); //下载文件分片内容
+        IdNameList listMajor(); //列出可用专业
+        IdNameList listMajorForAccount(AccountDTO account); //列出可用专业
+        IdNameList listAction(); //列出可用操作
+        IdNameList listActionForAccount(AccountDTO account); //列出可用操作
+        ProjectRoleList listProjectRoleByProjectId(string projectId); //获取项目的参与角色列表
+        ProjectRoleList listProjectRoleByProjectIdForAccount(AccountDTO account,string projectId); //获取项目的参与角色列表
+
+        CommitListResultDTO checkNodeListRequest(SimpleNodeList srcList,CommitRequestDTO request); //提交文件
+        CommitListResultDTO checkNodeListRequestForAccount(AccountDTO account,SimpleNodeList srcList,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO checkNodeRequest(SimpleNodeDTO src,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO checkNodeRequestForAccount(AccountDTO account,SimpleNodeDTO src,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO checkFileRequest(FileNodeDTO src,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO checkFileRequestForAccount(AccountDTO account,FileNodeDTO src,CommitRequestDTO request); //提交文件
+
+        CommitListResultDTO auditNodeListRequest(SimpleNodeList srcList,CommitRequestDTO request); //提交文件
+        CommitListResultDTO auditNodeListRequestForAccount(AccountDTO account,SimpleNodeList srcList,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO auditNodeRequest(SimpleNodeDTO src,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO auditNodeRequestForAccount(AccountDTO account,SimpleNodeDTO src,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO auditFileRequest(FileNodeDTO src,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO auditFileRequestForAccount(AccountDTO account,FileNodeDTO src,CommitRequestDTO request); //提交文件
+
+        CommitListResultDTO commitNodeList(SimpleNodeList srcList,CommitRequestDTO request); //提交文件
+        CommitListResultDTO commitNodeListForAccount(AccountDTO account,SimpleNodeList srcList,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO commitNode(SimpleNodeDTO src,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO commitNodeForAccount(AccountDTO account,SimpleNodeDTO src,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO commitFile(FileNodeDTO src,CommitRequestDTO request); //提交文件
+        SimpleNodeDTO commitFileForAccount(AccountDTO account,FileNodeDTO src,CommitRequestDTO request); //提交文件
+
+        SimpleNodeDTO createVersion(FileNodeDTO src, CreateVersionRequestDTO request); //创建版本
+        SimpleNodeDTO createVersionForAccount(AccountDTO account,FileNodeDTO src, CreateVersionRequestDTO request); //创建版本
+        SimpleNodeDTO updateVersion(FileNodeDTO src, FileNodeDTO dst, CreateVersionRequestDTO request); //创建版本
+        SimpleNodeDTO updateVersionForAccount(AccountDTO account,FileNodeDTO src, FileNodeDTO dst, CreateVersionRequestDTO request); //创建版本
+
+        bool deleteNode(SimpleNodeDTO src); //删除节点
+        bool deleteNodeForAccount(AccountDTO account,SimpleNodeDTO src); //删除节点
+        bool setNodeLength(SimpleNodeDTO src,long fileLength); //设置文件长度
+        bool setNodeLengthForAccount(AccountDTO account,SimpleNodeDTO src,long fileLength); //设置文件长度
+        bool setFileNodeLength(FileNodeDTO src,long fileLength); //设置文件长度
+        bool setFileNodeLengthForAccount(AccountDTO account,FileNodeDTO src,long fileLength); //设置文件长度
+        bool releaseNode(SimpleNodeDTO src,long fileLength); //用可写版本覆盖只读版本
+        bool releaseNodeForAccount(AccountDTO account,SimpleNodeDTO  src,long fileLength); //用可写版本覆盖只读版本
+        bool releaseFileNode(FileNodeDTO src,long fileLength); //用可写版本覆盖只读版本
+        bool releaseFileNodeForAccount(AccountDTO account,FileNodeDTO src,long fileLength); //用可写版本覆盖只读版本
+        bool reloadNode(SimpleNodeDTO src); //用只读版本覆盖可写版本
+        bool reloadNodeForAccount(AccountDTO account,SimpleNodeDTO  src); //用只读版本覆盖可写版本
+        bool reloadFileNode(FileNodeDTO src); //用只读版本覆盖可写版本
+        bool reloadFileNodeForAccount(AccountDTO account,FileNodeDTO src); //用只读版本覆盖可写版本
+        int writeFileNode(FileNodeDTO src,FileDataDTO data); //写入文件
+        int writeFileNodeForAccount(AccountDTO account,FileNodeDTO src,FileDataDTO data); //写入文件
+        int writeNode(SimpleNodeDTO src,FileDataDTO data); //写入文件节点
+        int writeNodeForAccount(AccountDTO account,SimpleNodeDTO src,FileDataDTO data); //写入文件节点
+        FileDataDTO readFileNode(FileNodeDTO src,long pos,int size); //读出文件
+        FileDataDTO readFileNodeForAccount(AccountDTO account,FileNodeDTO src,long pos,int size); //读出文件
+        FileDataDTO readNode(SimpleNodeDTO src,long pos,int size); //读出文件节点
+        FileDataDTO readNodeForAccount(AccountDTO account,SimpleNodeDTO src,long pos,int size); //读出文件节点
+        SimpleNodeDTO moveNode(SimpleNodeDTO src,SimpleNodeDTO dstParent,MoveNodeRequestDTO request); //移动节点
+        SimpleNodeDTO moveNodeForAccount(AccountDTO account,SimpleNodeDTO src,SimpleNodeDTO dstParent,MoveNodeRequestDTO request); //移动节点
+
+        SimpleNodeDTO createDirectory(SimpleNodeDTO parent,CreateNodeRequestDTO request); //创建目录,返回节点信息
+        SimpleNodeDTO createDirectoryForAccount(AccountDTO account,SimpleNodeDTO parent,CreateNodeRequestDTO request); //创建目录,返回节点信息
+        SimpleNodeDTO createFile(SimpleNodeDTO parent,CreateNodeRequestDTO request); //创建目录,返回节点信息
+        SimpleNodeDTO createFileForAccount(AccountDTO account,SimpleNodeDTO parent,CreateNodeRequestDTO request); //创建目录,返回节点信息
+        SimpleNodeDTO createNode(SimpleNodeDTO parent,CreateNodeRequestDTO request); //创建树节点,返回节点信息
+        SimpleNodeDTO createNodeForAccount(AccountDTO account,SimpleNodeDTO parent,CreateNodeRequestDTO request); //创建树节点,返回节点信息
+
+        SimpleNodeDTO getNodeById(string id); //查询节点信息
+        SimpleNodeDTO getNodeByIdForAccount(AccountDTO account,string id); //查询节点信息
+        SimpleNodeDTO getNodeByPath(string path); //查询节点信息
+        SimpleNodeDTO getNodeByPathForAccount(AccountDTO account,string path); //查询节点信息
+        SimpleNodeList listSubNodeById(string parentId); //查询节点信息
+        SimpleNodeList listSubNodeByIdForAccount(AccountDTO account,string parentId); //查询节点信息
+        SimpleNodeList listSubNodeByPath(string parentPath); //查询节点信息
+        SimpleNodeList listSubNodeByPathForAccount(AccountDTO account,string parentPath); //查询节点信息
+        SimpleNodeList listFilterSubNodeById(string parentId,ShortList typeIdList); //查询节点信息
+        SimpleNodeList listFilterSubNodeByIdForAccount(AccountDTO account,string parentId,ShortList typeIdList); //查询节点信息
+        SimpleNodeList listFilterSubNodeByPath(string parentPath, ShortList typeIdList); //查询节点信息
+        SimpleNodeList listFilterSubNodeByPathForAccount(AccountDTO account,string parentPath,ShortList typeIdList); //查询节点信息
+        SimpleNodeList listAllNode(); //查询所有节点信息
+        SimpleNodeList listAllNodeForAccount(AccountDTO account); //查询所有节点信息
+        SimpleNodeList listNode(QueryNodeDTO query); //查询节点信息
+        SimpleNodeList listNodeForAccount(AccountDTO account,QueryNodeDTO query); //查询节点信息
+
+        FileNodeDTO getFile(SimpleNodeDTO node,bool withHistory); //通过节点查询文件信息
+        FileNodeDTO getFileForAccount(AccountDTO account,SimpleNodeDTO node,bool withHistory); //通过节点查询文件信息
+        FileNodeList listAllSubFile(SimpleNodeDTO parent,ShortList typeIdList,bool withHistory); //查询文件信息
+        FileNodeList listAllSubFileForAccount(AccountDTO account,SimpleNodeDTO parent,ShortList typeIdList,bool withHistory); //查询文件信息
+        FileNodeList listFile(QueryNodeDTO query,bool withHistory); //查询文件信息
+        FileNodeList listFileForAccount(AccountDTO account,QueryNodeDTO query,bool withHistory); //查询文件信息
+
+        FullNodeDTO getFullNode(SimpleNodeDTO node); //通过节点查询文件完整信息
+        FullNodeDTO getFullNodeForAccount(AccountDTO account,SimpleNodeDTO node); //通过节点查询文件完整信息
+
+        ["deprecate"] void setFileServerType(int type);
+        ["deprecate"] int getFileServerType();
+        ["deprecate"] bool isExist(FileDTO src);
+        ["deprecate"] FileDTO copyFile(FileDTO src,FileDTO dst);
     };
 };
