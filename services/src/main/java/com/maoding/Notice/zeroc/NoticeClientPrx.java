@@ -22,88 +22,29 @@ package com.maoding.Notice.zeroc;
 
 public interface NoticeClientPrx extends com.zeroc.Ice.ObjectPrx
 {
-    default void subscribeTopic(java.lang.String topic)
+    default void notice(MessageDTO msg)
     {
-        subscribeTopic(topic, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        notice(msg, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void subscribeTopic(java.lang.String topic, java.util.Map<String, String> context)
+    default void notice(MessageDTO msg, java.util.Map<String, String> context)
     {
-        _iceI_subscribeTopicAsync(topic, context, true).waitForResponse();
+        _iceI_noticeAsync(msg, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicAsync(java.lang.String topic)
+    default java.util.concurrent.CompletableFuture<Void> noticeAsync(MessageDTO msg)
     {
-        return _iceI_subscribeTopicAsync(topic, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_noticeAsync(msg, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicAsync(java.lang.String topic, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> noticeAsync(MessageDTO msg, java.util.Map<String, String> context)
     {
-        return _iceI_subscribeTopicAsync(topic, context, false);
+        return _iceI_noticeAsync(msg, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicAsync(java.lang.String iceP_topic, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_noticeAsync(MessageDTO iceP_msg, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopic", null, sync, null);
-        f.invoke(false, context, null, ostr -> {
-                     ostr.writeSerializable(iceP_topic);
-                 }, null);
-        return f;
-    }
-
-    default void subscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, java.lang.String topic)
-    {
-        subscribeTopicForAccount(account, topic, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default void subscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, java.lang.String topic, java.util.Map<String, String> context)
-    {
-        _iceI_subscribeTopicForAccountAsync(account, topic, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO account, java.lang.String topic)
-    {
-        return _iceI_subscribeTopicForAccountAsync(account, topic, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO account, java.lang.String topic, java.util.Map<String, String> context)
-    {
-        return _iceI_subscribeTopicForAccountAsync(account, topic, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, java.lang.String iceP_topic, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForAccount", null, sync, null);
-        f.invoke(false, context, null, ostr -> {
-                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
-                     ostr.writeSerializable(iceP_topic);
-                 }, null);
-        return f;
-    }
-
-    default void gotEvent(MessageDTO msg)
-    {
-        gotEvent(msg, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    default void gotEvent(MessageDTO msg, java.util.Map<String, String> context)
-    {
-        _iceI_gotEventAsync(msg, context, true).waitForResponse();
-    }
-
-    default java.util.concurrent.CompletableFuture<Void> gotEventAsync(MessageDTO msg)
-    {
-        return _iceI_gotEventAsync(msg, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    default java.util.concurrent.CompletableFuture<Void> gotEventAsync(MessageDTO msg, java.util.Map<String, String> context)
-    {
-        return _iceI_gotEventAsync(msg, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_gotEventAsync(MessageDTO iceP_msg, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "gotEvent", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "notice", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      MessageDTO.ice_write(ostr, iceP_msg);
                  }, null);

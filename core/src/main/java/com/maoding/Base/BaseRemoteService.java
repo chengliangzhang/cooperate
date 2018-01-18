@@ -1,7 +1,6 @@
 package com.maoding.Base;
 
 import com.maoding.Config.IceConfig;
-import com.maoding.Utils.ExceptionUtils;
 import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.*;
 import org.slf4j.Logger;
@@ -25,66 +24,98 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
     /** 查找远程服务线程 */
     private class ConnectThread extends Thread {
         /** 配置环境 */
+        private String locatorIp;
         private String serviceName;
         private String adapterName;
+        private String fullServiceName;
         private Class<P> proxy;
         private Class<?> impl;
 
         ConnectThread(String serviceName, String adapterName, Class<P> proxy, Class<?> impl) {
             this.serviceName = serviceName;
-            this.adapterName = adapterName;
+            if (!StringUtils.isEmpty(adapterName)) {
+                String s[] = adapterName.split(";");
+                int n = 0;
+                if (n < s.length) this.adapterName = s[n++];
+                if (n < s.length) this.locatorIp = s[n];
+            }
             this.proxy = proxy;
             this.impl = impl;
         }
 
-        @Override
-        public void run() {
-            //初始化连接器
-            if (communicator == null) {
+        private Communicator getCommunicator(){
+            if (!StringUtils.isEmpty(locatorIp)) {
+                String locatorConfig = "IceGrid/Locator:tcp -h " + locatorIp + " -p 4061";
+                communicator = Util.initialize(new String[]{"--" + GRID_LOCATION + "=" + locatorConfig});
+                log.info("使用" + locatorConfig + "的IceGrid服务器");
+                locatorIp = null;
+            } else if (communicator == null){
                 communicator = (iceConfig != null) ? iceConfig.getCommunicator() : Util.initialize();
             }
 
-            //补全代理地址参数
-            if (iceConfig != null) {
-                if (StringUtils.isEmpty(adapterName)){
-                    if (communicator.getDefaultLocator() != null) {
-                        String adapterId = iceConfig.getProperty(serviceName + "." + ADAPTER_ID);
-                        if (!StringUtils.isEmpty(adapterId)) adapterName = "@" + adapterId;
+            assert (communicator != null);
+            return communicator;
+        }
+
+        private String getFullServiceName(){
+            if (fullServiceName == null) {
+                if (StringUtils.isEmpty(adapterName)) {
+                    if (iceConfig != null) {
+                        if (getCommunicator().getDefaultLocator() != null) {
+                            String adapterId = iceConfig.getProperty(serviceName + "." + ADAPTER_ID);
+                            if (!StringUtils.isEmpty(adapterId)) adapterName = "@" + adapterId;
+                        }
+                        if (StringUtils.isEmpty(adapterName)) {
+                            String endPoints = iceConfig.getProperty(serviceName + "." + END_POINTS);
+                            if (!StringUtils.isEmpty(endPoints)) adapterName = ":" + endPoints;
+                        }
                     }
-                    if (StringUtils.isEmpty(adapterName)) {
+                } else if (adapterName.contains(".") && !adapterName.contains("-h")) {
+                    if (iceConfig != null) {
                         String endPoints = iceConfig.getProperty(serviceName + "." + END_POINTS);
-                        if (!StringUtils.isEmpty(endPoints)) adapterName = ":" + endPoints;
+                        adapterName = ":" + StringUtils.replaceParam(endPoints, "-h", adapterName);
+                    } else {
+                        adapterName = ":tcp -h " + adapterName;
                     }
-                } else if ((!adapterName.startsWith("@")) && (!adapterName.startsWith(":"))) {
-                    String endPoints = iceConfig.getProperty(serviceName + "." + END_POINTS);
-                    adapterName = ":" + StringUtils.replaceParam(endPoints, "-h", adapterName);
+                } else if (!adapterName.startsWith(":") && !adapterName.startsWith("@")) {
+                    if (adapterName.contains(".")) {
+                        adapterName = ":" + adapterName;
+                    } else {
+                        adapterName = "@" + adapterName;
+                    }
+                }
+
+                if (!StringUtils.isEmpty(adapterName) && !adapterName.startsWith(serviceName)) {
+                    fullServiceName = serviceName + adapterName;
+                } else {
+                    fullServiceName = adapterName;
                 }
             }
-//            assert (!StringUtils.isEmpty(adapterName));
-            assert (!StringUtils.isEmpty(serviceName));
-            assert (communicator != null);
+
+            assert (!StringUtils.isEmpty(fullServiceName));
+            return fullServiceName;
+        }
+
+        @Override
+        public void run() {
 
             //查找服务代理
             P prx = null;
-            String svr = adapterName;
-            if ((adapterName != null) && (!adapterName.startsWith(serviceName))){
-                svr = serviceName + adapterName;
-            }
             try {
-                prx = ObjectPrx._checkedCast(communicator.stringToProxy(svr),
+                String n = getFullServiceName();
+                prx = ObjectPrx._checkedCast(getCommunicator().stringToProxy(getFullServiceName()),
                         P.ice_staticId(), proxy, impl);
-                String serviceString = ((communicator.getDefaultLocator() != null) ? "在" + communicator.getDefaultLocator().toString() : "") + "找到" + svr + "服务";
+                String serviceString = ((getCommunicator().getDefaultLocator() != null) ? "在" + getCommunicator().getDefaultLocator().toString() : "") + "找到" + getFullServiceName() + "服务";
                 if (!StringUtils.isSame(lastServiceString,serviceString)) {
                     log.info(serviceString);
                     lastServiceString = serviceString;
                 }
             } catch (ConnectFailedException e) {
-                String serviceString = ((communicator.getDefaultLocator() != null) ? "在" + communicator.getDefaultLocator().toString() : "") + "无法找到" + svr + "服务";
+                String serviceString = ((communicator.getDefaultLocator() != null) ? "在" + communicator.getDefaultLocator().toString() : "") + "无法找到" + getFullServiceName() + "服务";
                 if (!StringUtils.isSame(lastServiceString,serviceString)) {
-                    ExceptionUtils.logWarn(log,e,false,serviceString);
+                    log.warn(serviceString);
                     lastServiceString = serviceString;
                 }
-                prx = null;
             }
 
             remotePrx = prx;
@@ -122,8 +153,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
                     Thread.sleep(100);
                 }
             } catch (InterruptedException e) {
-                log.warn("远程连接线程被中断:" + e.getMessage());
-                e.printStackTrace();
+                log.warn("远程连接线程被中断:" + e);
             }
         }
 

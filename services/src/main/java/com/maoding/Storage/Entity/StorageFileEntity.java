@@ -13,46 +13,54 @@ import javax.persistence.Table;
  */
 @Table(name = "maoding_storage_file")
 public class StorageFileEntity extends BaseEntity {
-    /** 以只读方式打开的文件的实际存储位置名称 */
+    /** 文件服务器类型 */
     @Column
-    private String fileScope;
-    /** 以只读方式打开的文件的实际保存名称 */
+    private Short serverTypeId;
+    /** 文件服务器地址 */
     @Column
-    private String fileKey;
+    private String serverAddress;
     /** 文件类型 */
     @Column
     private Short fileTypeId;
-    /** 校验和 */
-    @Column
-    private String fileChecksum;
-    /** 最后上传的地址 */
-    @Column
-    private String lastModifyAddress;
-    /** 用户自定义版本 */
+    /** 文件版本 */
     @Column
     private String fileVersion;
-    /** 以读写方式打开的文件的实际存储位置名称 */
+    /** 文件校验和 */
     @Column
-    private String uploadScope;
-    /** 以读写方式打开的文件的实际保存名称 */
+    private String fileChecksum;
+    /** 文件所属专业id */
     @Column
-    private String uploadKey;
-    /** 文件所属的项目id */
+    private String majorId;
+    /** 所对应的原始文件id */
+    @Column
+    private String mainFileId;
+    /** 只读文件在文件服务器上的存储位置 */
+    @Column
+    private String readFileScope;
+    /** 只读文件在文件服务器上的存储名称 */
+    @Column
+    private String readFileKey;
+    /** 可写文件在文件服务器上的存储位置 */
+    @Column
+    private String writeFileScope;
+    /** 可写文件在文件服务器上的存储名称 */
+    @Column
+    private String writeFileKey;
 
-    public String getFileScope() {
-        return fileScope;
+    public Short getServerTypeId() {
+        return serverTypeId;
     }
 
-    public void setFileScope(String fileScope) {
-        this.fileScope = fileScope;
+    public void setServerTypeId(Short serverTypeId) {
+        this.serverTypeId = serverTypeId;
     }
 
-    public String getFileKey() {
-        return fileKey;
+    public String getServerAddress() {
+        return serverAddress;
     }
 
-    public void setFileKey(String fileKey) {
-        this.fileKey = fileKey;
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
     }
 
     public Short getFileTypeId() {
@@ -63,22 +71,6 @@ public class StorageFileEntity extends BaseEntity {
         this.fileTypeId = fileTypeId;
     }
 
-    public String getFileChecksum() {
-        return fileChecksum;
-    }
-
-    public void setFileChecksum(String fileChecksum) {
-        this.fileChecksum = fileChecksum;
-    }
-
-    public String getLastModifyAddress() {
-        return lastModifyAddress;
-    }
-
-    public void setLastModifyAddress(String lastModifyAddress) {
-        this.lastModifyAddress = lastModifyAddress;
-    }
-
     public String getFileVersion() {
         return fileVersion;
     }
@@ -87,19 +79,59 @@ public class StorageFileEntity extends BaseEntity {
         this.fileVersion = fileVersion;
     }
 
-    public String getUploadScope() {
-        return uploadScope;
+    public String getFileChecksum() {
+        return fileChecksum;
     }
 
-    public void setUploadScope(String uploadScope) {
-        this.uploadScope = uploadScope;
+    public void setFileChecksum(String fileChecksum) {
+        this.fileChecksum = fileChecksum;
     }
 
-    public String getUploadKey() {
-        return uploadKey;
+    public String getMajorId() {
+        return majorId;
     }
 
-    public void setUploadKey(String uploadKey) {
-        this.uploadKey = uploadKey;
+    public void setMajorId(String majorId) {
+        this.majorId = majorId;
+    }
+
+    public String getMainFileId() {
+        return mainFileId;
+    }
+
+    public void setMainFileId(String mainFileId) {
+        this.mainFileId = mainFileId;
+    }
+
+    public String getReadFileScope() {
+        return readFileScope;
+    }
+
+    public void setReadFileScope(String readFileScope) {
+        this.readFileScope = readFileScope;
+    }
+
+    public String getReadFileKey() {
+        return readFileKey;
+    }
+
+    public void setReadFileKey(String readFileKey) {
+        this.readFileKey = readFileKey;
+    }
+
+    public String getWriteFileScope() {
+        return writeFileScope;
+    }
+
+    public void setWriteFileScope(String writeFileScope) {
+        this.writeFileScope = writeFileScope;
+    }
+
+    public String getWriteFileKey() {
+        return writeFileKey;
+    }
+
+    public void setWriteFileKey(String writeFileKey) {
+        this.writeFileKey = writeFileKey;
     }
 }

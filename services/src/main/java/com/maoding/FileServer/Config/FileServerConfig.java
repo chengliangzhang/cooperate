@@ -1,11 +1,14 @@
 package com.maoding.FileServer.Config;
 
 import com.maoding.Const.FileServerConst;
-import com.maoding.FileServer.BasicFileServerInterface;
-import com.maoding.FileServer.FastFDS.FastFDSServer;
-import com.maoding.FileServer.Ftp.FtpServer;
-import com.maoding.FileServer.Jcifs.JcifsServer;
-import com.maoding.FileServer.Local.LocalServer;
+import com.maoding.CoreFileServer.CoreFileServer;
+import com.maoding.CoreFileServer.Disk.DiskFileServer;
+import com.maoding.CoreFileServer.FastFDS.FastFDSServer;
+import com.maoding.CoreFileServer.Ftp.FtpServer;
+import com.maoding.CoreFileServer.Jcifs.JcifsServer;
+import com.maoding.Notice.zeroc.NoticeServicePrx;
+import com.maoding.Storage.zeroc.StorageServicePrx;
+import com.maoding.User.zeroc.UserServicePrx;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +21,18 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "fileserver")
 public class FileServerConfig {
-    private BasicFileServerInterface fastFDSServer;
-    private BasicFileServerInterface aliyunServer;
-    private BasicFileServerInterface jcifsServer;
-    private BasicFileServerInterface ftpServer;
-    private BasicFileServerInterface localServer;
+    public static final Integer SERVER_TYPE_LOCAL = 0;
+    public static final Integer SERVER_TYPE_REMOTE = 1;
+
+    private CoreFileServer fastFDSServer;
+    private CoreFileServer aliyunServer;
+    private CoreFileServer jcifsServer;
+    private CoreFileServer ftpServer;
+    private CoreFileServer localServer;
+
+    private String storageServiceAdapter;
+    private String userServiceAdapter;
+    private String noticeServiceAdapter;
 
     private Integer type;
 
@@ -34,7 +44,31 @@ public class FileServerConfig {
         return type;
     }
 
-    public BasicFileServerInterface getFileServer(){
+    public String getStorageServiceAdapter() {
+        return storageServiceAdapter;
+    }
+
+    public void setStorageServiceAdapter(String storageServiceAdapter) {
+        this.storageServiceAdapter = storageServiceAdapter;
+    }
+
+    public String getUserServiceAdapter() {
+        return userServiceAdapter;
+    }
+
+    public void setUserServiceAdapter(String userServiceAdapter) {
+        this.userServiceAdapter = userServiceAdapter;
+    }
+
+    public String getNoticeServiceAdapter() {
+        return noticeServiceAdapter;
+    }
+
+    public void setNoticeServiceAdapter(String noticeServiceAdapter) {
+        this.noticeServiceAdapter = noticeServiceAdapter;
+    }
+
+    public CoreFileServer getFileServer(){
         if (FileServerConst.FILE_SERVER_TYPE_ALIYUN.equals(type)) {
 //            if (aliyunServer == null) aliyunServer = new AliyunServer();
             return aliyunServer;
@@ -48,9 +82,23 @@ public class FileServerConfig {
             if (ftpServer == null) ftpServer = new FtpServer();
             return ftpServer;
         } else if (FileServerConst.FILE_SERVER_TYPE_LOCAL.equals(type)){
-            if (localServer == null) localServer = new LocalServer();
+            if (localServer == null) localServer = new DiskFileServer();
+            return localServer;
+        } else {
+            if (localServer == null) localServer = new DiskFileServer();
             return localServer;
         }
-        return localServer;
+    }
+
+    public StorageServicePrx getStorageService(){
+        return RemoteStorageServicePrx.getInstance(getStorageServiceAdapter());
+    }
+
+    public UserServicePrx getUserService(){
+        return RemoteUserServicePrx.getInstance(getUserServiceAdapter());
+    }
+
+    public NoticeServicePrx getNoticeService(){
+        return RemoteNoticeServicePrx.getInstance(getNoticeServiceAdapter());
     }
 }

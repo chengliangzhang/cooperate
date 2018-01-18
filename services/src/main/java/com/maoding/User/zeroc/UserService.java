@@ -26,13 +26,7 @@ public interface UserService extends com.zeroc.Ice.Object
 
     AccountDTO getCurrent(com.zeroc.Ice.Current current);
 
-    boolean setOrganization(String organizationId, com.zeroc.Ice.Current current);
-
-    boolean setDuty(String dutyId, com.zeroc.Ice.Current current);
-
-    java.util.List<DutyDTO> listDutyByUserId(String userId, com.zeroc.Ice.Current current);
-
-    java.util.List<DutyDTO> listDutyForCurrent(com.zeroc.Ice.Current current);
+    java.util.List<ProjectRoleDTO> listProjectRoleByProjectId(String projectId, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -82,55 +76,16 @@ public interface UserService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setOrganization(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listProjectRoleByProjectId(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        String iceP_organizationId;
-        iceP_organizationId = istr.readString();
+        String iceP_projectId;
+        iceP_projectId = istr.readString();
         inS.endReadParams();
-        boolean ret = obj.setOrganization(iceP_organizationId, current);
+        java.util.List<ProjectRoleDTO> ret = obj.listProjectRoleByProjectId(iceP_projectId, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setDuty(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        String iceP_dutyId;
-        iceP_dutyId = istr.readString();
-        inS.endReadParams();
-        boolean ret = obj.setDuty(iceP_dutyId, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listDutyByUserId(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        String iceP_userId;
-        iceP_userId = istr.readString();
-        inS.endReadParams();
-        java.util.List<DutyDTO> ret = obj.listDutyByUserId(iceP_userId, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        DutyListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listDutyForCurrent(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        inS.readEmptyParams();
-        java.util.List<DutyDTO> ret = obj.listDutyForCurrent(current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        DutyListHelper.write(ostr, ret);
+        ProjectRoleListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -142,11 +97,8 @@ public interface UserService extends com.zeroc.Ice.Object
         "ice_ids",
         "ice_isA",
         "ice_ping",
-        "listDutyByUserId",
-        "listDutyForCurrent",
-        "login",
-        "setDuty",
-        "setOrganization"
+        "listProjectRoleByProjectId",
+        "login"
     };
 
     @Override
@@ -183,23 +135,11 @@ public interface UserService extends com.zeroc.Ice.Object
             }
             case 5:
             {
-                return _iceD_listDutyByUserId(this, in, current);
+                return _iceD_listProjectRoleByProjectId(this, in, current);
             }
             case 6:
             {
-                return _iceD_listDutyForCurrent(this, in, current);
-            }
-            case 7:
-            {
                 return _iceD_login(this, in, current);
-            }
-            case 8:
-            {
-                return _iceD_setDuty(this, in, current);
-            }
-            case 9:
-            {
-                return _iceD_setOrganization(this, in, current);
             }
         }
 

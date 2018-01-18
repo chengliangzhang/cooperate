@@ -1,6 +1,9 @@
 package com.maoding.Notice;
 
-import com.maoding.Notice.zeroc.*;
+import com.maoding.Notice.zeroc.MessageDTO;
+import com.maoding.Notice.zeroc.NoticeClientPrx;
+import com.maoding.Notice.zeroc.NoticeService;
+import com.maoding.Notice.zeroc.ReceiverDTO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,22 +33,21 @@ public class NoticeServiceImplTest {
     @Autowired
     NoticeService noticeService;
 
-    @Autowired
-    NoticeClient noticeClient;
-
-    /** for method: sendMessage(MessageDTO message, List<ReceiverDTO> receiverList, Current current) */
     @Test
-    public void testSendMessage() throws Exception { 
-        noticeService.createTopic("aaa",null);
-        noticeClient.subscribeTopicForAccount(null,"aaa",null);
+    public void tesNotice() throws Exception {
+        NoticeClientPrx client1 = NoticeClientImpl.createNewClient("192.168.13.140","1");
+        NoticeClientPrx client2 = NoticeClientImpl.createNewClient("192.168.13.140","2");
+        noticeService.subscribeTopic("User1",client1,null);
+        noticeService.subscribeTopic("User2",client2,null);
         MessageDTO msg = new MessageDTO();
-        msg.setTitle("bbbbb");
+        msg.setUserId("user3");
+        msg.setTitle("title");
+        msg.setContent("message");
         List<ReceiverDTO> list = new ArrayList<>();
-        ReceiverDTO receiver = new ReceiverDTO();
-        receiver.setTopic("aaa");
-        list.add(receiver);
-        noticeService.sendMessageForAccount(null,msg,list,null);
-    } 
+        noticeService.noticeToUser(msg,"1",null);
+        noticeService.unSubscribeTopic("User1",client1,null);
+        noticeService.unSubscribeTopic("User2",client2,null);
+    }
     /** for method: createTopic(String topic, Current current) */ 
     @Test
     public void testCreateTopic() throws Exception { 

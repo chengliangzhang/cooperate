@@ -1,6 +1,6 @@
 package com.maoding.FileServer.Ftp;
 
-import com.maoding.FileServer.BasicFileServerInterface;
+import com.maoding.CoreFileServer.CoreFileServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class FtpServerTest {
     @Autowired
     @Qualifier(value = "ftpServer")
-    private BasicFileServerInterface ftpServer;
+    private CoreFileServer ftpServer;
 
     /** for method: getUploadRequest(BasicFileDTO src) */
     @Test

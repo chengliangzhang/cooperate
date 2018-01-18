@@ -1,6 +1,6 @@
 package com.maoding.Base;
 
-import com.maoding.Mybatis.CustomMapper;
+import com.maoding.CoreMybatis.CustomMapper;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.MySqlMapper;
 

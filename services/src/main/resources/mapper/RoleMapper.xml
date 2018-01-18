@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maoding.User.Dao.RoleDao">
+
+    <resultMap id="TaskRoleMap" type="com.maoding.User.zeroc.TaskRoleDTO">
+        <result property="id" column="task_id"/>
+        <result property="name" column="task_name"/>
+        <collection property="taskRoleList" ofType="com.maoding.Common.zeroc.IdNameDTO">
+            <result property="id" column="task_role_id"/>
+            <result property="name" column="task_role_name"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="ProjectRoleMap" type="com.maoding.User.zeroc.ProjectRoleDTO" autoMapping="true">
+        <collection property="projectRoleList" ofType="com.maoding.Common.zeroc.IdNameDTO">
+            <result property="id" column="project_role_id"/>
+            <result property="name" column="project_role_name"/>
+        </collection>
+        <collection property="taskList" resultMap="TaskRoleMap"/>
+    </resultMap>
+
+    <select id="listProjectRoleByProjectId" resultMap="ProjectRoleMap" parameterType="java.util.Map">
+        select role.*
+            ,if(role.group_id=1,role.id,null) as project_role_id
+            ,if(role.group_id=1,role.type_name,null) as project_role_name
+            ,if(role.group_id=2,role.id,null) as task_role_id
+            ,if(role.group_id=2,role.type_name,null) as task_role_name
+        from maoding_role role
+        <where>
+            <if test="projectId != null">
+                and role.project_id = #{projectId}
+            </if>
+        </where>
+        group by role.user_id,task_id
+    </select>
+</mapper>

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -21,6 +22,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static final String DATE_STAMP_FORMAT = "yyyyMMdd";
     public static final String TIME_STAMP_FORMAT = "yyyyMMddHHmmss";
     public static final String MS_STAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.sss";
+    public static final String NORMAL_STAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String DEFAULT_STAMP_FORMAT = STAMP_FORMAT_FULL;
 
     public static final Integer DEFAULT_ID_LENGTH = 32;
@@ -40,15 +42,19 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /** 判断两个字符串是否相同，视null和""为相同字符串 */
-    public static Boolean isSame(String a,String b){
-        return (isEmpty(a) && isEmpty(b)) ||
-                (!isEmpty(a) && !isEmpty(b) && (a.equals(b)));
+    public static Boolean isSame(String s1,String s2){
+        return (isEmpty(s1) && isEmpty(s2)) ||
+                (!isEmpty(s1) && !isEmpty(s2) && (s1.equals(s2)));
+    }
+
+    /** 如果字符串为空，返回默认值 */
+    public static String getStringOrDefault(String s, String ds){
+        return (isEmpty(s)) ? ds : s;
     }
 
     /** 判断目录是否根目录 */
     public static Boolean isRootPath(String path){
-        path = formatPath(path);
-        return (isEmpty(path) || isSame(SPLIT_PATH,path));
+        return isSame(SPLIT_PATH,formatPath(path));
     }
 
     /** 获取类似于-p 10000的参数值 */
@@ -80,9 +86,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /** 标准化路径（所有路径分隔都用"/"） */
     public static String formatPath(String path,Boolean rootAsNull) {
-        if (path == null) return null;
+        if (path == null) path = "";
         path = path.replaceAll(SPLIT_PATH_WINDOWS, SPLIT_PATH).trim();
-        path = path.replaceAll(SPLIT_PATH + SPLIT_PATH,SPLIT_PATH);
+        while (path.contains(SPLIT_PATH + SPLIT_PATH)) {
+            path = path.replaceAll(SPLIT_PATH + SPLIT_PATH, SPLIT_PATH);
+        }
         if ((rootAsNull) && (isSame(path,SPLIT_PATH))){
             path = null;
         }
@@ -191,5 +199,18 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         String address = current.con.toString();
         assert (address != null);
         return address.substring(address.lastIndexOf("=")+1,address.lastIndexOf(":"));
+    }
+
+    public static <T> String getStringIdList(List<T> idList){
+        String idListString = null;
+        if ((idList != null) && (!idList.isEmpty())) {
+            StringBuilder typeIdBuilder = new StringBuilder();
+            for (T id : idList) {
+                if (typeIdBuilder.length() > 0) typeIdBuilder.append(",");
+                typeIdBuilder.append(id.toString());
+            }
+            idListString = typeIdBuilder.toString();
+        }
+        return idListString;
     }
 }

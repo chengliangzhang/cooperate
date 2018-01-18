@@ -12,11 +12,11 @@ import javax.persistence.Table;
  */
 @Table(name = "maoding_storage_file_his")
 public class StorageFileHisEntity extends BaseEntity {
-    /** 对应的文件id */
+    /** 协同文件编号id */
     String fileId;
-    /** 操作动作id */
-    Short actionId;
-    /** 操作说明 */
+    /** 校审动作类型id */
+    Short actionTypeId;
+    /** 操作注解 */
     String remark;
 
     public String getFileId() {
@@ -27,12 +27,12 @@ public class StorageFileHisEntity extends BaseEntity {
         this.fileId = fileId;
     }
 
-    public Short getActionId() {
-        return actionId;
+    public Short getActionTypeId() {
+        return actionTypeId;
     }
 
-    public void setActionId(Short actionId) {
-        this.actionId = actionId;
+    public void setActionTypeId(Short actionTypeId) {
+        this.actionTypeId = actionTypeId;
     }
 
     public String getRemark() {

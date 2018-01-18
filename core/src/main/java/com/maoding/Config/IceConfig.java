@@ -1,7 +1,6 @@
 package com.maoding.Config;
 
 
-import com.maoding.Utils.ExceptionUtils;
 import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.Util;
@@ -70,7 +69,7 @@ public class IceConfig {
                 try {
                     propertiesMap.put(keyStr, new String(props.getProperty(keyStr).getBytes("ISO-8859-1"), "utf-8"));
                 } catch (UnsupportedEncodingException e) {
-                    ExceptionUtils.logError(log,e);
+                    log.error(e.getMessage(),e);
                 }
             }
         }
@@ -81,7 +80,7 @@ public class IceConfig {
             Properties properties = PropertiesLoaderUtils.loadAllProperties(propertyFileName);
             processProperties(properties);
         } catch (IOException e) {
-            ExceptionUtils.logError(log,e);
+            log.error(e.getMessage(),e);
         }
     }
 
@@ -90,7 +89,7 @@ public class IceConfig {
             Properties properties = PropertiesLoaderUtils.loadProperties(resourceLoader.getResource(config));
             processProperties(properties);
         } catch (IOException e) {
-            ExceptionUtils.logError(log,e);
+            log.error(e.getMessage(),e);
         }
     }
 

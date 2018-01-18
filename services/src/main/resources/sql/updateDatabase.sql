@@ -179,6 +179,38 @@ BEGIN
 	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file_his' and column_name='remark') then
 		alter table maoding_storage_file_his add column `remark` text(2048) DEFAULT NULL COMMENT '文件注释';
 	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file_his' and column_name='action_type_id') then
+		alter table maoding_storage_file_his add column `action_type_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '校审动作类型';
+	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='server_type_id') then
+		alter table maoding_storage_file add column `server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '文件服务器类型';
+	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='server_address') then
+		alter table maoding_storage_file add column `server_address` varchar(255) DEFAULT NULL COMMENT '文件服务器地址';
+	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='major_id') then
+		alter table maoding_storage_file add column `major_id` char(32) DEFAULT NULL COMMENT '文件所属专业id';
+	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='main_file_id') then
+		alter table maoding_storage_file add column `main_file_id` char(32) DEFAULT NULL COMMENT '所对应的原始文件id';
+	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='read_file_scope') then
+		alter table maoding_storage_file add column `read_file_scope` varchar(255) DEFAULT NULL COMMENT '只读文件在文件服务器上的存储位置';
+	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='read_file_key') then
+		alter table maoding_storage_file add column `read_file_key` varchar(255) DEFAULT NULL COMMENT '只读文件在文件服务器上的存储名称';
+	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='write_file_scope') then
+		alter table maoding_storage_file add column `write_file_scope` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储位置';
+	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='write_file_key') then
+		alter table maoding_storage_file add column `write_file_key` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储名称';
+	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='file_checksum') then
+		alter table maoding_storage_file add column `file_checksum` varchar(64) DEFAULT NULL COMMENT '文件校验和';
+	else
+		alter table maoding_storage_file MODIFY column `file_checksum` varchar(64) DEFAULT NULL COMMENT '文件校验和';
+	end if;
 
 END;
 
@@ -190,7 +222,7 @@ BEGIN
 	-- call backupData();
 
 	-- -- -- -- 创建表结构,忽略已有的表
- 	call updateTables();
+ 	call createTables();
 	call updateViews();
 
 	-- -- -- -- 添加字段，忽略已存在的字段
@@ -205,6 +237,19 @@ BEGIN
     REPLACE INTO maoding_web_account (id,user_name,password,cellphone,status,create_date,active_time)
       VALUES ('5ffee496fa814ea4b6d26a9208b00a0b','sun','E10ADC3949BA59ABBE56E057F20F883E','13680809727','0','2017-07-04 11:59:37','2017-07-03 18:57:36');
   end if;
+	-- 复制FileScope，FileKey
+	if exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='file_scope') then
+		if not exists (select 1 from maoding_storage_file where read_file_scope is not null) then
+			update maoding_storage_file set
+				read_file_scope=file_scope,
+				read_file_key=file_key,
+				write_file_scope=upload_scope,
+				write_file_key=upload_key,
+				server_type_id=file_server_type_id,
+				server_address=last_modify_address;
+		end if;
+	end if;
+
 
 	-- 补充storage内project_id等数据
   -- call fillStorageInfo();

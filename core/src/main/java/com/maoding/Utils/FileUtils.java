@@ -21,7 +21,7 @@ public class FileUtils {
             try {
                 handle.close();
             } catch (IOException e) {
-                ExceptionUtils.logError(log, e);
+                log.error("关闭文件出错",e);
             }
         }
     }

@@ -25,6 +25,7 @@ public class BaseEntity implements Serializable,Cloneable {
     /** 删除标志 */
     @Column
     @NotNull
+    @Deprecated
     private Integer deleted;
 
     /** 创建时间 */
@@ -41,9 +42,9 @@ public class BaseEntity implements Serializable,Cloneable {
     @Column
     private String lastModifyUserId;
 
-    /** 最后修改者职责ID */
+    /** 最后修改者角色ID */
     @Column
-    private String lastModifyDutyId;
+    private String lastModifyRoleId;
 
     public String getId() {
         return id;
@@ -85,12 +86,12 @@ public class BaseEntity implements Serializable,Cloneable {
         this.lastModifyUserId = lastModifyUserId;
     }
 
-    public String getLastModifyDutyId() {
-        return lastModifyDutyId;
+    public String getLastModifyRoleId() {
+        return lastModifyRoleId;
     }
 
-    public void setLastModifyDutyId(String lastModifyDutyId) {
-        this.lastModifyDutyId = lastModifyDutyId;
+    public void setLastModifyRoleId(String lastModifyRoleId) {
+        this.lastModifyRoleId = lastModifyRoleId;
     }
 
     public BaseEntity(){

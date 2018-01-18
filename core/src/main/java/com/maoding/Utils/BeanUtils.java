@@ -305,7 +305,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                             try {
                                 output = outputClass.cast(c.newInstance(input));
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                                ExceptionUtils.logWarn(log, e, false, outputClass.getName() + "没有以" + input.getClass().getName() + "为参数的构造方法");
+                                log.warn(outputClass.getName() + "没有以" + input.getClass().getName() + "为参数的构造方法");
                                 output = null;
                             }
                             found = true;
@@ -323,7 +323,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             try {
                 output = outputClass.cast(stringConstructor.newInstance(input.toString()));
             } catch ( InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                ExceptionUtils.logWarn(log, e, false,outputClass.getName() + "没有以" + String.class.getName() + "为参数的构造方法");
+                log.warn(outputClass.getName() + "没有以" + String.class.getName() + "为参数的构造方法");
                 output = null;
             }
         }

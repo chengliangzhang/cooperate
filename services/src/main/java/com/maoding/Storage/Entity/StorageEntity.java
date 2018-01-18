@@ -16,12 +16,6 @@ public class StorageEntity extends BaseTreeEntity {
     /** 文件长度，如果节点是目录则固定为0 */
     @Column
     private Long fileLength;
-
-    /** 上级节点类型 */
-    @Column
-    @Deprecated
-    private Short pidTypeId;
-
     /** 相关联的任务id */
     @Column
     private String taskId;
@@ -40,14 +34,6 @@ public class StorageEntity extends BaseTreeEntity {
 
     public void setFileLength(Long fileLength) {
         this.fileLength = fileLength;
-    }
-
-    public Short getPidTypeId() {
-        return pidTypeId;
-    }
-
-    public void setPidTypeId(Short pidTypeId) {
-        this.pidTypeId = pidTypeId;
     }
 
 }

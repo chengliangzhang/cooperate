@@ -30,7 +30,7 @@ public class JsonUtils {
         try {
             json = objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            ExceptionUtils.logError(log,e);
+            log.error(e.getMessage(),e);
             json = null;
         }
         return json;
@@ -42,7 +42,7 @@ public class JsonUtils {
         try {
             obj = objectMapper.readValue(json, clazz);
         } catch (IOException e) {
-            ExceptionUtils.logError(log,e);
+            log.error(e.getMessage(),e);
             obj = null;
         }
         return obj;

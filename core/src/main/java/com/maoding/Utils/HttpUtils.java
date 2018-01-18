@@ -1,6 +1,6 @@
 package com.maoding.Utils;
 
-import com.maoding.Bean.ApiResponse;
+import com.maoding.Bean.CoreResponse;
 import com.maoding.Const.HttpConst;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -67,7 +67,7 @@ public class HttpUtils {
             log.warn("无法连接" + url);
             response = null;
         } catch (IOException e) {
-            ExceptionUtils.logError(log,e);
+            log.error(e.getMessage(),e);
         }
         return response;
     }
@@ -79,13 +79,23 @@ public class HttpUtils {
         return (response != null) && (response.getStatusLine() != null) && (response.getStatusLine().getStatusCode() == HttpConst.HTTP_RESULT_OK);
     }
 
-    public static ApiResponse getResult(CloseableHttpResponse response){
-        ApiResponse result = null;
+    public static CoreResponse getResult(CloseableHttpResponse response){
+        CoreResponse result = null;
         try {
-            result = JsonUtils.json2Obj(EntityUtils.toString(response.getEntity()),ApiResponse.class);
+            result = JsonUtils.json2Obj(EntityUtils.toString(response.getEntity()),CoreResponse.class);
         } catch (IOException e) {
-            ExceptionUtils.logError(log,e);
+            log.error(e.getMessage(),e);
         }
         return result;
+    }
+
+    public static <T> T getResponseData(CoreResponse response, Class<? extends T> dataClass){
+        assert (dataClass != null);
+        if (response == null) return null;
+        if (dataClass.isInstance(response.getData())) {
+            return dataClass.cast(response.getData());
+        } else {
+            return null;
+        }
     }
 }

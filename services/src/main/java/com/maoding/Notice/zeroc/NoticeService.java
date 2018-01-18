@@ -24,9 +24,51 @@ public interface NoticeService extends com.zeroc.Ice.Object
 {
     void createTopic(java.lang.String topic, com.zeroc.Ice.Current current);
 
-    void sendMessage(MessageDTO message, java.util.List<ReceiverDTO> receiverList, com.zeroc.Ice.Current current);
+    java.util.List<java.lang.String> listTopic(com.zeroc.Ice.Current current);
 
-    void sendMessageForAccount(com.maoding.User.zeroc.AccountDTO account, MessageDTO message, java.util.List<ReceiverDTO> receiverList, com.zeroc.Ice.Current current);
+    java.util.List<java.lang.String> listSubscribedTopic(String userId, com.zeroc.Ice.Current current);
+
+    void notice(MessageDTO message, String topic, com.zeroc.Ice.Current current);
+
+    void noticeToUser(MessageDTO message, String id, com.zeroc.Ice.Current current);
+
+    void noticeToTask(MessageDTO message, String id, com.zeroc.Ice.Current current);
+
+    void noticeToProject(MessageDTO message, String id, com.zeroc.Ice.Current current);
+
+    void noticeToCompany(MessageDTO message, String id, com.zeroc.Ice.Current current);
+
+    void subscribeTopic(String topic, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void subscribeTopicToUser(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void subscribeTopicToTask(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void subscribeTopicToProject(java.lang.String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void subscribeTopicToCompany(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void subscribeTopicToTaskList(java.util.List<java.lang.String> idList, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void subscribeTopicToProjectList(java.util.List<java.lang.String> idList, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void subscribeTopicToCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void unSubscribeTopic(java.lang.String topic, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void unSubscribeTopicToUser(java.lang.String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void unSubscribeTopicToTask(java.lang.String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void unSubscribeTopicToProject(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void unSubscribeTopicToCompany(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void unSubscribeTopicToTaskList(java.util.List<java.lang.String> idList, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void unSubscribeTopicToProjectList(java.util.List<java.lang.String> idList, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void unSubscribeTopicToCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -62,31 +104,301 @@ public interface NoticeService extends com.zeroc.Ice.Object
         return inS.setResult(inS.writeEmptyParams());
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_sendMessage(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listTopic(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        java.util.List<java.lang.String> ret = obj.listTopic(current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Common.zeroc.StringListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listSubscribedTopic(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_userId;
+        iceP_userId = istr.readString();
+        inS.endReadParams();
+        java.util.List<java.lang.String> ret = obj.listSubscribedTopic(iceP_userId, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Common.zeroc.StringListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_notice(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         MessageDTO iceP_message;
-        java.util.List<ReceiverDTO> iceP_receiverList;
+        String iceP_topic;
         iceP_message = MessageDTO.ice_read(istr);
-        iceP_receiverList = ReceiverListHelper.read(istr);
+        iceP_topic = istr.readString();
         inS.endReadParams();
-        obj.sendMessage(iceP_message, iceP_receiverList, current);
+        obj.notice(iceP_message, iceP_topic, current);
         return inS.setResult(inS.writeEmptyParams());
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_sendMessageForAccount(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_noticeToUser(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
         MessageDTO iceP_message;
-        java.util.List<ReceiverDTO> iceP_receiverList;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        String iceP_id;
         iceP_message = MessageDTO.ice_read(istr);
-        iceP_receiverList = ReceiverListHelper.read(istr);
+        iceP_id = istr.readString();
         inS.endReadParams();
-        obj.sendMessageForAccount(iceP_account, iceP_message, iceP_receiverList, current);
+        obj.noticeToUser(iceP_message, iceP_id, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_noticeToTask(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        MessageDTO iceP_message;
+        String iceP_id;
+        iceP_message = MessageDTO.ice_read(istr);
+        iceP_id = istr.readString();
+        inS.endReadParams();
+        obj.noticeToTask(iceP_message, iceP_id, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_noticeToProject(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        MessageDTO iceP_message;
+        String iceP_id;
+        iceP_message = MessageDTO.ice_read(istr);
+        iceP_id = istr.readString();
+        inS.endReadParams();
+        obj.noticeToProject(iceP_message, iceP_id, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_noticeToCompany(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        MessageDTO iceP_message;
+        String iceP_id;
+        iceP_message = MessageDTO.ice_read(istr);
+        iceP_id = istr.readString();
+        inS.endReadParams();
+        obj.noticeToCompany(iceP_message, iceP_id, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopic(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_topic;
+        NoticeClientPrx iceP_client;
+        iceP_topic = istr.readString();
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.subscribeTopic(iceP_topic, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopicToUser(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_id;
+        NoticeClientPrx iceP_client;
+        iceP_id = istr.readString();
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.subscribeTopicToUser(iceP_id, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopicToTask(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_id;
+        NoticeClientPrx iceP_client;
+        iceP_id = istr.readString();
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.subscribeTopicToTask(iceP_id, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopicToProject(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.lang.String iceP_id;
+        NoticeClientPrx iceP_client;
+        iceP_id = istr.readSerializable(java.lang.String.class);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.subscribeTopicToProject(iceP_id, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopicToCompany(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_id;
+        NoticeClientPrx iceP_client;
+        iceP_id = istr.readString();
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.subscribeTopicToCompany(iceP_id, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopicToTaskList(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.util.List<java.lang.String> iceP_idList;
+        NoticeClientPrx iceP_client;
+        iceP_idList = com.maoding.Common.zeroc.StringListHelper.read(istr);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.subscribeTopicToTaskList(iceP_idList, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopicToProjectList(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.util.List<java.lang.String> iceP_idList;
+        NoticeClientPrx iceP_client;
+        iceP_idList = com.maoding.Common.zeroc.StringListHelper.read(istr);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.subscribeTopicToProjectList(iceP_idList, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopicToCompanyList(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.util.List<java.lang.String> iceP_idList;
+        NoticeClientPrx iceP_client;
+        iceP_idList = com.maoding.Common.zeroc.StringListHelper.read(istr);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.subscribeTopicToCompanyList(iceP_idList, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unSubscribeTopic(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.lang.String iceP_topic;
+        NoticeClientPrx iceP_client;
+        iceP_topic = istr.readSerializable(java.lang.String.class);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.unSubscribeTopic(iceP_topic, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unSubscribeTopicToUser(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.lang.String iceP_id;
+        NoticeClientPrx iceP_client;
+        iceP_id = istr.readSerializable(java.lang.String.class);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.unSubscribeTopicToUser(iceP_id, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unSubscribeTopicToTask(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.lang.String iceP_id;
+        NoticeClientPrx iceP_client;
+        iceP_id = istr.readSerializable(java.lang.String.class);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.unSubscribeTopicToTask(iceP_id, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unSubscribeTopicToProject(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_id;
+        NoticeClientPrx iceP_client;
+        iceP_id = istr.readString();
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.unSubscribeTopicToProject(iceP_id, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unSubscribeTopicToCompany(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_id;
+        NoticeClientPrx iceP_client;
+        iceP_id = istr.readString();
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.unSubscribeTopicToCompany(iceP_id, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unSubscribeTopicToTaskList(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.util.List<java.lang.String> iceP_idList;
+        NoticeClientPrx iceP_client;
+        iceP_idList = com.maoding.Common.zeroc.StringListHelper.read(istr);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.unSubscribeTopicToTaskList(iceP_idList, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unSubscribeTopicToProjectList(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.util.List<java.lang.String> iceP_idList;
+        NoticeClientPrx iceP_client;
+        iceP_idList = com.maoding.Common.zeroc.StringListHelper.read(istr);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.unSubscribeTopicToProjectList(iceP_idList, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unSubscribeTopicToCompanyList(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        java.util.List<java.lang.String> iceP_idList;
+        NoticeClientPrx iceP_client;
+        iceP_idList = com.maoding.Common.zeroc.StringListHelper.read(istr);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.unSubscribeTopicToCompanyList(iceP_idList, iceP_client, current);
         return inS.setResult(inS.writeEmptyParams());
     }
 
@@ -97,8 +409,29 @@ public interface NoticeService extends com.zeroc.Ice.Object
         "ice_ids",
         "ice_isA",
         "ice_ping",
-        "sendMessage",
-        "sendMessageForAccount"
+        "listSubscribedTopic",
+        "listTopic",
+        "notice",
+        "noticeToCompany",
+        "noticeToProject",
+        "noticeToTask",
+        "noticeToUser",
+        "subscribeTopic",
+        "subscribeTopicToCompany",
+        "subscribeTopicToCompanyList",
+        "subscribeTopicToProject",
+        "subscribeTopicToProjectList",
+        "subscribeTopicToTask",
+        "subscribeTopicToTaskList",
+        "subscribeTopicToUser",
+        "unSubscribeTopic",
+        "unSubscribeTopicToCompany",
+        "unSubscribeTopicToCompanyList",
+        "unSubscribeTopicToProject",
+        "unSubscribeTopicToProjectList",
+        "unSubscribeTopicToTask",
+        "unSubscribeTopicToTaskList",
+        "unSubscribeTopicToUser"
     };
 
     @Override
@@ -135,11 +468,95 @@ public interface NoticeService extends com.zeroc.Ice.Object
             }
             case 5:
             {
-                return _iceD_sendMessage(this, in, current);
+                return _iceD_listSubscribedTopic(this, in, current);
             }
             case 6:
             {
-                return _iceD_sendMessageForAccount(this, in, current);
+                return _iceD_listTopic(this, in, current);
+            }
+            case 7:
+            {
+                return _iceD_notice(this, in, current);
+            }
+            case 8:
+            {
+                return _iceD_noticeToCompany(this, in, current);
+            }
+            case 9:
+            {
+                return _iceD_noticeToProject(this, in, current);
+            }
+            case 10:
+            {
+                return _iceD_noticeToTask(this, in, current);
+            }
+            case 11:
+            {
+                return _iceD_noticeToUser(this, in, current);
+            }
+            case 12:
+            {
+                return _iceD_subscribeTopic(this, in, current);
+            }
+            case 13:
+            {
+                return _iceD_subscribeTopicToCompany(this, in, current);
+            }
+            case 14:
+            {
+                return _iceD_subscribeTopicToCompanyList(this, in, current);
+            }
+            case 15:
+            {
+                return _iceD_subscribeTopicToProject(this, in, current);
+            }
+            case 16:
+            {
+                return _iceD_subscribeTopicToProjectList(this, in, current);
+            }
+            case 17:
+            {
+                return _iceD_subscribeTopicToTask(this, in, current);
+            }
+            case 18:
+            {
+                return _iceD_subscribeTopicToTaskList(this, in, current);
+            }
+            case 19:
+            {
+                return _iceD_subscribeTopicToUser(this, in, current);
+            }
+            case 20:
+            {
+                return _iceD_unSubscribeTopic(this, in, current);
+            }
+            case 21:
+            {
+                return _iceD_unSubscribeTopicToCompany(this, in, current);
+            }
+            case 22:
+            {
+                return _iceD_unSubscribeTopicToCompanyList(this, in, current);
+            }
+            case 23:
+            {
+                return _iceD_unSubscribeTopicToProject(this, in, current);
+            }
+            case 24:
+            {
+                return _iceD_unSubscribeTopicToProjectList(this, in, current);
+            }
+            case 25:
+            {
+                return _iceD_unSubscribeTopicToTask(this, in, current);
+            }
+            case 26:
+            {
+                return _iceD_unSubscribeTopicToTaskList(this, in, current);
+            }
+            case 27:
+            {
+                return _iceD_unSubscribeTopicToUser(this, in, current);
             }
         }
 

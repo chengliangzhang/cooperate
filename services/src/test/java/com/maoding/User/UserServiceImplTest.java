@@ -1,6 +1,7 @@
 package com.maoding.User;
 
 import com.maoding.User.zeroc.LoginDTO;
+import com.maoding.User.zeroc.ProjectRoleDTO;
 import com.maoding.User.zeroc.UserService;
 import com.maoding.User.zeroc.UserServicePrx;
 import org.junit.After;
@@ -13,6 +14,8 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.List;
 
 /** 
 * UserServiceImpl Tester. 
@@ -30,6 +33,13 @@ public class UserServiceImplTest {
     @Autowired
     UserService userService;
     private UserServicePrx userServicePrx = UserServiceImpl.getInstance(":tcp -h 192.168.13.140 -p 10005");
+
+    @Test
+    public void testListRole() throws Exception {
+        String projectId = "3c7c78c896c84c4fbe0facd7def29d50";
+        List<ProjectRoleDTO> list = userService.listProjectRoleByProjectId(projectId,null);
+        Assert.assertNotNull(list);
+    }
 
     /** for method: login(LoginDTO loginInfo, Current current) */
     @Test
@@ -49,32 +59,7 @@ public class UserServiceImplTest {
     public void testSetOrganization() throws Exception { 
         //TODO: Test goes here... 
     } 
-    /** for method: setDuty(String dutyId, Current current) */ 
-    @Test
-    public void testSetDuty() throws Exception { 
-        //TODO: Test goes here... 
-    } 
-    /** for method: listDutyByUserId(String userId, Current current) */ 
-    @Test
-    public void testListDutyByUserId() throws Exception { 
-        //TODO: Test goes here... 
-    } 
-    /** for method: listDutyForCurrent(Current current) */ 
-    @Test
-    public void testListDutyForCurrent() throws Exception { 
-        //TODO: Test goes here... 
-    } 
-    /** for method: getCurrent(Current current) */ 
-    @Test
-    public void testGetCurrent() throws Exception { 
-        //TODO: Test goes here... 
-    } 
-    /** for method: run() */ 
-    @Test
-    public void testRun() throws Exception { 
-        //TODO: Test goes here... 
-    } 
-    
+
 
     /** action before each test */
     @Before

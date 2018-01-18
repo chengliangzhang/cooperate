@@ -1,8 +1,9 @@
 package com.maoding.User;
 
 import com.maoding.Base.BaseLocalService;
-import com.maoding.Bean.ApiResponse;
+import com.maoding.Bean.CoreResponse;
 import com.maoding.Common.Config.WebServiceConfig;
+import com.maoding.User.Dao.RoleDao;
 import com.maoding.User.zeroc.*;
 import com.maoding.Utils.*;
 import com.zeroc.Ice.Current;
@@ -27,6 +28,9 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     @Autowired
     private WebServiceConfig webServiceConfig;
 
+    @Autowired
+    private RoleDao roleDao;
+
     /** 同步方式获取业务接口代理对象 */
     public static UserServicePrx getInstance(String adapterName) {
         UserServiceImpl prx = new UserServiceImpl();
@@ -34,6 +38,11 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     }
     public static UserServicePrx getInstance(){
         return getInstance(null);
+    }
+
+    @Override
+    public List<ProjectRoleDTO> listProjectRoleByProjectId(String projectId, Current current) {
+        return roleDao.listProjectRoleByProjectId(projectId);
     }
 
     @Override
@@ -46,7 +55,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
 
         CloseableHttpResponse response = HttpUtils.postData(webServiceConfig.getClient(), webServiceConfig.getLoginUrl(), webServiceConfig.getLoginParamsType(), loginInfo);
         if (!HttpUtils.isResponseOK(response)) return false;
-        ApiResponse result = getResult(response);
+        CoreResponse result = getResult(response);
         FileUtils.close(response);
         assert (result != null);
         return (result.isSuccessful());
@@ -56,7 +65,7 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     public AccountDTO getCurrent(Current current) {
         CloseableHttpResponse response = HttpUtils.postData(webServiceConfig.getClient(), webServiceConfig.getGetCurrentUrl());
         if (!HttpUtils.isResponseOK(response)) return null;
-        ApiResponse result = getResult(response);
+        CoreResponse result = getResult(response);
         FileUtils.close(response);
         assert (result != null);
         Map<String,Object> data = (Map<String,Object>)result.getData();
@@ -70,34 +79,13 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
 
 
 
-    private ApiResponse getResult(CloseableHttpResponse response){
-        ApiResponse result = null;
+    private CoreResponse getResult(CloseableHttpResponse response){
+        CoreResponse result = null;
         try {
-            result = JsonUtils.json2Obj(EntityUtils.toString(response.getEntity()),ApiResponse.class);
+            result = JsonUtils.json2Obj(EntityUtils.toString(response.getEntity()),CoreResponse.class);
         } catch (IOException e) {
-            ExceptionUtils.logError(log,e);
+            log.error(e.getMessage(),e);
         }
         return result;
     }
-
-    @Override
-    public boolean setOrganization(String organizationId, Current current) {
-        return false;
-    }
-
-    @Override
-    public boolean setDuty(String dutyId, Current current) {
-        return false;
-    }
-
-    @Override
-    public List<DutyDTO> listDutyByUserId(String userId, Current current) {
-        return null;
-    }
-
-    @Override
-    public List<DutyDTO> listDutyForCurrent(Current current) {
-        return null;
-    }
-
 }

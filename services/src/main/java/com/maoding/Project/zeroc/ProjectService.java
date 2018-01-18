@@ -24,10 +24,6 @@ public interface ProjectService extends com.zeroc.Ice.Object
 {
     ProjectDTO getProjectInfoById(String id, com.zeroc.Ice.Current current);
 
-    java.util.List<ProjectDTO> listProjectByAccount(com.maoding.User.zeroc.AccountDTO account, com.zeroc.Ice.Current current);
-
-    java.util.List<ProjectDTO> listProjectForCurrent(com.zeroc.Ice.Current current);
-
     static final String[] _iceIds =
     {
         "::Ice::Object",
@@ -65,40 +61,13 @@ public interface ProjectService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listProjectByAccount(ProjectService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        inS.endReadParams();
-        java.util.List<ProjectDTO> ret = obj.listProjectByAccount(iceP_account, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ProjectListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listProjectForCurrent(ProjectService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        inS.readEmptyParams();
-        java.util.List<ProjectDTO> ret = obj.listProjectForCurrent(current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ProjectListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
     final static String[] _iceOps =
     {
         "getProjectInfoById",
         "ice_id",
         "ice_ids",
         "ice_isA",
-        "ice_ping",
-        "listProjectByAccount",
-        "listProjectForCurrent"
+        "ice_ping"
     };
 
     @Override
@@ -132,14 +101,6 @@ public interface ProjectService extends com.zeroc.Ice.Object
             case 4:
             {
                 return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
-            }
-            case 5:
-            {
-                return _iceD_listProjectByAccount(this, in, current);
-            }
-            case 6:
-            {
-                return _iceD_listProjectForCurrent(this, in, current);
             }
         }
 

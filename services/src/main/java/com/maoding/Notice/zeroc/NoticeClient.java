@@ -22,11 +22,7 @@ package com.maoding.Notice.zeroc;
 
 public interface NoticeClient extends com.zeroc.Ice.Object
 {
-    void subscribeTopic(java.lang.String topic, com.zeroc.Ice.Current current);
-
-    void subscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, java.lang.String topic, com.zeroc.Ice.Current current);
-
-    void gotEvent(MessageDTO msg, com.zeroc.Ice.Current current);
+    void notice(MessageDTO msg, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -51,50 +47,24 @@ public interface NoticeClient extends com.zeroc.Ice.Object
         return "::zeroc::NoticeClient";
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopic(NoticeClient obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        java.lang.String iceP_topic;
-        iceP_topic = istr.readSerializable(java.lang.String.class);
-        inS.endReadParams();
-        obj.subscribeTopic(iceP_topic, current);
-        return inS.setResult(inS.writeEmptyParams());
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopicForAccount(NoticeClient obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        java.lang.String iceP_topic;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_topic = istr.readSerializable(java.lang.String.class);
-        inS.endReadParams();
-        obj.subscribeTopicForAccount(iceP_account, iceP_topic, current);
-        return inS.setResult(inS.writeEmptyParams());
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_gotEvent(NoticeClient obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_notice(NoticeClient obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         MessageDTO iceP_msg;
         iceP_msg = MessageDTO.ice_read(istr);
         inS.endReadParams();
-        obj.gotEvent(iceP_msg, current);
+        obj.notice(iceP_msg, current);
         return inS.setResult(inS.writeEmptyParams());
     }
 
     final static String[] _iceOps =
     {
-        "gotEvent",
         "ice_id",
         "ice_ids",
         "ice_isA",
         "ice_ping",
-        "subscribeTopic",
-        "subscribeTopicForAccount"
+        "notice"
     };
 
     @Override
@@ -111,31 +81,23 @@ public interface NoticeClient extends com.zeroc.Ice.Object
         {
             case 0:
             {
-                return _iceD_gotEvent(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 1:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 2:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 3:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 4:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
-            }
-            case 5:
-            {
-                return _iceD_subscribeTopic(this, in, current);
-            }
-            case 6:
-            {
-                return _iceD_subscribeTopicForAccount(this, in, current);
+                return _iceD_notice(this, in, current);
             }
         }
 

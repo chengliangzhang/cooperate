@@ -1,19 +1,6 @@
--- 建立清理表结构存储过程
-DROP PROCEDURE IF EXISTS `clearTables`;
-CREATE PROCEDURE `clearTables`()
-BEGIN
-	DROP TABLE IF EXISTS `maoding_const`;
-	DROP TABLE IF EXISTS `maoding_storage`;
-	DROP TABLE IF EXISTS `maoding_storage_file`;
-  DROP TABLE IF EXISTS `maoding_storage_file_his`;
-  DROP TABLE IF EXISTS `maoding_storage_file_ref`;
-	DROP TABLE IF EXISTS `maoding_storage_dir`;
-	DROP TABLE IF EXISTS `maoding_web_account`;
-END;
-
 -- 建立创建表结构存储过程
-DROP PROCEDURE IF EXISTS `updateTables`;
-CREATE PROCEDURE `updateTables`()
+DROP PROCEDURE IF EXISTS `createTables`;
+CREATE PROCEDURE `createTables`()
 BEGIN
 	-- maoding_const -- 常量定义
 	CREATE TABLE IF NOT EXISTS `maoding_const` (
@@ -34,14 +21,10 @@ BEGIN
 		`last_modify_duty_id` char(32) DEFAULT NULL COMMENT '记录最后修改者职责id',
 		`pid` char(32) DEFAULT NULL COMMENT '父节点在此表中的id',
 		`path` varchar(255) DEFAULT NULL COMMENT '文件或目录带路径全名，以"/"作为分隔符',
-		`type_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '节点类型',
+		`type_id` smallint(4) unsigned DEFAULT '0' COMMENT '节点类型',
 		`node_name` varchar(255) DEFAULT NULL COMMENT '树节点名',
-		`pid_type_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '父节点类型',
 		`file_length` bigint(16) unsigned DEFAULT '0' COMMENT '文件长度，如果节点是目录则固定为0',
-		`project_id` char(32) DEFAULT NULL COMMENT '节点所属项目id',
-		`issue_id` char(32) DEFAULT NULL COMMENT '节点所属签发任务id',
 		`task_id` char(32) DEFAULT NULL COMMENT '节点所属生产任务id',
-		`company_id` char(32) DEFAULT NULL COMMENT '文件所属组织id',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -53,24 +36,17 @@ BEGIN
 		`last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
 		`last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
 		`last_modify_duty_id` char(32) DEFAULT NULL COMMENT '记录最后修改者职责id',
-		`read_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '文件服务器类型',
-		`read_file_scope` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储位置',
-		`read_file_key` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储名称',
-		`file_type_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '文件类型',
-		`file_checksum` varchar(8) DEFAULT NULL COMMENT '文件校验和',
+		`server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '文件服务器类型',
+		`server_address` varchar(255) DEFAULT NULL COMMENT '文件服务器地址',
+		`file_type_id` smallint(4) unsigned DEFAULT '0' COMMENT '文件类型',
 		`file_version` varchar(20) DEFAULT NULL COMMENT '文件版本',
-		`write_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '用于更改的文件服务器类型',
-		`write_file_scope` varchar(255) DEFAULT NULL COMMENT '用于更改的文件服务器存储位置',
-		`write_file_key` varchar(255) DEFAULT NULL COMMENT '用于更改的文件服务器存储名称',
-
-    `creator_duty_id` char(32) DEFAULT NULL COMMENT '',
-		`file_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '文件服务器类型',
-		`file_scope` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储位置',
-		`file_key` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储名称',
-		`upload_file_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '文件服务器类型',
-		`uploaded_scope` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储位置',
-		`uploaded_key` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储名称',
-		`last_modify_address` varchar(255) DEFAULT NULL COMMENT '',
+		`file_checksum` varchar(64) DEFAULT NULL COMMENT '文件校验和',
+		`major_id` char(32) DEFAULT NULL COMMENT '文件所属专业id',
+		`main_file_id` char(32) DEFAULT NULL COMMENT '所对应的原始文件id',
+		`read_file_scope` varchar(255) DEFAULT NULL COMMENT '只读文件在文件服务器上的存储位置',
+		`read_file_key` varchar(255) DEFAULT NULL COMMENT '只读文件在文件服务器上的存储名称',
+		`write_file_scope` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储位置',
+		`write_file_key` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储名称',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -83,7 +59,7 @@ BEGIN
 		`last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
 		`last_modify_duty_id` char(32) DEFAULT NULL COMMENT '记录最后修改者职责id',
     `file_id` char(32) DEFAULT NULL COMMENT '协同文件编号id',
-    `action_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '校审动作类型',
+    `action_type_id` smallint(4) unsigned DEFAULT '0' COMMENT '校审动作类型',
     `remark` text(2048) DEFAULT NULL COMMENT '文件注释',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -249,8 +225,7 @@ BEGIN
     PRIMARY KEY (`id`),
     UNIQUE KEY `id` (`id`) USING BTREE,
     KEY `company_id` (`company_id`) USING BTREE,
-    KEY `company_user_id
-  company_user_id` (`company_user_id`) USING BTREE,
+    KEY `company_user_id` (`company_user_id`) USING BTREE,
     KEY `target_id` (`target_id`) USING BTREE,
     KEY `member_type` (`member_type`) USING BTREE,
     KEY `project_id` (`project_id`) USING BTREE
@@ -299,27 +274,6 @@ END;
 DROP PROCEDURE IF EXISTS updateViews;
 CREATE PROCEDURE updateViews()
 BEGIN
-  -- maoding_storage_file_tmp -- 清理某些字段的文件表
-  CREATE OR REPLACE VIEW `maoding_storage_file_tmp` AS
-      select
-        id,
-        deleted,
-        create_time,
-        last_modify_time,
-        last_modify_duty_id,
-        file_scope,
-        file_key,
-        file_checksum,
-        file_version,
-        last_modify_address,
-        uploaded_scope,
-        uploaded_key,
-        file_server_type_id,
-        file_type_id,
-        upload_file_server_type_id
-      from
-        maoding_storage_file file;
-
   -- maoding_task -- 清理某些字段的文件表
   CREATE OR REPLACE VIEW `maoding_task` AS
       select
@@ -327,11 +281,6 @@ BEGIN
           ,task.task_name
           ,task.task_type as type_id
           ,task.task_pid as pid
---           ,null as path
---           ,null as issue_id
---           ,null as issue_name
---           ,null as issue_path
---           ,null as task_path
           ,concat(if(task_parent4.task_name is null,'',concat(task_parent4.task_name,'/'))
               ,if(task_parent3.task_name is null,'',concat(task_parent3.task_name,'/'))
               ,if(task_parent2.task_name is null,'',concat(task_parent2.task_name,'/'))
@@ -378,286 +327,297 @@ BEGIN
           and (task.task_type in (0,1,2))
       group by task.id;
 
-  -- maoding_storage_node -- 树节点通用视图
-  CREATE OR REPLACE VIEW `maoding_storage_node` AS
-      select
-          project.id
-          ,project.project_name as name
-          ,if(project.id is null,null,11) as type_id
-          ,node_type.content as type_name
-          ,null AS pid
-          ,if(project.id is null,null,concat('/',project.project_name)) as path
-          ,if(project.id is null,null,unix_timestamp(ifnull(project.create_date,0))) as create_time_stamp
-          ,if(project.id is null,null,date_format(ifnull(project.create_date,0),'%Y-%m-%d %T')) as create_time_text
-          ,if(project.id is null,null,unix_timestamp(ifnull(ifnull(project.update_date,project.create_date),0))) as last_modify_time_stamp
-          ,if(project.id is null,null,date_format(ifnull(ifnull(project.update_date,project.create_date),0),'%Y-%m-%d %T')) as last_modify_time_text
-          ,if(project.id is null,null,ifnull(project.update_by,project.create_by)) as last_modify_user_id
-          ,if(project.id is null,null,0) as file_length
-          ,if(project.id is null,null,1) as is_directory
-          ,if(project.id is null,null,1) as is_project
-          ,if(project.id is null,null,0) as is_task
-          ,if(project.id is null,null,1) as is_design
-					,if(project.id is null,null,1) as is_commit
-					,if(project.id is null,null,1) as is_history
-					,null as classic_id
-          ,null as task_id
-          ,null as storage_path
-      from
-          maoding_web_project project
-					inner join maoding_const node_type on (node_type.classic_id = 14 and node_type.value_id=11)
-      where
-          (project.pstatus = '0')
-      group by project.id
-
-union all
-
-      select
-          concat(project.id,classic_type.value_id) as id
-          ,classic_type.content as name
-          ,if(classic_type.value_id is null,null,(20 + classic_type.value_id * 10)) as type_id
-          ,if(classic_type.value_id is null,null,concat(classic_type.content,'目录')) as type_name
-          ,project.id AS pid
-          ,if(classic_type.value_id is null,null,concat('/',project.project_name,'/',classic_type.content)) as path
-          ,if(classic_type.value_id is null,null,unix_timestamp(ifnull(project.create_date,0))) as create_time_stamp
-          ,if(classic_type.value_id is null,null,date_format(ifnull(project.create_date,0),'%Y-%m-%d %T')) as create_time_text
-          ,if(classic_type.value_id is null,null,unix_timestamp(ifnull(ifnull(project.update_date,project.create_date),0))) as last_modify_time_stamp
-          ,if(classic_type.value_id is null,null,date_format(ifnull(ifnull(project.update_date,project.create_date),0),'%Y-%m-%d %T')) as last_modify_time_text
-          ,ifnull(project.update_by,project.create_by) as last_modify_user_id
-          ,if(classic_type.value_id is null,null,0) as file_length
-          ,if(classic_type.value_id is null,null,1) as is_directory
-          ,if(classic_type.value_id is null,null,0) as is_project
-          ,if(classic_type.value_id is null,null,0) as is_task
-          ,if(classic_type.value_id is null,null,if(classic_type.value_id=0,1,0)) as is_design
-					,if(classic_type.value_id is null,null,if(classic_type.value_id=1,1,0)) as is_commit
-					,if(classic_type.value_id is null,null,if(classic_type.value_id=1,1,0)) as is_history
-					,classic_type.value_id as classic_id
-          ,null as task_id
-          ,null as storage_path
-      from
-          maoding_const classic_type
-					inner join maoding_web_project project on (project.pstatus = '0')
-      where
-					(classic_type.classic_id = 24)
-
-union all
-
-			select
-          concat(task.id,classic_type.value_id) as id
-          ,task.task_name as name
-          ,if(task.id is null,null,if(task.type_id=0,22,21)) as type_id
-          ,node_type.content as type_name
-          ,if(task.id is null,null,ifnull(concat(task.pid,classic_type.value_id),concat(task.project_id,classic_type.value_id))) AS pid
-          ,if(task.id is null,null,concat('/',task.project_name,'/',classic_type.content,'/',task.path)) as path
-          ,if(task.id is null,null,unix_timestamp(ifnull(task.create_date,0))) as create_time_stamp
-          ,if(task.id is null,null,date_format(ifnull(task.create_date,0),'%Y-%m-%d %T')) as create_time_text
-          ,if(task.id is null,null,unix_timestamp(ifnull(ifnull(task.update_date,task.create_date),0))) as last_modify_time_stamp
-          ,if(task.id is null,null,date_format(ifnull(ifnull(task.update_date,task.create_date),0),'%Y-%m-%d %T')) as last_modify_time_text
-          ,if(task.id is null,null,ifnull(task.update_by,task.create_by)) as last_modify_user_id
-          ,if(task.id is null,null,0) as file_length
-          ,if(task.id is null,null,1) as is_directory
-          ,if(task.id is null,null,0) as is_project
-          ,if(task.id is null,null,1) as is_task
-					,if(task.id is null,null,1) as is_design
-					,if(task.id is null,null,0) as is_commit
-					,if(task.id is null,null,0) as is_history
-					,classic_type.value_id as classic_id
-          ,task.id as task_id
-          ,null as storage_path
-      from
-          maoding_task task
-					inner join maoding_const classic_type on (classic_type.classic_id = 24 and classic_type.value_id = 0)
-					inner join maoding_const node_type on (node_type.classic_id = 14 and node_type.value_id = if(task.type_id=0,22,21))
-      group by task.id
-
-union all
-
-			select
-          concat(task.id,classic_type.value_id) as id
-          ,task.task_name as name
-          ,if(task.id is null,null,31) as type_id
-          ,node_type.content as type_name
-          ,if(task.id is null,null,ifnull(concat(task.pid,classic_type.value_id),concat(task.project_id,classic_type.value_id))) AS pid
-          ,if(task.id is null,null,concat('/',task.project_name,'/',classic_type.content,'/',task.path)) as path
-          ,if(task.id is null,null,unix_timestamp(ifnull(task.create_date,0))) as create_time_stamp
-          ,if(task.id is null,null,date_format(ifnull(task.create_date,0),'%Y-%m-%d %T')) as create_time_text
-          ,if(task.id is null,null,unix_timestamp(ifnull(ifnull(task.update_date,task.create_date),0))) as last_modify_time_stamp
-          ,if(task.id is null,null,date_format(ifnull(ifnull(task.update_date,task.create_date),0),'%Y-%m-%d %T')) as last_modify_time_text
-          ,if(task.id is null,null,ifnull(task.update_by,task.create_by)) as last_modify_user_id
-          ,if(task.id is null,null,0) as file_length
-          ,if(task.id is null,null,1) as is_directory
-          ,if(task.id is null,null,0) as is_project
-          ,if(task.id is null,null,1) as is_task
-					,if(task.id is null,null,0) as is_design
-					,if(task.id is null,null,1) as is_commit
-					,if(task.id is null,null,1) as is_history
-					,classic_type.value_id as classic_id
-          ,task.id as task_id
-          ,null as storage_path
-      from
-          maoding_task task
-					inner join maoding_const classic_type on (classic_type.classic_id = 24 and classic_type.value_id = 1)
-					inner join maoding_const node_type on (node_type.classic_id = 14 and node_type.value_id = 31)
-			where (task.type_id in (1,2))
-      group by task.id
-
-union all
-
-			select
-          node.id
-          ,node.node_name as name
-          ,node.type_id as type_id
-          ,node_type.content as type_name
-          ,if(node.pid=node.task_id,concat(node.pid,classic_type.value_id),node.pid) as pid
-          ,concat('/',task.project_name,'/',classic_type.content,'/',task.path,'/',node.path) as path
-          ,if(node.id is null,null,unix_timestamp(ifnull(node.create_time,0))) as create_time_stamp
-          ,if(node.id is null,null,date_format(ifnull(node.create_time,0),'%Y-%m-%d %T')) as create_time_text
-          ,if(node.id is null,null,unix_timestamp(ifnull(node.last_modify_time,0))) as last_modify_time_stamp
-          ,if(node.id is null,null,date_format(ifnull(node.last_modify_time,0),'%Y-%m-%d %T')) as last_modify_time_text
-          ,node.last_modify_user_id as last_modify_user_id
-          ,node.file_length as file_length
-          ,if(node.id is null,null,if(node.type_id >= 10,1,0)) as is_directory
-          ,if(node.id is null,null,0) as is_project
-          ,if(node.id is null,null,0) as is_task
-					,if(node.id is null,null,if(node.type_id in (0,1,10,18,23),1,0)) as is_design
-					,if(node.id is null,null,if(node.type_id in (2,33),1,0)) as is_commit
-					,if(node.id is null,null,if(node.type_id in (3,32),1,0)) as is_history
-					,classic_type.value_id as classic_id
-          ,task.id as task_id
-          ,node.path as storage_path
-      from
-          maoding_storage node
-					inner join maoding_const classic_type on (classic_type.classic_id = 24
-										and ((node.type_id in (0,1,10,18,23) and classic_type.value_id = 0)
-												or (node.type_id in (2,3,32,33) and classic_type.value_id = 1)))
-					inner join maoding_task task on (node.task_id = task.id)
-          inner join maoding_const node_type on (node_type.classic_id = 14 and node.type_id = node_type.value_id)
-      where
-          (node.deleted = 0)
-      group by node.id;
-
-  -- maoding_storage_file_info -- 文件节点详细信息
-  CREATE OR REPLACE VIEW `maoding_storage_file_info` AS
-      select
-          file.*
-          ,file_type.content as file_type_name
-          ,node.name as file_name
-          ,node.type_id
-					,node.type_name
-          ,node.pid
-          ,node.path
-          ,node.create_time_stamp
-          ,node.create_time_text
-          ,node.last_modify_time_stamp
-          ,node.last_modify_time_text
-          ,node.last_modify_user_id
-          ,node.file_length
-          ,node.last_modify_user_id as owner_user_id
-					,task.project_name
-					,task.company_id
-					,task.company_name
-					,task.issue_path
-					,task.task_path
-      from
-            maoding_storage_file_tmp file
-						inner join maoding_const file_type on (file_type.classic_id = 5 and file.file_type_id = file_type.value_id)
-            inner join maoding_storage_node node on (file.id = node.id)
-						left join maoding_task task on (node.task_id = task.id)
-      where
-            (file.deleted = 0)
-			group by file.id;
-
---   -- maoding_storage_node_commit_task -- 提资节点信息
---   CREATE OR REPLACE VIEW `maoding_storage_node_commit_task` AS
---       select
---           concat(task.id,1) as id
---           ,task.task_name as task_name
---           ,if(task.id is null,null,concat('/',project.project_name,'/',projectsub.content
---               ,if(task_parent4.id is null,'',concat('/',task_parent4.task_name))
--- 							,if(task_parent3.id is null,'',concat('/',task_parent3.task_name))
---               ,if(task_parent2.id is null,'',concat('/',task_parent2.task_name))
---               ,if(task_parent1.id is null,'',concat('/',task_parent1.task_name))
---               ,'/',task.task_name)) as path
--- 					,if(task.id is null,null,
--- 							if(task.task_type=2,task.id,
--- 							if(task_parent1.task_type in (1,2),task_parent1.id,
--- 							if(task_parent2.task_type in (1,2),task_parent2.id,
--- 							if(task_parent3.task_type in (1,2),task_parent3.id,
--- 							if(task_parent4.task_type in (1,2),task_parent4.id,null)))))) as issue_id
--- 					,if(task.id is null,null,
--- 							if(task.task_type=2,task.task_name,
--- 							if(task_parent1.task_type in (1,2),task_parent1.task_name,
--- 							if(task_parent2.task_type in (1,2),task_parent2.task_name,
--- 							if(task_parent3.task_type in (1,2),task_parent3.task_name,
--- 							if(task_parent4.task_type in (1,2),task_parent4.task_name,null)))))) as issue_name
--- 				  ,task.company_id
--- 					,org.company_name
--- 					,task.project_id
--- 					,project.project_name
---       from
---           maoding_web_project_task task
--- 					inner join maoding_const projectsub on (projectsub.classic_id = 24 and projectsub.value_id = 1)
--- 					inner join maoding_web_project project on (project.pstatus = '0' and task.project_id = project.id)
--- 					inner join maoding_web_company org on (org.status = '0' and task.company_id = org.id)
---           left join maoding_web_project_task task_parent1 ON (task_parent1.id = task.task_pid)
---           left join maoding_web_project_task task_parent2 ON (task_parent2.id = task_parent1.task_pid)
---           left join maoding_web_project_task task_parent3 ON (task_parent3.id = task_parent2.task_pid)
--- 					left join maoding_web_project_task task_parent4 ON (task_parent4.id = task_parent3.task_pid)
---       where
---           (task.task_status = '0')
---           and (task.task_type in (0,1,2))
---       group by task.id;
---
   -- maoding_storage_root -- 根节点通用视图，带有user_id_list
   CREATE OR REPLACE VIEW `maoding_storage_root` AS
       select
           project.id
-          ,project.project_name as name
-          ,if(project.id is null,null,11) as type_id
-          ,if(project.id is null,null,'项目目录') as type_name
           ,null AS pid
-          ,if(project.id is null,null,11) AS p_type_id
-          ,if(project.id is null,null,'项目节点') as p_type_name
-          ,if(project.id is null,null,concat('/',project.project_name)) as path
-          ,if(project.id is null,null,unix_timestamp(ifnull(project.create_date,0))) as create_time_stamp
-          ,if(project.id is null,null,date_format(ifnull(project.create_date,0),'%Y-%m-%a %T')) as create_time_text
-          ,if(project.id is null,null,unix_timestamp(ifnull(ifnull(project.update_date,project.create_date),0))) as last_modify_time_stamp
-          ,if(project.id is null,null,date_format(ifnull(ifnull(project.update_date,project.create_date),0),'%Y-%m-%a %T')) as last_modify_time_text
-          ,if(project.id is null,null,ifnull(project.update_by,project.create_by)) as last_modify_user_id
-          ,if(project.id is null,null,1) as is_read_only
+          ,if(project.id is null,null,11) as type_id
+          ,project.project_name as name
+          ,concat('/',project.project_name) as path
+          ,unix_timestamp(ifnull(project.create_date,0)) as create_time_stamp
+          ,date_format(project.create_date,'%Y-%m-%d %T') as create_time_text
+          ,unix_timestamp(if(project.update_date is null,ifnull(project.create_date,0),project.update_date)) as last_modify_time_stamp
+          ,date_format(ifnull(project.update_date,project.create_date),'%Y-%m-%d %T') as last_modify_time_text
+          ,ifnull(project.update_by,project.create_by) as owner_user_id
+					,null as owner_role_id
           ,if(project.id is null,null,0) as file_length
-          ,if(project.id is null,null,1) as is_directory
-          ,if(project.id is null,null,1) as is_project_directory
-          ,if(project.id is null,null,0) as is_task_directory
-          ,GROUP_CONCAT(distinct member.account_id) as user_id_list
+					,null as storage_path
+					,null as classic_id
+					,null as classic_name
+          ,node_type.content as type_name
+          ,substring(node_type.content_extra,1,1) as is_directory
+          ,substring(node_type.content_extra,2,1) as is_project
+          ,substring(node_type.content_extra,3,1) as is_task
+					,substring(node_type.content_extra,4,1) as is_design
+					,substring(node_type.content_extra,5,1) as is_commit
+					,substring(node_type.content_extra,6,1) as is_history
+          ,null as issue_id
+          ,null as issue_name
+          ,null as task_id
+          ,null as task_name
+          ,null as task_path
+          ,project.id as project_id
+          ,project.project_name
+          ,project.company_id as company_id
+          ,company.company_name as company_name
+					,GROUP_CONCAT(distinct member.account_id) as user_id_list
       from
           maoding_web_project project
-          inner join maoding_web_project_member member on (member.project_id= project.id)
+					inner join maoding_const node_type on (node_type.classic_id = 14 and node_type.value_id=if(project.id is null,null,11))
+					inner join maoding_web_company company on (project.company_id = company.id)
+					inner join maoding_web_project_member member on (member.project_id= project.id)
       where
           (project.pstatus = '0')
-          and (member.deleted = 0)
+					and (member.deleted = 0)
       group by project.id;
 
-  -- maoding_task_member -- 生产任务设、校、审及任务负责人
-  CREATE OR REPLACE VIEW `maoding_task_member` AS
-      select member.*
+  -- maoding_storage_node -- 树节点通用视图
+  CREATE OR REPLACE VIEW `maoding_storage_node` AS
+      select
+          project.id
+          ,null AS pid
+          ,if(project.id is null,null,11) as type_id
+          ,project.project_name as name
+          ,concat('/',project.project_name) as path
+          ,unix_timestamp(ifnull(project.create_date,0)) as create_time_stamp
+          ,date_format(project.create_date,'%Y-%m-%d %T') as create_time_text
+          ,unix_timestamp(if(project.update_date is null,ifnull(project.create_date,0),project.update_date)) as last_modify_time_stamp
+          ,date_format(ifnull(project.update_date,project.create_date),'%Y-%m-%d %T') as last_modify_time_text
+          ,ifnull(project.update_by,project.create_by) as owner_user_id
+					,null as owner_role_id
+          ,if(project.id is null,null,0) as file_length
+					,null as storage_path
+					,null as classic_id
+					,null as classic_name
+          ,node_type.content as type_name
+          ,substring(node_type.content_extra,1,1) as is_directory
+          ,substring(node_type.content_extra,2,1) as is_project
+          ,substring(node_type.content_extra,3,1) as is_task
+					,substring(node_type.content_extra,4,1) as is_design
+					,substring(node_type.content_extra,5,1) as is_commit
+					,substring(node_type.content_extra,6,1) as is_history
+          ,null as issue_id
+          ,null as issue_name
+          ,null as task_id
+          ,null as task_name
+          ,null as task_path
+          ,project.id as project_id
+          ,project.project_name
+          ,project.company_id as company_id
+          ,company.company_name as company_name
+      from
+          maoding_web_project project
+					inner join maoding_const node_type on (node_type.classic_id = 14 and node_type.value_id=if(project.id is null,null,11))
+					inner join maoding_web_company company on (project.company_id = company.id)
+      where
+          (project.pstatus = '0')
+      group by project.id
+
+  union all
+
+      select
+          concat(project.id,classic_type.value_id) as id
+          ,project.id AS pid
+          ,(classic_type.value_id * 10 + 10) as type_id
+          ,classic_type.content as name
+          ,concat('/',project.project_name,'/',classic_type.content) as path
+          ,unix_timestamp(ifnull(project.create_date,0)) as create_time_stamp
+          ,date_format(project.create_date,'%Y-%m-%d %T') as create_time_text
+          ,unix_timestamp(if(project.update_date is null,ifnull(project.create_date,0),project.update_date)) as last_modify_time_stamp
+          ,date_format(ifnull(project.update_date,project.create_date),'%Y-%m-%d %T') as last_modify_time_text
+          ,ifnull(project.update_by,project.create_by) as owner_user_id
+					,null as owner_role_id
+          ,if(classic_type.value_id is null,null,0) as file_length
+					,null as storage_path
+					,classic_type.value_id as classic_id
+					,classic_type.content as classic_name
+          ,node_type.content as type_name
+          ,substring(node_type.content_extra,1,1) as is_directory
+          ,substring(node_type.content_extra,2,1) as is_project
+          ,substring(node_type.content_extra,3,1) as is_task
+					,substring(node_type.content_extra,4,1) as is_design
+					,substring(node_type.content_extra,5,1) as is_commit
+					,substring(node_type.content_extra,6,1) as is_history
+          ,null as issue_id
+          ,null as issue_name
+          ,null as task_id
+          ,null as task_name
+          ,null as task_path
+          ,project.id as project_id
+          ,project.project_name
+          ,project.company_id as company_id
+          ,company.company_name as company_name
+      from
+          maoding_const classic_type
+					inner join maoding_web_project project on (project.pstatus = '0')
+					inner join maoding_const node_type on (node_type.classic_id = 14 and node_type.value_id = (classic_type.value_id * 10 + 10))
+					inner join maoding_web_company company on (project.company_id = company.id)
+      where
+					(classic_type.classic_id = 24) and (classic_type.value_id != 0)
+
+  union all
+
+			select
+          concat(task.id,classic_type.value_id) as id
+          ,if(task.pid is null,concat(task.project_id,classic_type.value_id),concat(task.pid,classic_type.value_id)) AS pid
+          ,if(classic_type.value_id=1,if(task.type_id=0,22,21),31) as type_id
+          ,task.task_name as name
+          ,concat('/',task.project_name,'/',classic_type.content,'/',task.path) as path
+          ,unix_timestamp(ifnull(task.create_date,0)) as create_time_stamp
+          ,date_format(task.create_date,'%Y-%m-%d %T') as create_time_text
+          ,unix_timestamp(if(task.update_date is null,ifnull(task.create_date,0),task.update_date)) as last_modify_time_stamp
+          ,date_format(ifnull(task.update_date,task.create_date),'%Y-%m-%d %T') as last_modify_time_text
+          ,ifnull(task.update_by,task.create_by) as owner_user_id
+					,null as owner_role_id
+					,if(task.id is null,null,0) as file_length
+					,null as storage_path
+					,classic_type.value_id as classic_id
+					,classic_type.content as classic_name
+          ,node_type.content as type_name
+          ,substring(node_type.content_extra,1,1) as is_directory
+          ,substring(node_type.content_extra,2,1) as is_project
+          ,substring(node_type.content_extra,3,1) as is_task
+					,substring(node_type.content_extra,4,1) as is_design
+					,substring(node_type.content_extra,5,1) as is_commit
+					,substring(node_type.content_extra,6,1) as is_history
+          ,task.issue_id
+          ,task.issue_name
           ,task.id as task_id
           ,task.task_name
-          ,member.member_type as member_type_id
-          ,role_type.content as member_type_name
-          ,member.account_id as user_id
-          ,account.user_name
-      from maoding_web_project_member member
-          inner join maoding_web_project_task task on ((member.node_id = task.id) or (member.target_id = task.id))
-          inner join maoding_const role_type on (member.member_type = role_type.value_id)
-          inner join maoding_web_account account on (member.account_id = account.id)
+          ,task.path as task_path
+          ,task.project_id
+          ,task.project_name
+          ,task.company_id
+          ,task.company_name
+      from
+          maoding_task task
+					inner join maoding_const classic_type on (classic_type.classic_id = 24 and position(concat('!',task.type_id,'!') in (classic_type.content_extra)) > 0)
+					inner join maoding_const node_type on (node_type.classic_id = 14 and node_type.value_id = if(classic_type.value_id=1,if(task.type_id=0,22,21),31))
+			where (task.type_id in (0,1,2))
+      group by task.id,classic_type.value_id
+
+  union all
+
+			select
+          concat(node.id,classic_type.value_id) as id
+          ,concat(node.pid,classic_type.value_id) as pid
+          ,node.type_id
+          ,node.node_name as name
+          ,concat('/',task.project_name,'/',classic_type.content,'/',task.path,'/',node.path) as path
+          ,unix_timestamp(ifnull(node.create_time,0)) as create_time_stamp
+          ,date_format(node.create_time,'%Y-%m-%d %T') as create_time_text
+          ,unix_timestamp(ifnull(node.last_modify_time,0)) as last_modify_time_stamp
+          ,date_format(node.last_modify_time,'%Y-%m-%d %T') as last_modify_time_text
+          ,node.last_modify_user_id as owner_user_id
+          ,node.last_modify_duty_id as owner_role_id
+          ,node.file_length
+          ,node.path as storage_path
+					,classic_type.value_id as classic_id
+					,classic_type.content as classic_name
+          ,node_type.content as type_name
+          ,substring(node_type.content_extra,1,1) as is_directory
+          ,substring(node_type.content_extra,2,1) as is_project
+          ,substring(node_type.content_extra,3,1) as is_task
+					,substring(node_type.content_extra,4,1) as is_design
+					,substring(node_type.content_extra,5,1) as is_commit
+					,substring(node_type.content_extra,6,1) as is_history
+          ,task.issue_id
+          ,task.issue_name
+          ,task.id as task_id
+          ,task.task_name
+          ,task.path as task_path
+          ,task.project_id
+          ,task.project_name
+          ,task.company_id
+          ,task.company_name
+      from
+          maoding_storage node
+					inner join maoding_const classic_type on (classic_type.classic_id = 24 and position(concat(':',node.type_id,':') in (classic_type.content_extra)) > 0)
+          inner join maoding_const node_type on (node_type.classic_id = 14 and node.type_id = node_type.value_id)
+					inner join maoding_task task on (node.task_id = task.id)
       where
-          (member.deleted = 0)
-          and (member.member_type in (3,4,5,6))
-          and (task.task_status = '0')
-          and (task.task_type in (0,2))
-          and (account.`status` = '0')
-          and (role_type.classic_id = 23)
-      group by member.id;
+          (node.deleted = 0)
+      group by node.id;
+
+  -- maoding_role -- 角色视图
+  CREATE OR REPLACE VIEW `maoding_role` AS
+      select
+          concat(project.id,role_classic.value_id) as id
+          ,unix_timestamp(ifnull(project_role.create_date,0)) as create_time_stamp
+          ,date_format(project_role.create_date,'%y-%m-%d %t') as create_time_text
+          ,unix_timestamp(if(project_role.update_date is null,ifnull(project_role.create_date,0),project_role.update_date)) as last_modify_time_stamp
+          ,date_format(ifnull(project_role.update_date,project_role.create_date),'%y-%m-%d %t') as last_modify_time_text
+          ,project.id as project_id
+          ,project.project_name
+          ,account.id as user_id
+          ,account.user_name
+          ,null as task_id
+          ,null as task_name
+          ,if(project_role.id is null,null,role_classic.value_id) as group_id
+          ,project_role.member_type as type_id
+          ,role_group.content as type_name
+      from
+          maoding_web_project_member project_role
+          inner join maoding_web_project project on ((project.pstatus = '0') and (project_role.project_id = project.id))
+          inner join maoding_const role_classic on ((role_classic.classic_id = 25) and (role_classic.value_id = 1))
+          inner join maoding_web_account account on ((account.`status` = '0') and (project_role.account_id = account.id))
+          inner join maoding_const role_group on ((role_group.classic_id = 26) and (project_role.member_type = role_group.value_id))
+      where
+          (project_role.deleted = 0)
+          and (project_role.member_type in (0,1,2))
+      group by project_role.id
+
+  union all
+
+      select
+          concat(task.id,role_classic.value_id) as id
+          ,unix_timestamp(ifnull(task_role.create_date,0)) as create_time_stamp
+          ,date_format(task_role.create_date,'%y-%m-%d %t') as create_time_text
+          ,unix_timestamp(if(task_role.update_date is null,ifnull(task_role.create_date,0),task_role.update_date)) as last_modify_time_stamp
+          ,date_format(ifnull(task_role.update_date,task_role.create_date),'%y-%m-%d %t') as last_modify_time_text
+          ,task_role.project_id as project_id
+          ,project.project_name
+          ,account.id as user_id
+          ,account.user_name
+          ,task.id as task_id
+          ,task.task_name as task_name
+          ,if(task_role.id is null,null,role_classic.value_id) as group_id
+          ,task_role.member_type as type_id
+          ,role_group.content as type_name
+      from
+          maoding_web_project_member task_role
+          inner join maoding_web_project_task task on ((task.task_status = '0') and (task.task_type in (0,2)) and (ifnull(task_role.node_id,task_role.target_id) = task.id))
+          inner join maoding_const role_classic on ((role_classic.classic_id = 25) and (role_classic.value_id = 2))
+          inner join maoding_web_account account on (account.`status` = '0' and task_role.account_id = account.id)
+          inner join maoding_const role_group on (role_group.classic_id = 23 and task_role.member_type = role_group.value_id)
+          inner join maoding_web_project project on (task.project_id = project.id)
+      where
+          task_role.deleted = 0
+          and (task_role.member_type in (3,4,5,6))
+      group by task_role.id;
+
+--   -- maoding_task_member -- 生产任务设、校、审及任务负责人
+--   CREATE OR REPLACE VIEW `maoding_task_member` AS
+--       select member.*
+--           ,task.id as task_id
+--           ,task.task_name
+--           ,member.member_type as member_type_id
+--           ,role_type.content as member_type_name
+--           ,member.account_id as user_id
+--           ,account.user_name
+--       from maoding_web_project_member member
+--           inner join maoding_web_project_task task on ((member.node_id = task.id) or (member.target_id = task.id))
+--           inner join maoding_const role_type on (member.member_type = role_type.value_id)
+--           inner join maoding_web_account account on (member.account_id = account.id)
+--       where
+--           (member.deleted = 0)
+--           and (member.member_type in (3,4,5,6))
+--           and (task.task_status = '0')
+--           and (task.task_type in (0,2))
+--           and (account.`status` = '0')
+--           and (role_type.classic_id = 23)
+--       group by member.id;
 END;
 
 -- 建立初始化常量存储过程
@@ -682,19 +642,45 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,16,'同步模式',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,17,'删除状态',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,19,'文件服务器类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,20,'历史操作类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,20,'文件操作类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,21,'父节点类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,22,'专业类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,23,'角色类型',null);
-  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,24,'项目子目录类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,23,'任务角色类型',null);
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,24,'资料分类',null);
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,25,'角色分类类型',null);
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,26,'项目角色类型',null);
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,27,'通知范围类型',null);
 
-  -- 项目子目录类型
-  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,24,'项目子目录类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (24,0,'设计',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (24,1,'提资',null);
+  -- 项目角色类型
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,27,'通知范围类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,0,'未定义范围',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,1,'用户','User');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,2,'任务','Task');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,3,'项目','Project');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,4,'组织','Company');
+
+  -- 项目角色类型
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,26,'项目角色类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (26,0,'立项人',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (26,1,'经营负责人',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (26,2,'设计负责人',null);
+
+  -- 角色分类类型
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,25,'角色分类类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (25,0,'未知分类',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (25,1,'项目角色',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (25,2,'任务角色',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (25,3,'组织角色',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (25,4,'任务用户角色',null);
+
+  -- 资料分类
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,24,'资料分类','!!-包含的任务类型，::-包含的存储节点类型');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (24,0,'未知分类',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (24,1,'设计','!0!1!2!:0:1:10:18:23:');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (24,2,'提资','!1!2!:2:3:32:33:');
 
 	-- 角色类型
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,23,'角色类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,23,'任务角色类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,0,'立项人',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,1,'经营负责人',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,2,'设计负责人',null);
@@ -726,16 +712,19 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,4,'通告节点','notice_id');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,5,'公司节点','company_id');
 
-	-- 历史操作类型
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,20,'历史操作类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,0,'校验',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,1,'审核',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,2,'提资',null);
+	-- 文件操作类型
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,20,'文件操作类型','第1段:生成的文件类型，第2段:生成的文件目录');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,0,'无效','1;;<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,1,'备份','3;历史版本/{SrcFileNoExt}_{Time:yyyyMMddHHmmss}{Ext};<3>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,2,'校对','1;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,3,'审核','1;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,4,'提资','2;/{Project}/{Classic2}/{IssuePath}/{Major}/{Version}/{TaskPath}/{SrcPath};<2>');
 
 	-- 文件服务器类型
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,19,'文件服务器类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (19,0,'本地服务器',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (19,1,'阿里云服务器',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (19,0,'无效',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (19,1,'本地服务器',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (19,2,'阿里云服务器',null);
 
 	-- 删除状态
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,17,'删除状态',null);
@@ -753,30 +742,31 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (15,1,'锁定',null);
 
 	-- 存储节点类型
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,14,'存储节点类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,0,'未知类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,1,'设计文件',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,2,'提资资料',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,3,'历史版本',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,10,'未知类型目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,11,'项目目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,12,'任务目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,13,'组织目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,14,'通告目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,15,'报销目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,16,'备份目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,17,'回收站目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,18,'用户目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,20,'设计目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,21,'设计签发任务目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,22,'设计生产任务目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,23,'设计自定义目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,30,'提资目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,31,'提资任务目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,32,'提资历史目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,33,'提资自定义目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,40,'成果根目录',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,43,'成果子目录',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,14,'存储节点类型','1:是否目录，2:是否项目，3:是否任务，4:是否设计文档，5:是否提资文档，6:是否历史版本，[]:子目录类型，<>子文件类型');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,0,'未知类型','000100[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,1,'设计文件','000100[23]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,2,'提资资料','000010[33]<2>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,3,'历史版本','000001[18]<3>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,10,'未知类型目录','100000[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,11,'项目目录','110000[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,12,'任务目录','101000[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,13,'组织目录','100000[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,14,'通告目录','100000[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,15,'报销目录','100000[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,16,'备份目录','100001[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,17,'回收站目录','100000[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,18,'用户目录','100100[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,20,'设计目录','100100[23]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,21,'设计签发任务目录','100100[23]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,22,'设计生产任务目录','100100[23]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,23,'设计自定义目录','100100[23]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,30,'提资目录','100010[33]<2>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,31,'提资任务目录','100010[33]<2>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,32,'提资历史目录','100011[33]<3>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,33,'提资自定义目录','100010[33]<2>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,40,'档案目录','100000[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,50,'成果目录','100000[18]<1>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,60,'设计依据目录','100000[18]<1>');
 
 	-- 共享类型
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,11,'共享类型',null);
@@ -942,6 +932,6 @@ BEGIN
 	close curTable;
 END;
 
-call updateTables();
+call createTables();
 call updateViews();
 call initConst();

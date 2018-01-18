@@ -1,7 +1,7 @@
 package com.maoding.Notice.Config;
 
-import com.maoding.Notice.CoreNotice;
-import com.maoding.Utils.SpringContextUtils;
+import com.maoding.CoreNotice.CoreNotice;
+import com.maoding.Utils.SpringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ public class NoticeConfig {
 
     public CoreNotice getNoticeServer(){
         if (CoreNotice.NOTICE_SERVER_TYPE_STORM.equals(type)) {
-            if (stormNotice == null) stormNotice = SpringContextUtils.getBean("stormNotice",CoreNotice.class);
+            if (stormNotice == null) stormNotice = SpringUtils.getBean("stormNotice",CoreNotice.class);
             return stormNotice;
         } else {
             return null;

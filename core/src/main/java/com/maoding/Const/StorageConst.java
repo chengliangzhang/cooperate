@@ -6,6 +6,7 @@ package com.maoding.Const;
  * 日    期 : 2017/11/20 11:44
  * 描    述 :
  */
+@Deprecated
 public interface StorageConst {
     //节点类型
     final static Short STORAGE_NODE_TYPE_UNKNOWN = 0;
@@ -52,14 +53,18 @@ public interface StorageConst {
     final static Short STORAGE_NODE_TYPE_DIR_MAX = STORAGE_NODE_TYPE_DIR_USER;
 
     //分类常量
-    final static Short STORAGE_CLASSIC_TYPE_DESIGN = 0;
-    final static Short STORAGE_CLASSIC_TYPE_COMMIT = 1;
+    final static Short STORAGE_CLASSIC_TYPE_UNKNOWN = 0;
+    final static Short STORAGE_CLASSIC_TYPE_DESIGN = 1;
+    final static Short STORAGE_CLASSIC_TYPE_COMMIT = 2;
 
     /** 历史动作类型 */
-    final static Short STORAGE_ACTION_TYPE_CHECK = 0;
-    final static Short STORAGE_ACTION_TYPE_AUDIT = 1;
-    final static Short STORAGE_ACTION_TYPE_COMMIT = 2;
+    final static Short STORAGE_ACTION_TYPE_UNKOWN = 0;
+    final static Short STORAGE_ACTION_TYPE_BACKUP = 1;
+    final static Short STORAGE_ACTION_TYPE_CHECK = 2;
+    final static Short STORAGE_ACTION_TYPE_AUDIT = 3;
+    final static Short STORAGE_ACTION_TYPE_COMMIT = 4;
 
+    @Deprecated
     static boolean isFileType(Short typeId) {
         return (STORAGE_NODE_TYPE_UNKNOWN.equals(typeId))
             || (STORAGE_NODE_TYPE_FILE_MAIN.equals(typeId))
@@ -67,6 +72,7 @@ public interface StorageConst {
             || (STORAGE_NODE_TYPE_FILE_COMMIT_HIS.equals(typeId));
     }
 
+    @Deprecated
     static boolean isCommitType(Short typeId){
         return (STORAGE_NODE_TYPE_FILE_COMMIT.equals(typeId))
                 || (STORAGE_NODE_TYPE_FILE_MAIN.equals(typeId))
@@ -78,11 +84,13 @@ public interface StorageConst {
                 || (STORAGE_NODE_TYPE_DIR_COMMIT_USER.equals(typeId));
     }
 
+    @Deprecated
     static boolean isHistoryType(Short typeId){
         return (STORAGE_NODE_TYPE_FILE_COMMIT_HIS.equals(typeId))
                 || (STORAGE_NODE_TYPE_DIR_COMMIT_HIS.equals(typeId));
     }
 
+    @Deprecated
     static boolean isSystemType(Short typeId){
         return (STORAGE_NODE_TYPE_DIR_PROJECT.equals(typeId))
                 || (STORAGE_NODE_TYPE_DIR_TASK.equals(typeId))
@@ -100,19 +108,23 @@ public interface StorageConst {
                 || (STORAGE_NODE_TYPE_DIR_OUTPUT.equals(typeId));
     }
 
+    @Deprecated
     static boolean isProjectType(Short typeId){
         return (STORAGE_NODE_TYPE_DIR_PROJECT.equals(typeId));
     }
 
+    @Deprecated
     static boolean isIssueType(Short typeId) {
         return (STORAGE_NODE_TYPE_DIR_DESIGN_ISSUE.equals(typeId))
                 || (STORAGE_NODE_TYPE_DIR_COMMIT_TASK.equals(typeId));
     }
 
+    @Deprecated
     static boolean isTaskType(Short typeId) {
         return (STORAGE_NODE_TYPE_DIR_DESIGN_TASK.equals(typeId));
     }
 
+    @Deprecated
     static Short getPathType(Short typeId){
         if (STORAGE_NODE_TYPE_UNKNOWN.equals(typeId)) return STORAGE_NODE_TYPE_DIR_DESIGN_USER;
         else if (STORAGE_NODE_TYPE_FILE_MAIN.equals(typeId)) return STORAGE_NODE_TYPE_DIR_DESIGN_USER;
@@ -140,6 +152,7 @@ public interface StorageConst {
         else return STORAGE_NODE_TYPE_DIR_USER;
     }
 
+    @Deprecated
     static String getTypeName(Short typeId){
         if (STORAGE_NODE_TYPE_UNKNOWN.equals(typeId)) return "未知类型";
         else if (STORAGE_NODE_TYPE_FILE_MAIN.equals(typeId)) return "设计文件";
@@ -167,6 +180,7 @@ public interface StorageConst {
         else return "";
     }
 
+    @Deprecated
     static Short getFileType(Short typeId){
         if (STORAGE_NODE_TYPE_UNKNOWN.equals(typeId)) return STORAGE_NODE_TYPE_FILE_MAIN;
         else if (STORAGE_NODE_TYPE_FILE_MAIN.equals(typeId)) return STORAGE_NODE_TYPE_FILE_MAIN;
@@ -191,6 +205,14 @@ public interface StorageConst {
         else if (STORAGE_NODE_TYPE_DIR_COMMIT_USER.equals(typeId)) return STORAGE_NODE_TYPE_FILE_COMMIT;
         else if (STORAGE_NODE_TYPE_DIR_OUTPUT.equals(typeId)) return STORAGE_NODE_TYPE_FILE_MAIN;
         else if (STORAGE_NODE_TYPE_DIR_OUTPUT_USER.equals(typeId)) return STORAGE_NODE_TYPE_FILE_MAIN;
+        else return STORAGE_NODE_TYPE_UNKNOWN;
+    }
+
+    @Deprecated
+    static Short getCopyDestType(Short actionTypeId){
+        if (StorageConst.STORAGE_ACTION_TYPE_CHECK.equals(actionTypeId)) return StorageConst.STORAGE_NODE_TYPE_FILE_MAIN;
+        else if (StorageConst.STORAGE_ACTION_TYPE_AUDIT.equals(actionTypeId)) return StorageConst.STORAGE_NODE_TYPE_FILE_MAIN;
+        else if (StorageConst.STORAGE_ACTION_TYPE_COMMIT.equals(actionTypeId)) return StorageConst.STORAGE_NODE_TYPE_FILE_COMMIT;
         else return STORAGE_NODE_TYPE_UNKNOWN;
     }
 }
