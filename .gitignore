@@ -4,3 +4,4 @@ logs
 .svn
 .depend
 *.iml
+services/src/test/java/com/maoding/FileServer/upload_test.txtdownload.txt
