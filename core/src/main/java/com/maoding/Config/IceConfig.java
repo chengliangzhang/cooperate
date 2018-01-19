@@ -38,6 +38,7 @@ public class IceConfig {
     private ResourceLoader resourceLoader;
 
     private String config;
+    private String start;
 
     public static Map<String, String> propertiesMap = null;
     public static Communicator communicator = null;
@@ -50,11 +51,25 @@ public class IceConfig {
         this.config = config;
     }
 
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
     public String getConfigFileName(){
         String fileName = null;
         try {
-            fileName = resourceLoader.getResource(config).getURI().toString();
-            fileName = StringUtils.getLastSplit(fileName,"file:/");
+            if (getConfig() != null) {
+                if (!getConfig().startsWith("classpath:")){
+                    fileName = getConfig();
+                } else {
+                    fileName = resourceLoader.getResource(getConfig()).getURI().toString();
+                    fileName = StringUtils.getLastSplit(fileName, "file:/");
+                }
+            }
         } catch (IOException e) {
             log.error("初始化ice配置文件出错：" + config);
         }

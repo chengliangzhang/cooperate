@@ -295,29 +295,59 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void subscribeTopicToUser(String id, NoticeClientPrx client)
+    default void subscribeTopicForWeb(String topic, NoticeClientPrx client)
     {
-        subscribeTopicToUser(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        subscribeTopicForWeb(topic, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void subscribeTopicToUser(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void subscribeTopicForWeb(String topic, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_subscribeTopicToUserAsync(id, client, context, true).waitForResponse();
+        _iceI_subscribeTopicForWebAsync(topic, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToUserAsync(String id, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForWebAsync(String topic, NoticeClientPrx client)
     {
-        return _iceI_subscribeTopicToUserAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_subscribeTopicForWebAsync(topic, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToUserAsync(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForWebAsync(String topic, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_subscribeTopicToUserAsync(id, client, context, false);
+        return _iceI_subscribeTopicForWebAsync(topic, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicToUserAsync(String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForWebAsync(String iceP_topic, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicToUser", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForWeb", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     ostr.writeString(iceP_topic);
+                     ostr.writeProxy(iceP_client);
+                 }, null);
+        return f;
+    }
+
+    default void subscribeTopicForUser(String id, NoticeClientPrx client)
+    {
+        subscribeTopicForUser(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void subscribeTopicForUser(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    {
+        _iceI_subscribeTopicForUserAsync(id, client, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForUserAsync(String id, NoticeClientPrx client)
+    {
+        return _iceI_subscribeTopicForUserAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForUserAsync(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    {
+        return _iceI_subscribeTopicForUserAsync(id, client, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForUserAsync(String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForUser", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      ostr.writeString(iceP_id);
                      ostr.writeProxy(iceP_client);
@@ -325,29 +355,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void subscribeTopicToTask(String id, NoticeClientPrx client)
+    default void subscribeTopicForTask(String id, NoticeClientPrx client)
     {
-        subscribeTopicToTask(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        subscribeTopicForTask(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void subscribeTopicToTask(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void subscribeTopicForTask(String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_subscribeTopicToTaskAsync(id, client, context, true).waitForResponse();
+        _iceI_subscribeTopicForTaskAsync(id, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToTaskAsync(String id, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForTaskAsync(String id, NoticeClientPrx client)
     {
-        return _iceI_subscribeTopicToTaskAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_subscribeTopicForTaskAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToTaskAsync(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForTaskAsync(String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_subscribeTopicToTaskAsync(id, client, context, false);
+        return _iceI_subscribeTopicForTaskAsync(id, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicToTaskAsync(String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForTaskAsync(String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicToTask", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForTask", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      ostr.writeString(iceP_id);
                      ostr.writeProxy(iceP_client);
@@ -355,29 +385,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void subscribeTopicToProject(java.lang.String id, NoticeClientPrx client)
+    default void subscribeTopicForProject(java.lang.String id, NoticeClientPrx client)
     {
-        subscribeTopicToProject(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        subscribeTopicForProject(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void subscribeTopicToProject(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void subscribeTopicForProject(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_subscribeTopicToProjectAsync(id, client, context, true).waitForResponse();
+        _iceI_subscribeTopicForProjectAsync(id, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToProjectAsync(java.lang.String id, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForProjectAsync(java.lang.String id, NoticeClientPrx client)
     {
-        return _iceI_subscribeTopicToProjectAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_subscribeTopicForProjectAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToProjectAsync(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForProjectAsync(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_subscribeTopicToProjectAsync(id, client, context, false);
+        return _iceI_subscribeTopicForProjectAsync(id, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicToProjectAsync(java.lang.String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForProjectAsync(java.lang.String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicToProject", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForProject", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      ostr.writeSerializable(iceP_id);
                      ostr.writeProxy(iceP_client);
@@ -385,29 +415,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void subscribeTopicToCompany(String id, NoticeClientPrx client)
+    default void subscribeTopicForCompany(String id, NoticeClientPrx client)
     {
-        subscribeTopicToCompany(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        subscribeTopicForCompany(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void subscribeTopicToCompany(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void subscribeTopicForCompany(String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_subscribeTopicToCompanyAsync(id, client, context, true).waitForResponse();
+        _iceI_subscribeTopicForCompanyAsync(id, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToCompanyAsync(String id, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForCompanyAsync(String id, NoticeClientPrx client)
     {
-        return _iceI_subscribeTopicToCompanyAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_subscribeTopicForCompanyAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToCompanyAsync(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForCompanyAsync(String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_subscribeTopicToCompanyAsync(id, client, context, false);
+        return _iceI_subscribeTopicForCompanyAsync(id, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicToCompanyAsync(String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForCompanyAsync(String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicToCompany", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForCompany", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      ostr.writeString(iceP_id);
                      ostr.writeProxy(iceP_client);
@@ -415,29 +445,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void subscribeTopicToTaskList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default void subscribeTopicForTaskList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        subscribeTopicToTaskList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        subscribeTopicForTaskList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void subscribeTopicToTaskList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void subscribeTopicForTaskList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_subscribeTopicToTaskListAsync(idList, client, context, true).waitForResponse();
+        _iceI_subscribeTopicForTaskListAsync(idList, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToTaskListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForTaskListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        return _iceI_subscribeTopicToTaskListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_subscribeTopicForTaskListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToTaskListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForTaskListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_subscribeTopicToTaskListAsync(idList, client, context, false);
+        return _iceI_subscribeTopicForTaskListAsync(idList, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicToTaskListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForTaskListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicToTaskList", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForTaskList", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      com.maoding.Common.zeroc.StringListHelper.write(ostr, iceP_idList);
                      ostr.writeProxy(iceP_client);
@@ -445,29 +475,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void subscribeTopicToProjectList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default void subscribeTopicForProjectList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        subscribeTopicToProjectList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        subscribeTopicForProjectList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void subscribeTopicToProjectList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void subscribeTopicForProjectList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_subscribeTopicToProjectListAsync(idList, client, context, true).waitForResponse();
+        _iceI_subscribeTopicForProjectListAsync(idList, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToProjectListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForProjectListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        return _iceI_subscribeTopicToProjectListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_subscribeTopicForProjectListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToProjectListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForProjectListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_subscribeTopicToProjectListAsync(idList, client, context, false);
+        return _iceI_subscribeTopicForProjectListAsync(idList, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicToProjectListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForProjectListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicToProjectList", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForProjectList", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      com.maoding.Common.zeroc.StringListHelper.write(ostr, iceP_idList);
                      ostr.writeProxy(iceP_client);
@@ -475,29 +505,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void subscribeTopicToCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default void subscribeTopicForCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        subscribeTopicToCompanyList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        subscribeTopicForCompanyList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void subscribeTopicToCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void subscribeTopicForCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_subscribeTopicToCompanyListAsync(idList, client, context, true).waitForResponse();
+        _iceI_subscribeTopicForCompanyListAsync(idList, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToCompanyListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForCompanyListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        return _iceI_subscribeTopicToCompanyListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_subscribeTopicForCompanyListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> subscribeTopicToCompanyListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForCompanyListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_subscribeTopicToCompanyListAsync(idList, client, context, false);
+        return _iceI_subscribeTopicForCompanyListAsync(idList, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicToCompanyListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForCompanyListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicToCompanyList", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForCompanyList", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      com.maoding.Common.zeroc.StringListHelper.write(ostr, iceP_idList);
                      ostr.writeProxy(iceP_client);
@@ -535,29 +565,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void unSubscribeTopicToUser(java.lang.String id, NoticeClientPrx client)
+    default void unSubscribeTopicForUser(java.lang.String id, NoticeClientPrx client)
     {
-        unSubscribeTopicToUser(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        unSubscribeTopicForUser(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void unSubscribeTopicToUser(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void unSubscribeTopicForUser(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_unSubscribeTopicToUserAsync(id, client, context, true).waitForResponse();
+        _iceI_unSubscribeTopicForUserAsync(id, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToUserAsync(java.lang.String id, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForUserAsync(java.lang.String id, NoticeClientPrx client)
     {
-        return _iceI_unSubscribeTopicToUserAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_unSubscribeTopicForUserAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToUserAsync(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForUserAsync(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_unSubscribeTopicToUserAsync(id, client, context, false);
+        return _iceI_unSubscribeTopicForUserAsync(id, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicToUserAsync(java.lang.String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicForUserAsync(java.lang.String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicToUser", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicForUser", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      ostr.writeSerializable(iceP_id);
                      ostr.writeProxy(iceP_client);
@@ -565,29 +595,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void unSubscribeTopicToTask(java.lang.String id, NoticeClientPrx client)
+    default void unSubscribeTopicForTask(java.lang.String id, NoticeClientPrx client)
     {
-        unSubscribeTopicToTask(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        unSubscribeTopicForTask(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void unSubscribeTopicToTask(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void unSubscribeTopicForTask(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_unSubscribeTopicToTaskAsync(id, client, context, true).waitForResponse();
+        _iceI_unSubscribeTopicForTaskAsync(id, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToTaskAsync(java.lang.String id, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForTaskAsync(java.lang.String id, NoticeClientPrx client)
     {
-        return _iceI_unSubscribeTopicToTaskAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_unSubscribeTopicForTaskAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToTaskAsync(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForTaskAsync(java.lang.String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_unSubscribeTopicToTaskAsync(id, client, context, false);
+        return _iceI_unSubscribeTopicForTaskAsync(id, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicToTaskAsync(java.lang.String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicForTaskAsync(java.lang.String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicToTask", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicForTask", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      ostr.writeSerializable(iceP_id);
                      ostr.writeProxy(iceP_client);
@@ -595,29 +625,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void unSubscribeTopicToProject(String id, NoticeClientPrx client)
+    default void unSubscribeTopicForProject(String id, NoticeClientPrx client)
     {
-        unSubscribeTopicToProject(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        unSubscribeTopicForProject(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void unSubscribeTopicToProject(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void unSubscribeTopicForProject(String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_unSubscribeTopicToProjectAsync(id, client, context, true).waitForResponse();
+        _iceI_unSubscribeTopicForProjectAsync(id, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToProjectAsync(String id, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForProjectAsync(String id, NoticeClientPrx client)
     {
-        return _iceI_unSubscribeTopicToProjectAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_unSubscribeTopicForProjectAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToProjectAsync(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForProjectAsync(String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_unSubscribeTopicToProjectAsync(id, client, context, false);
+        return _iceI_unSubscribeTopicForProjectAsync(id, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicToProjectAsync(String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicForProjectAsync(String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicToProject", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicForProject", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      ostr.writeString(iceP_id);
                      ostr.writeProxy(iceP_client);
@@ -625,29 +655,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void unSubscribeTopicToCompany(String id, NoticeClientPrx client)
+    default void unSubscribeTopicForCompany(String id, NoticeClientPrx client)
     {
-        unSubscribeTopicToCompany(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        unSubscribeTopicForCompany(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void unSubscribeTopicToCompany(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void unSubscribeTopicForCompany(String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_unSubscribeTopicToCompanyAsync(id, client, context, true).waitForResponse();
+        _iceI_unSubscribeTopicForCompanyAsync(id, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToCompanyAsync(String id, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForCompanyAsync(String id, NoticeClientPrx client)
     {
-        return _iceI_unSubscribeTopicToCompanyAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_unSubscribeTopicForCompanyAsync(id, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToCompanyAsync(String id, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForCompanyAsync(String id, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_unSubscribeTopicToCompanyAsync(id, client, context, false);
+        return _iceI_unSubscribeTopicForCompanyAsync(id, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicToCompanyAsync(String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicForCompanyAsync(String iceP_id, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicToCompany", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicForCompany", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      ostr.writeString(iceP_id);
                      ostr.writeProxy(iceP_client);
@@ -655,29 +685,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void unSubscribeTopicToTaskList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default void unSubscribeTopicForTaskList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        unSubscribeTopicToTaskList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        unSubscribeTopicForTaskList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void unSubscribeTopicToTaskList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void unSubscribeTopicForTaskList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_unSubscribeTopicToTaskListAsync(idList, client, context, true).waitForResponse();
+        _iceI_unSubscribeTopicForTaskListAsync(idList, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToTaskListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForTaskListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        return _iceI_unSubscribeTopicToTaskListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_unSubscribeTopicForTaskListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToTaskListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForTaskListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_unSubscribeTopicToTaskListAsync(idList, client, context, false);
+        return _iceI_unSubscribeTopicForTaskListAsync(idList, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicToTaskListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicForTaskListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicToTaskList", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicForTaskList", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      com.maoding.Common.zeroc.StringListHelper.write(ostr, iceP_idList);
                      ostr.writeProxy(iceP_client);
@@ -685,29 +715,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void unSubscribeTopicToProjectList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default void unSubscribeTopicForProjectList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        unSubscribeTopicToProjectList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        unSubscribeTopicForProjectList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void unSubscribeTopicToProjectList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void unSubscribeTopicForProjectList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_unSubscribeTopicToProjectListAsync(idList, client, context, true).waitForResponse();
+        _iceI_unSubscribeTopicForProjectListAsync(idList, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToProjectListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForProjectListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        return _iceI_unSubscribeTopicToProjectListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_unSubscribeTopicForProjectListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToProjectListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForProjectListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_unSubscribeTopicToProjectListAsync(idList, client, context, false);
+        return _iceI_unSubscribeTopicForProjectListAsync(idList, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicToProjectListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicForProjectListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicToProjectList", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicForProjectList", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      com.maoding.Common.zeroc.StringListHelper.write(ostr, iceP_idList);
                      ostr.writeProxy(iceP_client);
@@ -715,29 +745,29 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default void unSubscribeTopicToCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default void unSubscribeTopicForCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        unSubscribeTopicToCompanyList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        unSubscribeTopicForCompanyList(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default void unSubscribeTopicToCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default void unSubscribeTopicForCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        _iceI_unSubscribeTopicToCompanyListAsync(idList, client, context, true).waitForResponse();
+        _iceI_unSubscribeTopicForCompanyListAsync(idList, client, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToCompanyListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForCompanyListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client)
     {
-        return _iceI_unSubscribeTopicToCompanyListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_unSubscribeTopicForCompanyListAsync(idList, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicToCompanyListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForCompanyListAsync(java.util.List<java.lang.String> idList, NoticeClientPrx client, java.util.Map<String, String> context)
     {
-        return _iceI_unSubscribeTopicToCompanyListAsync(idList, client, context, false);
+        return _iceI_unSubscribeTopicForCompanyListAsync(idList, client, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicToCompanyListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicForCompanyListAsync(java.util.List<java.lang.String> iceP_idList, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicToCompanyList", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicForCompanyList", null, sync, null);
         f.invoke(false, context, null, ostr -> {
                      com.maoding.Common.zeroc.StringListHelper.write(ostr, iceP_idList);
                      ostr.writeProxy(iceP_client);

@@ -143,10 +143,30 @@
         <!-- aliyun -->
         <aliyun.version>RELEASE</aliyun.version>
 
+        <!-- vert.x -->
+        <vertx-core.version>3.4.1</vertx-core.version>
+
     </properties>
 
     <!-- Add typical dependencies for a web application -->
     <dependencies>
+        <!-- vert.x -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <version>${vertx-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web</artifactId>
+            <version>${vertx-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-redis-client</artifactId>
+            <version>${vertx-core.version}</version>
+        </dependency>
+
         <!--<dependency>-->
             <!--<groupId>com.aliyun.oss</groupId>-->
             <!--<artifactId>aliyun-sdk-oss</artifactId>-->

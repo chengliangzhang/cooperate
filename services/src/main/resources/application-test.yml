@@ -66,6 +66,8 @@ logging:
 # ===================================================================
 ice:
     config: classpath:properties/ice-config-test.properties
+    startscript: c:/work/maoding-services/icestart.bat
+    start: icebox
 
 # ===================================================================
 # WEB SERVICE
@@ -80,6 +82,12 @@ fileserver:
     type: 5
     userServiceAdapter: tcp -h 192.168.13.140 -p 10005
     storageServiceAdapter: tcp -h 192.168.13.140 -p 10003
+
+# ===================================================================
+# NOTICE SERVICE
+# ===================================================================
+notice:
+    type: 0
 
 # ===================================================================
 # OSS 阿里云文件服务

@@ -1,9 +1,11 @@
 package com.maoding.Notice;
 
+import com.maoding.FileServer.FileServiceImpl;
+import com.maoding.FileServer.zeroc.FileServicePrx;
 import com.maoding.Notice.zeroc.MessageDTO;
 import com.maoding.Notice.zeroc.NoticeClientPrx;
 import com.maoding.Notice.zeroc.NoticeService;
-import com.maoding.Notice.zeroc.ReceiverDTO;
+import com.maoding.Notice.zeroc.NoticeServicePrx;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +15,6 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /** 
 * NoticeServiceImpl Tester. 
@@ -33,20 +32,35 @@ public class NoticeServiceImplTest {
     @Autowired
     NoticeService noticeService;
 
+    NoticeServicePrx noticeServicePrx = NoticeServiceImpl.getInstance("NoticeServer;192.168.13.140");
+    private FileServicePrx fileServicePrx = FileServiceImpl.getInstance("FileServer;192.168.13.140");
+    @Test
+    public void testSubscribe() throws Exception{
+        NoticeClientPrx client1 = NoticeClientImpl.createNewClient("192.168.13.140","1");
+        noticeService.subscribeTopicForWeb("im:account",client1,null);
+    }
+
     @Test
     public void tesNotice() throws Exception {
-        NoticeClientPrx client1 = NoticeClientImpl.createNewClient("192.168.13.140","1");
-        NoticeClientPrx client2 = NoticeClientImpl.createNewClient("192.168.13.140","2");
-        noticeService.subscribeTopic("User1",client1,null);
-        noticeService.subscribeTopic("User2",client2,null);
         MessageDTO msg = new MessageDTO();
         msg.setUserId("user3");
         msg.setTitle("title");
         msg.setContent("message");
-        List<ReceiverDTO> list = new ArrayList<>();
-        noticeService.noticeToUser(msg,"1",null);
-        noticeService.unSubscribeTopic("User1",client1,null);
-        noticeService.unSubscribeTopic("User2",client2,null);
+
+        NoticeClientPrx client1 = NoticeClientImpl.createNewClient("192.168.13.140","1");
+//        NoticeClientPrx client2 = NoticeClientImpl.createNewClient("192.168.13.140","2");
+//        noticeService.subscribeTopic("User1",client1,null);
+//        noticeService.subscribeTopic("User2",client2,null);
+//
+//        List<ReceiverDTO> list = new ArrayList<>();
+//        noticeService.noticeToUser(msg,"1",null);
+//        noticeService.unSubscribeTopic("User1",client1,null);
+//        noticeService.unSubscribeTopic("User2",client2,null);
+
+        fileServicePrx.setNoticeClient("1",client1);
+        noticeServicePrx.noticeToUser(msg,"1");
+        noticeServicePrx.unSubscribeTopicForUser("1",client1);
+        noticeServicePrx.noticeToUser(msg,"13680809727");
     }
     /** for method: createTopic(String topic, Current current) */ 
     @Test

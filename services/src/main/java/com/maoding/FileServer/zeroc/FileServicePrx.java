@@ -84,6 +84,73 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default boolean login(com.maoding.User.zeroc.LoginDTO loginInfo)
+    {
+        return login(loginInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean login(com.maoding.User.zeroc.LoginDTO loginInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_loginAsync(loginInfo, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> loginAsync(com.maoding.User.zeroc.LoginDTO loginInfo)
+    {
+        return _iceI_loginAsync(loginInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> loginAsync(com.maoding.User.zeroc.LoginDTO loginInfo, java.util.Map<String, String> context)
+    {
+        return _iceI_loginAsync(loginInfo, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_loginAsync(com.maoding.User.zeroc.LoginDTO iceP_loginInfo, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "login", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.LoginDTO.ice_write(ostr, iceP_loginInfo);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default java.util.List<java.lang.String> setNoticeClient(String userId, com.maoding.Notice.zeroc.NoticeClientPrx client)
+    {
+        return setNoticeClient(userId, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<java.lang.String> setNoticeClient(String userId, com.maoding.Notice.zeroc.NoticeClientPrx client, java.util.Map<String, String> context)
+    {
+        return _iceI_setNoticeClientAsync(userId, client, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<java.lang.String>> setNoticeClientAsync(String userId, com.maoding.Notice.zeroc.NoticeClientPrx client)
+    {
+        return _iceI_setNoticeClientAsync(userId, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<java.lang.String>> setNoticeClientAsync(String userId, com.maoding.Notice.zeroc.NoticeClientPrx client, java.util.Map<String, String> context)
+    {
+        return _iceI_setNoticeClientAsync(userId, client, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<java.lang.String>> _iceI_setNoticeClientAsync(String iceP_userId, com.maoding.Notice.zeroc.NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<java.lang.String>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setNoticeClient", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_userId);
+                     ostr.writeProxy(iceP_client);
+                 }, istr -> {
+                     java.util.List<java.lang.String> ret;
+                     ret = com.maoding.Common.zeroc.StringListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     /**
      * @deprecated 尚未验证
      **/

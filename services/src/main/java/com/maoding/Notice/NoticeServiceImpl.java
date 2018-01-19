@@ -3,11 +3,12 @@ package com.maoding.Notice;
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Common.ConstService;
 import com.maoding.Config.IceConfig;
+import com.maoding.CoreNotice.CoreNoticeClient;
+import com.maoding.Notice.Config.NoticeConfig;
 import com.maoding.Notice.zeroc.*;
 import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.Current;
 import com.zeroc.Ice.Identity;
-import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.ObjectPrx;
 import com.zeroc.IceStorm.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,97 +26,106 @@ import java.util.Map;
  * 描    述 :
  */
 @Service("noticeService")
-public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implements NoticeService, NoticeServicePrx {
+public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implements NoticeService, NoticeServicePrx, CoreNoticeClient {
 
     @Autowired
     IceConfig iceConfig;
 
-    private static ObjectAdapter adapter = null;
+    @Autowired
+    NoticeConfig noticeConfig;
 
     @Override
-    public void subscribeTopicToUser(String id, NoticeClientPrx client, Current current) {
+    public void subscribeTopicForWeb(String topic, NoticeClientPrx client, Current current) {
+        TopicPrx topicPrx = getTopic("Web" + topic,current);
+        subscribeTopic("Web" + topic,client,current);
+        NoticeClientImpl noticeClient = new NoticeClientImpl(topicPrx);
+        noticeConfig.getActiveMQ().subscribeTopic(topic,noticeClient);
+    }
+
+    @Override
+    public void subscribeTopicForUser(String id, NoticeClientPrx client, Current current) {
         subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_USER) + id,client,current);
     }
 
     @Override
-    public void subscribeTopicToTask(String id, NoticeClientPrx client, Current current) {
+    public void subscribeTopicForTask(String id, NoticeClientPrx client, Current current) {
         subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + id,client,current);
     }
 
     @Override
-    public void subscribeTopicToProject(String id, NoticeClientPrx client, Current current) {
+    public void subscribeTopicForProject(String id, NoticeClientPrx client, Current current) {
         subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + id,client,current);
     }
 
     @Override
-    public void subscribeTopicToCompany(String id, NoticeClientPrx client, Current current) {
+    public void subscribeTopicForCompany(String id, NoticeClientPrx client, Current current) {
         subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + id,client,current);
     }
 
     @Override
-    public void subscribeTopicToTaskList(List<String> idList, NoticeClientPrx client, Current current) {
+    public void subscribeTopicForTaskList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
             subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + id, client, current);
         }
     }
 
     @Override
-    public void subscribeTopicToProjectList(List<String> idList, NoticeClientPrx client, Current current) {
+    public void subscribeTopicForProjectList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
             subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + id, client, current);
         }
     }
 
     @Override
-    public void subscribeTopicToCompanyList(List<String> idList, NoticeClientPrx client, Current current) {
+    public void subscribeTopicForCompanyList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
             subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + id, client, current);
         }
     }
 
     @Override
-    public void unSubscribeTopicToUser(String id, NoticeClientPrx client, Current current) {
+    public void unSubscribeTopicForUser(String id, NoticeClientPrx client, Current current) {
         unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_USER) + id, client, current);
     }
 
     @Override
-    public void unSubscribeTopicToTask(String id, NoticeClientPrx client, Current current) {
+    public void unSubscribeTopicForTask(String id, NoticeClientPrx client, Current current) {
         unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + id, client, current);
     }
 
     @Override
-    public void unSubscribeTopicToProject(String id, NoticeClientPrx client, Current current) {
+    public void unSubscribeTopicForProject(String id, NoticeClientPrx client, Current current) {
         unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + id, client, current);
     }
 
     @Override
-    public void unSubscribeTopicToCompany(String id, NoticeClientPrx client, Current current) {
+    public void unSubscribeTopicForCompany(String id, NoticeClientPrx client, Current current) {
         unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + id, client, current);
     }
 
     @Override
-    public void unSubscribeTopicToTaskList(List<String> idList, NoticeClientPrx client, Current current) {
+    public void unSubscribeTopicForTaskList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
             unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + id, client, current);
         }
     }
 
     @Override
-    public void unSubscribeTopicToProjectList(List<String> idList, NoticeClientPrx client, Current current) {
+    public void unSubscribeTopicForProjectList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
             unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + id, client, current);
         }
     }
 
     @Override
-    public void unSubscribeTopicToCompanyList(List<String> idList, NoticeClientPrx client, Current current) {
+    public void unSubscribeTopicForCompanyList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
             unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + id, client, current);
         }
     }
 
     private TopicManagerPrx getTopicManager(){
-        return RemoteTopicManagerPrx.getTopicManager("StormSvr;192.168.13.140");
+        return RemoteTopicManagerPrx.getTopicManager("tcp -h 192.168.13.112 -p 20000;192.168.13.140");
     }
 
     @Override
@@ -194,6 +204,12 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
             qos.put(RELIABILITY_KEY,RELIABILITY_METHOD);
             TopicPrx topicPrx = getTopic(topic,current);
             assert (topicPrx != null);
+            for (Identity id : topicPrx.getSubscribers()){
+                if (id.equals(client.ice_getIdentity())){
+                    topicPrx.unsubscribe(client);
+                    break;
+                }
+            }
             topicPrx.subscribeAndGetPublisher(qos, client);
         } catch (AlreadySubscribed | InvalidSubscriber | BadQoS e) {
             log.warn("无法订阅" + topic + "频道，" + e);
@@ -237,5 +253,17 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
                 log.warn("无法创建" + topic + "频道" + e);
             }
         }
+    }
+
+    /**
+     * 同步方式获取业务接口代理对象
+     */
+    public static NoticeServicePrx getInstance(String adapterName) {
+        NoticeServiceImpl prx = new NoticeServiceImpl();
+        return prx.getServicePrx("NoticeService", adapterName, NoticeServicePrx.class, _NoticeServicePrxI.class);
+    }
+
+    public static NoticeServicePrx getInstance() {
+        return getInstance(null);
     }
 }

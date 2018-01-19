@@ -1,19 +1,18 @@
 package com.maoding.CoreNotice.Storm;
 
-import com.maoding.CoreNotice.CoreMessageDTO;
-import com.maoding.CoreNotice.CoreReceiverDTO;
 import com.maoding.Config.IceConfig;
-import com.maoding.CoreNotice.CoreNotice;
+import com.maoding.CoreNotice.CoreMessageDTO;
+import com.maoding.CoreNotice.CoreNoticeService;
+import com.maoding.CoreNotice.CoreReceiverDTO;
 import com.zeroc.Ice.Communicator;
-import com.zeroc.Ice.ObjectPrx;
-import com.zeroc.IceStorm.*;
+import com.zeroc.IceStorm.NoSuchTopic;
+import com.zeroc.IceStorm.TopicExists;
+import com.zeroc.IceStorm.TopicManagerPrx;
+import com.zeroc.IceStorm.TopicPrx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -22,7 +21,7 @@ import java.util.Map;
  * 描    述 :
  */
 @Service("stormNotice")
-public class StormNotice implements CoreNotice {
+public class StormClient implements CoreNoticeService {
     /** 日志对象 */
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -61,40 +60,6 @@ public class StormNotice implements CoreNotice {
                 log.warn("无法创建" + topic + "频道" + e);
             }
         }
-    }
-
-    /**
-     * 订阅通告频道
-     *
-     * @param topic
-     */
-    @Override
-    public void subscribeTopic(String topic,ObjectPrx handler) {
-        try {
-            Map<String,String> qos = new HashMap<>();
-            qos.put("retryCount","1");
-            qos.put("reliability","ordered");
-            TopicPrx topicPrx = getTopicManager().retrieve(topic);
-            topicPrx.subscribeAndGetPublisher(qos,handler);
-        } catch (NoSuchTopic | AlreadySubscribed | InvalidSubscriber | BadQoS e) {
-            log.warn("无法订阅" + topic + "频道，" + e);
-        }
-    }
-
-    /**
-     * 取消订阅
-     *
-     * @param topic
-     */
-    @Override
-    public void unSubscribeTopic(String topic, ObjectPrx handler) {
-        try {
-            TopicPrx topicPrx = getTopicManager().retrieve(topic);
-            topicPrx.unsubscribe(handler);
-        } catch (NoSuchTopic e) {
-            log.warn("无法取消订阅" + topic + "频道，" + e);
-        }
-
     }
 
     /**

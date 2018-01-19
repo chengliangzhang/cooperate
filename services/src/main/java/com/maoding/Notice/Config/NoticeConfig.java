@@ -1,6 +1,7 @@
 package com.maoding.Notice.Config;
 
-import com.maoding.CoreNotice.CoreNotice;
+import com.maoding.CoreNotice.ActiveMQ.ActiveMQClient;
+import com.maoding.CoreNotice.CoreNoticeService;
 import com.maoding.Utils.SpringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "notice")
 public class NoticeConfig {
-    private CoreNotice stormNotice;
+    private static CoreNoticeService activeMQ = null;
 
     private Short type;
 
@@ -26,12 +27,10 @@ public class NoticeConfig {
         return type;
     }
 
-    public CoreNotice getNoticeServer(){
-        if (CoreNotice.NOTICE_SERVER_TYPE_STORM.equals(type)) {
-            if (stormNotice == null) stormNotice = SpringUtils.getBean("stormNotice",CoreNotice.class);
-            return stormNotice;
-        } else {
-            return null;
+    public CoreNoticeService getActiveMQ(){
+        if (activeMQ == null){
+            activeMQ = SpringUtils.getBean(ActiveMQClient.class);
         }
+        return activeMQ;
     }
 }

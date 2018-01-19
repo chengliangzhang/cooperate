@@ -61,11 +61,14 @@ mapper:
 logging:
     config: classpath:logback-dev.xml
 
+
 # ===================================================================
 # ICE
 # ===================================================================
 ice:
     config: classpath:properties/ice-config-dev.properties
+    startscript: c:/work/maoding-services/icestart.bat
+    start: icebox
 
 # ===================================================================
 # WEB SERVICE

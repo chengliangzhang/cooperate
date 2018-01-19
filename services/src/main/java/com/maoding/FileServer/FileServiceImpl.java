@@ -11,12 +11,12 @@ import com.maoding.CoreFileServer.CoreFileServer;
 import com.maoding.CoreFileServer.Disk.DiskFileServer;
 import com.maoding.FileServer.Config.FileServerConfig;
 import com.maoding.FileServer.zeroc.*;
+import com.maoding.Notice.zeroc.NoticeClientPrx;
 import com.maoding.Notice.zeroc.NoticeServicePrx;
 import com.maoding.Project.zeroc.ProjectDTO;
 import com.maoding.Storage.zeroc.*;
-import com.maoding.Storage.zeroc.QueryNodeDTO;
-import com.maoding.Storage.zeroc.UpdateNodeDTO;
 import com.maoding.User.zeroc.AccountDTO;
+import com.maoding.User.zeroc.LoginDTO;
 import com.maoding.User.zeroc.ProjectRoleDTO;
 import com.maoding.User.zeroc.UserServicePrx;
 import com.maoding.Utils.BeanUtils;
@@ -46,6 +46,17 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
             setting.getFileServer() : new DiskFileServer();
 
     private Map<String,Map<String,FileDTO>> userBasicFileMap = new HashMap<>();
+
+    @Override
+    public boolean login(LoginDTO loginInfo, Current current) {
+        return setting.getUserService().login(loginInfo);
+    }
+
+    @Override
+    public List<String> setNoticeClient(String userId, NoticeClientPrx client, Current current) {
+        setting.getNoticeService().subscribeTopicForUser(userId,client);
+        return setting.getNoticeService().listSubscribedTopic(userId);
+    }
 
     @Override
     public UserServicePrx getUserService(Current current) {

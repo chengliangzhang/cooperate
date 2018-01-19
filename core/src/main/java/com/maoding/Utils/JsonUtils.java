@@ -31,7 +31,6 @@ public class JsonUtils {
             json = objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(),e);
-            json = null;
         }
         return json;
     }
@@ -43,8 +42,16 @@ public class JsonUtils {
             obj = objectMapper.readValue(json, clazz);
         } catch (IOException e) {
             log.error(e.getMessage(),e);
-            obj = null;
         }
         return obj;
+    }
+
+    public static String getId(String t){
+        String s = t.substring(t.indexOf('{') + 1);
+        s = t.substring(0,t.lastIndexOf('}'));
+        String[] s1 = s.split(",");
+        String[] s2 = s1[0].split(":");
+        String s3 = s2[1].replace("\"","");
+        return s3;
     }
 }

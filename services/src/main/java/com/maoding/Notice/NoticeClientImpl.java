@@ -1,14 +1,16 @@
 package com.maoding.Notice;
 
 import com.maoding.Base.BaseLocalService;
+import com.maoding.CoreNotice.CoreMessageDTO;
+import com.maoding.CoreNotice.CoreNoticeClient;
+import com.maoding.Notice.Config.NoticeConfig;
 import com.maoding.Notice.zeroc.MessageDTO;
 import com.maoding.Notice.zeroc.NoticeClient;
 import com.maoding.Notice.zeroc.NoticeClientPrx;
 import com.zeroc.Ice.*;
+import com.zeroc.IceStorm.TopicPrx;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -17,10 +19,18 @@ import java.util.concurrent.CompletableFuture;
  * 描    述 :
  */
 @Service("noticeClient")
-public class NoticeClientImpl extends BaseLocalService<NoticeClientPrx> implements NoticeClientPrx,NoticeClient{
+public class NoticeClientImpl extends BaseLocalService<NoticeClientPrx> implements NoticeClientPrx,NoticeClient,CoreNoticeClient {
+
+
+    @Autowired
+    NoticeConfig noticeConfig;
 
     private String userId;
+    private TopicPrx topicPrx;
 
+    public NoticeClientImpl(TopicPrx topicPrx){
+        this.topicPrx = topicPrx;
+    }
     public NoticeClientImpl(String userId){
         this.userId = userId;
     }
@@ -30,28 +40,22 @@ public class NoticeClientImpl extends BaseLocalService<NoticeClientPrx> implemen
 
     @Override
     public void notice(MessageDTO msg, Current current) {
-        log.info(userId + " got message:\"" + msg.getTitle() + ":" + msg.getContent() + "\" from " + msg.getUserId());
+        if (topicPrx != null) {
+            ObjectPrx publisher = topicPrx.getPublisher().ice_oneway();
+            assert (publisher != null);
+            NoticeClientPrx clientPrx = NoticeClientPrx.uncheckedCast(publisher);
+            assert (clientPrx != null);
+            clientPrx.notice(msg);
+        } else {
+            log.info(userId + " got messge:" + msg.getTitle() + ":" + msg.getContent() + " from " + msg.getUserId());
+        }
     }
 
-//    @Override
-//    public void notice(MessageDTO msg){
-//        notice(msg,(Current) null);
-//    }
-//
-//    @Override
-//    public void notice(MessageDTO msg, Map<String, String> context) {
-//        notice(msg,(Current) null);
-//    }
-//
-//    @Override
-//    public CompletableFuture<Void> noticeAsync(MessageDTO msg) {
-//        notice(msg,(Current) null);
-//        return null;
-//    }
-
     @Override
-    public CompletableFuture<Void> noticeAsync(MessageDTO msg, Map<String, String> context) {
-        return null;
+    public void notice(CoreMessageDTO msg) {
+        MessageDTO message = new MessageDTO();
+        message.setContent(msg.getContent());
+        notice(message,(Current)null);
     }
 
     public static NoticeClientPrx createNewClient(String locatorIp, String userId){

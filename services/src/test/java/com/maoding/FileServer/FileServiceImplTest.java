@@ -7,7 +7,6 @@ import com.maoding.FileServer.zeroc.*;
 import com.maoding.Storage.zeroc.FileNodeDTO;
 import com.maoding.Storage.zeroc.SimpleNodeDTO;
 import com.maoding.User.zeroc.LoginDTO;
-import com.maoding.User.zeroc.UserServicePrx;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -61,8 +60,7 @@ public class FileServiceImplTest {
         LoginDTO loginInfo = new LoginDTO();
         loginInfo.setAccountId("abcde");
         loginInfo.setPassword("123456");
-        UserServicePrx userService = fileService.getUserService(null);
-        userService.login(loginInfo);
+        fileServicePrx.login(loginInfo,null);
     }
 
     @Test

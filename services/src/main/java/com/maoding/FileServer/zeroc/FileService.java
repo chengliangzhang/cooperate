@@ -26,6 +26,10 @@ public interface FileService extends com.zeroc.Ice.Object
 
     com.maoding.Notice.zeroc.NoticeServicePrx getNoticeService(com.zeroc.Ice.Current current);
 
+    boolean login(com.maoding.User.zeroc.LoginDTO loginInfo, com.zeroc.Ice.Current current);
+
+    java.util.List<java.lang.String> setNoticeClient(String userId, com.maoding.Notice.zeroc.NoticeClientPrx client, com.zeroc.Ice.Current current);
+
     /**
      * @param current The Current object for the invocation.
      * @deprecated 尚未验证
@@ -269,6 +273,36 @@ public interface FileService extends com.zeroc.Ice.Object
         com.maoding.Notice.zeroc.NoticeServicePrx ret = obj.getNoticeService(current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         ostr.writeProxy(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_login(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.LoginDTO iceP_loginInfo;
+        iceP_loginInfo = com.maoding.User.zeroc.LoginDTO.ice_read(istr);
+        inS.endReadParams();
+        boolean ret = obj.login(iceP_loginInfo, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeBool(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setNoticeClient(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_userId;
+        com.maoding.Notice.zeroc.NoticeClientPrx iceP_client;
+        iceP_userId = istr.readString();
+        iceP_client = com.maoding.Notice.zeroc.NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        java.util.List<java.lang.String> ret = obj.setNoticeClient(iceP_userId, iceP_client, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Common.zeroc.StringListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -1779,6 +1813,7 @@ public interface FileService extends com.zeroc.Ice.Object
         "listSubNodeByIdForAccount",
         "listSubNodeByPath",
         "listSubNodeByPathForAccount",
+        "login",
         "moveNode",
         "moveNodeForAccount",
         "readFileNode",
@@ -1798,6 +1833,7 @@ public interface FileService extends com.zeroc.Ice.Object
         "setFileServerType",
         "setNodeLength",
         "setNodeLengthForAccount",
+        "setNoticeClient",
         "updateVersion",
         "updateVersionForAccount",
         "writeFileNode",
@@ -2097,101 +2133,109 @@ public interface FileService extends com.zeroc.Ice.Object
             }
             case 69:
             {
-                return _iceD_moveNode(this, in, current);
+                return _iceD_login(this, in, current);
             }
             case 70:
             {
-                return _iceD_moveNodeForAccount(this, in, current);
+                return _iceD_moveNode(this, in, current);
             }
             case 71:
             {
-                return _iceD_readFileNode(this, in, current);
+                return _iceD_moveNodeForAccount(this, in, current);
             }
             case 72:
             {
-                return _iceD_readFileNodeForAccount(this, in, current);
+                return _iceD_readFileNode(this, in, current);
             }
             case 73:
             {
-                return _iceD_readNode(this, in, current);
+                return _iceD_readFileNodeForAccount(this, in, current);
             }
             case 74:
             {
-                return _iceD_readNodeForAccount(this, in, current);
+                return _iceD_readNode(this, in, current);
             }
             case 75:
             {
-                return _iceD_releaseFileNode(this, in, current);
+                return _iceD_readNodeForAccount(this, in, current);
             }
             case 76:
             {
-                return _iceD_releaseFileNodeForAccount(this, in, current);
+                return _iceD_releaseFileNode(this, in, current);
             }
             case 77:
             {
-                return _iceD_releaseNode(this, in, current);
+                return _iceD_releaseFileNodeForAccount(this, in, current);
             }
             case 78:
             {
-                return _iceD_releaseNodeForAccount(this, in, current);
+                return _iceD_releaseNode(this, in, current);
             }
             case 79:
             {
-                return _iceD_reloadFileNode(this, in, current);
+                return _iceD_releaseNodeForAccount(this, in, current);
             }
             case 80:
             {
-                return _iceD_reloadFileNodeForAccount(this, in, current);
+                return _iceD_reloadFileNode(this, in, current);
             }
             case 81:
             {
-                return _iceD_reloadNode(this, in, current);
+                return _iceD_reloadFileNodeForAccount(this, in, current);
             }
             case 82:
             {
-                return _iceD_reloadNodeForAccount(this, in, current);
+                return _iceD_reloadNode(this, in, current);
             }
             case 83:
             {
-                return _iceD_setFileNodeLength(this, in, current);
+                return _iceD_reloadNodeForAccount(this, in, current);
             }
             case 84:
             {
-                return _iceD_setFileNodeLengthForAccount(this, in, current);
+                return _iceD_setFileNodeLength(this, in, current);
             }
             case 85:
             {
-                return _iceD_setFileServerType(this, in, current);
+                return _iceD_setFileNodeLengthForAccount(this, in, current);
             }
             case 86:
             {
-                return _iceD_setNodeLength(this, in, current);
+                return _iceD_setFileServerType(this, in, current);
             }
             case 87:
             {
-                return _iceD_setNodeLengthForAccount(this, in, current);
+                return _iceD_setNodeLength(this, in, current);
             }
             case 88:
             {
-                return _iceD_updateVersion(this, in, current);
+                return _iceD_setNodeLengthForAccount(this, in, current);
             }
             case 89:
             {
-                return _iceD_updateVersionForAccount(this, in, current);
+                return _iceD_setNoticeClient(this, in, current);
             }
             case 90:
             {
-                return _iceD_writeFileNode(this, in, current);
+                return _iceD_updateVersion(this, in, current);
             }
             case 91:
             {
-                return _iceD_writeFileNodeForAccount(this, in, current);
+                return _iceD_updateVersionForAccount(this, in, current);
             }
             case 92:
             {
-                return _iceD_writeNode(this, in, current);
+                return _iceD_writeFileNode(this, in, current);
             }
             case 93:
+            {
+                return _iceD_writeFileNodeForAccount(this, in, current);
+            }
+            case 94:
+            {
+                return _iceD_writeNode(this, in, current);
+            }
+            case 95:
             {
                 return _iceD_writeNodeForAccount(this, in, current);
             }

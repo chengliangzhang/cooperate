@@ -12,6 +12,9 @@ module zeroc {
         UserService* getUserService(); //获取UserService代理
         NoticeService* getNoticeService(); //获取NoticeService代理
 
+        bool login(LoginDTO loginInfo); //登录
+        StringList setNoticeClient(string userId,NoticeClient* client); //登录
+
         ["deprecate:尚未验证"] ProjectDTO getProjectInfoByPath(string path);
         ["deprecate:尚未验证"] ProjectDTO getProjectInfoByPathForAccount(AccountDTO account,string path);
 
