@@ -21,7 +21,7 @@ public interface CoreFileServer {
      * 获取通过http方式上传文件数据库时的需要设置的部分参数
      */
     @Deprecated
-    BasicFileRequestDTO getUploadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting);
+    default BasicFileRequestDTO getUploadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting){return null;}
 
     @Deprecated
     default BasicFileRequestDTO getUploadRequest(CoreFileDTO src, Integer mode) {
@@ -37,7 +37,7 @@ public interface CoreFileServer {
      * 获取通过http方式下载文件数据库时的需要设置的部分参数
      */
     @Deprecated
-    BasicFileRequestDTO getDownloadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting);
+    default BasicFileRequestDTO getDownloadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting){return null;}
 
     @Deprecated
     default BasicFileRequestDTO getDownloadRequest(CoreFileDTO src, Integer mode) {
@@ -61,38 +61,38 @@ public interface CoreFileServer {
      * 上传文件分片内容
      */
     @Deprecated
-    BasicUploadResultDTO upload(BasicUploadRequestDTO request);
+    default BasicUploadResultDTO upload(BasicUploadRequestDTO request){return null;}
 
     /**
      * 下载文件分片内容
      */
     @Deprecated
-    BasicDownloadResultDTO download(BasicDownloadRequestDTO request);
+    default BasicDownloadResultDTO download(BasicDownloadRequestDTO request){return null;}
 
     /**
      * 在文件服务器上复制文件，复制到同一空间，返回复制后的文件标识
      */
-    String duplicateFile(CoreFileDTO src);
+    default String duplicateFile(CoreFileDTO src){return null;}
 
     /**
      * 判断在文件服务器上是否存在指定文件
      */
-    Boolean isExist(CoreFileDTO src);
+    default Boolean isExist(CoreFileDTO src){return false;}
 
     /**
      * 获取文件服务器上某一空间上的所有文件
      */
-    List<String> listFile(String scope);
+    default List<String> listFile(String scope){return null;}
 
     /**
      * 获取文件服务器上的所有空间
      */
-    List<String> listScope();
+    default List<String> listScope(){return null;}
 
     /**
      * 在文件服务器上删除指定文件
      */
-    void deleteFile(CoreFileDTO src);
+    default void deleteFile(CoreFileDTO src){}
 
     /**
      * 通告文件服务器上传完毕
