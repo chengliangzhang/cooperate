@@ -61,7 +61,7 @@
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if(node.id is null,null,if(node.classic_id = 0
+                    ,if(node.id is null,null,if(node.is_design = 1
                         and (node.owner_user_id is null or node.owner_user_id = #{userId}),0,1)) as is_read_only
                 </when>
                 <otherwise>
@@ -83,7 +83,7 @@
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if(node.id is null,null,if(node.classic_id = 0
+                    ,if(node.id is null,null,if(node.is_design = 1
                         and (node.owner_user_id is null or node.owner_user_id = #{userId}),0,1)) as is_read_only
                 </when>
                 <otherwise>
@@ -109,7 +109,7 @@
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if(node.id is null,null,if(node.classic_id = 0
+                    ,if(node.id is null,null,if(node.is_design = 1
                     and (node.owner_user_id is null or node.owner_user_id = #{userId}),0,1)) as is_read_only
                 </when>
                 <otherwise>
@@ -155,7 +155,7 @@
         select node.*
             <choose>
                 <when test="userId != null">
-                    ,if(node.id is null,null,if(node.classic_id = 0
+                    ,if(node.id is null,null,if(node.is_design = 1
                     and (node.owner_user_id is null or node.owner_user_id = #{userId}),0,1)) as is_read_only
                 </when>
                 <otherwise>
@@ -271,7 +271,7 @@
         select node.*
             <choose>
                 <when test="ownerUserId != null">
-                    ,if(node.id is null,null,if(node.classic_id = 0
+                    ,if(node.id is null,null,if(node.is_design = 1
                     and (node.owner_user_id is null or node.owner_user_id = #{userId}),0,1)) as is_read_only
                 </when>
                 <otherwise>
