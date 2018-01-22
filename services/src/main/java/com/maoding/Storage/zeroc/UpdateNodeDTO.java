@@ -493,6 +493,7 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
     public int hashCode()
     {
         int h_ = 5381;
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::UpdateNodeDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fullName);

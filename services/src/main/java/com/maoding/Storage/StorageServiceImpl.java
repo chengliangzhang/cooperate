@@ -459,6 +459,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             node.setLastModifyTimeStamp(entity.getLastModifyTime().getTime());
             node.setLastModifyTimeText(StringUtils.getTimeStamp(entity.getLastModifyTime(), StringUtils.NORMAL_STAMP_FORMAT));
         }
+        if (!StringUtils.isEmpty(entity.getLastModifyUserId())){
+            node.setOwnerUserId(entity.getLastModifyUserId());
+        }
         return node;
     }
 

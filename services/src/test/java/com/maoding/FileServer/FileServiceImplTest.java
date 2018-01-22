@@ -6,6 +6,7 @@ import com.maoding.Const.FileServerConst;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Storage.zeroc.FileNodeDTO;
 import com.maoding.Storage.zeroc.SimpleNodeDTO;
+import com.maoding.User.zeroc.AccountDTO;
 import com.maoding.User.zeroc.LoginDTO;
 import org.junit.After;
 import org.junit.Assert;
@@ -49,7 +50,9 @@ public class FileServiceImplTest {
 
     @Test
     public void testMoveNode() throws Exception{
-        SimpleNodeDTO node = fileService.getNodeById("6EE0A36BB8104E82BB5046A51522BD351",null);
+        AccountDTO account = new AccountDTO();
+        account.setId("19ea83f3c3eb4097acbbf43b27f49765");
+        SimpleNodeDTO node = fileService.getNodeByIdForAccount(account,"2339D5C19BBE442BAFFB05E208C71FDF1",null);
         MoveNodeRequestDTO request = new MoveNodeRequestDTO();
         request.setFullName("aaaa.txt");
         fileService.moveNodeForAccount(null,node,null,request,null);
@@ -151,12 +154,15 @@ public class FileServiceImplTest {
 
     @Test
     public void testCreateNode() throws Exception {
-        SimpleNodeDTO node = fileService.getNodeById("8c9f352967dc4251af6a1d4c58f67d1c1",null);
+        AccountDTO account = new AccountDTO();
+        account.setId("19ea83f3c3eb4097acbbf43b27f49765");
+        SimpleNodeDTO node = fileService.getNodeByIdForAccount(account,"002c5d6cad5d4637acf98c69386ed3661",null);
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setIsDirectory(false);
         request.setFileLength(10);
-        request.setFullName("abcde.txt");
-        fileService.createNodeForAccount(null,node,request,null);
+        request.setFullName("aaaa.txt");
+        SimpleNodeDTO createdNode = fileService.createNodeForAccount(account,node,request,null);
+        fileService.releaseNodeForAccount(account,createdNode,100,null);
     }
 
     /** action before each test */

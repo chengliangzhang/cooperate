@@ -412,6 +412,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
     public int hashCode()
     {
         int h_ = 5381;
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::QueryNodeDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
