@@ -3,10 +3,12 @@ package com.maoding.CoreNotice.ActiveMQ;
 import com.maoding.CoreNotice.CoreMessageDTO;
 import com.maoding.CoreNotice.CoreNoticeClient;
 import com.maoding.CoreNotice.CoreNoticeService;
+import com.maoding.CoreNotice.CoreReceiverDTO;
 import io.vertx.core.AbstractVerticle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.jms.*;
@@ -26,6 +28,8 @@ public class ActiveMQClient extends AbstractVerticle implements CoreNoticeServic
 
 //    @Autowired
 //    private AppConfig appConfig;
+    @Autowired
+    private JmsTemplate jmsTemplate;
 
     @Autowired
     private ConnectionFactory connectionFactory;
@@ -62,30 +66,14 @@ public class ActiveMQClient extends AbstractVerticle implements CoreNoticeServic
         text = text.replaceAll(":true",":\"true\"");
         text = "{\"id\":\"b164e65f106648d19b4b04e9e3b0751c\",\"queueNo\":2,\"operation\":\"im:account:create\",\"content\":{\"accountId\":\"73486fd0972d40b1b0652364ddb2ba1b\",\"password\":\"E10ADC3949BA59ABBE56E057F20F883E\"},\"fixMode\":\"true\"}";
         log.debug("ActiveMQ Receive:" + text);
-//        imDTO mTmp = JsonUtils.json2Obj(text,imDTO.class);
         MessageDto m = new MessageDto();
         m.setContent(text);
-//        m.setContent(mTmp.getId());
-//        MessageDto m = new MessageDto();
-//        String messageType = (String) map.getOrDefault("messageType", null);
-//        m.setMessageType(messageType);
-//
-//        switch (messageType) {
-//            case NotifyType.WEB_USER_MESSAGE:
-//                m.setReceiver((String) map.getOrDefault("receiver", null));
-//                m.setContent((String) map.getOrDefault("msg", null));
-//                break;
-//            case NotifyType.WEB_NOTICE:
-//                m.setContent((String) map.getOrDefault("noticeTitle", null));
-//                m.setReceiverList((List<String>) map.getOrDefault("receiverList", null));
-//                break;
-//        }
-//
         return m;
     }
 
     private MessageDto getMessage(Message msg) throws JMSException{
         if (msg instanceof TextMessage) return getTextMessage(msg);
+
         else return getMapMessage(msg);
     }
 
@@ -116,5 +104,10 @@ public class ActiveMQClient extends AbstractVerticle implements CoreNoticeServic
         } catch (JMSException e) {
             log.error("初始化ActiveMQ客户端错误", e);
         }
+    }
+
+    @Override
+    public void sendMessage(CoreMessageDTO msg, CoreReceiverDTO receiver) {
+
     }
 }
