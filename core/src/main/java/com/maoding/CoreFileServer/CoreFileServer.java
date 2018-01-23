@@ -101,14 +101,10 @@ public interface CoreFileServer {
     default void finishUpload(BasicFileRequestDTO request) {
     }
 
-    @Deprecated
     default int writeFile(BasicFileMultipartDTO data) {
         return 0;
     }
 
-    ;
-
-    @Deprecated
     default BasicFileMultipartDTO readFile(CoreFileDTO file, long pos, int size) {
         return null;
     }

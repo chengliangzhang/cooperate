@@ -1,8 +1,12 @@
 package com.maoding.FileServer;
 
 import com.maoding.Base.BaseController;
+import com.maoding.CoreFileServer.MaodingWeb.WebFileServer;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -30,13 +34,17 @@ public class FileServiceController extends BaseController {
 //        return ApiResponse.success(type);
 //    }
 //
-//    @RequestMapping(value = "/upload", method = RequestMethod.POST)
-//    public UploadResultDTO upload(@RequestBody UploadRequestDTO request) {
-//        FileServicePrx prx = FileServiceImpl.getInstance();
-//        assert prx != null;
-//        return prx.upload(request);
-//    }
-//
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    public void upload(HttpServletRequest request) {
+
+    }
+
+    @RequestMapping(value = "/testUpload", method = RequestMethod.GET)
+    public void testUpload() {
+        WebFileServer f = new WebFileServer();
+        f.writeFile(null);
+    }
+
 //    @RequestMapping(value = "/download", method = RequestMethod.POST)
 //    public DownloadResultDTO download(@RequestBody DownloadRequestDTO request) {
 //        FileServicePrx prx = FileServiceImpl.getInstance();

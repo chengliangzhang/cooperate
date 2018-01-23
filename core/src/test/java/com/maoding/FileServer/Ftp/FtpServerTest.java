@@ -28,6 +28,15 @@ public class FtpServerTest {
     @Qualifier(value = "ftpServer")
     private CoreFileServer ftpServer;
 
+    @Autowired
+    @Qualifier(value = "webFileServer")
+    private CoreFileServer webServer;
+
+
+    @Test
+    public void testUploadToWeb() throws Exception {
+        webServer.writeFile(null);
+    }
     /** for method: getUploadRequest(BasicFileDTO src) */
     @Test
     public void testGetUploadRequestForHttp() throws Exception {
