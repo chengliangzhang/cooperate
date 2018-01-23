@@ -125,7 +125,7 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
     }
 
     private TopicManagerPrx getTopicManager(){
-        return RemoteTopicManagerPrx.getTopicManager("tcp -h 192.168.13.112 -p 20000;192.168.13.140");
+        return RemoteTopicManagerPrx.getTopicManager("StormSvr;192.168.13.140");
     }
 
     @Override
