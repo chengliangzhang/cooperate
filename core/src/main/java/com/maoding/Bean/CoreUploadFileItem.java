@@ -1,4 +1,4 @@
-package com.maoding.CoreFileServer.MaodingWeb;
+package com.maoding.Bean;
 
 import java.io.Serializable;
 
@@ -8,31 +8,31 @@ import java.io.Serializable;
  * 日    期 : 2018/1/22 17:40
  * 描    述 : 一个POJO。用于保存上传文件的相关信息
  */
-public class UploadFileItem implements Serializable {
+public class CoreUploadFileItem implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // The form field name in a form used foruploading a file,
     // such as "upload1" in "<inputtype="file" name="upload1"/>"
-    private String formFieldName;
+    private String propertyName;
 
     // File name to be uploaded, thefileName contains path,
     // such as "E:\\some_file.jpg"
     private String fileName;
 
-    public UploadFileItem(String formFieldName, String fileName)
+    public CoreUploadFileItem(String propertyName, String fileName)
     {
-        this.formFieldName =formFieldName;
+        this.propertyName = propertyName;
         this.fileName = fileName;
     }
 
-    public String getFormFieldName()
+    public String getPropertyName()
     {
-        return formFieldName;
+        return propertyName;
     }
 
-    public void setFormFieldName(String formFieldName)
+    public void setPropertyName(String propertyName)
     {
-        this.formFieldName =formFieldName;
+        this.propertyName = propertyName;
     }
 
     public String getFileName()

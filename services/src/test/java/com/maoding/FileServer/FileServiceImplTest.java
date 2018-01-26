@@ -3,11 +3,14 @@ package com.maoding.FileServer;
 import com.maoding.Common.ConstService;
 import com.maoding.Config.IceConfig;
 import com.maoding.Const.FileServerConst;
+import com.maoding.CoreFileServer.CoreFileDTO;
+import com.maoding.FileServer.Dto.CopyRequestDTO;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Storage.zeroc.FileNodeDTO;
 import com.maoding.Storage.zeroc.SimpleNodeDTO;
 import com.maoding.User.zeroc.AccountDTO;
 import com.maoding.User.zeroc.LoginDTO;
+import com.maoding.User.zeroc.UserDTO;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,6 +52,31 @@ public class FileServiceImplTest {
 
 
     @Test
+    public void testCopyRealFile() throws Exception{
+        CoreFileDTO src = new CoreFileDTO("立项测试1/设计/初步设计/初步设计/初设一层/初设二层/1112","abcde.txt");
+        CopyRequestDTO request = new CopyRequestDTO();
+        request.setFileServerType(ConstService.FILE_SERVER_TYPE_DISK);
+        request.setDstKey("aaaaa.txt");
+        FileServiceImpl fv = new FileServiceImpl();
+        fv.copyRealFile(src,request,null);
+    }
+
+    @Test
+    public void testChangeOwner() throws Exception{
+        AccountDTO account = new AccountDTO();
+        account.setId("19ea83f3c3eb4097acbbf43b27f49765");
+        UserDTO user = new UserDTO("075be84d8fd64921b9760a9779c69b10","沈习荣");
+        SimpleNodeDTO node = getLocalNode();
+        fileService.changeNodeOwnerForAccount(account,node,user,null);
+    }
+
+    private SimpleNodeDTO getLocalNode(){
+        AccountDTO account = new AccountDTO();
+        account.setId("19ea83f3c3eb4097acbbf43b27f49765");
+        return fileService.getNodeByIdForAccount(account,"B2D1DF6949D04EC6B7EF354624D40AF91",null);
+    }
+
+    @Test
     public void testMoveNode() throws Exception{
         AccountDTO account = new AccountDTO();
         account.setId("19ea83f3c3eb4097acbbf43b27f49765");
@@ -68,22 +96,28 @@ public class FileServiceImplTest {
 
     @Test
     public void testCommitFile() throws Exception {
-        SimpleNodeDTO node = fileService.getNodeById("6EE0A36BB8104E82BB5046A51522BD351",null);
+        commitFileRemoteNew();
+    }
+
+    private void commitFileRemoteNew() throws Exception{
+        SimpleNodeDTO node = fileServicePrx.getNodeById("33BB8B903D2D484492BAC3FFB40904F51");
         assert (node != null);
         CommitRequestDTO request = new CommitRequestDTO();
         request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_COMMIT);
         request.setRemark("abcde");
         request.setUserId("12345");
-        request.setFileVersion("一提");
+        request.setFileVersion("二提");
         request.setMajorName("水电");
-        SimpleNodeDTO target = fileService.commitNode(node,request,null);
+        SimpleNodeDTO target = fileServicePrx.commitNode(node,request);
         Assert.assertNotNull(target);
     }
 
     @Test
     public void testReleaseFileNode() throws Exception {
-        SimpleNodeDTO node = fileService.getNodeById("01118A569B68446287C974054173A50F0",null);
-        fileService.releaseNode(node,0,null);
+        AccountDTO account = new AccountDTO();
+        account.setId("d97bf0198ebd42bc8f695e2940bb9d10");
+        SimpleNodeDTO node = fileService.getNodeById("21CF5CA39D414C7E8E7EC54401C7213F1",null);
+        fileService.releaseNodeForAccount(account,node,0,null);
     }
 
     @Test

@@ -99,6 +99,7 @@ module zeroc {
     struct QueryNodeDTO {
         string id; //树节点id
         string pid; //父节点id
+        string name; //节点名称
         string path; //树节点全路径
         string typeId; //节点类型
         string projectId; //节点所属项目id

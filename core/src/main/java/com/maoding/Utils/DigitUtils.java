@@ -17,7 +17,17 @@ public class DigitUtils {
         assert (StringUtils.isNumeric(n1) && StringUtils.isNumeric(n2));
         Double d1 = Double.parseDouble(n1);
         Double d2 = Double.parseDouble(n2);
-        return ((d2 - d1) < -LIMIT_0) || (LIMIT_0 < (d2 - d1));
+        return ((-LIMIT_0 < (d2 - d1)) && ((d2 - d1) < LIMIT_0));
+    }
+
+    public static Boolean isDigitalClass(final Class<?> clazz){
+        return (clazz.isAssignableFrom(Byte.class)
+                || clazz.isAssignableFrom(Short.class)
+                || clazz.isAssignableFrom(Integer.class)
+                || clazz.isAssignableFrom(Long.class)
+                || clazz.isAssignableFrom(Float.class)
+                || clazz.isAssignableFrom(Double.class)
+        );
     }
     
 }

@@ -7,8 +7,10 @@
 [["java:package:com.maoding.Storage"]]
 module zeroc {
     interface StorageService {
-        SimpleNodeDTO createNode(UpdateNodeDTO request); //创建节点
-        SimpleNodeDTO updateNode(SimpleNodeDTO src,UpdateNodeDTO request); //更改节点属性
+        ["deprecate:尚未实现"] SimpleNodeDTO createMirror(FileNodeDTO src) throws CustomException; //建立镜像
+
+        SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent,UpdateNodeDTO request) throws CustomException; //创建节点
+        SimpleNodeDTO updateNodeWithParent(SimpleNodeDTO src,SimpleNodeDTO parent,UpdateNodeDTO request) throws CustomException; //更改节点属性
         bool deleteNodeById(string id); //删除树节点
 
         SimpleNodeList listAllNode(string userId); //获取指定账号所有节点
@@ -20,5 +22,7 @@ module zeroc {
 
         ["deprecate"] bool isDirectoryEmpty(string path); //根据路径判断目录是否为空
         ["deprecate"] bool isDirectoryEmptyForAccount(AccountDTO account,string path); //根据路径判断目录是否为空
+        ["deprecate:由createNodeWithParent代替"] SimpleNodeDTO createNode(UpdateNodeDTO request); //创建节点
+        ["deprecate:由updateNodeWithParent代替"] SimpleNodeDTO updateNode(SimpleNodeDTO src,UpdateNodeDTO request); //更改节点属性
     };
 };

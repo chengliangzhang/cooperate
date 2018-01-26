@@ -9,7 +9,7 @@ import com.maoding.Const.ApiResponseConst;
  * 日    期 : 2017/10/31 10:22
  * 描    述 :
  */
-public class BasicDownloadResultDTO extends CoreResponse<BasicFileMultipartDTO> {
+public class BasicDownloadResultDTO extends CoreResponse<CoreFileDataDTO> {
     /** 下载申请的唯一编号 */
     private Integer requestId;
     /** 下载任务ID（没有作用，将被取消） */

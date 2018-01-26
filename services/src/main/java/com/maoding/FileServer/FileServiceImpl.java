@@ -3,22 +3,20 @@ package com.maoding.FileServer;
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Common.ConstService;
 import com.maoding.Common.Dto.PathElementDTO;
+import com.maoding.Common.zeroc.CustomException;
+import com.maoding.Common.zeroc.ErrorCode;
 import com.maoding.Common.zeroc.IdNameDTO;
-import com.maoding.CoreFileServer.BasicFileMultipartDTO;
-import com.maoding.CoreFileServer.CoreFileCopyResult;
-import com.maoding.CoreFileServer.CoreFileDTO;
-import com.maoding.CoreFileServer.CoreFileServer;
+import com.maoding.CoreFileServer.*;
 import com.maoding.CoreFileServer.Disk.DiskFileServer;
+import com.maoding.CoreFileServer.MaodingWeb.WebFileServer;
 import com.maoding.FileServer.Config.FileServerConfig;
+import com.maoding.FileServer.Dto.CopyRequestDTO;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Notice.zeroc.NoticeClientPrx;
 import com.maoding.Notice.zeroc.NoticeServicePrx;
 import com.maoding.Project.zeroc.ProjectDTO;
 import com.maoding.Storage.zeroc.*;
-import com.maoding.User.zeroc.AccountDTO;
-import com.maoding.User.zeroc.LoginDTO;
-import com.maoding.User.zeroc.ProjectRoleDTO;
-import com.maoding.User.zeroc.UserServicePrx;
+import com.maoding.User.zeroc.*;
 import com.maoding.Utils.BeanUtils;
 import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.Current;
@@ -26,10 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -42,10 +37,172 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Autowired
     private FileServerConfig setting;
-    private CoreFileServer fileServer = (setting != null) ?
-            setting.getFileServer() : new DiskFileServer();
+    private CoreFileServer fileServer = new DiskFileServer();
 
     private Map<String,Map<String,FileDTO>> userBasicFileMap = new HashMap<>();
+
+    public CoreFileDTO copyRealFile(@NotNull CoreFileDTO src, @NotNull CopyRequestDTO request, Current current){
+        if (isSameServer(src,request)){
+            Short serverType = src.getServerType();
+            if (serverType == null) serverType = request.getFileServerType();
+            String serverAddress = src.getServerAddress();
+            if (serverAddress == null) serverAddress = request.getFileServerAddress();
+            CoreFileServer fileServer = setting.getFileServer(serverType,serverAddress);
+            String scope = request.getDstScope();
+            if (StringUtils.isEmpty(scope)) scope = src.getScope();
+            String key = request.getDstKey();
+            if (StringUtils.isEmpty(key)) key = src.getKey();
+            CoreFileDTO dst = fileServer.coreCreateFile(scope + StringUtils.SPLIT_PATH + key);
+            dst.setServerType(serverType);
+            dst.setServerAddress(serverAddress);
+            fileServer.coreCopyFile(src,dst);
+            userBasicFileMap.clear();
+            return dst;
+        } else {
+            Short srcServerType = src.getServerType();
+            String srcServerAddress = src.getServerAddress();
+            Short dstServerType = request.getFileServerType();
+            String dstServerAddress = request.getFileServerAddress();
+            CoreFileServer srcFileServer = setting.getFileServer(srcServerType,srcServerAddress);
+            CoreFileServer dstFileServer = setting.getFileServer(dstServerType,dstServerAddress);
+            String scope = request.getDstScope();
+            if (StringUtils.isEmpty(scope)) scope = src.getScope();
+            String key = request.getDstKey();
+            if (StringUtils.isEmpty(key)) key = src.getKey();
+            CoreFileDTO dst = dstFileServer.coreCreateFile(scope + StringUtils.SPLIT_PATH + key);
+            //todo 循环从源文件读字节，写入目标文件
+            dst.setServerType(request.getFileServerType());
+            dst.setServerAddress(request.getFileServerAddress());
+            userBasicFileMap.clear();
+            return dst;
+        }
+    }
+
+    private boolean isSameServer(@NotNull CoreFileDTO src, @NotNull CopyRequestDTO request){
+        boolean isSame = true;
+        if ((src.getServerType() != null) && (request.getFileServerType() != null) && !(src.getServerType().equals(request.getFileServerType()))) isSame = false;
+        else if ((src.getServerType() == null) && (request.getFileServerType() != null)) isSame = false;
+        else if ((src.getServerAddress() != null) && (request.getFileServerAddress() != null) && !StringUtils.isSame(src.getServerAddress(),request.getFileServerAddress())) isSame = false;
+        else if ((src.getServerAddress() == null) && (request.getFileServerAddress() != null)) isSame = false;
+        return isSame;
+    }
+
+    @Override
+    public boolean copyRealFile(FileNodeDTO src, FileNodeDTO dst, Current current) {
+        return false;
+    }
+
+    @Override
+    public boolean copyRealFileForAccount(AccountDTO account, FileNodeDTO src, FileNodeDTO dst, Current current) {
+        return false;
+    }
+
+    /**
+     * @param src
+     * @param current The Current object for the invocation.
+     * @deprecated 尚未实现
+     **/
+    @Override
+    public boolean createMirror(FileNodeDTO src, Current current) throws CustomException {
+        return false;
+    }
+
+    @Override
+    public boolean createMirrorForAccount(AccountDTO account, FileNodeDTO src, Current current) {
+        return false;
+    }
+
+    @Override
+    public CommitListResultDTO issueNodeList(@NotNull List<SimpleNodeDTO> srcList, @NotNull CommitRequestDTO request, Current current) {
+        return issueNodeListForAccount(setting.getUserService().getCurrent(),
+                srcList,request,current);
+    }
+
+    @Override
+    public CommitListResultDTO issueNodeListForAccount(AccountDTO account, List<SimpleNodeDTO> srcList, CommitRequestDTO request, Current current) {
+        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_CHECK);
+
+
+        List<SimpleNodeDTO> successList = new ArrayList<>();
+        List<CommitFailDTO> failList = new ArrayList<>();
+        for (SimpleNodeDTO src : srcList){
+            SimpleNodeDTO result = issueNodeForAccount(account,src,request,current);
+            if ((result != null) && (!StringUtils.isEmpty(result.getId()))) {
+                successList.add(result);
+            } else {
+                CommitFailDTO failDTO = new CommitFailDTO();
+                failDTO.setId(src.getId());
+            }
+        }
+        CommitListResultDTO result = new CommitListResultDTO();
+        result.setSuccessList(successList);
+        result.setFailList(failList);
+        return result;
+
+    }
+
+    @Override
+    public SimpleNodeDTO issueNode(SimpleNodeDTO src, CommitRequestDTO request, Current current) {
+        return issueNodeForAccount(setting.getUserService().getCurrent(),
+                src,request,current);
+    }
+
+    @Override
+    public SimpleNodeDTO issueNodeForAccount(AccountDTO account, SimpleNodeDTO src, CommitRequestDTO request, Current current) {        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_CHECK);
+        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_ISSUE);
+        FileNodeDTO file = setting.getStorageService().getFileNodeInfo(src,false);
+        return issueFileForAccount(account,file,request,current);
+    }
+
+    @Override
+    public SimpleNodeDTO issueFile(FileNodeDTO src, CommitRequestDTO request, Current current) {
+        return issueFileForAccount(setting.getUserService().getCurrent(),
+                src,request,current);
+    }
+
+    @Override
+    public SimpleNodeDTO issueFileForAccount(AccountDTO account, FileNodeDTO src, CommitRequestDTO request, Current current) {
+        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_ISSUE);
+
+        CoreUploadRequest uploadRequest = new CoreUploadRequest();
+        uploadRequest.setProjectId(src.getBasic().getProjectId());
+        uploadRequest.setCompanyId(src.getBasic().getCompanyId());
+        uploadRequest.setTaskId(src.getBasic().getTaskId());
+        uploadRequest.setPid(src.getBasic().getPid());
+        String userId = (account != null) ? account.getId() : src.getBasic().getOwnerUserId();
+        uploadRequest.setAccountId(userId);
+        uploadRequest.setLastModifyTime(new Date());
+        uploadRequest.setAddress("http://172.16.6.73:8071/fileCenter/netFile/uploadFile");
+        CoreFileServer webServer = new WebFileServer();
+
+        FileDTO file = getBasicFile(src,userId,current);
+        String path = DiskFileServer.getPath(file.getScope(),file.getKey());
+        CoreFileDTO basicFile = new CoreFileDTO();
+        basicFile.setScope(StringUtils.getDirName(path));
+        basicFile.setKey(StringUtils.getFileName(path));
+        webServer.upload(basicFile,uploadRequest);
+        return src.getBasic();
+    }
+
+    @Override
+    public SimpleNodeDTO changeNodeOwner(SimpleNodeDTO src, UserDTO dstOwner, Current current) throws CustomException {
+        return changeNodeOwnerForAccount(setting.getUserService().getCurrent(),
+                src,dstOwner,current);
+    }
+
+    @Override
+    public SimpleNodeDTO changeNodeOwnerForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, @NotNull UserDTO dstOwner, Current current) throws CustomException {
+        if (getIsReadOnly(account,src,current)) throw new CustomException(ErrorCode.NoPermission,"没有权限");
+        UpdateNodeDTO updateRequest = new UpdateNodeDTO();
+        updateRequest.setOwnerUserId(dstOwner.getId());
+        return setting.getStorageService().updateNodeWithParent(src,null,updateRequest);
+    }
+
+    private boolean getIsReadOnly(AccountDTO account,@NotNull SimpleNodeDTO src,Current current){
+        return src.getIsReadOnly()
+                && ((StringUtils.isEmpty(src.getOwnerUserId()))
+                        || ((account != null) && StringUtils.isSame(account.getId(),src.getOwnerUserId())));
+    }
 
     @Override
     public boolean login(LoginDTO loginInfo, Current current) {
@@ -195,6 +352,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         CoreFileDTO basicWrite = new CoreFileDTO();
         basicWrite.setScope(src.getWriteFileScope());
         basicWrite.setKey(src.getWriteFileKey());
+        if (fileLength == 0) fileLength = setting.getFileServer().coreGetFileLength(basicWrite);
         if (fileLength > 0) {
             setting.getFileServer().coreSetFileLength(basicWrite,fileLength);
         }
@@ -452,7 +610,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         FileDTO file = getBasicFile(src,userId,current);
         assert (file != null);
 
-        BasicFileMultipartDTO basicData = BeanUtils.createFrom(data,BasicFileMultipartDTO.class);
+        CoreFileDataDTO basicData = BeanUtils.createFrom(data,CoreFileDataDTO.class);
         basicData.setScope(file.getScope());
         basicData.setKey(file.getKey());
         return setting.getFileServer().writeFile(basicData);
@@ -526,7 +684,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         assert (file != null);
 
         CoreFileDTO basicFile = BeanUtils.createFrom(file,CoreFileDTO.class);
-        BasicFileMultipartDTO basicData = setting.getFileServer().readFile(basicFile,pos,size);
+        CoreFileDataDTO basicData = setting.getFileServer().readFile(basicFile,pos,size);
         return BeanUtils.createFrom(basicData,FileDataDTO.class);
     }
 

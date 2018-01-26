@@ -1,6 +1,7 @@
 package com.maoding.FileServer.Config;
 
 import com.maoding.Base.BaseRemoteService;
+import com.maoding.Common.zeroc.CustomException;
 import com.maoding.Storage.zeroc.*;
 import com.maoding.Utils.SpringUtils;
 
@@ -35,6 +36,16 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
             storageService = SpringUtils.getBean(StorageService.class);
         }
         return storageService;
+    }
+
+    @Override
+    public SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent, UpdateNodeDTO request) throws CustomException {
+        return getStorageService().createNodeWithParent(parent,request,null);
+    }
+
+    @Override
+    public SimpleNodeDTO updateNodeWithParent(SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request) throws CustomException {
+        return getStorageService().updateNodeWithParent(src,parent,request,null);
     }
 
     @Override

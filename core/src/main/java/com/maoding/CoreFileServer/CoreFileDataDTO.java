@@ -6,10 +6,13 @@ package com.maoding.CoreFileServer;
  * 日    期 : 2017/10/30 18:00
  * 描    述 :
  */
-public class BasicFileMultipartDTO {
+public class CoreFileDataDTO {
+
     /** 空间(bucket或group) */
+    @Deprecated
     private String scope;
     /** 文件id(key或path) */
+    @Deprecated
     private String key;
     /** 分片数据在文件内的起始位置，为null则需要根据chunkId和chunkSize计算 */
     private Long pos;
@@ -18,18 +21,22 @@ public class BasicFileMultipartDTO {
     /** 当前分片数据 */
     private byte[] data;
 
+    @Deprecated
     public String getScope() {
         return scope;
     }
 
+    @Deprecated
     public void setScope(String scope) {
         this.scope = scope;
     }
 
+    @Deprecated
     public String getKey() {
         return key;
     }
 
+    @Deprecated
     public void setKey(String key) {
         this.key = key;
     }

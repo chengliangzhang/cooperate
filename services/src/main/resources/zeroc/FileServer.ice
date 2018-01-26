@@ -9,14 +9,23 @@
 [["java:package:com.maoding.FileServer"]]
 module zeroc {
     interface FileService {
+        ["deprecate:尚未实现"] bool copyRealFile(FileNodeDTO src,FileNodeDTO dst) throws CustomException; //在节点间复制实际文件
+        ["deprecate:尚未实现"] bool copyRealFileForAccount(AccountDTO account,FileNodeDTO src,FileNodeDTO dst) throws CustomException; //在节点间复制实际文件
+
+        ["deprecate:尚未实现"] bool createMirror(FileNodeDTO src) throws CustomException; //在本地建立节点镜像文件
+        ["deprecate:尚未实现"] bool createMirrorForAccount(AccountDTO account,FileNodeDTO src) throws CustomException; //在本地建立节点镜像文件
+
+        SimpleNodeDTO changeNodeOwner(SimpleNodeDTO src,UserDTO dstOwner) throws CustomException; //更改文件所有者
+        SimpleNodeDTO changeNodeOwnerForAccount(AccountDTO account,SimpleNodeDTO src,UserDTO dstOwner) throws CustomException; //更改文件所有者
+
+        ["deprecate:尚未实现"] ProjectDTO getProjectInfoByPath(string path) throws CustomException;
+        ["deprecate:尚未实现"] ProjectDTO getProjectInfoByPathForAccount(AccountDTO account,string path) throws CustomException;
+
         UserService* getUserService(); //获取UserService代理
         NoticeService* getNoticeService(); //获取NoticeService代理
 
         bool login(LoginDTO loginInfo); //登录
         StringList setNoticeClient(string userId,NoticeClient* client); //登录
-
-        ["deprecate:尚未验证"] ProjectDTO getProjectInfoByPath(string path);
-        ["deprecate:尚未验证"] ProjectDTO getProjectInfoByPathForAccount(AccountDTO account,string path);
 
         IdNameList listMajor(); //列出可用专业
         IdNameList listMajorForAccount(AccountDTO account); //列出可用专业
@@ -24,6 +33,13 @@ module zeroc {
         IdNameList listActionForAccount(AccountDTO account); //列出可用操作
         ProjectRoleList listProjectRoleByProjectId(string projectId); //获取项目的参与角色列表
         ProjectRoleList listProjectRoleByProjectIdForAccount(AccountDTO account,string projectId); //获取项目的参与角色列表
+
+        CommitListResultDTO issueNodeList(SimpleNodeList srcList,CommitRequestDTO request); //提交文件到web
+        CommitListResultDTO issueNodeListForAccount(AccountDTO account,SimpleNodeList srcList,CommitRequestDTO request); //提交文件到web
+        SimpleNodeDTO issueNode(SimpleNodeDTO src,CommitRequestDTO request); //提交文件到web
+        SimpleNodeDTO issueNodeForAccount(AccountDTO account,SimpleNodeDTO src,CommitRequestDTO request); //提交文件到web
+        SimpleNodeDTO issueFile(FileNodeDTO src,CommitRequestDTO request); //提交文件到web
+        SimpleNodeDTO issueFileForAccount(AccountDTO account,FileNodeDTO src,CommitRequestDTO request); //提交文件到web
 
         CommitListResultDTO checkNodeListRequest(SimpleNodeList srcList,CommitRequestDTO request); //提交文件
         CommitListResultDTO checkNodeListRequestForAccount(AccountDTO account,SimpleNodeList srcList,CommitRequestDTO request); //提交文件
@@ -53,26 +69,32 @@ module zeroc {
 
         bool deleteNode(SimpleNodeDTO src); //删除节点
         bool deleteNodeForAccount(AccountDTO account,SimpleNodeDTO src); //删除节点
+
         bool setNodeLength(SimpleNodeDTO src,long fileLength); //设置文件长度
         bool setNodeLengthForAccount(AccountDTO account,SimpleNodeDTO src,long fileLength); //设置文件长度
         bool setFileNodeLength(FileNodeDTO src,long fileLength); //设置文件长度
         bool setFileNodeLengthForAccount(AccountDTO account,FileNodeDTO src,long fileLength); //设置文件长度
+
         bool releaseNode(SimpleNodeDTO src,long fileLength); //用可写版本覆盖只读版本
         bool releaseNodeForAccount(AccountDTO account,SimpleNodeDTO  src,long fileLength); //用可写版本覆盖只读版本
         bool releaseFileNode(FileNodeDTO src,long fileLength); //用可写版本覆盖只读版本
         bool releaseFileNodeForAccount(AccountDTO account,FileNodeDTO src,long fileLength); //用可写版本覆盖只读版本
+
         bool reloadNode(SimpleNodeDTO src); //用只读版本覆盖可写版本
         bool reloadNodeForAccount(AccountDTO account,SimpleNodeDTO  src); //用只读版本覆盖可写版本
         bool reloadFileNode(FileNodeDTO src); //用只读版本覆盖可写版本
         bool reloadFileNodeForAccount(AccountDTO account,FileNodeDTO src); //用只读版本覆盖可写版本
+
         int writeFileNode(FileNodeDTO src,FileDataDTO data); //写入文件
         int writeFileNodeForAccount(AccountDTO account,FileNodeDTO src,FileDataDTO data); //写入文件
         int writeNode(SimpleNodeDTO src,FileDataDTO data); //写入文件节点
         int writeNodeForAccount(AccountDTO account,SimpleNodeDTO src,FileDataDTO data); //写入文件节点
+
         FileDataDTO readFileNode(FileNodeDTO src,long pos,int size); //读出文件
         FileDataDTO readFileNodeForAccount(AccountDTO account,FileNodeDTO src,long pos,int size); //读出文件
         FileDataDTO readNode(SimpleNodeDTO src,long pos,int size); //读出文件节点
         FileDataDTO readNodeForAccount(AccountDTO account,SimpleNodeDTO src,long pos,int size); //读出文件节点
+
         SimpleNodeDTO moveNode(SimpleNodeDTO src,SimpleNodeDTO dstParent,MoveNodeRequestDTO request); //移动节点
         SimpleNodeDTO moveNodeForAccount(AccountDTO account,SimpleNodeDTO src,SimpleNodeDTO dstParent,MoveNodeRequestDTO request); //移动节点
 
@@ -87,21 +109,26 @@ module zeroc {
         SimpleNodeDTO getNodeByIdForAccount(AccountDTO account,string id); //查询节点信息
         SimpleNodeDTO getNodeByPath(string path); //查询节点信息
         SimpleNodeDTO getNodeByPathForAccount(AccountDTO account,string path); //查询节点信息
+
         SimpleNodeList listSubNodeById(string parentId); //查询节点信息
         SimpleNodeList listSubNodeByIdForAccount(AccountDTO account,string parentId); //查询节点信息
         SimpleNodeList listSubNodeByPath(string parentPath); //查询节点信息
         SimpleNodeList listSubNodeByPathForAccount(AccountDTO account,string parentPath); //查询节点信息
+
         SimpleNodeList listFilterSubNodeById(string parentId,ShortList typeIdList); //查询节点信息
         SimpleNodeList listFilterSubNodeByIdForAccount(AccountDTO account,string parentId,ShortList typeIdList); //查询节点信息
         SimpleNodeList listFilterSubNodeByPath(string parentPath, ShortList typeIdList); //查询节点信息
         SimpleNodeList listFilterSubNodeByPathForAccount(AccountDTO account,string parentPath,ShortList typeIdList); //查询节点信息
+
         SimpleNodeList listAllNode(); //查询所有节点信息
         SimpleNodeList listAllNodeForAccount(AccountDTO account); //查询所有节点信息
+
         SimpleNodeList listNode(QueryNodeDTO query); //查询节点信息
         SimpleNodeList listNodeForAccount(AccountDTO account,QueryNodeDTO query); //查询节点信息
 
         FileNodeDTO getFile(SimpleNodeDTO node,bool withHistory); //通过节点查询文件信息
         FileNodeDTO getFileForAccount(AccountDTO account,SimpleNodeDTO node,bool withHistory); //通过节点查询文件信息
+
         FileNodeList listAllSubFile(SimpleNodeDTO parent,ShortList typeIdList,bool withHistory); //查询文件信息
         FileNodeList listAllSubFileForAccount(AccountDTO account,SimpleNodeDTO parent,ShortList typeIdList,bool withHistory); //查询文件信息
         FileNodeList listFile(QueryNodeDTO query,bool withHistory); //查询文件信息

@@ -1,6 +1,6 @@
--- 建立创建表结构存储过程
-DROP PROCEDURE IF EXISTS `createTables`;
-CREATE PROCEDURE `createTables`()
+-- 建立更新表结构存储过程
+DROP PROCEDURE IF EXISTS `updateTables`;
+CREATE PROCEDURE `updateTables`()
 BEGIN
 	-- maoding_const -- 常量定义
 	CREATE TABLE IF NOT EXISTS `maoding_const` (
@@ -27,6 +27,11 @@ BEGIN
 		`task_id` char(32) DEFAULT NULL COMMENT '节点所属生产任务id',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage' and column_name='task_id') then
+		alter table maoding_storage add column `task_id` char(32) DEFAULT NULL COMMENT '节点所属生产任务id';
+	end if;
+
 
 	-- maoding_storage_file -- 协同文件定义
 	CREATE TABLE IF NOT EXISTS `maoding_storage_file` (
@@ -49,6 +54,14 @@ BEGIN
 		`write_file_key` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储名称',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='write_file_scope') then
+		alter table maoding_storage_file add column `write_file_scope` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储位置';
+	end if;
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='write_file_key') then
+		alter table maoding_storage_file add column `write_file_key` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储名称';
+	end if;
+
 
   -- maoding_storage_file_his -- 协同文件校审提资历史记录定义
 	CREATE TABLE IF NOT EXISTS `maoding_storage_file_his` (
@@ -63,6 +76,10 @@ BEGIN
     `remark` text(2048) DEFAULT NULL COMMENT '文件注释',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	
+	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file_his' and column_name='remark') then
+		alter table maoding_storage_file_his add column `remark` text(2048) DEFAULT NULL COMMENT '文件注释';
+	end if;
 
 	-- maoding_web_account -- 用户登录表
   CREATE TABLE IF NOT EXISTS  `maoding_web_account` (
@@ -719,6 +736,7 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,2,'校对','1;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};<1>');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,3,'审核','1;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};<1>');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,4,'提资','2;/{Project}/{Classic2}/{IssuePath}/{Major}/{Version}/{TaskPath}/{SrcPath};<2>');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,5,'上传','2;/{Project}/{Classic2}/{IssuePath}/{Major}/{Version}/{TaskPath}/{SrcPath};<2>');
 
 	-- 文件服务器类型
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,19,'文件服务器类型',null);
@@ -932,6 +950,6 @@ BEGIN
 	close curTable;
 END;
 
-call createTables();
+call updateTables();
 call updateViews();
 call initConst();

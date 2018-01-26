@@ -1,14 +1,18 @@
 package com.maoding.FileServer.Config;
 
+import com.maoding.Common.ConstService;
 import com.maoding.Const.FileServerConst;
 import com.maoding.CoreFileServer.CoreFileServer;
 import com.maoding.CoreFileServer.Disk.DiskFileServer;
 import com.maoding.CoreFileServer.FastFDS.FastFDSServer;
 import com.maoding.CoreFileServer.Ftp.FtpServer;
 import com.maoding.CoreFileServer.Jcifs.JcifsServer;
+import com.maoding.CoreFileServer.MaodingWeb.WebFileServer;
+import com.maoding.FileServer.zeroc.FileServicePrx;
 import com.maoding.Notice.zeroc.NoticeServicePrx;
 import com.maoding.Storage.zeroc.StorageServicePrx;
 import com.maoding.User.zeroc.UserServicePrx;
+import com.maoding.Utils.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +32,8 @@ public class FileServerConfig {
     private CoreFileServer aliyunServer;
     private CoreFileServer jcifsServer;
     private CoreFileServer ftpServer;
-    private CoreFileServer localServer;
+    private CoreFileServer discServer;
+    private CoreFileServer webServer;
 
     private String storageServiceAdapter;
     private String userServiceAdapter;
@@ -68,6 +73,31 @@ public class FileServerConfig {
         this.noticeServiceAdapter = noticeServiceAdapter;
     }
 
+    public CoreFileServer getFileServer(Short serverTypeId, String serverAddress){
+        if ((serverTypeId == null) || (ConstService.FILE_SERVER_TYPE_UNKNOWN.equals(serverTypeId))) serverTypeId = Short.parseShort(getFileServerType().toString());
+        CoreFileServer coreServer = null;
+        if (ConstService.FILE_SERVER_TYPE_DISK.equals(serverTypeId)){
+            if (discServer == null) discServer = new DiskFileServer();
+            coreServer = discServer;
+        } else if (ConstService.FILE_SERVER_TYPE_WEB.equals(serverTypeId)) {
+            if (webServer == null) webServer = new WebFileServer();
+            coreServer = webServer;
+        }
+        return coreServer;
+    }
+
+    private String getBaseDir(String serverAddress){
+        if (StringUtils.isEmpty(serverAddress) || !serverAddress.contains("|")) return null;
+        String[] s = StringUtils.split(serverAddress,"|");
+        return s[s.length - 1];
+    }
+
+    private String getServerAddress(String serverAddress){
+        if (StringUtils.isEmpty(serverAddress)) return null;
+        String[] s = StringUtils.split(serverAddress,"|");
+        return s[0];
+    }
+
     public CoreFileServer getFileServer(){
         if (FileServerConst.FILE_SERVER_TYPE_ALIYUN.equals(type)) {
 //            if (aliyunServer == null) aliyunServer = new AliyunServer();
@@ -82,23 +112,36 @@ public class FileServerConfig {
             if (ftpServer == null) ftpServer = new FtpServer();
             return ftpServer;
         } else if (FileServerConst.FILE_SERVER_TYPE_LOCAL.equals(type)){
-            if (localServer == null) localServer = new DiskFileServer();
-            return localServer;
+            if (discServer == null) discServer = new DiskFileServer();
+            return discServer;
         } else {
-            if (localServer == null) localServer = new DiskFileServer();
-            return localServer;
+            if (discServer == null) discServer = new DiskFileServer();
+            return discServer;
         }
     }
 
+    public FileServicePrx getRemoteFileService(String serverAddress){
+        return RemoteFileServerPrx.getInstance(serverAddress);
+    }
+
+    public StorageServicePrx getStorageService(String serverAddress){
+        return RemoteStorageServicePrx.getInstance(serverAddress);
+    }
     public StorageServicePrx getStorageService(){
-        return RemoteStorageServicePrx.getInstance(getStorageServiceAdapter());
+        return getStorageService(getStorageServiceAdapter());
     }
 
+    public UserServicePrx getUserService(String serverAddress){
+        return RemoteUserServicePrx.getInstance(serverAddress);
+    }
     public UserServicePrx getUserService(){
-        return RemoteUserServicePrx.getInstance(getUserServiceAdapter());
+        return getUserService(getUserServiceAdapter());
     }
 
+    public NoticeServicePrx getNoticeService(String serverAddress){
+        return RemoteNoticeServicePrx.getInstance(serverAddress);
+    }
     public NoticeServicePrx getNoticeService(){
-        return RemoteNoticeServicePrx.getInstance(getNoticeServiceAdapter());
+        return getNoticeService(getNoticeServiceAdapter());
     }
 }

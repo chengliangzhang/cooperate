@@ -381,6 +381,9 @@
             <if test="pid != null">
                 and (node.pid = #{pid})
             </if>
+            <if test="name != null">
+                and (node.node_name = #{name})
+            </if>
             <if test="storagePath != null">
                 and (node.path = #{storagePath})
             </if>

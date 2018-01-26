@@ -95,125 +95,6 @@ END;
 # 		end if;
 # END;
 
-DROP PROCEDURE IF EXISTS `updateFieldForQA`;
-CREATE PROCEDURE `updateFieldForQA`()
-BEGIN
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file_his' and column_name='action_id') then
-		alter table maoding_storage_file_his add column `action_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '校审动作类型';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='file_server_type_id') then
-		alter table maoding_storage_file add column `file_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '文件服务器类型';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='file_type_id') then
-		alter table maoding_storage_file add column `file_type_id` smallint(4) unsigned DEFAULT '0' COMMENT '同步模式，0-手动同步，1-自动更新';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage' and column_name='lock_user_id') then
-		alter table maoding_storage add column `lock_user_id` varchar(32) DEFAULT NULL COMMENT '锁定的用户id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage' and column_name='file_length') then
-		alter table maoding_storage add column `file_length` bigint(16) unsigned DEFAULT '0' COMMENT '文件长度，如果节点是目录则固定为0';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='upload_file_server_type_id') then
-		alter table maoding_storage_file add column `upload_file_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '上传时使用的文件服务器类型';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='upload_scope') then
-		alter table maoding_storage_file add column `upload_scope` varchar(255) DEFAULT NULL COMMENT '上传时使用的文件服务器存储位置';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='upload_key') then
-		alter table maoding_storage_file add column `upload_key` varchar(255) DEFAULT NULL COMMENT '上传时使用的文件服务器存储名称';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='upload_id') then
-		alter table maoding_storage_file add column `upload_id` varchar(255) DEFAULT NULL COMMENT '上传时使用的文件服务器上传任务编号';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='creator_org_id') then
-		alter table maoding_storage_file add column `creator_org_id` char(32) DEFAULT NULL COMMENT '协同文件创建者所属组织的id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='creator_user_id') then
-		alter table maoding_storage_file add column `creator_user_id` char(32) DEFAULT NULL COMMENT '协同文件创建者的用户id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage' and column_name='pid_type_id') then
-		alter table maoding_storage add column `pid_type_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '父节点类型';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='project_id') then
-		alter table maoding_storage_file add column `project_id` char(32) DEFAULT NULL COMMENT '文件所属项目id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='organization_id') then
-		alter table maoding_storage_file add column `organization_id` char(32) DEFAULT NULL COMMENT '文件所属组织id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='issue_id') then
-		alter table maoding_storage_file add column `issue_id` char(32) DEFAULT NULL COMMENT '文件所属签发任务id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='task_id') then
-		alter table maoding_storage_file add column `task_id` char(32) DEFAULT NULL COMMENT '文件所属生产任务id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage' and column_name='project_id') then
-		alter table maoding_storage add column `project_id` char(32) DEFAULT NULL COMMENT '节点所属项目id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage' and column_name='issue_id') then
-		alter table maoding_storage add column `issue_id` char(32) DEFAULT NULL COMMENT '节点所属签发任务id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage' and column_name='task_id') then
-		alter table maoding_storage add column `task_id` char(32) DEFAULT NULL COMMENT '节点所属生产任务id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage' and column_name='company_id') then
-		alter table maoding_storage add column `company_id` char(32) DEFAULT NULL COMMENT '文件所属组织id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='read_server_type_id') then
-		alter table maoding_storage_file add column `read_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '文件服务器类型';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='read_file_scope') then
-		alter table maoding_storage_file add column `read_file_scope` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储位置';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='read_file_key') then
-		alter table maoding_storage_file add column `read_file_key` varchar(255) DEFAULT NULL COMMENT '在文件服务器上的存储名称';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='write_server_type_id') then
-		alter table maoding_storage_file add column `write_server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '用于更改的文件服务器类型';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='write_file_scope') then
-		alter table maoding_storage_file add column `write_file_scope` varchar(255) DEFAULT NULL COMMENT '用于更改的文件服务器存储位置';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='write_file_key') then
-		alter table maoding_storage_file add column `write_file_key` varchar(255) DEFAULT NULL COMMENT '用于更改的文件服务器存储名称';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file_his' and column_name='remark') then
-		alter table maoding_storage_file_his add column `remark` text(2048) DEFAULT NULL COMMENT '文件注释';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file_his' and column_name='action_type_id') then
-		alter table maoding_storage_file_his add column `action_type_id` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '校审动作类型';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='server_type_id') then
-		alter table maoding_storage_file add column `server_type_id` smallint(4) unsigned DEFAULT '1' COMMENT '文件服务器类型';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='server_address') then
-		alter table maoding_storage_file add column `server_address` varchar(255) DEFAULT NULL COMMENT '文件服务器地址';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='major_id') then
-		alter table maoding_storage_file add column `major_id` char(32) DEFAULT NULL COMMENT '文件所属专业id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='main_file_id') then
-		alter table maoding_storage_file add column `main_file_id` char(32) DEFAULT NULL COMMENT '所对应的原始文件id';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='read_file_scope') then
-		alter table maoding_storage_file add column `read_file_scope` varchar(255) DEFAULT NULL COMMENT '只读文件在文件服务器上的存储位置';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='read_file_key') then
-		alter table maoding_storage_file add column `read_file_key` varchar(255) DEFAULT NULL COMMENT '只读文件在文件服务器上的存储名称';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='write_file_scope') then
-		alter table maoding_storage_file add column `write_file_scope` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储位置';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='write_file_key') then
-		alter table maoding_storage_file add column `write_file_key` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储名称';
-	end if;
-	if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_storage_file' and column_name='file_checksum') then
-		alter table maoding_storage_file add column `file_checksum` varchar(64) DEFAULT NULL COMMENT '文件校验和';
-	else
-		alter table maoding_storage_file MODIFY column `file_checksum` varchar(64) DEFAULT NULL COMMENT '文件校验和';
-	end if;
-
-END;
-
 -- 创建升级数据库存储过程
 DROP PROCEDURE IF EXISTS `updateDatabase`;
 CREATE PROCEDURE `updateDatabase`()
@@ -221,17 +102,14 @@ BEGIN
 	-- -- -- -- 备份原有数据
 	-- call backupData();
 
-	-- -- -- -- 创建表结构,忽略已有的表
- 	call createTables();
+	-- -- -- -- 更新表结构和视图
+ 	call updateTables();
 	call updateViews();
-
-	-- -- -- -- 添加字段，忽略已存在的字段
-	call updateFieldForQA();
 
 	-- -- -- -- 重新建立索引
 	-- call createIndex();
 
-	-- -- -- -- 补充新架构数据
+	-- -- -- -- 填充新增表或字段数据
 	-- 添加用户
   if not exists (select 1 from maoding_web_account where cellphone='13680809727') then
     REPLACE INTO maoding_web_account (id,user_name,password,cellphone,status,create_date,active_time)

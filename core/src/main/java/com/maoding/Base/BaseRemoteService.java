@@ -3,6 +3,7 @@ package com.maoding.Base;
 import com.maoding.Config.IceConfig;
 import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.*;
+import jodd.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +93,6 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
                 }
             }
 
-            assert (!StringUtils.isEmpty(fullServiceName));
             return fullServiceName;
         }
 
@@ -102,13 +102,15 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
             //查找服务代理
             P prx = null;
             try {
-                String n = getFullServiceName();
-                prx = ObjectPrx._checkedCast(getCommunicator().stringToProxy(getFullServiceName()),
-                        P.ice_staticId(), proxy, impl);
-                String serviceString = ((getCommunicator().getDefaultLocator() != null) ? "在" + getCommunicator().getDefaultLocator().toString() : "") + "找到" + getFullServiceName() + "服务";
-                if (!StringUtils.isSame(lastServiceString,serviceString)) {
-                    log.info(serviceString);
-                    lastServiceString = serviceString;
+                String fullServiceName = getFullServiceName();
+                if (StringUtil.isNotEmpty(fullServiceName)) {
+                    prx = ObjectPrx._checkedCast(getCommunicator().stringToProxy(getFullServiceName()),
+                            P.ice_staticId(), proxy, impl);
+                    String serviceString = ((getCommunicator().getDefaultLocator() != null) ? "在" + getCommunicator().getDefaultLocator().toString() : "") + "找到" + getFullServiceName() + "服务";
+                    if (!StringUtils.isSame(lastServiceString, serviceString)) {
+                        log.info(serviceString);
+                        lastServiceString = serviceString;
+                    }
                 }
             } catch (ConnectFailedException e) {
                 String serviceString = ((communicator.getDefaultLocator() != null) ? "在" + communicator.getDefaultLocator().toString() : "") + "无法找到" + getFullServiceName() + "服务";

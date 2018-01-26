@@ -36,7 +36,7 @@ public class FileServiceController extends BaseController {
 //
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(HttpServletRequest request) {
-
+        assert (request != null);
     }
 
     @RequestMapping(value = "/testUpload", method = RequestMethod.GET)

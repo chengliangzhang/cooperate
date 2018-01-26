@@ -32,5 +32,13 @@ module zeroc {
     };
     ["java:type:java.util.ArrayList<MemberDTO>"] sequence<MemberDTO> MemberList;
 
+    enum ErrorCode {
+        Unknown,ParameterLegal,NoPermission,DataNotFound,DataIsInvalid
+    };
 
+    ["java:getset","clr:property"]
+    exception CustomException{
+        ErrorCode code = Unknown;
+        string msg = "未定义异常";
+    };
 };

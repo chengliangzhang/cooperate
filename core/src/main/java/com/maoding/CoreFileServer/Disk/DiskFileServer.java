@@ -354,7 +354,7 @@ public class DiskFileServer implements CoreFileServer {
         //补全参数
 
         //写入文件
-        BasicFileMultipartDTO multipart = request.getMultipart();
+        CoreFileDataDTO multipart = request.getMultipart();
         BasicUploadResultDTO result = BeanUtils.createFrom(request,BasicUploadResultDTO.class);
         result.setData(BeanUtils.createFrom(multipart,CoreFileDTO.class));
         RandomAccessFile rf = null;
@@ -409,7 +409,7 @@ public class DiskFileServer implements CoreFileServer {
     }
 
     @Override
-    public int writeFile(BasicFileMultipartDTO multipart) {
+    public int writeFile(CoreFileDataDTO multipart) {
         //检查参数
         assert (multipart != null);
         assert ((multipart.getPos() != null) && (multipart.getPos() >= 0));
@@ -479,12 +479,12 @@ public class DiskFileServer implements CoreFileServer {
         return getPath(path,null);
     }
 
-    private String getPath(CoreFileDTO file){
+    public static String getPath(CoreFileDTO file){
         assert (file != null);
         return getPath(file.getScope(),file.getKey());
     }
 
-    private String getPath(String scope,String key){
+    public static String getPath(String scope,String key){
         StringBuilder pathBuilder = new StringBuilder(FILE_SERVER_PATH);
         if (!StringUtils.isEmpty(scope)) pathBuilder.append(StringUtils.SPLIT_PATH).append(scope);
         if (!StringUtils.isEmpty(key)) pathBuilder.append(StringUtils.SPLIT_PATH).append(key);
@@ -552,7 +552,7 @@ public class DiskFileServer implements CoreFileServer {
             //设置返回参数
             long posLast = pos + size;
             Integer chunkCount = (posLast < length) ? ((((int)(length - posLast)) / request.getChunkSize()) + 1) : 0;
-            BasicFileMultipartDTO multipart = BeanUtils.createFrom(request,BasicFileMultipartDTO.class);
+            CoreFileDataDTO multipart = BeanUtils.createFrom(request,CoreFileDataDTO.class);
             multipart.setPos(pos);
             multipart.setSize(size);
             multipart.setData(bytes);
@@ -577,7 +577,7 @@ public class DiskFileServer implements CoreFileServer {
     }
 
     @Override
-    public BasicFileMultipartDTO readFile(CoreFileDTO file, long pos, int size) {
+    public CoreFileDataDTO readFile(CoreFileDTO file, long pos, int size) {
         //检查参数
         assert (file != null);
         assert (pos >= 0);
@@ -588,7 +588,7 @@ public class DiskFileServer implements CoreFileServer {
         if (size <= 0) size = DEFAULT_CHUNK_PER_SIZE;
 
         //下载文件
-        BasicFileMultipartDTO result = null;
+        CoreFileDataDTO result = null;
         RandomAccessFile rf = null;
 
         t1 = System.currentTimeMillis();
@@ -622,7 +622,7 @@ public class DiskFileServer implements CoreFileServer {
                 size = n;
 
                 //设置返回参数
-                result = BeanUtils.createFrom(file,BasicFileMultipartDTO.class);
+                result = BeanUtils.createFrom(file,CoreFileDataDTO.class);
                 result.setPos(pos);
                 result.setSize(size);
                 result.setData(bytes);

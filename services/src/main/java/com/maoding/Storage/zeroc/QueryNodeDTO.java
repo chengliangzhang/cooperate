@@ -47,6 +47,18 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.pid = pid;
     }
 
+    public String name;
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
     public String path;
 
     public String getPath()
@@ -231,6 +243,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
     {
         this.id = "";
         this.pid = "";
+        this.name = "";
         this.path = "";
         this.typeId = "";
         this.projectId = "";
@@ -248,10 +261,11 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.userId = "";
     }
 
-    public QueryNodeDTO(String id, String pid, String path, String typeId, String projectId, String classicId, String issueId, String taskId, String companyId, String ownerUserId, String ownerRoleId, String fuzzyPath, String storagePath, String parentPath, String parentStoragePath, String fuzzyStoragePath, String userId)
+    public QueryNodeDTO(String id, String pid, String name, String path, String typeId, String projectId, String classicId, String issueId, String taskId, String companyId, String ownerUserId, String ownerRoleId, String fuzzyPath, String storagePath, String parentPath, String parentStoragePath, String fuzzyStoragePath, String userId)
     {
         this.id = id;
         this.pid = pid;
+        this.name = name;
         this.path = path;
         this.typeId = typeId;
         this.projectId = projectId;
@@ -293,6 +307,13 @@ public class QueryNodeDTO implements java.lang.Cloneable,
             if(this.pid != r.pid)
             {
                 if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
+                {
+                    return false;
+                }
+            }
+            if(this.name != r.name)
+            {
+                if(this.name == null || r.name == null || !this.name.equals(r.name))
                 {
                     return false;
                 }
@@ -415,6 +436,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::QueryNodeDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
@@ -451,6 +473,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
     {
         ostr.writeString(this.id);
         ostr.writeString(this.pid);
+        ostr.writeString(this.name);
         ostr.writeString(this.path);
         ostr.writeString(this.typeId);
         ostr.writeString(this.projectId);
@@ -472,6 +495,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
     {
         this.id = istr.readString();
         this.pid = istr.readString();
+        this.name = istr.readString();
         this.path = istr.readString();
         this.typeId = istr.readString();
         this.projectId = istr.readString();
@@ -541,5 +565,5 @@ public class QueryNodeDTO implements java.lang.Cloneable,
 
     private static final QueryNodeDTO _nullMarshalValue = new QueryNodeDTO();
 
-    public static final long serialVersionUID = -513284110L;
+    public static final long serialVersionUID = -140624942L;
 }

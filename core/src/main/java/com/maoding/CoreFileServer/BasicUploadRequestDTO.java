@@ -22,7 +22,7 @@ public class BasicUploadRequestDTO {
     /** 要上传的分片大小 */
     private Integer chunkSize;
     /** 要上传的文件数据 */
-    private BasicFileMultipartDTO multipart;
+    private CoreFileDataDTO multipart;
     /** 其他上传参数 */
     private Map<String,String> params;
 
@@ -74,11 +74,11 @@ public class BasicUploadRequestDTO {
         this.chunkSize = chunkSize;
     }
 
-    public BasicFileMultipartDTO getMultipart() {
+    public CoreFileDataDTO getMultipart() {
         return multipart;
     }
 
-    public void setMultipart(BasicFileMultipartDTO multipart) {
+    public void setMultipart(CoreFileDataDTO multipart) {
         this.multipart = multipart;
     }
 

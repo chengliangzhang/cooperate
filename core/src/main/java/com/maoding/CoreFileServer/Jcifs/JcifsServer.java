@@ -67,7 +67,7 @@ public class JcifsServer implements CoreFileServer {
     public BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
         BasicUploadResultDTO result = BeanUtils.createFrom(request,BasicUploadResultDTO.class);
         assert result != null;
-        BasicFileMultipartDTO multipart = request.getMultipart();
+        CoreFileDataDTO multipart = request.getMultipart();
         assert multipart != null;
 
         SmbFileOutputStream smbOutput = null;

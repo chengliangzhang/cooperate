@@ -129,7 +129,7 @@ public class FtpServer implements CoreFileServer {
                 //补全参数
                 if ((request.getChunkPerSize() == null) && (request.getChunkPerSize() <= 0))
                     request.setChunkPerSize(DEFAULT_CHUNK_PER_SIZE);
-                BasicFileMultipartDTO fileDTO = request.getMultipart();
+                CoreFileDataDTO fileDTO = request.getMultipart();
                 if (StringUtils.isEmpty(fileDTO.getScope())) fileDTO.setScope("");
                 if (StringUtils.isEmpty(remoteFileName)) fileDTO.setKey(UUID.randomUUID().toString() + ".txt");
                 if ((fileDTO.getPos() == null) || (fileDTO.getPos() < 0))
@@ -301,7 +301,7 @@ public class FtpServer implements CoreFileServer {
                 }
                 //设置返回参数
                 Integer chunckCount = ((int) (rf.length() - pos - size)) / request.getChunkSize() + 1;
-                BasicFileMultipartDTO multipart = BeanUtils.createFrom(request, BasicFileMultipartDTO.class);
+                CoreFileDataDTO multipart = BeanUtils.createFrom(request, CoreFileDataDTO.class);
                 multipart.setPos(pos);
                 multipart.setSize(size);
                 multipart.setData(bytes);

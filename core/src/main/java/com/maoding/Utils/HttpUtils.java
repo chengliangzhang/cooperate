@@ -1,6 +1,8 @@
 package com.maoding.Utils;
 
+import com.maoding.Bean.CoreKeyValuePair;
 import com.maoding.Bean.CoreResponse;
+import com.maoding.Bean.CoreUploadFileItem;
 import com.maoding.Const.HttpConst;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -15,7 +17,10 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +35,9 @@ import java.util.Map;
 public class HttpUtils {
     /** 日志对象 */
     private static final Logger log = LoggerFactory.getLogger(HttpUtils.class);
+
+    public static final String DEFAULT_FILE_CONTENT_TYPE = "text/plain";
+//    public static final String DEFAULT_FILE_CONTENT_TYPE = "application/octet-stream";
 
     public static <T> CloseableHttpResponse postData(CloseableHttpClient client, String url, String type, T data) {
         assert (url != null);
@@ -71,8 +79,136 @@ public class HttpUtils {
         }
         return response;
     }
+
     public static <T> CloseableHttpResponse postData(CloseableHttpClient client, String url){
         return postData(client,url,null,null);
+    }
+
+    public static CoreResponse<?> uploadFile(String urlString, ArrayList<CoreKeyValuePair> propertyList,
+                                                             CoreUploadFileItem fileItem, long pos, int size, int blockSize) {
+        final String END_LINE  = "\r\n";
+        final String BOUNDARY = "----WebKitFormBoundaryqZ6H6BhuiKmeRPOm";
+        final String BOUNDARY_BODY = END_LINE + "--" + BOUNDARY + END_LINE;
+        final String BOUNDARY_END = END_LINE + "--" + BOUNDARY + "--" + END_LINE;
+        final String BODY_NAME_START = "Content-Disposition: form-data; name=\"";
+        final String BODY_NAME_END = "\"" + END_LINE + END_LINE;
+        final String FILE_PROPERTY_START = "Content-Disposition: form-data; name=\"";
+        final String FILE_PROPERTY_END = "\";";
+        final String FILE_NAME_START = "filename=\"";
+        final String FILE_NAME_END = "\"" + END_LINE;
+        final String FILE_CONTENT_TYPE = "Content-Type:" + DEFAULT_FILE_CONTENT_TYPE + END_LINE + END_LINE;
+        final String FILE_SPLIT = "--" + BOUNDARY;
+        final String FILE_END = "--" + BOUNDARY + "--" + END_LINE;
+        final String DEFAULT_CHAR_SET = StandardCharsets.UTF_8.name();
+        final String[][] REQUEST_PROPERTIES = {
+                {"Connection","Keep-Alive"}
+                ,{"Charset",DEFAULT_CHAR_SET}
+                ,{"Content-Type","multipart/form-data; boundary=" + BOUNDARY}
+        };
+        final String DEFAULT_METHOD = HttpPost.METHOD_NAME;
+
+        URL url = null;
+        try {
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection connection = null;
+        OutputStream out = null;
+        RandomAccessFile rf = null;
+        if (url != null) {
+            try {
+                // 向服务器发送post请求
+                connection = (HttpURLConnection) url.openConnection();
+
+                // 发送POST请求必须设置如下两行
+                connection.setDoOutput(true);
+                connection.setDoInput(true);
+                connection.setUseCaches(false);
+                connection.setRequestMethod(DEFAULT_METHOD);
+                for (String[] ptyPair : REQUEST_PROPERTIES) {
+                    int n = 0;
+                    String key = ptyPair[n++];
+                    String val = null;
+                    if (n < ptyPair.length) val = ptyPair[n];
+                    connection.setRequestProperty(key, val);
+                }
+                out = connection.getOutputStream();
+
+                // 处理普通表单域(即形如key = value对)的POST请求
+                StringBuilder contentBody = new StringBuilder();
+                for (CoreKeyValuePair ffkvp : propertyList) {
+                    contentBody.append(BOUNDARY_BODY)
+                            .append(BODY_NAME_START)
+                            .append(ffkvp.getKey())
+                            .append(BODY_NAME_END)
+                            .append(ffkvp.getValue());
+                }
+                out.write(contentBody.toString().getBytes(DEFAULT_CHAR_SET));
+
+                //打开上传文件
+                //处理文件上传
+                contentBody = new StringBuilder();
+                contentBody.append(BOUNDARY_BODY)
+                        .append(FILE_PROPERTY_START)
+                        .append(fileItem.getPropertyName())
+                        .append(FILE_PROPERTY_END)
+                        .append(FILE_NAME_START)
+                        .append(fileItem.getFileName())
+                        .append(FILE_NAME_END)
+                        .append(FILE_CONTENT_TYPE);
+                out.write(contentBody.toString().getBytes(DEFAULT_CHAR_SET));
+
+                // 真正向服务器写文件
+                rf = new RandomAccessFile(fileItem.getFileName(), "r");
+
+                long realPos = pos;
+                int realSize = size;
+                if (realSize == 0) realSize = (int) rf.length();
+                if ((0 < blockSize) && (blockSize < realSize)) realSize = blockSize;
+                while (realPos < (pos + size)){
+                    if (realSize > (rf.length() - realPos)) realSize = (int)(rf.length() - realPos);
+                    byte[] buf = new byte[realSize];
+                    rf.seek(realPos);
+                    int bytes = rf.read(buf);
+                    out.write(buf, 0, bytes);
+                    out.write(FILE_SPLIT.getBytes(DEFAULT_CHAR_SET));
+                    realPos += bytes;
+                }
+                out.write(FILE_END.getBytes(DEFAULT_CHAR_SET));
+
+                //写结尾
+                out.write(BOUNDARY_END.getBytes(DEFAULT_CHAR_SET));
+                out.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                FileUtils.close(rf);
+                FileUtils.close(out);
+            }
+        }
+
+        //从服务器获得回答的内容
+        StringBuilder responseString = new StringBuilder();
+        if (connection != null) {
+            InputStream in = null;
+            try {
+                in = connection.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+                String responseLine="";
+                while((responseLine = reader.readLine()) != null) {
+                    responseString.append(responseLine).append("\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                FileUtils.close(in);
+            }
+        }
+
+        return getResult(responseString.toString());
     }
 
     public static Boolean isResponseOK(CloseableHttpResponse response){
@@ -89,7 +225,11 @@ public class HttpUtils {
         return result;
     }
 
-    public static <T> T getResponseData(CoreResponse response, Class<? extends T> dataClass){
+    public static CoreResponse<?> getResult(String responseString){
+        return JsonUtils.json2Obj(responseString,CoreResponse.class);
+    }
+
+    public static <T> T getResponseData(CoreResponse<?> response, Class<? extends T> dataClass){
         assert (dataClass != null);
         if (response == null) return null;
         if (dataClass.isInstance(response.getData())) {

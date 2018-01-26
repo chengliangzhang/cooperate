@@ -1,4 +1,4 @@
-package com.maoding.CoreFileServer.MaodingWeb;
+package com.maoding.Bean;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
  * 日    期 : 2018/1/22 17:39
  * 描    述 : 一个POJO。用于处理普通表单域形如key = value对的数据
  */
-public class FormFieldKeyValuePair implements Serializable {
+public class CoreKeyValuePair implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // The form field used for receivinguser's input,
@@ -18,7 +18,7 @@ public class FormFieldKeyValuePair implements Serializable {
     // such as "Patrick" the abovementioned formfield "username"
     private String value;
 
-    public FormFieldKeyValuePair(String key, String value)
+    public CoreKeyValuePair(String key, String value)
     {
         this.key = key;
         this.value = value;

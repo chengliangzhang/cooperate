@@ -1,5 +1,6 @@
 package com.maoding.CoreFileServer;
 
+import com.maoding.Bean.CoreResponse;
 import com.maoding.Const.FileServerConst;
 
 import java.util.List;
@@ -11,11 +12,15 @@ import java.util.List;
  * 描    述 :
  */
 public interface CoreFileServer {
+    /** 把文件传到服务器 */
+    default CoreResponse<CoreUploadResult> upload(CoreFileDTO src, CoreUploadRequest request){return null;}
+    /** 把文件传从服务器下载到本地 */
+    default CoreFileDTO download(CoreFileDTO src, CoreDownloadRequest request){return null;}
     /** 计算文件MD5 */
     default String coreCalcChecksum(CoreFileDTO src){return null;}
-    /** 复制文件 */
+    /** 本地复制文件 */
     default CoreFileCopyResult coreCopyFile(CoreFileDTO src, CoreFileDTO dst){return null;}
-    /** 创建文件 */
+    /** 本地创建文件 */
     default CoreFileDTO coreCreateFile(String path) {return null;}
     /**
      * 获取通过http方式上传文件数据库时的需要设置的部分参数
@@ -101,11 +106,11 @@ public interface CoreFileServer {
     default void finishUpload(BasicFileRequestDTO request) {
     }
 
-    default int writeFile(BasicFileMultipartDTO data) {
+    default int writeFile(CoreFileDataDTO data) {
         return 0;
     }
 
-    default BasicFileMultipartDTO readFile(CoreFileDTO file, long pos, int size) {
+    default CoreFileDataDTO readFile(CoreFileDTO file, long pos, int size) {
         return null;
     }
 

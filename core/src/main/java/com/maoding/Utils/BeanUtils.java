@@ -95,7 +95,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         copyProperties(input,output,true);
     }
 
-    public static void copyProperties(final Map<String,Object> input, Object output, boolean isClean) {
+    public static <K,V> void copyProperties(final Map<K,V> input, Object output, boolean isClean) {
         assert (output != null) && (!output.getClass().isPrimitive()) && (!output.getClass().isArray());
         if ((input == null) || (input.getClass().isPrimitive()) || input.getClass().isArray()) return;
 
@@ -106,10 +106,10 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         if (fieldList != null) {
             assert (outputMethodAccess != null);
             Class[][] outputParameterTypes = outputMethodAccess.getParameterTypes();
-            for (String k : input.keySet()) {
+            for (K k : input.keySet()) {
                 Object val = input.get(k);
                 if (val != null) {
-                    String setKey = output.getClass().getName() + DOT + SET + StringUtils.capitalize(k);
+                    String setKey = output.getClass().getName() + DOT + SET + StringUtils.capitalize(k.toString());
                     Integer setIndex = methodIndexMap.get(setKey);
                     assert (outputParameterTypes != null);
                     Class<?> outputFieldClass = outputParameterTypes[setIndex][0];
@@ -187,11 +187,9 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                         // 参数意义:1-需要反射的对象,2-对应方法的index,3-对象集合
                         if (outputFieldClass.isAssignableFrom(inputFieldClass)) {
                             Object tmp = inputMethodAccess.invoke(input, getIndex);
-                            if (!isClean || !outputFieldClass.isAssignableFrom(String.class)){
-                                outputMethodAccess.invoke(output,setIndex,tmp);
-                            } else if ((tmp != null) && (!StringUtils.isEmpty(tmp.toString()))) {
-                                outputMethodAccess.invoke(output,setIndex,tmp.toString());
-                            }
+                            if (isClean) tmp = cleanProperties(tmp);
+                            if (outputFieldClass.isPrimitive() && (tmp == null)) tmp = 0;
+                            outputMethodAccess.invoke(output,setIndex,tmp);
                         } else if (outputFieldClass == boolean.class)
                             outputMethodAccess.invoke(output,setIndex,parseBoolean(inputMethodAccess.invoke(input,getIndex)));
                         else if (outputFieldClass == char.class)
@@ -208,15 +206,10 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                             outputMethodAccess.invoke(output,setIndex,parseFloat(inputMethodAccess.invoke(input, getIndex)));
                         else if (outputFieldClass == double.class)
                             outputMethodAccess.invoke(output,setIndex,parseDouble(inputMethodAccess.invoke(input, getIndex)));
-                        else if (isClean && outputFieldClass.isAssignableFrom(String.class)) {
-                            Object tmp = createFrom(inputMethodAccess.invoke(input, getIndex), outputFieldClass, true);
-                            if ((tmp != null) && (!StringUtils.isEmpty(tmp.toString()))){
-                                outputMethodAccess.invoke(output,setIndex,
-                                        createFrom(inputMethodAccess.invoke(input, getIndex), outputFieldClass, true));
-                            }
-                        } else {
-                            outputMethodAccess.invoke(output,setIndex,
-                                    createFrom(inputMethodAccess.invoke(input, getIndex),outputFieldClass,isClean));
+                        else {
+                            Object tmp = createFrom(inputMethodAccess.invoke(input, getIndex),outputFieldClass,isClean);
+                            if (outputFieldClass.isPrimitive() && (tmp == null)) tmp = 0;
+                            outputMethodAccess.invoke(output,setIndex,tmp);
                         }
                     }
                 }
@@ -230,21 +223,13 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         copyProperties(input,output,true);
     }
 
-    public static <D> D createFrom(Object input, Class<? extends D> outputClass,boolean isClean){
+    public static <D> D createFrom(Object input,Class<? extends D> outputClass,boolean isClean){
         assert ((outputClass != null) && (!outputClass.isPrimitive()));
         if (input == null) {
             return null;
         } else if (outputClass.isInstance(input)) {
-            if (isClean && outputClass.isAssignableFrom(String.class)) {
-                String tmp = input.toString();
-                if (!StringUtils.isEmpty(tmp)){
-                    return outputClass.cast(input);
-                } else {
-                    return null;
-                }
-            } else {
-                return outputClass.cast(input);
-            }
+            D output = outputClass.cast(input);
+            return (isClean) ? cleanProperties(output) : output;
         } else if (outputClass.isArray()) {
             Class<?> elementClass = outputClass.getComponentType();
             if (input.getClass().isArray() && elementClass.isAssignableFrom(input.getClass().getComponentType())) {
@@ -261,6 +246,18 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         return createFrom(input,outputClass,false);
     }
     public static <D> D createCleanFrom(Object input, Class<? extends D> outputClass){
+        return createFrom(input,outputClass,true);
+    }
+
+    public static <K,V,D> D createFrom(Map<K,V> input, Class<? extends D> outputClass,boolean isClean){
+        D output = constructNull(outputClass);
+        copyProperties(input,output,isClean);
+        return output;
+    }
+    public static <K,V,D> D createFrom(Map<K,V> input, Class<? extends D> outputClass){
+        return createFrom(input,outputClass,false);
+    }
+    public static <K,V,D> D createCleanFrom(Map<K,V> input, Class<? extends D> outputClass){
         return createFrom(input,outputClass,true);
     }
 
@@ -284,7 +281,6 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
 
     public static <D> D constructFrom(Object input,Class<? extends D> outputClass, boolean isClean){
         assert (outputClass != null) && (!outputClass.isPrimitive()) && (!outputClass.isArray());
-        //todo 考虑可以clone和outputClass、input是数组的情况
         if (input == null) {
             return (isClean) ? null : constructNull(outputClass);
         }
@@ -330,6 +326,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
 
         if (output == null){
             output = constructNull(outputClass);
+            if (isClean) output = cleanProperties(output);
             copyProperties(input,output,isClean);
         }
 
@@ -363,6 +360,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 cleanProperties(Array.get(obj,i));
             }
         }
+        if (isEmpty(obj)) return null;
 
         MethodAccess objMethodAccess = methodMap.get(obj.getClass());
         if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
@@ -376,22 +374,28 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 String setKey = obj.getClass().getName() + DOT + SET + field;
                 Integer getIndex = methodIndexMap.get(getKey);
                 Integer setIndex = methodIndexMap.get(setKey);
-                if ((setIndex != null) && (getIndex != null)) {
-                    //获取参数类型
-                    assert (objParameterTypes != null);
+                if ((setIndex != null) && (getIndex != null) && (isEmpty(objMethodAccess.invoke(obj,getIndex)))) {
                     Class<?> fieldClass = objParameterTypes[setIndex][0];
-                    if (fieldClass.isAssignableFrom(String.class)) {
-                        String tmp = (String)objMethodAccess.invoke(obj, getIndex);
-                        if (StringUtils.isEmpty(tmp)){
-                            objMethodAccess.invoke(obj,setIndex,(String)null);
-                        }
-                    } else if (fieldMap.containsKey(obj.getClass())){
-                        objMethodAccess.invoke(obj,setIndex,cleanProperties(objMethodAccess.invoke(obj,getIndex)));
-                    }
+                    if (!fieldClass.isPrimitive())
+                        objMethodAccess.invoke(obj,setIndex,fieldClass.cast(null));
                 }
             }
         }
         return obj;
+    }
+
+    public static <K,V> Map<K,V> cleanProperties(Map<K,V> obj){
+        for (K k : obj.keySet()) {
+            V v = obj.get(k);
+            if (isEmpty(v)) obj.remove(k);
+        }
+        return obj;
+    }
+
+    public static <T> boolean isEmpty(T obj) {
+        return (obj == null)
+                || ((obj.getClass().isAssignableFrom(String.class)) && (StringUtils.isEmpty(String.class.cast(obj))))
+                || ((DigitUtils.isDigitalClass(obj.getClass())) && (DigitUtils.isSame(obj,0)));
     }
 
     /**

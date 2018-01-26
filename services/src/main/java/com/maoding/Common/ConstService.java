@@ -102,6 +102,7 @@ public class ConstService {
     public static final Short STORAGE_ACTION_TYPE_CHECK = 2;
     public static final Short STORAGE_ACTION_TYPE_AUDIT = 3;
     public static final Short STORAGE_ACTION_TYPE_COMMIT = 4;
+    public static final Short STORAGE_ACTION_TYPE_ISSUE = 5;
 
     /** 通知范围类型 */
     public static final Short NOTICE_SCOPE_UNDEFINE = 0;
@@ -109,13 +110,22 @@ public class ConstService {
     public static final Short NOTICE_SCOPE_TASK = 2;
     public static final Short NOTICE_SCOPE_PROJECT = 3;
     public static final Short NOTICE_SCOPE_COMPANY = 4;
+    
+    /** 文件服务器类型 */
+    public static final Short FILE_SERVER_TYPE_UNKNOWN = 0;
+    public static final Short FILE_SERVER_TYPE_FASTFDS = 1;
+    public static final Short FILE_SERVER_TYPE_ALIYUN = 2;
+    public static final Short FILE_SERVER_TYPE_CIFS = 3;
+    public static final Short FILE_SERVER_TYPE_FTP = 4;
+    public static final Short FILE_SERVER_TYPE_DISK = 5;
+    public static final Short FILE_SERVER_TYPE_WEB = 6;
 
-    public static final Integer POS_IS_DIRECTORY = 1;
-    public static final Integer POS_IS_PROJECT = 2;
-    public static final Integer POS_IS_TASK = 3;
-    public static final Integer POS_IS_DESIGN = 4;
-    public static final Integer POS_IS_COMMIT = 5;
-    public static final Integer POS_IS_HISTORY = 6;
+    public static final Integer POS_IS_DIRECTORY = 0;
+    public static final Integer POS_IS_PROJECT = 1;
+    public static final Integer POS_IS_TASK = 2;
+    public static final Integer POS_IS_DESIGN = 3;
+    public static final Integer POS_IS_COMMIT = 4;
+    public static final Integer POS_IS_HISTORY = 5;
 
     public static final String SPLIT_EXTRA = ";";
     public static final String V_END = "}";
@@ -204,8 +214,20 @@ public class ConstService {
         return field;
     }
 
-    public static String getClassicName(Short classicId){
-        return getContent(CLASSIC_TYPE_STORAGE_RANGE,classicId);
+    public static String getRangeName(Short rangeId){
+        return getContent(CLASSIC_TYPE_STORAGE_RANGE,rangeId);
+    }
+
+    public static Short getRangeId(Short typeId){
+        Map<Short,ConstEntity> rangeMap = getConstMap(CLASSIC_TYPE_STORAGE_RANGE);
+        for (Map.Entry<Short,ConstEntity> rangeEntry : rangeMap.entrySet()){
+            ConstEntity range = rangeEntry.getValue();
+            if (range != null){
+                String extra = range.getContentExtra();
+                if ((extra != null) && (extra.contains(":" + typeId + ":"))) return range.getValueId();
+            }
+        }
+        return STORAGE_RANGE_TYPE_UNKNOWN;
     }
 
     public static String getActionName(Short actionTypeId){
@@ -297,7 +319,7 @@ public class ConstService {
         }
         if (s.contains(V_CLASSIC_NAME_START)){
             String vClassic = s.substring(s.indexOf(V_CLASSIC_NAME_START) + V_CLASSIC_NAME_START.length(),s.indexOf(V_END,s.indexOf(V_CLASSIC_NAME_START)));
-            String vName = StringUtils.getStringOrDefault(getClassicName(Short.parseShort(vClassic)),"");
+            String vName = StringUtils.getStringOrDefault(getRangeName(Short.parseShort(vClassic)),"");
             s = s.replace(V_CLASSIC_NAME_START + vClassic + V_END,vName);
         }
         if (s.contains(V_ACTION_NAME_START)){
@@ -310,38 +332,44 @@ public class ConstService {
 
     public static boolean isDirectoryType(Short typeId) {
         String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        assert (extra != null);
-        return (extra.charAt(POS_IS_DIRECTORY) != '0');
+        if (StringUtils.isEmpty(extra)) return false;
+        Character t = extra.charAt(POS_IS_DIRECTORY);
+        return (t != '0');
     }
 
     public static boolean isProjectType(Short typeId) {
         String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        assert (extra != null);
-        return (extra.charAt(POS_IS_PROJECT) != '0');
+        if (StringUtils.isEmpty(extra)) return false;
+        Character t = extra.charAt(POS_IS_PROJECT);
+        return (t != '0');
     }
 
     public static boolean isTaskType(Short typeId) {
         String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        assert (extra != null);
-        return (extra.charAt(POS_IS_TASK) != '0');
+        if (StringUtils.isEmpty(extra)) return false;
+        Character t = extra.charAt(POS_IS_TASK);
+        return (t != '0');
     }
 
     public static boolean isDesignType(Short typeId) {
         String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        assert (extra != null);
-        return (extra.charAt(POS_IS_DESIGN) != '0');
+        if (StringUtils.isEmpty(extra)) return false;
+        Character t = extra.charAt(POS_IS_DESIGN);
+        return (t != '0');
     }
 
     public static boolean isCommitType(Short typeId){
         String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        assert (extra != null);
-        return (extra.charAt(POS_IS_COMMIT) != '0');
+        if (StringUtils.isEmpty(extra)) return false;
+        Character t = extra.charAt(POS_IS_COMMIT);
+        return (t != '0');
     }
 
     public static boolean isHistoryType(Short typeId){
         String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        assert (extra != null);
-        return (extra.charAt(POS_IS_HISTORY) != '0');
+        if (StringUtils.isEmpty(extra)) return false;
+        Character t = extra.charAt(POS_IS_HISTORY);
+        return (t != '0');
     }
 
     public static boolean isSystemType(Short typeId){

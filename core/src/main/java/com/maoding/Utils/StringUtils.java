@@ -40,6 +40,9 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static Boolean isEmpty(String s){
         return ((s == null) || s.trim().isEmpty());
     }
+    public static Boolean isNotEmpty(String s){
+        return !isEmpty(s);
+    }
 
     /** 判断两个字符串是否相同，视null和""为相同字符串 */
     public static Boolean isSame(String s1,String s2){
@@ -154,7 +157,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     public static String left(String str,int length){
         if ((str == null) || (length <= 0)) return null;
-        return (str.substring(0,length));
+        if (length < str.length()){
+            return (str.substring(0,length));
+        } else {
+            return str;
+        }
     }
 
     //带单位计算字节传送速度

@@ -22,30 +22,115 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
 {
-    default SimpleNodeDTO createNode(UpdateNodeDTO request)
+    /**
+     * @deprecated 尚未实现
+     **/
+    @Deprecated
+    default SimpleNodeDTO createMirror(FileNodeDTO src)
+        throws com.maoding.Common.zeroc.CustomException
     {
-        return createNode(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return createMirror(src, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default SimpleNodeDTO createNode(UpdateNodeDTO request, java.util.Map<String, String> context)
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 尚未实现
+     **/
+    @Deprecated
+    default SimpleNodeDTO createMirror(FileNodeDTO src, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
     {
-        return _iceI_createNodeAsync(request, context, true).waitForResponse();
+        try
+        {
+            return _iceI_createMirrorAsync(src, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
     }
 
-    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createNodeAsync(UpdateNodeDTO request)
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 尚未实现
+     **/
+    @Deprecated
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createMirrorAsync(FileNodeDTO src)
     {
-        return _iceI_createNodeAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_createMirrorAsync(src, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createNodeAsync(UpdateNodeDTO request, java.util.Map<String, String> context)
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 尚未实现
+     **/
+    @Deprecated
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createMirrorAsync(FileNodeDTO src, java.util.Map<String, String> context)
     {
-        return _iceI_createNodeAsync(request, context, false);
+        return _iceI_createMirrorAsync(src, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_createNodeAsync(UpdateNodeDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_createMirrorAsync(FileNodeDTO iceP_src, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createNode", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createMirror", null, sync, _iceE_createMirror);
         f.invoke(true, context, null, ostr -> {
+                     FileNodeDTO.ice_write(ostr, iceP_src);
+                 }, istr -> {
+                     SimpleNodeDTO ret;
+                     ret = SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_createMirror =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent, UpdateNodeDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return createNodeWithParent(parent, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent, UpdateNodeDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_createNodeWithParentAsync(parent, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createNodeWithParentAsync(SimpleNodeDTO parent, UpdateNodeDTO request)
+    {
+        return _iceI_createNodeWithParentAsync(parent, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createNodeWithParentAsync(SimpleNodeDTO parent, UpdateNodeDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createNodeWithParentAsync(parent, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_createNodeWithParentAsync(SimpleNodeDTO iceP_parent, UpdateNodeDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createNodeWithParent", null, sync, _iceE_createNodeWithParent);
+        f.invoke(true, context, null, ostr -> {
+                     SimpleNodeDTO.ice_write(ostr, iceP_parent);
                      UpdateNodeDTO.ice_write(ostr, iceP_request);
                  }, istr -> {
                      SimpleNodeDTO ret;
@@ -55,31 +140,50 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default SimpleNodeDTO updateNode(SimpleNodeDTO src, UpdateNodeDTO request)
+    static final Class<?>[] _iceE_createNodeWithParent =
     {
-        return updateNode(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default SimpleNodeDTO updateNodeWithParent(SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return updateNodeWithParent(src, parent, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default SimpleNodeDTO updateNode(SimpleNodeDTO src, UpdateNodeDTO request, java.util.Map<String, String> context)
+    default SimpleNodeDTO updateNodeWithParent(SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
     {
-        return _iceI_updateNodeAsync(src, request, context, true).waitForResponse();
+        try
+        {
+            return _iceI_updateNodeWithParentAsync(src, parent, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
     }
 
-    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> updateNodeAsync(SimpleNodeDTO src, UpdateNodeDTO request)
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> updateNodeWithParentAsync(SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request)
     {
-        return _iceI_updateNodeAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_updateNodeWithParentAsync(src, parent, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> updateNodeAsync(SimpleNodeDTO src, UpdateNodeDTO request, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> updateNodeWithParentAsync(SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request, java.util.Map<String, String> context)
     {
-        return _iceI_updateNodeAsync(src, request, context, false);
+        return _iceI_updateNodeWithParentAsync(src, parent, request, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_updateNodeAsync(SimpleNodeDTO iceP_src, UpdateNodeDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_updateNodeWithParentAsync(SimpleNodeDTO iceP_src, SimpleNodeDTO iceP_parent, UpdateNodeDTO iceP_request, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "updateNode", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "updateNodeWithParent", null, sync, _iceE_updateNodeWithParent);
         f.invoke(true, context, null, ostr -> {
                      SimpleNodeDTO.ice_write(ostr, iceP_src);
+                     SimpleNodeDTO.ice_write(ostr, iceP_parent);
                      UpdateNodeDTO.ice_write(ostr, iceP_request);
                  }, istr -> {
                      SimpleNodeDTO ret;
@@ -88,6 +192,11 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
                  });
         return f;
     }
+
+    static final Class<?>[] _iceE_updateNodeWithParent =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
 
     default boolean deleteNodeById(String id)
     {
@@ -383,6 +492,113 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
                  }, istr -> {
                      boolean ret;
                      ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    /**
+     * @deprecated 由createNodeWithParent代替
+     **/
+    @Deprecated
+    default SimpleNodeDTO createNode(UpdateNodeDTO request)
+    {
+        return createNode(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 由createNodeWithParent代替
+     **/
+    @Deprecated
+    default SimpleNodeDTO createNode(UpdateNodeDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createNodeAsync(request, context, true).waitForResponse();
+    }
+
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 由createNodeWithParent代替
+     **/
+    @Deprecated
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createNodeAsync(UpdateNodeDTO request)
+    {
+        return _iceI_createNodeAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 由createNodeWithParent代替
+     **/
+    @Deprecated
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> createNodeAsync(UpdateNodeDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createNodeAsync(request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_createNodeAsync(UpdateNodeDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createNode", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     UpdateNodeDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     SimpleNodeDTO ret;
+                     ret = SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    /**
+     * @deprecated 由updateNodeWithParent代替
+     **/
+    @Deprecated
+    default SimpleNodeDTO updateNode(SimpleNodeDTO src, UpdateNodeDTO request)
+    {
+        return updateNode(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 由updateNodeWithParent代替
+     **/
+    @Deprecated
+    default SimpleNodeDTO updateNode(SimpleNodeDTO src, UpdateNodeDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_updateNodeAsync(src, request, context, true).waitForResponse();
+    }
+
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 由updateNodeWithParent代替
+     **/
+    @Deprecated
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> updateNodeAsync(SimpleNodeDTO src, UpdateNodeDTO request)
+    {
+        return _iceI_updateNodeAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 由updateNodeWithParent代替
+     **/
+    @Deprecated
+    default java.util.concurrent.CompletableFuture<SimpleNodeDTO> updateNodeAsync(SimpleNodeDTO src, UpdateNodeDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_updateNodeAsync(src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> _iceI_updateNodeAsync(SimpleNodeDTO iceP_src, UpdateNodeDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "updateNode", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     SimpleNodeDTO.ice_write(ostr, iceP_src);
+                     UpdateNodeDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     SimpleNodeDTO ret;
+                     ret = SimpleNodeDTO.ice_read(istr);
                      return ret;
                  });
         return f;
