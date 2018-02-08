@@ -140,7 +140,7 @@ public class JcifsServer implements CoreFileServer {
      * @param scope
      */
     @Override
-    public List<String> listFile(String scope) {
+    public List listFile(String scope) {
         return null;
     }
 

@@ -2,7 +2,9 @@ package com.maoding.CoreFileServer;
 
 import com.maoding.Bean.CoreResponse;
 import com.maoding.Const.FileServerConst;
+import com.maoding.CoreFileServer.MaodingWeb.WebFileResponse;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -12,15 +14,31 @@ import java.util.List;
  * 描    述 :
  */
 public interface CoreFileServer {
-    /** 把文件传到服务器 */
-    default CoreResponse<CoreUploadResult> upload(CoreFileDTO src, CoreUploadRequest request){return null;}
-    /** 把文件传从服务器下载到本地 */
-    default CoreFileDTO download(CoreFileDTO src, CoreDownloadRequest request){return null;}
+    /** 设定文件服务器地址 */
+    default void coreSetServerAddress(String serverAddress){}
+    /** 获取文件服务器地址 */
+    default String coreGetServerAddress(){return null;}
     /** 计算文件MD5 */
     default String coreCalcChecksum(CoreFileDTO src){return null;}
-    /** 本地复制文件 */
+    /** 复制文件 */
     default CoreFileCopyResult coreCopyFile(CoreFileDTO src, CoreFileDTO dst){return null;}
-    /** 本地创建文件 */
+    /** 创建文件 */
+    default CoreFileDTO coreCreateFile(){return coreCreateFile(CoreFileDTO.class.cast(null));}
+    default CoreFileDTO coreCreateFile(CoreFileDTO dst) {return coreCreateFile(dst,CoreFileExtraDTO.class.cast(null));}
+    default CoreFileDTO coreCreateFile(CoreFileDTO dst,long fileLength) {return coreCreateFile(dst,new CoreFileExtraDTO(fileLength));}
+    default CoreFileDTO coreCreateFile(CoreFileDTO dst,CoreFileExtraDTO createRequest) {return null;}
+    /** 获取文件句柄 */
+    default File coreGetFile(CoreFileDTO src){return null;}
+
+
+    /** 把文件传到服务器 */
+    @Deprecated
+    default CoreResponse<WebFileResponse> upload(CoreFileDTO src, CoreFileExtraDTO request){return null;}
+    /** 把文件传从服务器下载到本地 */
+    @Deprecated
+    default CoreFileDTO download(CoreFileDTO src, CoreDownloadRequest request){return null;}
+    /** 根据路径创建文件 */
+    @Deprecated
     default CoreFileDTO coreCreateFile(String path) {return null;}
     /**
      * 获取通过http方式上传文件数据库时的需要设置的部分参数
@@ -87,7 +105,7 @@ public interface CoreFileServer {
     /**
      * 获取文件服务器上某一空间上的所有文件
      */
-    default List<String> listFile(String scope){return null;}
+    default List listFile(String scope){return null;}
 
     /**
      * 获取文件服务器上的所有空间
@@ -133,7 +151,8 @@ public interface CoreFileServer {
         return 0;
     }
 
-    default boolean coreSetFileLength(CoreFileDTO basicSrc, long fileLength) {
+    /** 设置文件长度 */
+    default boolean coreSetFileLength(CoreFileDTO src, long fileLength) {
         return true;
     }
 

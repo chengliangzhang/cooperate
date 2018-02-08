@@ -16,7 +16,14 @@ import java.util.List;
 public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx> implements StorageServicePrx {
 
     private static StorageServicePrx lastPrx = null;
-    private StorageService storageService = null;
+    private static StorageService storageService = null;
+
+    private StorageService getStorageService(){
+        if (storageService == null) {
+            storageService = SpringUtils.getBean(StorageService.class);
+        }
+        return storageService;
+    }
 
     /** 同步方式获取业务接口代理对象 */
     public static StorageServicePrx getInstance(String adapterName) {
@@ -26,16 +33,8 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
         }
         return lastPrx;
     }
-
     public static StorageServicePrx getInstance(){
         return getInstance(null);
-    }
-
-    private StorageService getStorageService(){
-        if (storageService == null) {
-            storageService = SpringUtils.getBean(StorageService.class);
-        }
-        return storageService;
     }
 
     @Override
@@ -86,5 +85,10 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     @Override
     public FullNodeDTO getFullNodeInfo(SimpleNodeDTO node) {
         return getStorageService().getFullNodeInfo(node,null);
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listOldNode(QueryNodeDTO query) {
+        return getStorageService().listOldNode(query,null);
     }
 }

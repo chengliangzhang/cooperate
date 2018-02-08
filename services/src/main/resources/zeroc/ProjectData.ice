@@ -66,4 +66,9 @@ module zeroc {
     };
     ["java:type:java.util.ArrayList<ProjectDTO>"] sequence<ProjectDTO> ProjectList;
 
+    ["java:getset","clr:property"]
+    struct QueryProjectDTO {
+        string userIdString; //参与者的id，可以是用","分隔的多个id
+    };
+
 };

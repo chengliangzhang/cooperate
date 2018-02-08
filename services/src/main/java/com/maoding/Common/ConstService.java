@@ -70,6 +70,8 @@ public class ConstService {
     public static final Short STORAGE_NODE_TYPE_DIR_COMMIT_HIS = 32;
     public static final Short STORAGE_NODE_TYPE_DIR_COMMIT_USER = 33;
     public static final Short STORAGE_NODE_TYPE_DIR_OUTPUT = 40;
+    public static final Short STORAGE_NODE_TYPE_DIR_OUTPUT_WEB = 41;
+    public static final Short STORAGE_NODE_TYPE_DIR_OUTPUT_WEB_ARCHIVE = 42;
     public static final Short STORAGE_NODE_TYPE_DIR_OUTPUT_USER = 43;
 
     //文件类型
@@ -110,15 +112,16 @@ public class ConstService {
     public static final Short NOTICE_SCOPE_TASK = 2;
     public static final Short NOTICE_SCOPE_PROJECT = 3;
     public static final Short NOTICE_SCOPE_COMPANY = 4;
-    
+    public static final Short NOTICE_SCOPE_COMMON = 5;
+
     /** 文件服务器类型 */
     public static final Short FILE_SERVER_TYPE_UNKNOWN = 0;
-    public static final Short FILE_SERVER_TYPE_FASTFDS = 1;
-    public static final Short FILE_SERVER_TYPE_ALIYUN = 2;
-    public static final Short FILE_SERVER_TYPE_CIFS = 3;
-    public static final Short FILE_SERVER_TYPE_FTP = 4;
-    public static final Short FILE_SERVER_TYPE_DISK = 5;
-    public static final Short FILE_SERVER_TYPE_WEB = 6;
+    public static final Short FILE_SERVER_TYPE_DISK = 1;
+    public static final Short FILE_SERVER_TYPE_WEB = 2;
+    public static final Short FILE_SERVER_TYPE_FASTFDS = 3;
+    public static final Short FILE_SERVER_TYPE_ALIYUN = 4;
+    public static final Short FILE_SERVER_TYPE_CIFS = 5;
+    public static final Short FILE_SERVER_TYPE_FTP = 6;
 
     public static final Integer POS_IS_DIRECTORY = 0;
     public static final Integer POS_IS_PROJECT = 1;
@@ -238,13 +241,25 @@ public class ConstService {
         return getExtra(CLASSIC_TYPE_NOTICE_SCOPE,noticeScopeId);
     }
     public static Short getTargetType(Short actionTypeId){
-        String sTypeId = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,0);
-        return (!StringUtils.isEmpty(sTypeId)) ? Short.parseShort(sTypeId) : STORAGE_ACTION_TYPE_UNKOWN;
+        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,0);
+        return (!StringUtils.isEmpty(sField)) ? Short.parseShort(sField) : STORAGE_ACTION_TYPE_UNKOWN;
     }
 
     public static String getTargetPath(Short actionTypeId){
-        return getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,1);
+        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,1);
+        return (!StringUtils.isEmpty(sField)) ? sField : null;
     }
+
+    public static Short getTargetServerTypeId(Short actionTypeId){
+        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,2);
+        return (!StringUtils.isEmpty(sField)) ? Short.parseShort(sField) : FILE_SERVER_TYPE_UNKNOWN;
+    }
+
+    public static String getTargetServerAddress(Short actionTypeId){
+        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,3);
+        return (!StringUtils.isEmpty(sField)) ? sField : null;
+    }
+
 
     public static boolean isBackupAction(Short actionTypeId){
         return STORAGE_ACTION_TYPE_BACKUP.equals(actionTypeId);

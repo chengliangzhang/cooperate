@@ -1,4 +1,4 @@
-package com.maoding.Notice;
+package com.maoding.Notice.Config;
 
 import com.maoding.Base.BaseRemoteService;
 import com.zeroc.IceStorm.TopicManagerPrx;
@@ -14,17 +14,17 @@ public class RemoteTopicManagerPrx extends BaseRemoteService<TopicManagerPrx> im
 
     private static TopicManagerPrx topicManagerPrx = null;
 
-    public static TopicManagerPrx getTopicManager(String serviceName,String adapterName){
+    public static TopicManagerPrx getInstance(String serviceName,String adapterName){
         if (topicManagerPrx == null) {
             RemoteTopicManagerPrx prx = new RemoteTopicManagerPrx();
             topicManagerPrx = prx.getServicePrx(serviceName,adapterName,TopicManagerPrx.class,_TopicManagerPrxI.class);
         }
         return topicManagerPrx;
     }
-    public static TopicManagerPrx getTopicManager(String adapterName){
-        return getTopicManager("IceStorm/TopicManager",adapterName);
+    public static TopicManagerPrx getInstance(String adapterName){
+        return getInstance("IceStorm/TopicManager",adapterName);
     }
-    public static TopicManagerPrx getTopicManager(){
-        return getTopicManager("StormSvr");
+    public static TopicManagerPrx getInstance(){
+        return getInstance("StormSvr");
     }
 }

@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
@@ -26,7 +28,9 @@ import java.util.Properties;
  * 日    期 : 2017/11/7 18:12
  * 描    述 :
  */
+@EnableAutoConfiguration
 @Component
+@Configuration
 @ConfigurationProperties(prefix = "ice")
 public class IceConfig {
     /** 日志对象 */
@@ -38,7 +42,9 @@ public class IceConfig {
     private ResourceLoader resourceLoader;
 
     private String config;
-    private String start;
+    private String startCmd;
+    private String cmdConfig;
+    private String cmdStart;
 
     public static Map<String, String> propertiesMap = null;
     public static Communicator communicator = null;
@@ -51,12 +57,28 @@ public class IceConfig {
         this.config = config;
     }
 
-    public String getStart() {
-        return start;
+    public String getStartCmd() {
+        return startCmd;
     }
 
-    public void setStart(String start) {
-        this.start = start;
+    public void setStartCmd(String startCmd) {
+        this.startCmd = startCmd;
+    }
+
+    public String getCmdConfig() {
+        return cmdConfig;
+    }
+
+    public void setCmdConfig(String cmdConfig) {
+        this.cmdConfig = cmdConfig;
+    }
+
+    public String getCmdStart() {
+        return cmdStart;
+    }
+
+    public void setCmdStart(String cmdStart) {
+        this.cmdStart = cmdStart;
     }
 
     public String getConfigFileName(){
@@ -87,15 +109,6 @@ public class IceConfig {
                     log.error(e.getMessage(),e);
                 }
             }
-        }
-    }
-
-    public void loadAllProperties(String propertyFileName) {
-        try {
-            Properties properties = PropertiesLoaderUtils.loadAllProperties(propertyFileName);
-            processProperties(properties);
-        } catch (IOException e) {
-            log.error(e.getMessage(),e);
         }
     }
 

@@ -11,10 +11,17 @@ module zeroc {
     ["java:getset","clr:property"]
     struct CommitRequestDTO {
         short actionTypeId; //提交操作id
+
+        string pid; //提交到的父节点id
+        string path; //要产生的文件路径
+
         string userId; //提交目标用户id
         string fileVersion; //提交的版本号
         string majorName; //提交的专业名称
         string remark; //版本提交说明
+
+        short serverTypeId; //提交到的文件服务器类型
+        string serverAddress; //提交到的文件服务器地址
     };
     ["java:type:java.util.ArrayList<CommitRequestDTO>"] sequence<CommitRequestDTO> CommitRequestList;
 
@@ -27,6 +34,8 @@ module zeroc {
         string remark; //版本提交说明
         string path; //提交版本存放的路径
         string mainFileId; //版本的原始文件id
+        short serverTypeId; //版本存放的服务器类型
+        string serverAddress; //版本存放的服务器地址
     };
     ["java:type:java.util.ArrayList<CreateVersionRequestDTO>"] sequence<CreateVersionRequestDTO> CreateVersionRequestList;
 

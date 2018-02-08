@@ -1,7 +1,5 @@
 package com.maoding.CoreFileServer;
 
-import com.maoding.Utils.StringUtils;
-
 import java.io.Serializable;
 
 /**
@@ -11,8 +9,6 @@ import java.io.Serializable;
  * 描    述 :
  */
 public class CoreFileDTO implements Serializable {
-    /** 服务器类型 */
-    private Short serverType;
     /** 服务器地址 */
     private String serverAddress;
     /** 文件空间，即阿里云的buchet或FastFDS的group */
@@ -36,14 +32,6 @@ public class CoreFileDTO implements Serializable {
         this.key = key;
     }
 
-    public Short getServerType() {
-        return serverType;
-    }
-
-    public void setServerType(Short serverType) {
-        this.serverType = serverType;
-    }
-
     public String getServerAddress() {
         return serverAddress;
     }
@@ -52,18 +40,17 @@ public class CoreFileDTO implements Serializable {
         this.serverAddress = serverAddress;
     }
 
-    public CoreFileDTO(Short serverType, String serverAddress, String scope, String key){
-        this.serverType = serverType;
+    public CoreFileDTO(String serverAddress, String scope, String key){
         this.serverAddress = serverAddress;
         this.scope = scope;
         this.key = key;
     }
     public CoreFileDTO(String scope, String key){
-        this(null,null,scope,key);
+        this(null,scope,key);
     }
-    public CoreFileDTO(String path){
-        this(StringUtils.getDirName(path),StringUtils.getFileName(path));
-    }
+//    public CoreFileDTO(String path){
+//        this(StringUtils.getDirName(path),StringUtils.getFileName(path));
+//    }
     public CoreFileDTO(){
         this(null,null);
     }

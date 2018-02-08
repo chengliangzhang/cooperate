@@ -101,20 +101,24 @@ module zeroc {
         string pid; //父节点id
         string name; //节点名称
         string path; //树节点全路径
-        string typeId; //节点类型
+        string typeId; //节点类型，可以是多个id组成的字符串
         string projectId; //节点所属项目id
-        string classicId; //节点所属分类类型
+        string rangeId; //节点所属分类类型
         string issueId; //节点所属签发任务id
         string taskId; //节点所属生产任务id
         string companyId; //节点所属组织id
         string ownerUserId; //节点拥有者用户id
         string ownerRoleId; //节点拥有者职责id
-        string fuzzyPath; //模糊匹配路径
-        string storagePath; //相对路径
         string parentPath; //父路径
-        string parentStoragePath; //父路径，针对树节点存储的相对路径
-        string fuzzyStoragePath; //模糊匹配路径，针对树节点存储的相对路径
         string userId; //查询者用户id
+
+        string fuzzyIdString; //多个id联合字符串，只需模糊匹配前几个
+        string fuzzyPath; //模糊匹配路径
+
+        ["deprecate:使用rangeId代替"] string classicId; //节点所属分类类型
+        ["deprecate"] string storagePath; //相对路径
+        ["deprecate"] string parentStoragePath; //父路径，针对树节点存储的相对路径
+        ["deprecate"] string fuzzyStoragePath; //模糊匹配路径，针对树节点存储的相对路径
     };
 
     ["java:getset","clr:property"]

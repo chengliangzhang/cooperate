@@ -1,5 +1,7 @@
 package com.maoding.FileServer.Dto;
 
+import com.maoding.CoreFileServer.CoreFileExtraDTO;
+
 /**
  * 深圳市卯丁技术有限公司
  * 作    者 : 张成亮
@@ -7,40 +9,74 @@ package com.maoding.FileServer.Dto;
  * 描    述 :
  */
 public class CopyRequestDTO {
-    private Short fileServerType;
-    private String fileServerAddress;
-    private String dstScope;
-    private String dstKey;
+    /** 来源文件服务器类型 */
+    private Short srcServerTypeId;
+    /** 来源文件服务器地址 */
+    private String srcServerAddress;
+    /** 目标文件服务器类型 */
+    private Short dstServerTypeId;
+    /** 目标文件服务器地址 */
+    private String dstServerAddress;
+    /** 目标文件位置 */
+    private String scope;
+    /** 目标文件名 */
+    private String key;
+    /** 文件额外描述信息 */
+    private CoreFileExtraDTO extra;
 
-    public Short getFileServerType() {
-        return fileServerType;
+    public Short getSrcServerTypeId() {
+        return srcServerTypeId;
     }
 
-    public void setFileServerType(Short fileServerType) {
-        this.fileServerType = fileServerType;
+    public void setSrcServerTypeId(Short srcServerTypeId) {
+        this.srcServerTypeId = srcServerTypeId;
     }
 
-    public String getFileServerAddress() {
-        return fileServerAddress;
+    public String getSrcServerAddress() {
+        return srcServerAddress;
     }
 
-    public void setFileServerAddress(String fileServerAddress) {
-        this.fileServerAddress = fileServerAddress;
+    public void setSrcServerAddress(String srcServerAddress) {
+        this.srcServerAddress = srcServerAddress;
     }
 
-    public String getDstScope() {
-        return dstScope;
+    public Short getDstServerTypeId() {
+        return dstServerTypeId;
     }
 
-    public void setDstScope(String dstScope) {
-        this.dstScope = dstScope;
+    public void setDstServerTypeId(Short dstServerTypeId) {
+        this.dstServerTypeId = dstServerTypeId;
     }
 
-    public String getDstKey() {
-        return dstKey;
+    public String getDstServerAddress() {
+        return dstServerAddress;
     }
 
-    public void setDstKey(String dstKey) {
-        this.dstKey = dstKey;
+    public void setDstServerAddress(String dstServerAddress) {
+        this.dstServerAddress = dstServerAddress;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public CoreFileExtraDTO getExtra() {
+        return extra;
+    }
+
+    public void setExtra(CoreFileExtraDTO extra) {
+        this.extra = extra;
     }
 }

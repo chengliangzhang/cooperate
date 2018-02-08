@@ -6,6 +6,7 @@ import com.maoding.Common.Config.WebServiceConfig;
 import com.maoding.Project.zeroc.ProjectDTO;
 import com.maoding.Project.zeroc.ProjectService;
 import com.maoding.Project.zeroc.ProjectServicePrx;
+import com.maoding.Project.zeroc.QueryProjectDTO;
 import com.maoding.Utils.BeanUtils;
 import com.maoding.Utils.FileUtils;
 import com.maoding.Utils.HttpUtils;
@@ -14,6 +15,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -26,6 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProjectServiceImpl extends BaseLocalService<ProjectServicePrx> implements ProjectService,ProjectServicePrx{
     @Autowired
     WebServiceConfig webServiceConfig;
+
+    @Override
+    public List<ProjectDTO> listProject(QueryProjectDTO query, Current current) {
+        return null;
+    }
 
     @Override
     public ProjectDTO getProjectInfoById(String id, Current current) {

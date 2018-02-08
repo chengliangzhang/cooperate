@@ -1,5 +1,6 @@
 package com.maoding.User.Dao;
 
+import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.User.zeroc.ProjectRoleDTO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,7 @@ import java.util.List;
 @Repository
 public interface RoleDao {
     List<ProjectRoleDTO> listProjectRoleByProjectId(@Param("projectId")  String projectId);
+    List<IdNameDTO> listProject(@Param("userId") String userId);
+    List<IdNameDTO> listTask(@Param("userId") String userId);
+    List<IdNameDTO> listCompany(@Param("userId") String userId);
 }

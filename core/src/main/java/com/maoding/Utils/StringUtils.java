@@ -220,4 +220,16 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
         return idListString;
     }
+
+    public static String getFileServerBaseDir(String serverAddress){
+        if (StringUtils.isEmpty(serverAddress) || !serverAddress.contains("|")) return null;
+        String[] s = StringUtils.split(serverAddress,"|");
+        return s[s.length - 1];
+    }
+
+    public static String getFileServerAddress(String serverAddress){
+        if (StringUtils.isEmpty(serverAddress)) return null;
+        String[] s = StringUtils.split(serverAddress,"|");
+        return s[0];
+    }
 }

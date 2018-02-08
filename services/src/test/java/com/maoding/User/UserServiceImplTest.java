@@ -1,9 +1,6 @@
 package com.maoding.User;
 
-import com.maoding.User.zeroc.LoginDTO;
-import com.maoding.User.zeroc.ProjectRoleDTO;
-import com.maoding.User.zeroc.UserService;
-import com.maoding.User.zeroc.UserServicePrx;
+import com.maoding.User.zeroc.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,11 +33,18 @@ public class UserServiceImplTest {
 
     @Test
     public void testListRole() throws Exception {
-        String projectId = "3c7c78c896c84c4fbe0facd7def29d50";
+        String projectId = "0049eafd6c8a47a4bcc551fa4a491de4";
         List<ProjectRoleDTO> list = userService.listProjectRoleByProjectId(projectId,null);
         Assert.assertNotNull(list);
     }
 
+    @Test
+    public void testListUserJoin() throws Exception {
+        LoginDTO loginDTO = new LoginDTO(null,null,false,"123456","13680809727");
+        userService.login(loginDTO,null);
+        UserJoinDTO j = userService.listUserJoin(null);
+        Assert.assertNotNull(j);
+    }
     /** for method: login(LoginDTO loginInfo, Current current) */
     @Test
     public void testLogin() throws Exception {

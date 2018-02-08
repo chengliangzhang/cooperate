@@ -10,12 +10,15 @@ import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,9 +27,12 @@ import javax.sql.DataSource;
 /**
  * Created by Wuwq on 2016/12/13.
  */
+@Component
+@ComponentScan
 @Configuration
 @ConfigurationProperties(prefix = "druid")
 @MapperScan(basePackages = "com.maoding.*.Dao", sqlSessionFactoryRef = "sqlSessionFactory")
+@EnableAutoConfiguration
 public class DbConfig extends DruidConfig {
 
     @Autowired
@@ -55,6 +61,7 @@ public class DbConfig extends DruidConfig {
 
     @Bean(name = "sqlSessionFactory")
     @Primary
+    @Autowired
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);

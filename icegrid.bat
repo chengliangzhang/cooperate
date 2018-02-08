@@ -1,1 +1,1 @@
-icegridregistry --Ice.Config=services/src/main/resources/properties/ice-config-test.properties
+./icestart.bat ./services/src/main/resources/properties/command.properties icegridregistry

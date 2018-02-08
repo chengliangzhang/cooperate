@@ -9,6 +9,8 @@ module zeroc {
     interface StorageService {
         ["deprecate:尚未实现"] SimpleNodeDTO createMirror(FileNodeDTO src) throws CustomException; //建立镜像
 
+        SimpleNodeList listOldNode(QueryNodeDTO query); //查询sky_driver中的节点信息
+
         SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent,UpdateNodeDTO request) throws CustomException; //创建节点
         SimpleNodeDTO updateNodeWithParent(SimpleNodeDTO src,SimpleNodeDTO parent,UpdateNodeDTO request) throws CustomException; //更改节点属性
         bool deleteNodeById(string id); //删除树节点

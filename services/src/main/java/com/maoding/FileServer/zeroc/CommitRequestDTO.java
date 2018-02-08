@@ -35,6 +35,30 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         this.actionTypeId = actionTypeId;
     }
 
+    public String pid;
+
+    public String getPid()
+    {
+        return pid;
+    }
+
+    public void setPid(String pid)
+    {
+        this.pid = pid;
+    }
+
+    public String path;
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
+
     public String userId;
 
     public String getUserId()
@@ -83,21 +107,52 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         this.remark = remark;
     }
 
+    public short serverTypeId;
+
+    public short getServerTypeId()
+    {
+        return serverTypeId;
+    }
+
+    public void setServerTypeId(short serverTypeId)
+    {
+        this.serverTypeId = serverTypeId;
+    }
+
+    public String serverAddress;
+
+    public String getServerAddress()
+    {
+        return serverAddress;
+    }
+
+    public void setServerAddress(String serverAddress)
+    {
+        this.serverAddress = serverAddress;
+    }
+
     public CommitRequestDTO()
     {
+        this.pid = "";
+        this.path = "";
         this.userId = "";
         this.fileVersion = "";
         this.majorName = "";
         this.remark = "";
+        this.serverAddress = "";
     }
 
-    public CommitRequestDTO(short actionTypeId, String userId, String fileVersion, String majorName, String remark)
+    public CommitRequestDTO(short actionTypeId, String pid, String path, String userId, String fileVersion, String majorName, String remark, short serverTypeId, String serverAddress)
     {
         this.actionTypeId = actionTypeId;
+        this.pid = pid;
+        this.path = path;
         this.userId = userId;
         this.fileVersion = fileVersion;
         this.majorName = majorName;
         this.remark = remark;
+        this.serverTypeId = serverTypeId;
+        this.serverAddress = serverAddress;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -117,6 +172,20 @@ public class CommitRequestDTO implements java.lang.Cloneable,
             if(this.actionTypeId != r.actionTypeId)
             {
                 return false;
+            }
+            if(this.pid != r.pid)
+            {
+                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
+                {
+                    return false;
+                }
+            }
+            if(this.path != r.path)
+            {
+                if(this.path == null || r.path == null || !this.path.equals(r.path))
+                {
+                    return false;
+                }
             }
             if(this.userId != r.userId)
             {
@@ -146,6 +215,17 @@ public class CommitRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.serverTypeId != r.serverTypeId)
+            {
+                return false;
+            }
+            if(this.serverAddress != r.serverAddress)
+            {
+                if(this.serverAddress == null || r.serverAddress == null || !this.serverAddress.equals(r.serverAddress))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
@@ -158,10 +238,14 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CommitRequestDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileVersion);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, remark);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverAddress);
         return h_;
     }
 
@@ -182,19 +266,27 @@ public class CommitRequestDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         ostr.writeShort(this.actionTypeId);
+        ostr.writeString(this.pid);
+        ostr.writeString(this.path);
         ostr.writeString(this.userId);
         ostr.writeString(this.fileVersion);
         ostr.writeString(this.majorName);
         ostr.writeString(this.remark);
+        ostr.writeShort(this.serverTypeId);
+        ostr.writeString(this.serverAddress);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.actionTypeId = istr.readShort();
+        this.pid = istr.readString();
+        this.path = istr.readString();
         this.userId = istr.readString();
         this.fileVersion = istr.readString();
         this.majorName = istr.readString();
         this.remark = istr.readString();
+        this.serverTypeId = istr.readShort();
+        this.serverAddress = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CommitRequestDTO v)
@@ -249,5 +341,5 @@ public class CommitRequestDTO implements java.lang.Cloneable,
 
     private static final CommitRequestDTO _nullMarshalValue = new CommitRequestDTO();
 
-    public static final long serialVersionUID = 964647463L;
+    public static final long serialVersionUID = -1450025388L;
 }

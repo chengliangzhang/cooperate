@@ -22,21 +22,9 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileService extends com.zeroc.Ice.Object
 {
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 尚未实现
-     **/
-    @Deprecated
-    boolean copyRealFile(com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
+    java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listWebArchiveDir(String projectId, com.zeroc.Ice.Current current);
 
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 尚未实现
-     **/
-    @Deprecated
-    boolean copyRealFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
+    java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listWebArchiveDirForAccount(com.maoding.User.zeroc.AccountDTO account, String projectId, com.zeroc.Ice.Current current);
 
     /**
      * @param current The Current object for the invocation.
@@ -307,40 +295,32 @@ public interface FileService extends com.zeroc.Ice.Object
         return "::zeroc::FileService";
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_copyRealFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listWebArchiveDir(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_dst;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_dst = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
+        String iceP_projectId;
+        iceP_projectId = istr.readString();
         inS.endReadParams();
-        boolean ret = obj.copyRealFile(iceP_src, iceP_dst, current);
+        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret = obj.listWebArchiveDir(iceP_projectId, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
+        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_copyRealFileForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listWebArchiveDirForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_dst;
+        String iceP_projectId;
         iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_dst = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
+        iceP_projectId = istr.readString();
         inS.endReadParams();
-        boolean ret = obj.copyRealFileForAccount(iceP_account, iceP_src, iceP_dst, current);
+        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret = obj.listWebArchiveDirForAccount(iceP_account, iceP_projectId, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
+        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -2029,8 +2009,6 @@ public interface FileService extends com.zeroc.Ice.Object
         "commitNodeList",
         "commitNodeListForAccount",
         "copyFile",
-        "copyRealFile",
-        "copyRealFileForAccount",
         "createDirectory",
         "createDirectoryForAccount",
         "createFile",
@@ -2089,6 +2067,8 @@ public interface FileService extends com.zeroc.Ice.Object
         "listSubNodeByIdForAccount",
         "listSubNodeByPath",
         "listSubNodeByPathForAccount",
+        "listWebArchiveDir",
+        "listWebArchiveDirForAccount",
         "login",
         "moveNode",
         "moveNodeForAccount",
@@ -2217,243 +2197,243 @@ public interface FileService extends com.zeroc.Ice.Object
             }
             case 21:
             {
-                return _iceD_copyRealFile(this, in, current);
+                return _iceD_createDirectory(this, in, current);
             }
             case 22:
             {
-                return _iceD_copyRealFileForAccount(this, in, current);
+                return _iceD_createDirectoryForAccount(this, in, current);
             }
             case 23:
             {
-                return _iceD_createDirectory(this, in, current);
+                return _iceD_createFile(this, in, current);
             }
             case 24:
             {
-                return _iceD_createDirectoryForAccount(this, in, current);
+                return _iceD_createFileForAccount(this, in, current);
             }
             case 25:
             {
-                return _iceD_createFile(this, in, current);
+                return _iceD_createMirror(this, in, current);
             }
             case 26:
             {
-                return _iceD_createFileForAccount(this, in, current);
+                return _iceD_createMirrorForAccount(this, in, current);
             }
             case 27:
             {
-                return _iceD_createMirror(this, in, current);
+                return _iceD_createNode(this, in, current);
             }
             case 28:
             {
-                return _iceD_createMirrorForAccount(this, in, current);
+                return _iceD_createNodeForAccount(this, in, current);
             }
             case 29:
             {
-                return _iceD_createNode(this, in, current);
+                return _iceD_createVersion(this, in, current);
             }
             case 30:
             {
-                return _iceD_createNodeForAccount(this, in, current);
+                return _iceD_createVersionForAccount(this, in, current);
             }
             case 31:
             {
-                return _iceD_createVersion(this, in, current);
+                return _iceD_deleteNode(this, in, current);
             }
             case 32:
             {
-                return _iceD_createVersionForAccount(this, in, current);
+                return _iceD_deleteNodeForAccount(this, in, current);
             }
             case 33:
             {
-                return _iceD_deleteNode(this, in, current);
+                return _iceD_getFile(this, in, current);
             }
             case 34:
             {
-                return _iceD_deleteNodeForAccount(this, in, current);
+                return _iceD_getFileForAccount(this, in, current);
             }
             case 35:
             {
-                return _iceD_getFile(this, in, current);
+                return _iceD_getFileServerType(this, in, current);
             }
             case 36:
             {
-                return _iceD_getFileForAccount(this, in, current);
+                return _iceD_getFullNode(this, in, current);
             }
             case 37:
             {
-                return _iceD_getFileServerType(this, in, current);
+                return _iceD_getFullNodeForAccount(this, in, current);
             }
             case 38:
             {
-                return _iceD_getFullNode(this, in, current);
+                return _iceD_getNodeById(this, in, current);
             }
             case 39:
             {
-                return _iceD_getFullNodeForAccount(this, in, current);
+                return _iceD_getNodeByIdForAccount(this, in, current);
             }
             case 40:
             {
-                return _iceD_getNodeById(this, in, current);
+                return _iceD_getNodeByPath(this, in, current);
             }
             case 41:
             {
-                return _iceD_getNodeByIdForAccount(this, in, current);
+                return _iceD_getNodeByPathForAccount(this, in, current);
             }
             case 42:
             {
-                return _iceD_getNodeByPath(this, in, current);
+                return _iceD_getNoticeService(this, in, current);
             }
             case 43:
             {
-                return _iceD_getNodeByPathForAccount(this, in, current);
+                return _iceD_getProjectInfoByPath(this, in, current);
             }
             case 44:
             {
-                return _iceD_getNoticeService(this, in, current);
+                return _iceD_getProjectInfoByPathForAccount(this, in, current);
             }
             case 45:
             {
-                return _iceD_getProjectInfoByPath(this, in, current);
+                return _iceD_getUserService(this, in, current);
             }
             case 46:
             {
-                return _iceD_getProjectInfoByPathForAccount(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 47:
             {
-                return _iceD_getUserService(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 48:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 49:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 50:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return _iceD_isExist(this, in, current);
             }
             case 51:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return _iceD_issueFile(this, in, current);
             }
             case 52:
             {
-                return _iceD_isExist(this, in, current);
+                return _iceD_issueFileForAccount(this, in, current);
             }
             case 53:
             {
-                return _iceD_issueFile(this, in, current);
+                return _iceD_issueNode(this, in, current);
             }
             case 54:
             {
-                return _iceD_issueFileForAccount(this, in, current);
+                return _iceD_issueNodeForAccount(this, in, current);
             }
             case 55:
             {
-                return _iceD_issueNode(this, in, current);
+                return _iceD_issueNodeList(this, in, current);
             }
             case 56:
             {
-                return _iceD_issueNodeForAccount(this, in, current);
+                return _iceD_issueNodeListForAccount(this, in, current);
             }
             case 57:
             {
-                return _iceD_issueNodeList(this, in, current);
+                return _iceD_listAction(this, in, current);
             }
             case 58:
             {
-                return _iceD_issueNodeListForAccount(this, in, current);
+                return _iceD_listActionForAccount(this, in, current);
             }
             case 59:
             {
-                return _iceD_listAction(this, in, current);
+                return _iceD_listAllNode(this, in, current);
             }
             case 60:
             {
-                return _iceD_listActionForAccount(this, in, current);
+                return _iceD_listAllNodeForAccount(this, in, current);
             }
             case 61:
             {
-                return _iceD_listAllNode(this, in, current);
+                return _iceD_listAllSubFile(this, in, current);
             }
             case 62:
             {
-                return _iceD_listAllNodeForAccount(this, in, current);
+                return _iceD_listAllSubFileForAccount(this, in, current);
             }
             case 63:
             {
-                return _iceD_listAllSubFile(this, in, current);
+                return _iceD_listFile(this, in, current);
             }
             case 64:
             {
-                return _iceD_listAllSubFileForAccount(this, in, current);
+                return _iceD_listFileForAccount(this, in, current);
             }
             case 65:
             {
-                return _iceD_listFile(this, in, current);
+                return _iceD_listFilterSubNodeById(this, in, current);
             }
             case 66:
             {
-                return _iceD_listFileForAccount(this, in, current);
+                return _iceD_listFilterSubNodeByIdForAccount(this, in, current);
             }
             case 67:
             {
-                return _iceD_listFilterSubNodeById(this, in, current);
+                return _iceD_listFilterSubNodeByPath(this, in, current);
             }
             case 68:
             {
-                return _iceD_listFilterSubNodeByIdForAccount(this, in, current);
+                return _iceD_listFilterSubNodeByPathForAccount(this, in, current);
             }
             case 69:
             {
-                return _iceD_listFilterSubNodeByPath(this, in, current);
+                return _iceD_listMajor(this, in, current);
             }
             case 70:
             {
-                return _iceD_listFilterSubNodeByPathForAccount(this, in, current);
+                return _iceD_listMajorForAccount(this, in, current);
             }
             case 71:
             {
-                return _iceD_listMajor(this, in, current);
+                return _iceD_listNode(this, in, current);
             }
             case 72:
             {
-                return _iceD_listMajorForAccount(this, in, current);
+                return _iceD_listNodeForAccount(this, in, current);
             }
             case 73:
             {
-                return _iceD_listNode(this, in, current);
+                return _iceD_listProjectRoleByProjectId(this, in, current);
             }
             case 74:
             {
-                return _iceD_listNodeForAccount(this, in, current);
+                return _iceD_listProjectRoleByProjectIdForAccount(this, in, current);
             }
             case 75:
             {
-                return _iceD_listProjectRoleByProjectId(this, in, current);
+                return _iceD_listSubNodeById(this, in, current);
             }
             case 76:
             {
-                return _iceD_listProjectRoleByProjectIdForAccount(this, in, current);
+                return _iceD_listSubNodeByIdForAccount(this, in, current);
             }
             case 77:
             {
-                return _iceD_listSubNodeById(this, in, current);
+                return _iceD_listSubNodeByPath(this, in, current);
             }
             case 78:
             {
-                return _iceD_listSubNodeByIdForAccount(this, in, current);
+                return _iceD_listSubNodeByPathForAccount(this, in, current);
             }
             case 79:
             {
-                return _iceD_listSubNodeByPath(this, in, current);
+                return _iceD_listWebArchiveDir(this, in, current);
             }
             case 80:
             {
-                return _iceD_listSubNodeByPathForAccount(this, in, current);
+                return _iceD_listWebArchiveDirForAccount(this, in, current);
             }
             case 81:
             {

@@ -15,7 +15,14 @@ import java.util.List;
 public class RemoteUserServicePrx extends BaseRemoteService<UserServicePrx> implements UserServicePrx {
 
     private static UserServicePrx lastPrx = null;
-    private UserService userService = null;
+    private static UserService userService = null;
+
+    private UserService getUserService(){
+        if (userService == null) {
+            userService = SpringUtils.getBean(UserService.class);
+        }
+        return userService;
+    }
 
     /** 同步方式获取业务接口代理对象 */
     public static UserServicePrx getInstance(String adapterName) {
@@ -27,13 +34,6 @@ public class RemoteUserServicePrx extends BaseRemoteService<UserServicePrx> impl
     }
     public static UserServicePrx getInstance(){
         return getInstance(null);
-    }
-
-    private UserService getUserService(){
-        if (userService == null) {
-            userService = SpringUtils.getBean(UserService.class);
-        }
-        return userService;
     }
 
     @Override

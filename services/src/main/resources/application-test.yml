@@ -65,9 +65,8 @@ logging:
 # ICE
 # ===================================================================
 ice:
-    config: classpath:properties/ice-config-test.properties
-    startscript: c:/work/maoding-services/icestart.bat
-    start: icebox
+    config: c:/work/maoding-services/services/src/main/resources/properties/ice-config-test.properties
+    start: c:/work/maoding-services/icestart.bat;c:/work/maoding-services/services/src/main/resources/properties/command.properties;icegridregistry;icebox
 
 # ===================================================================
 # WEB SERVICE

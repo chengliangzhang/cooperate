@@ -51,4 +51,8 @@ module zeroc {
     };
     ["java:type:java.util.ArrayList<CompanyDTO>"] sequence<CompanyDTO> CompanyList;
 
+    ["java:getset","clr:property"]
+    struct QueryCompanyDTO {
+        string userIdString; //职员的用户id，可以是用","分隔的多个id
+    };
 };

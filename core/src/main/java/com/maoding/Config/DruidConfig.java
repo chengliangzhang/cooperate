@@ -5,7 +5,10 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Created by Wuwq on 2016/12/13.
  */
+//@EnableAutoConfiguration
+//@Component
 @Configuration
+//@ConfigurationProperties(prefix = "druid")
 public class DruidConfig {
     private String url;
     private String username;
@@ -28,6 +31,15 @@ public class DruidConfig {
     private int maxPoolPreparedStatementPerConnectionSize;
     private String filters;
     private String connectionProperties;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getUrl() {
         return url;

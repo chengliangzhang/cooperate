@@ -1,5 +1,6 @@
 package com.maoding.CoreFileServer;
 
+import java.io.File;
 import java.util.Date;
 
 /**
@@ -8,9 +9,7 @@ import java.util.Date;
  * 日    期 : 2018/1/23 16:34
  * 描    述 :
  */
-public class CoreUploadRequest {
-    /** 远端文件服务器地址 */
-    private String address;
+public class CoreFileExtraDTO {
     /** 要创建的文件节点的父id */
     private String pid;
     /** 要创建的文件节点的项目id */
@@ -23,14 +22,10 @@ public class CoreUploadRequest {
     private String accountId;
     /** 要创建的文件节点的时间 */
     private Date lastModifyTime;
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
+    /** 要创建的文件的长度*/
+    private Long fileLength;
+    /** 要创建的文件的原始文件 */
+    private File srcFile;
 
     public String getPid() {
         return pid;
@@ -78,5 +73,29 @@ public class CoreUploadRequest {
 
     public void setLastModifyTime(Date lastModifyTime) {
         this.lastModifyTime = lastModifyTime;
+    }
+
+    public Long getFileLength() {
+        return fileLength;
+    }
+
+    public void setFileLength(Long fileLength) {
+        this.fileLength = fileLength;
+    }
+
+    public File getSrcFile() {
+        return srcFile;
+    }
+
+    public void setSrcFile(File srcFile) {
+        this.srcFile = srcFile;
+    }
+
+    public CoreFileExtraDTO(Long fileLength){
+        setFileLength(fileLength);
+        setLastModifyTime(new Date());
+    }
+    public CoreFileExtraDTO(){
+        this(0L);
     }
 }

@@ -22,8 +22,14 @@ package com.maoding.Company.zeroc;
 
 public interface CompanyService extends com.zeroc.Ice.Object
 {
+    java.util.List<CompanyDTO> listCompany(QueryCompanyDTO query, com.zeroc.Ice.Current current);
+
     java.util.List<CompanyDTO> listCompanyByUserId(String userId, com.zeroc.Ice.Current current);
 
+    /**
+     * @param current The Current object for the invocation.
+     **/
+    @Deprecated
     java.util.List<CompanyDTO> listCompanyForCurrent(com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
@@ -49,6 +55,20 @@ public interface CompanyService extends com.zeroc.Ice.Object
         return "::zeroc::CompanyService";
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listCompany(CompanyService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        QueryCompanyDTO iceP_query;
+        iceP_query = QueryCompanyDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<CompanyDTO> ret = obj.listCompany(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CompanyListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listCompanyByUserId(CompanyService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
@@ -63,6 +83,7 @@ public interface CompanyService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
+    @Deprecated
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listCompanyForCurrent(CompanyService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
@@ -80,10 +101,12 @@ public interface CompanyService extends com.zeroc.Ice.Object
         "ice_ids",
         "ice_isA",
         "ice_ping",
+        "listCompany",
         "listCompanyByUserId",
         "listCompanyForCurrent"
     };
 
+    @SuppressWarnings("deprecation")
     @Override
     default java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceDispatch(com.zeroc.IceInternal.Incoming in, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
@@ -114,9 +137,13 @@ public interface CompanyService extends com.zeroc.Ice.Object
             }
             case 4:
             {
-                return _iceD_listCompanyByUserId(this, in, current);
+                return _iceD_listCompany(this, in, current);
             }
             case 5:
+            {
+                return _iceD_listCompanyByUserId(this, in, current);
+            }
+            case 6:
             {
                 return _iceD_listCompanyForCurrent(this, in, current);
             }

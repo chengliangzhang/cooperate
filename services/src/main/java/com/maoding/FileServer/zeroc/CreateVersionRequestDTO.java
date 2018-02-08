@@ -107,6 +107,30 @@ public class CreateVersionRequestDTO implements java.lang.Cloneable,
         this.mainFileId = mainFileId;
     }
 
+    public short serverTypeId;
+
+    public short getServerTypeId()
+    {
+        return serverTypeId;
+    }
+
+    public void setServerTypeId(short serverTypeId)
+    {
+        this.serverTypeId = serverTypeId;
+    }
+
+    public String serverAddress;
+
+    public String getServerAddress()
+    {
+        return serverAddress;
+    }
+
+    public void setServerAddress(String serverAddress)
+    {
+        this.serverAddress = serverAddress;
+    }
+
     public CreateVersionRequestDTO()
     {
         this.userId = "";
@@ -115,9 +139,10 @@ public class CreateVersionRequestDTO implements java.lang.Cloneable,
         this.remark = "";
         this.path = "";
         this.mainFileId = "";
+        this.serverAddress = "";
     }
 
-    public CreateVersionRequestDTO(short actionTypeId, String userId, String fileVersion, String majorName, String remark, String path, String mainFileId)
+    public CreateVersionRequestDTO(short actionTypeId, String userId, String fileVersion, String majorName, String remark, String path, String mainFileId, short serverTypeId, String serverAddress)
     {
         this.actionTypeId = actionTypeId;
         this.userId = userId;
@@ -126,6 +151,8 @@ public class CreateVersionRequestDTO implements java.lang.Cloneable,
         this.remark = remark;
         this.path = path;
         this.mainFileId = mainFileId;
+        this.serverTypeId = serverTypeId;
+        this.serverAddress = serverAddress;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -188,6 +215,17 @@ public class CreateVersionRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.serverTypeId != r.serverTypeId)
+            {
+                return false;
+            }
+            if(this.serverAddress != r.serverAddress)
+            {
+                if(this.serverAddress == null || r.serverAddress == null || !this.serverAddress.equals(r.serverAddress))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
@@ -206,6 +244,8 @@ public class CreateVersionRequestDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, remark);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainFileId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverAddress);
         return h_;
     }
 
@@ -232,6 +272,8 @@ public class CreateVersionRequestDTO implements java.lang.Cloneable,
         ostr.writeString(this.remark);
         ostr.writeString(this.path);
         ostr.writeString(this.mainFileId);
+        ostr.writeShort(this.serverTypeId);
+        ostr.writeString(this.serverAddress);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -243,6 +285,8 @@ public class CreateVersionRequestDTO implements java.lang.Cloneable,
         this.remark = istr.readString();
         this.path = istr.readString();
         this.mainFileId = istr.readString();
+        this.serverTypeId = istr.readShort();
+        this.serverAddress = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CreateVersionRequestDTO v)
@@ -297,5 +341,5 @@ public class CreateVersionRequestDTO implements java.lang.Cloneable,
 
     private static final CreateVersionRequestDTO _nullMarshalValue = new CreateVersionRequestDTO();
 
-    public static final long serialVersionUID = -1979257595L;
+    public static final long serialVersionUID = -1106439450L;
 }

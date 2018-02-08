@@ -1,10 +1,8 @@
 package com.maoding.FileServer;
 
+import com.maoding.CoreFileServer.CoreFileExtraDTO;
 import com.maoding.CoreFileServer.CoreFileDTO;
 import com.maoding.CoreFileServer.CoreFileServer;
-import com.maoding.CoreFileServer.CoreUploadRequest;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +34,21 @@ public class CoreFileServerTest {
 
 
     @Test
-    public void testUploadToWeb() throws Exception {
-        CoreUploadRequest request = new CoreUploadRequest();
-        request.setAddress("http://172.16.6.73:8071/fileCenter/netFile/uploadFile");
+    public void testCreateFile() throws Exception {
+        CoreFileExtraDTO request = new CoreFileExtraDTO();
+        request.setPid("7329033303e0410a900068918025317e");
+        request.setProjectId("c8c049f763d245b5aa9850c43166245e");
+        request.setCompanyId("5aeb14ea46dd4282b136736976d4e430");
+        request.setAccountId("4e658e6c7be0454cbb4c694977b2fd04");
+        request.setCompanyId("5aeb14ea46dd4282b136736976d4e430");
+        CoreFileDTO file = new CoreFileDTO();
+        file.setScope("澳门\\设计\\初步设计阶段");
+        file.setKey("aaaa.txt");
+        webServer.coreCreateFile(file,request);
+    }
+
+    private void uploadMethod() throws Exception{
+        CoreFileExtraDTO request = new CoreFileExtraDTO();
         request.setPid("7329033303e0410a900068918025317e");
         request.setProjectId("c8c049f763d245b5aa9850c43166245e");
         request.setCompanyId("5aeb14ea46dd4282b136736976d4e430");

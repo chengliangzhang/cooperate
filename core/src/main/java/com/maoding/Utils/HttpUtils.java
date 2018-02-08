@@ -17,6 +17,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -36,6 +37,7 @@ public class HttpUtils {
     /** 日志对象 */
     private static final Logger log = LoggerFactory.getLogger(HttpUtils.class);
 
+    public static final Integer MAX_BLOCK_SIZE = (8192 * 1024);
     public static final String DEFAULT_FILE_CONTENT_TYPE = "text/plain";
 //    public static final String DEFAULT_FILE_CONTENT_TYPE = "application/octet-stream";
 
@@ -84,8 +86,8 @@ public class HttpUtils {
         return postData(client,url,null,null);
     }
 
-    public static CoreResponse<?> uploadFile(String urlString, ArrayList<CoreKeyValuePair> propertyList,
-                                                             CoreUploadFileItem fileItem, long pos, int size, int blockSize) {
+    public static CoreResponse<?> postFileData(@NotNull String urlString, @NotNull ArrayList<CoreKeyValuePair> propertyList,
+                                             CoreUploadFileItem fileItem, long pos, int size, int blockSize) {
         final String END_LINE  = "\r\n";
         final String BOUNDARY = "----WebKitFormBoundaryqZ6H6BhuiKmeRPOm";
         final String BOUNDARY_BODY = END_LINE + "--" + BOUNDARY + END_LINE;
@@ -111,7 +113,7 @@ public class HttpUtils {
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            log.error("无法连接服务器",e);
         }
 
         HttpURLConnection connection = null;
@@ -138,51 +140,52 @@ public class HttpUtils {
 
                 // 处理普通表单域(即形如key = value对)的POST请求
                 StringBuilder contentBody = new StringBuilder();
-                for (CoreKeyValuePair ffkvp : propertyList) {
+                for (CoreKeyValuePair kvp : propertyList) {
                     contentBody.append(BOUNDARY_BODY)
                             .append(BODY_NAME_START)
-                            .append(ffkvp.getKey())
+                            .append(kvp.getKey())
                             .append(BODY_NAME_END)
-                            .append(ffkvp.getValue());
+                            .append(kvp.getValue());
                 }
                 out.write(contentBody.toString().getBytes(DEFAULT_CHAR_SET));
 
-                //打开上传文件
-                //处理文件上传
-                contentBody = new StringBuilder();
-                contentBody.append(BOUNDARY_BODY)
-                        .append(FILE_PROPERTY_START)
-                        .append(fileItem.getPropertyName())
-                        .append(FILE_PROPERTY_END)
-                        .append(FILE_NAME_START)
-                        .append(fileItem.getFileName())
-                        .append(FILE_NAME_END)
-                        .append(FILE_CONTENT_TYPE);
-                out.write(contentBody.toString().getBytes(DEFAULT_CHAR_SET));
+                if (fileItem != null) {
+                    //写文件起始块
+                    contentBody = new StringBuilder();
+                    contentBody.append(BOUNDARY_BODY)
+                            .append(FILE_PROPERTY_START)
+                            .append(fileItem.getPropertyName())
+                            .append(FILE_PROPERTY_END)
+                            .append(FILE_NAME_START)
+                            .append(StringUtils.getFileName(fileItem.getFileName()))
+                            .append(FILE_NAME_END)
+                            .append(FILE_CONTENT_TYPE);
+                    out.write(contentBody.toString().getBytes(DEFAULT_CHAR_SET));
 
-                // 真正向服务器写文件
-                rf = new RandomAccessFile(fileItem.getFileName(), "r");
+                    // 真正向服务器写文件
+                    rf = new RandomAccessFile(fileItem.getFileName(), "r");
 
-                long realPos = pos;
-                int realSize = size;
-                if (realSize == 0) realSize = (int) rf.length();
-                if ((0 < blockSize) && (blockSize < realSize)) realSize = blockSize;
-                while (realPos < (pos + size)){
-                    if (realSize > (rf.length() - realPos)) realSize = (int)(rf.length() - realPos);
-                    byte[] buf = new byte[realSize];
-                    rf.seek(realPos);
-                    int bytes = rf.read(buf);
-                    out.write(buf, 0, bytes);
-                    out.write(FILE_SPLIT.getBytes(DEFAULT_CHAR_SET));
-                    realPos += bytes;
+                    long realPos = pos;
+                    int realSize = size;
+                    if (realSize == 0) realSize = (int) rf.length();
+                    if (blockSize == 0) blockSize = MAX_BLOCK_SIZE;
+                    if ((0 < blockSize) && (blockSize < realSize)) realSize = blockSize;
+                    while (realPos < (pos + size)) {
+                        if (realPos > pos) out.write(BOUNDARY_BODY.getBytes(DEFAULT_CHAR_SET));
+                        if (realSize > (rf.length() - realPos)) realSize = (int) (rf.length() - realPos);
+                        byte[] buf = new byte[realSize];
+                        rf.seek(realPos);
+                        int bytes = rf.read(buf);
+                        out.write(buf, 0, bytes);
+                        realPos += bytes;
+                    }
                 }
-                out.write(FILE_END.getBytes(DEFAULT_CHAR_SET));
 
                 //写结尾
                 out.write(BOUNDARY_END.getBytes(DEFAULT_CHAR_SET));
                 out.flush();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("发送web操作时错误",e);
             } finally {
                 FileUtils.close(rf);
                 FileUtils.close(out);
@@ -209,6 +212,10 @@ public class HttpUtils {
         }
 
         return getResult(responseString.toString());
+    }
+    public static CoreResponse<?> postFileData(@NotNull String urlString, @NotNull ArrayList<CoreKeyValuePair> propertyList,
+                                               CoreUploadFileItem fileItem, long pos, int size) {
+        return postFileData(urlString,propertyList,fileItem,pos,size,0);
     }
 
     public static Boolean isResponseOK(CloseableHttpResponse response){

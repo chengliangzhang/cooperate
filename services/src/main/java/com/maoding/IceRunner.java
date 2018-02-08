@@ -1,15 +1,19 @@
 package com.maoding;
 
 import com.maoding.Config.IceConfig;
+import com.maoding.Utils.FileUtils;
+import com.maoding.Utils.StringUtils;
+import com.maoding.Utils.ThreadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -26,29 +30,57 @@ public class IceRunner {
     private IceConfig iceConfig;
 
     public void run(String[] args) {
-        String configName = iceConfig.getConfigFileName();
-
-        if (configName != null) {
-            //执行icebox,icegridregistry
-            List<String> iceboxCmd = new ArrayList<>();
-            iceboxCmd.add("cmd.exe");
-            iceboxCmd.add("/c\"c:/work/maoding-services/icestart.bat\"");
-            iceboxCmd.add(configName);
-            String[] runExe = iceConfig.getStart().split(",");
-            iceboxCmd.addAll(Arrays.asList(runExe));
-            log.info("启动IceBox服务，配置文件：" + configName);
+        //执行启动命令行
+        if (StringUtils.isNotEmpty(iceConfig.getStartCmd()) && StringUtils.isNotEmpty(iceConfig.getCmdStart())){
+            log.info("命令行文件:" + iceConfig.getStartCmd());
+            log.info("命令行配置文件:" + iceConfig.getCmdConfig());
+            log.info("启动组件:" + iceConfig.getCmdStart());
             try {
-                Runtime.getRuntime().exec(iceboxCmd.toArray(new String[iceboxCmd.size()]));
-                log.info("IceBox服务已启动");
-            } catch (IOException e) {
-                log.error("启动icebox时有误");
-            }
+                Properties properties = new Properties();
+                InputStreamReader reader =new InputStreamReader(new FileInputStream(iceConfig.getCmdConfig()));
+                properties.load(reader);
+                for (Object key : properties.keySet()) {
+                    String keyStr = key.toString();
+                    if (keyStr.contains("LMDB.Path")){
+                        String path = new String(properties.getProperty(keyStr).getBytes("ISO-8859-1"), "utf-8");
+                        FileUtils.ensureDirExist(path);
+                    } else if (StringUtils.isSame(keyStr,"Ice.LogFile")){
+                        String path = StringUtils.getDirName(new String(properties.getProperty(keyStr).getBytes("ISO-8859-1"), "utf-8"));
+                        FileUtils.ensureDirExist(path);
+                    }
+                }
 
-//            List<String> params = new ArrayList<>();
-//            params.addAll(Arrays.asList(args));
-//            params.add("--Ice.Config=" + configName);
-//            log.info("启动IceBox服务，配置文件：" + configName);
-//            com.zeroc.IceBox.Server.main(params.toArray(new String[params.size()]));
+                List<String> iceboxCmd = new ArrayList<>();
+                iceboxCmd.add("cmd");
+                iceboxCmd.add("/c");
+                iceboxCmd.add("start");
+                iceboxCmd.add("\"ice通用服务\"");
+                iceboxCmd.add(iceConfig.getStartCmd());
+                iceboxCmd.add(iceConfig.getCmdConfig());
+                String[] cmdArray = iceConfig.getCmdStart().split(";");
+                Collections.addAll(iceboxCmd, cmdArray);
+                if ((args != null) && (args.length > 0)){
+                    log.info("其他参数:" + Arrays.toString(args));
+                    Collections.addAll(iceboxCmd, args);
+                }
+                String[] cmds = iceboxCmd.toArray(new String[iceboxCmd.size()]);
+                Runtime.getRuntime().exec(cmds);
+                ThreadUtils.sleep(8000);
+                log.info("启动命令行文件执行完毕");
+            } catch (UnsupportedEncodingException e) {
+                log.error(e.getMessage(),e);
+            } catch (IOException e) {
+                log.error("执行启动命令行文件时有误");
+            }
+        }
+
+        //启动服务
+        String configFile = iceConfig.getConfigFileName();
+        if (configFile != null) {
+            List<String> params = new ArrayList<>();
+            params.add("--Ice.Config=" + configFile);
+            log.info("启动IceBox服务，配置文件：" + configFile);
+            com.zeroc.IceBox.Server.main(params.toArray(new String[params.size()]));
         }
     }
 }

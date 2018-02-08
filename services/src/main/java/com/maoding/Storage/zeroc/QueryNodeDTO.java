@@ -95,16 +95,16 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.projectId = projectId;
     }
 
-    public String classicId;
+    public String rangeId;
 
-    public String getClassicId()
+    public String getRangeId()
     {
-        return classicId;
+        return rangeId;
     }
 
-    public void setClassicId(String classicId)
+    public void setRangeId(String rangeId)
     {
-        this.classicId = classicId;
+        this.rangeId = rangeId;
     }
 
     public String issueId;
@@ -167,30 +167,6 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.ownerRoleId = ownerRoleId;
     }
 
-    public String fuzzyPath;
-
-    public String getFuzzyPath()
-    {
-        return fuzzyPath;
-    }
-
-    public void setFuzzyPath(String fuzzyPath)
-    {
-        this.fuzzyPath = fuzzyPath;
-    }
-
-    public String storagePath;
-
-    public String getStoragePath()
-    {
-        return storagePath;
-    }
-
-    public void setStoragePath(String storagePath)
-    {
-        this.storagePath = storagePath;
-    }
-
     public String parentPath;
 
     public String getParentPath()
@@ -201,30 +177,6 @@ public class QueryNodeDTO implements java.lang.Cloneable,
     public void setParentPath(String parentPath)
     {
         this.parentPath = parentPath;
-    }
-
-    public String parentStoragePath;
-
-    public String getParentStoragePath()
-    {
-        return parentStoragePath;
-    }
-
-    public void setParentStoragePath(String parentStoragePath)
-    {
-        this.parentStoragePath = parentStoragePath;
-    }
-
-    public String fuzzyStoragePath;
-
-    public String getFuzzyStoragePath()
-    {
-        return fuzzyStoragePath;
-    }
-
-    public void setFuzzyStoragePath(String fuzzyStoragePath)
-    {
-        this.fuzzyStoragePath = fuzzyStoragePath;
     }
 
     public String userId;
@@ -239,6 +191,117 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.userId = userId;
     }
 
+    public String fuzzyIdString;
+
+    public String getFuzzyIdString()
+    {
+        return fuzzyIdString;
+    }
+
+    public void setFuzzyIdString(String fuzzyIdString)
+    {
+        this.fuzzyIdString = fuzzyIdString;
+    }
+
+    public String fuzzyPath;
+
+    public String getFuzzyPath()
+    {
+        return fuzzyPath;
+    }
+
+    public void setFuzzyPath(String fuzzyPath)
+    {
+        this.fuzzyPath = fuzzyPath;
+    }
+
+    /**
+     * @deprecated 使用rangeId代替
+     **/
+    @Deprecated
+    public String classicId;
+
+    /**
+     * @deprecated 使用rangeId代替
+     **/
+    @Deprecated
+    public String getClassicId()
+    {
+        return classicId;
+    }
+
+    /**
+     * @deprecated 使用rangeId代替
+     **/
+    @Deprecated
+    public void setClassicId(String classicId)
+    {
+        this.classicId = classicId;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public String storagePath;
+
+    /**
+     **/
+    @Deprecated
+    public String getStoragePath()
+    {
+        return storagePath;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public void setStoragePath(String storagePath)
+    {
+        this.storagePath = storagePath;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public String parentStoragePath;
+
+    /**
+     **/
+    @Deprecated
+    public String getParentStoragePath()
+    {
+        return parentStoragePath;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public void setParentStoragePath(String parentStoragePath)
+    {
+        this.parentStoragePath = parentStoragePath;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public String fuzzyStoragePath;
+
+    /**
+     **/
+    @Deprecated
+    public String getFuzzyStoragePath()
+    {
+        return fuzzyStoragePath;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public void setFuzzyStoragePath(String fuzzyStoragePath)
+    {
+        this.fuzzyStoragePath = fuzzyStoragePath;
+    }
+
     public QueryNodeDTO()
     {
         this.id = "";
@@ -247,21 +310,23 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.path = "";
         this.typeId = "";
         this.projectId = "";
-        this.classicId = "";
+        this.rangeId = "";
         this.issueId = "";
         this.taskId = "";
         this.companyId = "";
         this.ownerUserId = "";
         this.ownerRoleId = "";
-        this.fuzzyPath = "";
-        this.storagePath = "";
         this.parentPath = "";
+        this.userId = "";
+        this.fuzzyIdString = "";
+        this.fuzzyPath = "";
+        this.classicId = "";
+        this.storagePath = "";
         this.parentStoragePath = "";
         this.fuzzyStoragePath = "";
-        this.userId = "";
     }
 
-    public QueryNodeDTO(String id, String pid, String name, String path, String typeId, String projectId, String classicId, String issueId, String taskId, String companyId, String ownerUserId, String ownerRoleId, String fuzzyPath, String storagePath, String parentPath, String parentStoragePath, String fuzzyStoragePath, String userId)
+    public QueryNodeDTO(String id, String pid, String name, String path, String typeId, String projectId, String rangeId, String issueId, String taskId, String companyId, String ownerUserId, String ownerRoleId, String parentPath, String userId, String fuzzyIdString, String fuzzyPath, String classicId, String storagePath, String parentStoragePath, String fuzzyStoragePath)
     {
         this.id = id;
         this.pid = pid;
@@ -269,18 +334,20 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.path = path;
         this.typeId = typeId;
         this.projectId = projectId;
-        this.classicId = classicId;
+        this.rangeId = rangeId;
         this.issueId = issueId;
         this.taskId = taskId;
         this.companyId = companyId;
         this.ownerUserId = ownerUserId;
         this.ownerRoleId = ownerRoleId;
-        this.fuzzyPath = fuzzyPath;
-        this.storagePath = storagePath;
         this.parentPath = parentPath;
+        this.userId = userId;
+        this.fuzzyIdString = fuzzyIdString;
+        this.fuzzyPath = fuzzyPath;
+        this.classicId = classicId;
+        this.storagePath = storagePath;
         this.parentStoragePath = parentStoragePath;
         this.fuzzyStoragePath = fuzzyStoragePath;
-        this.userId = userId;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -339,9 +406,9 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.classicId != r.classicId)
+            if(this.rangeId != r.rangeId)
             {
-                if(this.classicId == null || r.classicId == null || !this.classicId.equals(r.classicId))
+                if(this.rangeId == null || r.rangeId == null || !this.rangeId.equals(r.rangeId))
                 {
                     return false;
                 }
@@ -381,6 +448,27 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.parentPath != r.parentPath)
+            {
+                if(this.parentPath == null || r.parentPath == null || !this.parentPath.equals(r.parentPath))
+                {
+                    return false;
+                }
+            }
+            if(this.userId != r.userId)
+            {
+                if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
+                {
+                    return false;
+                }
+            }
+            if(this.fuzzyIdString != r.fuzzyIdString)
+            {
+                if(this.fuzzyIdString == null || r.fuzzyIdString == null || !this.fuzzyIdString.equals(r.fuzzyIdString))
+                {
+                    return false;
+                }
+            }
             if(this.fuzzyPath != r.fuzzyPath)
             {
                 if(this.fuzzyPath == null || r.fuzzyPath == null || !this.fuzzyPath.equals(r.fuzzyPath))
@@ -388,16 +476,16 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.storagePath != r.storagePath)
+            if(this.classicId != r.classicId)
             {
-                if(this.storagePath == null || r.storagePath == null || !this.storagePath.equals(r.storagePath))
+                if(this.classicId == null || r.classicId == null || !this.classicId.equals(r.classicId))
                 {
                     return false;
                 }
             }
-            if(this.parentPath != r.parentPath)
+            if(this.storagePath != r.storagePath)
             {
-                if(this.parentPath == null || r.parentPath == null || !this.parentPath.equals(r.parentPath))
+                if(this.storagePath == null || r.storagePath == null || !this.storagePath.equals(r.storagePath))
                 {
                     return false;
                 }
@@ -412,13 +500,6 @@ public class QueryNodeDTO implements java.lang.Cloneable,
             if(this.fuzzyStoragePath != r.fuzzyStoragePath)
             {
                 if(this.fuzzyStoragePath == null || r.fuzzyStoragePath == null || !this.fuzzyStoragePath.equals(r.fuzzyStoragePath))
-                {
-                    return false;
-                }
-            }
-            if(this.userId != r.userId)
-            {
-                if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
                 {
                     return false;
                 }
@@ -440,18 +521,20 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, classicId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, rangeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issueId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerRoleId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyPath);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, storagePath);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, parentPath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyIdString);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyPath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, classicId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, storagePath);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, parentStoragePath);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyStoragePath);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
         return h_;
     }
 
@@ -477,18 +560,20 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.path);
         ostr.writeString(this.typeId);
         ostr.writeString(this.projectId);
-        ostr.writeString(this.classicId);
+        ostr.writeString(this.rangeId);
         ostr.writeString(this.issueId);
         ostr.writeString(this.taskId);
         ostr.writeString(this.companyId);
         ostr.writeString(this.ownerUserId);
         ostr.writeString(this.ownerRoleId);
-        ostr.writeString(this.fuzzyPath);
-        ostr.writeString(this.storagePath);
         ostr.writeString(this.parentPath);
+        ostr.writeString(this.userId);
+        ostr.writeString(this.fuzzyIdString);
+        ostr.writeString(this.fuzzyPath);
+        ostr.writeString(this.classicId);
+        ostr.writeString(this.storagePath);
         ostr.writeString(this.parentStoragePath);
         ostr.writeString(this.fuzzyStoragePath);
-        ostr.writeString(this.userId);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -499,18 +584,20 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.path = istr.readString();
         this.typeId = istr.readString();
         this.projectId = istr.readString();
-        this.classicId = istr.readString();
+        this.rangeId = istr.readString();
         this.issueId = istr.readString();
         this.taskId = istr.readString();
         this.companyId = istr.readString();
         this.ownerUserId = istr.readString();
         this.ownerRoleId = istr.readString();
-        this.fuzzyPath = istr.readString();
-        this.storagePath = istr.readString();
         this.parentPath = istr.readString();
+        this.userId = istr.readString();
+        this.fuzzyIdString = istr.readString();
+        this.fuzzyPath = istr.readString();
+        this.classicId = istr.readString();
+        this.storagePath = istr.readString();
         this.parentStoragePath = istr.readString();
         this.fuzzyStoragePath = istr.readString();
-        this.userId = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, QueryNodeDTO v)
@@ -565,5 +652,5 @@ public class QueryNodeDTO implements java.lang.Cloneable,
 
     private static final QueryNodeDTO _nullMarshalValue = new QueryNodeDTO();
 
-    public static final long serialVersionUID = -140624942L;
+    public static final long serialVersionUID = -978008526L;
 }

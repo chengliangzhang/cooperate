@@ -119,6 +119,70 @@ public interface UserServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default UserJoinDTO listUserJoin()
+    {
+        return listUserJoin(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default UserJoinDTO listUserJoin(java.util.Map<String, String> context)
+    {
+        return _iceI_listUserJoinAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<UserJoinDTO> listUserJoinAsync()
+    {
+        return _iceI_listUserJoinAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<UserJoinDTO> listUserJoinAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_listUserJoinAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<UserJoinDTO> _iceI_listUserJoinAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<UserJoinDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listUserJoin", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     UserJoinDTO ret;
+                     ret = UserJoinDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default UserJoinDTO listUserJoinForAccount(AccountDTO account)
+    {
+        return listUserJoinForAccount(account, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default UserJoinDTO listUserJoinForAccount(AccountDTO account, java.util.Map<String, String> context)
+    {
+        return _iceI_listUserJoinForAccountAsync(account, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<UserJoinDTO> listUserJoinForAccountAsync(AccountDTO account)
+    {
+        return _iceI_listUserJoinForAccountAsync(account, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<UserJoinDTO> listUserJoinForAccountAsync(AccountDTO account, java.util.Map<String, String> context)
+    {
+        return _iceI_listUserJoinForAccountAsync(account, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<UserJoinDTO> _iceI_listUserJoinForAccountAsync(AccountDTO iceP_account, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<UserJoinDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listUserJoinForAccount", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     AccountDTO.ice_write(ostr, iceP_account);
+                 }, istr -> {
+                     UserJoinDTO ret;
+                     ret = UserJoinDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     /**
      * Contacts the remote server to verify that the object implements this type.
      * Raises a local exception if a communication error occurs.

@@ -1,10 +1,8 @@
 package com.maoding.FileServer.Config;
 
 import com.maoding.Common.ConstService;
-import com.maoding.Const.FileServerConst;
 import com.maoding.CoreFileServer.CoreFileServer;
 import com.maoding.CoreFileServer.Disk.DiskFileServer;
-import com.maoding.CoreFileServer.FastFDS.FastFDSServer;
 import com.maoding.CoreFileServer.Ftp.FtpServer;
 import com.maoding.CoreFileServer.Jcifs.JcifsServer;
 import com.maoding.CoreFileServer.MaodingWeb.WebFileServer;
@@ -28,25 +26,36 @@ public class FileServerConfig {
     public static final Integer SERVER_TYPE_LOCAL = 0;
     public static final Integer SERVER_TYPE_REMOTE = 1;
 
-    private CoreFileServer fastFDSServer;
+    private static final Short DEFAULT_SERVER_TYPE_ID = ConstService.FILE_SERVER_TYPE_DISK;
+    private static final String DEFAULT_SERVER_ADDRESS = "FileServer";
+
     private CoreFileServer aliyunServer;
     private CoreFileServer jcifsServer;
     private CoreFileServer ftpServer;
-    private CoreFileServer discServer;
+    private CoreFileServer diskServer;
     private CoreFileServer webServer;
 
     private String storageServiceAdapter;
     private String userServiceAdapter;
     private String noticeServiceAdapter;
 
-    private Integer type;
+    private Short serverTypeId;
+    private String serverAddress;
 
-    public void setFileServerType(Integer type) {
-        this.type = type;
+    public void setServerTypeId(Short serverTypeId) {
+        this.serverTypeId = serverTypeId;
     }
 
-    public Integer getFileServerType() {
-        return type;
+    public Short getServerTypeId() {
+        return (serverTypeId == null) ? DEFAULT_SERVER_TYPE_ID : serverTypeId;
+    }
+
+    public String getServerAddress() {
+        return (serverAddress == null) ? DEFAULT_SERVER_ADDRESS : serverAddress;
+    }
+
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
     }
 
     public String getStorageServiceAdapter() {
@@ -74,54 +83,49 @@ public class FileServerConfig {
     }
 
     public CoreFileServer getFileServer(Short serverTypeId, String serverAddress){
-        if ((serverTypeId == null) || (ConstService.FILE_SERVER_TYPE_UNKNOWN.equals(serverTypeId))) serverTypeId = Short.parseShort(getFileServerType().toString());
+        if ((serverTypeId == null) || (ConstService.FILE_SERVER_TYPE_UNKNOWN.equals(serverTypeId))) {
+            serverTypeId = getServerTypeId();
+            if (serverTypeId == null) serverTypeId = ConstService.FILE_SERVER_TYPE_DISK;
+        }
         CoreFileServer coreServer = null;
         if (ConstService.FILE_SERVER_TYPE_DISK.equals(serverTypeId)){
-            if (discServer == null) discServer = new DiskFileServer();
-            coreServer = discServer;
+            if (diskServer == null) {
+                diskServer = new DiskFileServer();
+                diskServer.coreSetServerAddress(StringUtils.getFileServerBaseDir(serverAddress));
+            }
+            coreServer = diskServer;
         } else if (ConstService.FILE_SERVER_TYPE_WEB.equals(serverTypeId)) {
-            if (webServer == null) webServer = new WebFileServer();
+            if (webServer == null) {
+                webServer = new WebFileServer();
+                webServer.coreSetServerAddress(serverAddress);
+            }
             coreServer = webServer;
         }
         return coreServer;
     }
 
-    private String getBaseDir(String serverAddress){
-        if (StringUtils.isEmpty(serverAddress) || !serverAddress.contains("|")) return null;
-        String[] s = StringUtils.split(serverAddress,"|");
-        return s[s.length - 1];
-    }
-
-    private String getServerAddress(String serverAddress){
-        if (StringUtils.isEmpty(serverAddress)) return null;
-        String[] s = StringUtils.split(serverAddress,"|");
-        return s[0];
-    }
-
     public CoreFileServer getFileServer(){
-        if (FileServerConst.FILE_SERVER_TYPE_ALIYUN.equals(type)) {
+        if (ConstService.FILE_SERVER_TYPE_ALIYUN.equals(serverTypeId)) {
 //            if (aliyunServer == null) aliyunServer = new AliyunServer();
             return aliyunServer;
-        } else if (FileServerConst.FILE_SERVER_TYPE_FASTFDS.equals(type)){
-            if (fastFDSServer == null) fastFDSServer= new FastFDSServer();
-            return fastFDSServer;
-        } else if (FileServerConst.FILE_SERVER_TYPE_CIFS.equals(type)){
+        } else if (ConstService.FILE_SERVER_TYPE_CIFS.equals(serverTypeId)){
             if (jcifsServer == null) jcifsServer = new JcifsServer();
             return jcifsServer;
-        } else if (FileServerConst.FILE_SERVER_TYPE_FTP.equals(type)){
+        } else if (ConstService.FILE_SERVER_TYPE_FTP.equals(serverTypeId)){
             if (ftpServer == null) ftpServer = new FtpServer();
             return ftpServer;
-        } else if (FileServerConst.FILE_SERVER_TYPE_LOCAL.equals(type)){
-            if (discServer == null) discServer = new DiskFileServer();
-            return discServer;
+        } else if (ConstService.FILE_SERVER_TYPE_DISK.equals(serverTypeId)){
+            if (diskServer == null) diskServer = new DiskFileServer();
+            return diskServer;
         } else {
-            if (discServer == null) discServer = new DiskFileServer();
-            return discServer;
+            if (diskServer == null) diskServer = new DiskFileServer();
+            return diskServer;
         }
     }
 
     public FileServicePrx getRemoteFileService(String serverAddress){
-        return RemoteFileServerPrx.getInstance(serverAddress);
+        if (serverAddress == null) serverAddress = getServerAddress();
+        return RemoteFileServerPrx.getInstance(StringUtils.getFileServerAddress(serverAddress));
     }
 
     public StorageServicePrx getStorageService(String serverAddress){

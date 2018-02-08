@@ -28,6 +28,10 @@ public interface UserService extends com.zeroc.Ice.Object
 
     java.util.List<ProjectRoleDTO> listProjectRoleByProjectId(String projectId, com.zeroc.Ice.Current current);
 
+    UserJoinDTO listUserJoin(com.zeroc.Ice.Current current);
+
+    UserJoinDTO listUserJoinForAccount(AccountDTO account, com.zeroc.Ice.Current current);
+
     static final String[] _iceIds =
     {
         "::Ice::Object",
@@ -90,6 +94,31 @@ public interface UserService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listUserJoin(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        UserJoinDTO ret = obj.listUserJoin(current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        UserJoinDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listUserJoinForAccount(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        AccountDTO iceP_account;
+        iceP_account = AccountDTO.ice_read(istr);
+        inS.endReadParams();
+        UserJoinDTO ret = obj.listUserJoinForAccount(iceP_account, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        UserJoinDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     final static String[] _iceOps =
     {
         "getCurrent",
@@ -98,6 +127,8 @@ public interface UserService extends com.zeroc.Ice.Object
         "ice_isA",
         "ice_ping",
         "listProjectRoleByProjectId",
+        "listUserJoin",
+        "listUserJoinForAccount",
         "login"
     };
 
@@ -138,6 +169,14 @@ public interface UserService extends com.zeroc.Ice.Object
                 return _iceD_listProjectRoleByProjectId(this, in, current);
             }
             case 6:
+            {
+                return _iceD_listUserJoin(this, in, current);
+            }
+            case 7:
+            {
+                return _iceD_listUserJoinForAccount(this, in, current);
+            }
+            case 8:
             {
                 return _iceD_login(this, in, current);
             }

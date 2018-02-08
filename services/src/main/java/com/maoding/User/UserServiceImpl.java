@@ -5,13 +5,17 @@ import com.maoding.Bean.CoreResponse;
 import com.maoding.Common.Config.WebServiceConfig;
 import com.maoding.User.Dao.RoleDao;
 import com.maoding.User.zeroc.*;
-import com.maoding.Utils.*;
+import com.maoding.Utils.FileUtils;
+import com.maoding.Utils.HttpUtils;
+import com.maoding.Utils.JsonUtils;
+import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.Current;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +42,22 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     }
     public static UserServicePrx getInstance(){
         return getInstance(null);
+    }
+
+    @Override
+    public UserJoinDTO listUserJoin(Current current) {
+        AccountDTO account = getCurrent(current);
+        assert (account != null);
+        return listUserJoinForAccount(account,current);
+    }
+
+    @Override
+    public UserJoinDTO listUserJoinForAccount(@NotNull AccountDTO account, Current current) {
+        UserJoinDTO userJoin = new UserJoinDTO();
+        userJoin.setProjectList(roleDao.listProject(account.getId()));
+        userJoin.setTaskList(roleDao.listTask(account.getId()));
+        userJoin.setCompanyList(roleDao.listCompany(account.getId()));
+        return userJoin;
     }
 
     @Override

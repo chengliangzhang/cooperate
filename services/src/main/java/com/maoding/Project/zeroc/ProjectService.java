@@ -22,6 +22,8 @@ package com.maoding.Project.zeroc;
 
 public interface ProjectService extends com.zeroc.Ice.Object
 {
+    java.util.List<ProjectDTO> listProject(QueryProjectDTO query, com.zeroc.Ice.Current current);
+
     ProjectDTO getProjectInfoById(String id, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
@@ -47,6 +49,20 @@ public interface ProjectService extends com.zeroc.Ice.Object
         return "::zeroc::ProjectService";
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listProject(ProjectService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        QueryProjectDTO iceP_query;
+        iceP_query = QueryProjectDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<ProjectDTO> ret = obj.listProject(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ProjectListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getProjectInfoById(ProjectService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
@@ -67,7 +83,8 @@ public interface ProjectService extends com.zeroc.Ice.Object
         "ice_id",
         "ice_ids",
         "ice_isA",
-        "ice_ping"
+        "ice_ping",
+        "listProject"
     };
 
     @Override
@@ -101,6 +118,10 @@ public interface ProjectService extends com.zeroc.Ice.Object
             case 4:
             {
                 return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+            }
+            case 5:
+            {
+                return _iceD_listProject(this, in, current);
             }
         }
 

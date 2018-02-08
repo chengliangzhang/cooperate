@@ -22,6 +22,39 @@ package com.maoding.Company.zeroc;
 
 public interface CompanyServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default java.util.List<CompanyDTO> listCompany(QueryCompanyDTO query)
+    {
+        return listCompany(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<CompanyDTO> listCompany(QueryCompanyDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listCompanyAsync(query, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<CompanyDTO>> listCompanyAsync(QueryCompanyDTO query)
+    {
+        return _iceI_listCompanyAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<CompanyDTO>> listCompanyAsync(QueryCompanyDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listCompanyAsync(query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<CompanyDTO>> _iceI_listCompanyAsync(QueryCompanyDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<CompanyDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listCompany", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     QueryCompanyDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     java.util.List<CompanyDTO> ret;
+                     ret = CompanyListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default java.util.List<CompanyDTO> listCompanyByUserId(String userId)
     {
         return listCompanyByUserId(userId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
@@ -55,21 +88,37 @@ public interface CompanyServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    /**
+     **/
+    @Deprecated
     default java.util.List<CompanyDTO> listCompanyForCurrent()
     {
         return listCompanyForCurrent(com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     **/
+    @Deprecated
     default java.util.List<CompanyDTO> listCompanyForCurrent(java.util.Map<String, String> context)
     {
         return _iceI_listCompanyForCurrentAsync(context, true).waitForResponse();
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<CompanyDTO>> listCompanyForCurrentAsync()
     {
         return _iceI_listCompanyForCurrentAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<CompanyDTO>> listCompanyForCurrentAsync(java.util.Map<String, String> context)
     {
         return _iceI_listCompanyForCurrentAsync(context, false);

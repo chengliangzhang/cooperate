@@ -21,16 +21,44 @@
 
     <select id="listProjectRoleByProjectId" resultMap="ProjectRoleMap" parameterType="java.util.Map">
         select role.*
-            ,if(role.group_id=1,role.id,null) as project_role_id
-            ,if(role.group_id=1,role.type_name,null) as project_role_name
-            ,if(role.group_id=2,role.id,null) as task_role_id
-            ,if(role.group_id=2,role.type_name,null) as task_role_name
+            ,if(role.type_id in (1,2,3),role.id,null) as project_role_id
+            ,if(role.type_id in (1,2,3),role.type_name,null) as project_role_name
+            ,if(role.type_id in (4,5,6,7),role.id,null) as task_role_id
+            ,if(role.type_id in (4,5,6,7),role.type_name,null) as task_role_name
         from maoding_role role
         <where>
             <if test="projectId != null">
                 and role.project_id = #{projectId}
             </if>
         </where>
-        group by role.user_id,task_id
+        group by role.user_id,role.task_id
+    </select>
+
+    <select id="listProject" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="java.util.Map">
+        select distinct role.project_id as id, role.project_name as name from maoding_role role
+        <where>
+            role.project_id is not null
+            <if test="userId != null">
+                and role.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="listTask" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="java.util.Map">
+        select distinct role.task_id as id, role.task_name as name from maoding_role role
+        <where>
+            role.task_id is not null
+            <if test="userId != null">
+                and role.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="listCompany" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="java.util.Map">
+        select distinct role.company_id as id, role.company_name as name from maoding_role role
+        <where>
+            role.company_id is not null
+            <if test="userId != null">
+                and role.user_id = #{userId}
+            </if>
+        </where>
     </select>
 </mapper>

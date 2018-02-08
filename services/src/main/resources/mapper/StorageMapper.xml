@@ -20,6 +20,9 @@
         <if test="projectId != null">
             and (node.project_id in (#{projectId}))
         </if>
+        <if test="rangeId != null">
+            and (node.classic_id in (#{rangeId}))
+        </if>
         <if test="classicId != null">
             and (node.classic_id in (#{classicId}))
         </if>
@@ -55,6 +58,24 @@
                 and (find_in_set(#{userId},root.user_id_list))
             </if>
         </where>
+    </select>
+
+    <select id="listOldNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
+        select node.*
+        from maoding_storage_old_node node
+        <where>
+            <include refid="ConditionForStorageQueryWithNode"/>
+            <if test="fuzzyIdString != null">
+                and (#{fuzzyIdString} like concat(node.project_id,",",
+                        if(node.company_id is null,"",concat(node.company_id)),
+                        '%'))
+            </if>
+        </where>
+        <if test="fuzzyPath != null or fuzzyIdString != null">
+            order by (length(replace(node.path,'/','//')) - length(node.path)) desc
+                ,node.project_id,node.company_id,node.issue_id,node.task_id
+            limit 1
+        </if>
     </select>
 
     <select id="listNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
@@ -339,8 +360,8 @@
             <if test="projectId != null">
                 and (task.project_id = #{projectId})
             </if>
-            <if test="classicId != null">
-                and (classic_type.value_id = #{classicId})
+            <if test="rangeId != null">
+                and (classic_type.value_id = #{rangeId})
             </if>
             <if test="issueId != null">
                 and (task.issue_id = #{issueId})

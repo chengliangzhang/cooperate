@@ -113,7 +113,6 @@ public class FtpServer implements CoreFileServer {
         result.setChunkId(chunkId);
         result.setChunkSize(chunkSize);
         //检查参数
-        assert request != null;
         assert request.getMultipart() != null;
         assert request.getMultipart().getData() != null;
         assert (chunkId != null) && (chunkId >= 0);
@@ -143,7 +142,7 @@ public class FtpServer implements CoreFileServer {
 //                ftpClient.changeWorkingDirectory(fileDTO.getScope());
                 FTPFile[] files = ftpClient.listFiles(new String((fileDTO.getScope() + "/" + fileDTO.getKey()).getBytes("GBK"), "iso-8859-1"));
                 //创建服务器远程目录结构，创建失败直接返回
-                if (CreateDirecroty(fileDTO.getScope(), ftpClient) == true) {
+                if (CreateDirecroty(fileDTO.getScope(), ftpClient)) {
                     ftpClient.changeWorkingDirectory(new String(fileDTO.getScope().getBytes("GBK"), "iso-8859-1"));
                 }
                 if (files.length == 1) {
@@ -195,7 +194,7 @@ public class FtpServer implements CoreFileServer {
                         ftpClient.changeWorkingDirectory(subDirectory);
                     } else {
                         System.out.println("创建目录失败");
-                        return result;
+                        return true;
                     }
                 }
 
@@ -293,7 +292,6 @@ public class FtpServer implements CoreFileServer {
                 rf.seek(pos);
                 //读取文件内容
                 byte[] bytes = new byte[request.getChunkSize()];
-                assert bytes != null;
                 int size = rf.read(bytes);
                 assert size > 0;
                 if (size < bytes.length) {
@@ -362,9 +360,6 @@ public class FtpServer implements CoreFileServer {
             //切换目录
             ftpClient.changeWorkingDirectory(new String(src.getScope().getBytes("GBK"), "iso-8859-1"));
             files = ftpClient.listFiles(src.getKey());
-            if (0 > files.length) {
-                status = true;
-            }
         } catch (IOException e) {
             e.printStackTrace();
             log.error(e.getMessage(),e);
@@ -377,7 +372,7 @@ public class FtpServer implements CoreFileServer {
                 }
             }
         }
-        return status;
+        return false;
     }
 
     /**
@@ -386,7 +381,7 @@ public class FtpServer implements CoreFileServer {
      * @param scope
      */
     @Override
-    public List<String> listFile(String scope) {
+    public List listFile(String scope) {
         List fileList = new ArrayList();
         FTPFile[] files;
         try {
@@ -471,9 +466,6 @@ public class FtpServer implements CoreFileServer {
                 return true;
             }
         }
-        if (ftpClient.isConnected()) {
-            return true;
-        }
-        return false;
+        return ftpClient.isConnected();
     }
 }

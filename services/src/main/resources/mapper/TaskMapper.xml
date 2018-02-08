@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maoding.Task.Dao.TaskDao" >
-    <select id="getFullInfoById" resultType="com.maoding.Task.Dto.TaskDTO" parameterType="java.lang.String">
-        select task.* from maoding_task task
-        <where>
-            <if test="_parameter != null">
-                task.id = #{_parameter}
-            </if>
-        </where>
+    <select id="listTask" resultType="com.maoding.Task.zeroc.TaskDTO" parameterType="com.maoding.Task.zeroc.QueryTaskDTO">
+        select * from maoding_task task
     </select>
 </mapper>

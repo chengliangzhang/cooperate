@@ -40,6 +40,10 @@ public interface NoticeService extends com.zeroc.Ice.Object
 
     void subscribeTopic(String topic, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
+    void subscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
+    void unSubscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, NoticeClientPrx client, com.zeroc.Ice.Current current);
+
     void subscribeTopicForWeb(String topic, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
     void subscribeTopicForUser(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
@@ -206,6 +210,32 @@ public interface NoticeService extends com.zeroc.Ice.Object
         iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
         inS.endReadParams();
         obj.subscribeTopic(iceP_topic, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_subscribeTopicForAccount(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        NoticeClientPrx iceP_client;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.subscribeTopicForAccount(iceP_account, iceP_client, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_unSubscribeTopicForAccount(NoticeService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        NoticeClientPrx iceP_client;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
+        inS.endReadParams();
+        obj.unSubscribeTopicForAccount(iceP_account, iceP_client, current);
         return inS.setResult(inS.writeEmptyParams());
     }
 
@@ -432,6 +462,7 @@ public interface NoticeService extends com.zeroc.Ice.Object
         "noticeToTask",
         "noticeToUser",
         "subscribeTopic",
+        "subscribeTopicForAccount",
         "subscribeTopicForCompany",
         "subscribeTopicForCompanyList",
         "subscribeTopicForProject",
@@ -441,6 +472,7 @@ public interface NoticeService extends com.zeroc.Ice.Object
         "subscribeTopicForUser",
         "subscribeTopicForWeb",
         "unSubscribeTopic",
+        "unSubscribeTopicForAccount",
         "unSubscribeTopicForCompany",
         "unSubscribeTopicForCompanyList",
         "unSubscribeTopicForProject",
@@ -516,65 +548,73 @@ public interface NoticeService extends com.zeroc.Ice.Object
             }
             case 13:
             {
-                return _iceD_subscribeTopicForCompany(this, in, current);
+                return _iceD_subscribeTopicForAccount(this, in, current);
             }
             case 14:
             {
-                return _iceD_subscribeTopicForCompanyList(this, in, current);
+                return _iceD_subscribeTopicForCompany(this, in, current);
             }
             case 15:
             {
-                return _iceD_subscribeTopicForProject(this, in, current);
+                return _iceD_subscribeTopicForCompanyList(this, in, current);
             }
             case 16:
             {
-                return _iceD_subscribeTopicForProjectList(this, in, current);
+                return _iceD_subscribeTopicForProject(this, in, current);
             }
             case 17:
             {
-                return _iceD_subscribeTopicForTask(this, in, current);
+                return _iceD_subscribeTopicForProjectList(this, in, current);
             }
             case 18:
             {
-                return _iceD_subscribeTopicForTaskList(this, in, current);
+                return _iceD_subscribeTopicForTask(this, in, current);
             }
             case 19:
             {
-                return _iceD_subscribeTopicForUser(this, in, current);
+                return _iceD_subscribeTopicForTaskList(this, in, current);
             }
             case 20:
             {
-                return _iceD_subscribeTopicForWeb(this, in, current);
+                return _iceD_subscribeTopicForUser(this, in, current);
             }
             case 21:
             {
-                return _iceD_unSubscribeTopic(this, in, current);
+                return _iceD_subscribeTopicForWeb(this, in, current);
             }
             case 22:
             {
-                return _iceD_unSubscribeTopicForCompany(this, in, current);
+                return _iceD_unSubscribeTopic(this, in, current);
             }
             case 23:
             {
-                return _iceD_unSubscribeTopicForCompanyList(this, in, current);
+                return _iceD_unSubscribeTopicForAccount(this, in, current);
             }
             case 24:
             {
-                return _iceD_unSubscribeTopicForProject(this, in, current);
+                return _iceD_unSubscribeTopicForCompany(this, in, current);
             }
             case 25:
             {
-                return _iceD_unSubscribeTopicForProjectList(this, in, current);
+                return _iceD_unSubscribeTopicForCompanyList(this, in, current);
             }
             case 26:
             {
-                return _iceD_unSubscribeTopicForTask(this, in, current);
+                return _iceD_unSubscribeTopicForProject(this, in, current);
             }
             case 27:
             {
-                return _iceD_unSubscribeTopicForTaskList(this, in, current);
+                return _iceD_unSubscribeTopicForProjectList(this, in, current);
             }
             case 28:
+            {
+                return _iceD_unSubscribeTopicForTask(this, in, current);
+            }
+            case 29:
+            {
+                return _iceD_unSubscribeTopicForTaskList(this, in, current);
+            }
+            case 30:
             {
                 return _iceD_unSubscribeTopicForUser(this, in, current);
             }

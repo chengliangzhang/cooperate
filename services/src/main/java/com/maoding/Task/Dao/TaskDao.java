@@ -1,9 +1,10 @@
 package com.maoding.Task.Dao;
 
-import com.maoding.Base.BaseDao;
-import com.maoding.Task.Dto.TaskDTO;
-import com.maoding.Task.Entity.TaskEntity;
+import com.maoding.Task.zeroc.QueryTaskDTO;
+import com.maoding.Task.zeroc.TaskDTO;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -12,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * 描    述 :
  */
 @Repository
-public interface TaskDao extends BaseDao<TaskEntity> {
-    TaskDTO getFullInfoById(String id);
+public interface TaskDao {
+    List<TaskDTO> listTask(QueryTaskDTO query);
 }

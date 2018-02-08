@@ -4,6 +4,7 @@ import com.maoding.CoreNotice.ActiveMQ.ImQueueDTO;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
@@ -28,6 +29,7 @@ import java.util.Map;
 @Configuration
 @EnableJms
 @EnableAutoConfiguration
+@ConfigurationProperties(prefix = "activemq")
 public class ActiveMQConfig {
     public final static String LISTENER_CONTAINER_QUEUE = "LISTENER_CONTAINER_QUEUE";
     public final static String LISTENER_CONTAINER_TOPIC = "LISTENER_CONTAINER_TOPIC";

@@ -50,6 +50,11 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     ProjectService projectService;
 
     @Override
+    public List<SimpleNodeDTO> listOldNode(@NotNull QueryNodeDTO query, Current current) {
+        return storageDao.listOldNode(BeanUtils.cleanProperties(query));
+    }
+
+    @Override
     public SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent, @NotNull UpdateNodeDTO request, Current current) {
         long t = System.currentTimeMillis();
         //只在申请中包含的参数

@@ -186,10 +186,12 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                         Class<?> outputFieldClass = outputParameterTypes[setIndex][0];
                         // 参数意义:1-需要反射的对象,2-对应方法的index,3-对象集合
                         if (outputFieldClass.isAssignableFrom(inputFieldClass)) {
-                            Object tmp = inputMethodAccess.invoke(input, getIndex);
-                            if (isClean) tmp = cleanProperties(tmp);
-                            if (outputFieldClass.isPrimitive() && (tmp == null)) tmp = 0;
-                            outputMethodAccess.invoke(output,setIndex,tmp);
+                            if ((isClean) && !(outputFieldClass.isPrimitive())) {
+                                Object tmp = inputMethodAccess.invoke(input, getIndex);
+                                outputMethodAccess.invoke(output, setIndex, cleanProperties(tmp));
+                            } else {
+                                outputMethodAccess.invoke(output, setIndex, inputMethodAccess.invoke(input, getIndex));
+                            }
                         } else if (outputFieldClass == boolean.class)
                             outputMethodAccess.invoke(output,setIndex,parseBoolean(inputMethodAccess.invoke(input,getIndex)));
                         else if (outputFieldClass == char.class)

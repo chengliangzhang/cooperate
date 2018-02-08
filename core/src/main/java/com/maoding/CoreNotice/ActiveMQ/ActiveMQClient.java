@@ -12,6 +12,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.jms.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class ActiveMQClient extends AbstractVerticle implements CoreNoticeServic
     private ConnectionFactory connectionFactory;
 
     private MessageDto getMapMessage(Message msg) throws JMSException {
-        Map<String, Object> map = (Map<String, Object>) ((MapMessage) msg).getObject("messageEntity");
+        Map<?, ?> map = (Map<?, ?>)((MapMessage) msg).getObject("messageEntity");
         log.debug("ActiveMQ Receive:" + map);
         MessageDto m = new MessageDto();
         String messageType = (String) map.getOrDefault("messageType", null);
@@ -48,12 +49,21 @@ public class ActiveMQClient extends AbstractVerticle implements CoreNoticeServic
                 break;
             case NotifyType.WEB_NOTICE:
                 m.setContent((String) map.getOrDefault("noticeTitle", null));
-                m.setReceiverList((List<String>) map.getOrDefault("receiverList", null));
+                List<String> receiveList = null;
+                List<?> list = (List<?>) map.getOrDefault("receiverList", null);
+                if (list != null) {
+                    for (Object e : list) {
+                        if (receiveList == null) receiveList = new ArrayList<>();
+                        receiveList.add(e.toString());
+                    }
+                }
+                m.setReceiverList(receiveList);
                 break;
         }
 
         return m;
     }
+
 
     private MessageDto getTextMessage(Message msg) throws JMSException {
         String text = ((TextMessage) msg).getText();

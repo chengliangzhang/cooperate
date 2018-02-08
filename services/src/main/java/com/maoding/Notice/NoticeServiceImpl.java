@@ -2,10 +2,15 @@ package com.maoding.Notice;
 
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Common.ConstService;
+import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.Config.IceConfig;
 import com.maoding.CoreNotice.CoreNoticeClient;
+import com.maoding.CoreNotice.CoreNoticeService;
 import com.maoding.Notice.Config.NoticeConfig;
 import com.maoding.Notice.zeroc.*;
+import com.maoding.User.zeroc.AccountDTO;
+import com.maoding.User.zeroc.UserJoinDTO;
+import com.maoding.User.zeroc.UserServicePrx;
 import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.Current;
 import com.zeroc.Ice.Identity;
@@ -14,6 +19,7 @@ import com.zeroc.IceStorm.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,12 +40,65 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
     @Autowired
     NoticeConfig noticeConfig;
 
+    private UserServicePrx getUserService(){
+        return noticeConfig.getUserService();
+    }
+
+    private CoreNoticeService getCommonNoticeService(){
+        return noticeConfig.getCommonNoticeService();
+    }
+
+    @Override
+    public void subscribeTopicForAccount(@NotNull AccountDTO account, @NotNull NoticeClientPrx client, Current current) {
+        //获取用户参与的项目、任务、组织
+        UserJoinDTO uj = getUserService().listUserJoinForAccount(account);
+        //注册项目、任务、组织频道
+        if (uj != null) {
+            if (uj.getProjectList() != null){
+                for (IdNameDTO idName : uj.getProjectList()){
+                    subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + idName.getId(),client,current);
+                }
+            }
+            if (uj.getTaskList() != null){
+                for (IdNameDTO idName : uj.getTaskList()){
+                    subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + idName.getId(),client,current);
+                }
+            }
+            if (uj.getCompanyList() != null){
+                for (IdNameDTO idName : uj.getCompanyList()){
+                    subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + idName.getId(),client,current);
+                }
+            }
+        }
+        //注册用户频道
+        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_USER) + account.getId(),client,current);
+
+        //注册公共频道
+        String commonTopicString = noticeConfig.getCommonTopic();
+        if (StringUtils.isNotEmpty(commonTopicString)){
+            String[] topicArray = commonTopicString.split(";");
+            for (String topic : topicArray){
+                subscribeTopicForWeb(topic,client,current);
+            }
+        }
+    }
+
+    @Override
+    public void unSubscribeTopicForAccount(@NotNull AccountDTO account, @NotNull NoticeClientPrx client, Current current) {
+        List<String> topicList = listSubscribedTopic(account.getId(),current);
+        if (topicList != null){
+            for (String topic : topicList){
+                unSubscribeTopic(topic,client,current);
+            }
+        }
+    }
+
     @Override
     public void subscribeTopicForWeb(String topic, NoticeClientPrx client, Current current) {
-        TopicPrx topicPrx = getTopic("Web" + topic,current);
-        subscribeTopic("Web" + topic,client,current);
+        TopicPrx topicPrx = getTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + topic,current);
+        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + topic,client,current);
         NoticeClientImpl noticeClient = new NoticeClientImpl(topicPrx);
-        noticeConfig.getActiveMQ().subscribeTopic(topic,noticeClient);
+        getCommonNoticeService().subscribeTopic(topic,noticeClient);
     }
 
     @Override
@@ -125,7 +184,7 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
     }
 
     private TopicManagerPrx getTopicManager(){
-        return RemoteTopicManagerPrx.getTopicManager("StormSvr;192.168.13.140");
+        return noticeConfig.getTopicManager();
     }
 
     @Override

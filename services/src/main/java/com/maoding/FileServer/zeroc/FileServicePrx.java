@@ -22,150 +22,72 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 {
-    /**
-     * @deprecated 尚未实现
-     **/
-    @Deprecated
-    default boolean copyRealFile(com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst)
-        throws com.maoding.Common.zeroc.CustomException
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listWebArchiveDir(String projectId)
     {
-        return copyRealFile(src, dst, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return listWebArchiveDir(projectId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    /**
-     * @param context The Context map to send with the invocation.
-     * @deprecated 尚未实现
-     **/
-    @Deprecated
-    default boolean copyRealFile(com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst, java.util.Map<String, String> context)
-        throws com.maoding.Common.zeroc.CustomException
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listWebArchiveDir(String projectId, java.util.Map<String, String> context)
     {
-        try
-        {
-            return _iceI_copyRealFileAsync(src, dst, context, true).waitForResponseOrUserEx();
-        }
-        catch(com.maoding.Common.zeroc.CustomException ex)
-        {
-            throw ex;
-        }
-        catch(com.zeroc.Ice.UserException ex)
-        {
-            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
-        }
+        return _iceI_listWebArchiveDirAsync(projectId, context, true).waitForResponse();
     }
 
-    /**
-     * @return A future that will be completed with the result.
-     * @deprecated 尚未实现
-     **/
-    @Deprecated
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> copyRealFileAsync(com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst)
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listWebArchiveDirAsync(String projectId)
     {
-        return _iceI_copyRealFileAsync(src, dst, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_listWebArchiveDirAsync(projectId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    /**
-     * @param context The Context map to send with the invocation.
-     * @return A future that will be completed with the result.
-     * @deprecated 尚未实现
-     **/
-    @Deprecated
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> copyRealFileAsync(com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listWebArchiveDirAsync(String projectId, java.util.Map<String, String> context)
     {
-        return _iceI_copyRealFileAsync(src, dst, context, false);
+        return _iceI_listWebArchiveDirAsync(projectId, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_copyRealFileAsync(com.maoding.Storage.zeroc.FileNodeDTO iceP_src, com.maoding.Storage.zeroc.FileNodeDTO iceP_dst, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> _iceI_listWebArchiveDirAsync(String iceP_projectId, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "copyRealFile", null, sync, _iceE_copyRealFile);
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listWebArchiveDir", null, sync, null);
         f.invoke(true, context, null, ostr -> {
-                     com.maoding.Storage.zeroc.FileNodeDTO.ice_write(ostr, iceP_src);
-                     com.maoding.Storage.zeroc.FileNodeDTO.ice_write(ostr, iceP_dst);
+                     ostr.writeString(iceP_projectId);
                  }, istr -> {
-                     boolean ret;
-                     ret = istr.readBool();
+                     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeListHelper.read(istr);
                      return ret;
                  });
         return f;
     }
 
-    static final Class<?>[] _iceE_copyRealFile =
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listWebArchiveDirForAccount(com.maoding.User.zeroc.AccountDTO account, String projectId)
     {
-        com.maoding.Common.zeroc.CustomException.class
-    };
-
-    /**
-     * @deprecated 尚未实现
-     **/
-    @Deprecated
-    default boolean copyRealFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst)
-        throws com.maoding.Common.zeroc.CustomException
-    {
-        return copyRealFileForAccount(account, src, dst, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return listWebArchiveDirForAccount(account, projectId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    /**
-     * @param context The Context map to send with the invocation.
-     * @deprecated 尚未实现
-     **/
-    @Deprecated
-    default boolean copyRealFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst, java.util.Map<String, String> context)
-        throws com.maoding.Common.zeroc.CustomException
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listWebArchiveDirForAccount(com.maoding.User.zeroc.AccountDTO account, String projectId, java.util.Map<String, String> context)
     {
-        try
-        {
-            return _iceI_copyRealFileForAccountAsync(account, src, dst, context, true).waitForResponseOrUserEx();
-        }
-        catch(com.maoding.Common.zeroc.CustomException ex)
-        {
-            throw ex;
-        }
-        catch(com.zeroc.Ice.UserException ex)
-        {
-            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
-        }
+        return _iceI_listWebArchiveDirForAccountAsync(account, projectId, context, true).waitForResponse();
     }
 
-    /**
-     * @return A future that will be completed with the result.
-     * @deprecated 尚未实现
-     **/
-    @Deprecated
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> copyRealFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst)
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listWebArchiveDirForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String projectId)
     {
-        return _iceI_copyRealFileForAccountAsync(account, src, dst, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_listWebArchiveDirForAccountAsync(account, projectId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    /**
-     * @param context The Context map to send with the invocation.
-     * @return A future that will be completed with the result.
-     * @deprecated 尚未实现
-     **/
-    @Deprecated
-    default java.util.concurrent.CompletableFuture<java.lang.Boolean> copyRealFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listWebArchiveDirForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String projectId, java.util.Map<String, String> context)
     {
-        return _iceI_copyRealFileForAccountAsync(account, src, dst, context, false);
+        return _iceI_listWebArchiveDirForAccountAsync(account, projectId, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_copyRealFileForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.FileNodeDTO iceP_src, com.maoding.Storage.zeroc.FileNodeDTO iceP_dst, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> _iceI_listWebArchiveDirForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, String iceP_projectId, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "copyRealFileForAccount", null, sync, _iceE_copyRealFileForAccount);
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listWebArchiveDirForAccount", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
-                     com.maoding.Storage.zeroc.FileNodeDTO.ice_write(ostr, iceP_src);
-                     com.maoding.Storage.zeroc.FileNodeDTO.ice_write(ostr, iceP_dst);
+                     ostr.writeString(iceP_projectId);
                  }, istr -> {
-                     boolean ret;
-                     ret = istr.readBool();
+                     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeListHelper.read(istr);
                      return ret;
                  });
         return f;
     }
-
-    static final Class<?>[] _iceE_copyRealFileForAccount =
-    {
-        com.maoding.Common.zeroc.CustomException.class
-    };
 
     /**
      * @deprecated 尚未实现

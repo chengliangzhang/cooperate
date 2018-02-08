@@ -9,8 +9,8 @@
 [["java:package:com.maoding.FileServer"]]
 module zeroc {
     interface FileService {
-        ["deprecate:尚未实现"] bool copyRealFile(FileNodeDTO src,FileNodeDTO dst) throws CustomException; //在节点间复制实际文件
-        ["deprecate:尚未实现"] bool copyRealFileForAccount(AccountDTO account,FileNodeDTO src,FileNodeDTO dst) throws CustomException; //在节点间复制实际文件
+        SimpleNodeList listWebArchiveDir(string projectId); // 获取网站空间的归档目录树
+        SimpleNodeList listWebArchiveDirForAccount(AccountDTO account,string projectId); // 获取网站空间的归档目录树
 
         ["deprecate:尚未实现"] bool createMirror(FileNodeDTO src) throws CustomException; //在本地建立节点镜像文件
         ["deprecate:尚未实现"] bool createMirrorForAccount(AccountDTO account,FileNodeDTO src) throws CustomException; //在本地建立节点镜像文件

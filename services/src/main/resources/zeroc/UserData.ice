@@ -54,4 +54,12 @@ module zeroc {
         TaskRoleList taskList; //用户所参与的任务
     };
     ["java:type:java.util.ArrayList<ProjectRoleDTO>"] sequence<ProjectRoleDTO> ProjectRoleList;
+
+    ["java:getset","clr:property"]
+    struct UserJoinDTO {
+        IdNameList projectList; //用户参加的项目
+        IdNameList taskList; //用户参加的任务
+        IdNameList companyList; //用户所属的组织
+    };
+    ["java:type:java.util.ArrayList<UserJoinDTO>"] sequence<UserJoinDTO> UserJoinList;
 };

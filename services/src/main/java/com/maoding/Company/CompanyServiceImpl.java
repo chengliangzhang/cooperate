@@ -1,10 +1,7 @@
 package com.maoding.Company;
 
 import com.maoding.Base.BaseLocalService;
-import com.maoding.Company.zeroc.CompanyDTO;
-import com.maoding.Company.zeroc.CompanyService;
-import com.maoding.Company.zeroc.CompanyServicePrx;
-import com.maoding.Company.zeroc._CompanyServicePrxI;
+import com.maoding.Company.zeroc.*;
 import com.zeroc.Ice.Current;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +25,12 @@ public class CompanyServiceImpl extends BaseLocalService<CompanyServicePrx> impl
     }
     public static CompanyServicePrx getInstance() {
         return getInstance(null);
+    }
+
+
+    @Override
+    public List<CompanyDTO> listCompany(QueryCompanyDTO query, Current current) {
+        return null;
     }
 
     @Override

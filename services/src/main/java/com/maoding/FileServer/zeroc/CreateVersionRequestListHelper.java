@@ -42,7 +42,7 @@ public final class CreateVersionRequestListHelper
     {
         final java.util.List<CreateVersionRequestDTO> v;
         v = new java.util.ArrayList<CreateVersionRequestDTO>();
-        final int len0 = istr.readAndCheckSeqSize(8);
+        final int len0 = istr.readAndCheckSeqSize(11);
         for(int i0 = 0; i0 < len0; i0++)
         {
             CreateVersionRequestDTO elem;

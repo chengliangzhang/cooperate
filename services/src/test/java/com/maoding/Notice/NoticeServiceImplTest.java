@@ -1,20 +1,22 @@
 package com.maoding.Notice;
 
-import com.maoding.FileServer.FileServiceImpl;
-import com.maoding.FileServer.zeroc.FileServicePrx;
 import com.maoding.Notice.zeroc.MessageDTO;
 import com.maoding.Notice.zeroc.NoticeClientPrx;
 import com.maoding.Notice.zeroc.NoticeService;
-import com.maoding.Notice.zeroc.NoticeServicePrx;
+import com.maoding.User.zeroc.AccountDTO;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.List;
 
 /** 
 * NoticeServiceImpl Tester. 
@@ -27,17 +29,24 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest
 @SpringBootConfiguration //only enable when target module hasn't @SpringBootApplication
 @ComponentScan(basePackages = {"com.maoding"}) //only enable when target module hasn't @SpringBootApplication
-
+@EnableAutoConfiguration
 public class NoticeServiceImplTest {
     @Autowired
     NoticeService noticeService;
+//    NoticeServicePrx noticeServicePrx = NoticeServiceImpl.getInstance("NoticeServer;192.168.13.140");
 
-    NoticeServicePrx noticeServicePrx = NoticeServiceImpl.getInstance("NoticeServer;192.168.13.140");
-    private FileServicePrx fileServicePrx = FileServiceImpl.getInstance("FileServer;192.168.13.140");
     @Test
     public void testSubscribe() throws Exception{
-        NoticeClientPrx client1 = NoticeClientImpl.createNewClient("192.168.13.140","1");
-        noticeService.subscribeTopicForWeb("im:account",client1,null);
+        NoticeClientPrx client1 = NoticeClientImpl.createNewClient("127.0.0.1",getLocalAccount().getId());
+        noticeService.subscribeTopicForAccount(getLocalAccount(),client1,null);
+        List<String> topicList = noticeService.listSubscribedTopic(getLocalAccount().getId(),null);
+        Assert.assertNotNull(topicList);
+    }
+
+    private AccountDTO getLocalAccount(){
+        AccountDTO account = new AccountDTO();
+        account.setId("41d244733ec54f09a255836637f2b21d");
+        return account;
     }
 
     @Test
@@ -57,10 +66,9 @@ public class NoticeServiceImplTest {
 //        noticeService.unSubscribeTopic("User1",client1,null);
 //        noticeService.unSubscribeTopic("User2",client2,null);
 
-        fileServicePrx.setNoticeClient("1",client1);
-        noticeServicePrx.noticeToUser(msg,"1");
-        noticeServicePrx.unSubscribeTopicForUser("1",client1);
-        noticeServicePrx.noticeToUser(msg,"13680809727");
+//        noticeServicePrx.noticeToUser(msg,"1");
+//        noticeServicePrx.unSubscribeTopicForUser("1",client1);
+//        noticeServicePrx.noticeToUser(msg,"13680809727");
     }
     /** for method: createTopic(String topic, Current current) */ 
     @Test

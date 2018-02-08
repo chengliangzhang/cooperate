@@ -295,6 +295,66 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default void subscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, NoticeClientPrx client)
+    {
+        subscribeTopicForAccount(account, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void subscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, NoticeClientPrx client, java.util.Map<String, String> context)
+    {
+        _iceI_subscribeTopicForAccountAsync(account, client, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO account, NoticeClientPrx client)
+    {
+        return _iceI_subscribeTopicForAccountAsync(account, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> subscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO account, NoticeClientPrx client, java.util.Map<String, String> context)
+    {
+        return _iceI_subscribeTopicForAccountAsync(account, client, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_subscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "subscribeTopicForAccount", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     ostr.writeProxy(iceP_client);
+                 }, null);
+        return f;
+    }
+
+    default void unSubscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, NoticeClientPrx client)
+    {
+        unSubscribeTopicForAccount(account, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void unSubscribeTopicForAccount(com.maoding.User.zeroc.AccountDTO account, NoticeClientPrx client, java.util.Map<String, String> context)
+    {
+        _iceI_unSubscribeTopicForAccountAsync(account, client, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO account, NoticeClientPrx client)
+    {
+        return _iceI_unSubscribeTopicForAccountAsync(account, client, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> unSubscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO account, NoticeClientPrx client, java.util.Map<String, String> context)
+    {
+        return _iceI_unSubscribeTopicForAccountAsync(account, client, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_unSubscribeTopicForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, NoticeClientPrx iceP_client, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "unSubscribeTopicForAccount", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     ostr.writeProxy(iceP_client);
+                 }, null);
+        return f;
+    }
+
     default void subscribeTopicForWeb(String topic, NoticeClientPrx client)
     {
         subscribeTopicForWeb(topic, client, com.zeroc.Ice.ObjectPrx.noExplicitContext);

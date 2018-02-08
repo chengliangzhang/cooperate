@@ -38,11 +38,13 @@ public class DiskFileServer implements CoreFileServer {
     public static final String PATH_NAME = "key";
     public static final Integer DEFAULT_CHUNK_PER_SIZE = 8192;
 
-    private static final String FILE_SERVER_PATH = "C:\\work\\file_server";
+    private static final String DEFAULT_BASE_DIR = "C:\\work\\file_server";
+    private static final String DEFAULT_UNKNOWN_SCOPE_DIR = "unknown_scope";
     private static final String FILE_UPLOAD_URL = "http://localhost:8087/FileServer/upload";
     private static final String FILE_DOWNLOAD_URL = "http://localhost:8087/FileServer/download";
     private static final String KEY_SIZE = "size";
     private static final String KEY_UPLOAD_ID = "uploadId";
+    private static String baseDir = null;
 
     private static final HashMap<Integer,Integer> modeMapConst = new HashMap<Integer,Integer>(){
         {
@@ -60,11 +62,31 @@ public class DiskFileServer implements CoreFileServer {
     private static long pos1 = 0; //下载速度计算参数
 
     /**
+     * 设定文件服务器地址
+     *
+     * @param serverAddress
+     */
+    @Override
+    public void coreSetServerAddress(String serverAddress) {
+        baseDir = serverAddress;
+    }
+
+    @Override
+    public String coreGetServerAddress(){
+        return getBaseDir();
+    }
+
+    private static String getBaseDir(){
+        return (StringUtils.isEmpty(baseDir)) ? DEFAULT_BASE_DIR : baseDir;
+    }
+
+    /**
      * 创建文件
      *
      * @param path
      */
     @Override
+    @Deprecated
     public CoreFileDTO coreCreateFile(String path) {
         if (StringUtils.isEmpty(path)) return null;
 
@@ -89,6 +111,50 @@ public class DiskFileServer implements CoreFileServer {
             log.warn("无法建立文件" + getPath(file) + ":" + e);
         }
         return file;
+    }
+
+    /**
+     * 根据文件信息创建文件
+     *
+     * @param dst
+     */
+    @Override
+    public CoreFileDTO coreCreateFile(CoreFileDTO dst,CoreFileExtraDTO createRequest) {
+        if (dst == null) dst = new CoreFileDTO();
+        if (isExist(dst)) {
+            dst.setKey(getUniqueKey(dst.getKey()));
+        }
+        String path = getPath(dst);
+        assert (StringUtils.isNotEmpty(path));
+
+        ensureDirExist(StringUtils.getDirName(path));
+
+        File dstFile = new File(path);
+        try {
+            boolean isOk = dstFile.createNewFile();
+            assert (isOk);
+        } catch (IOException e) {
+            log.warn("无法建立文件" + getPath(dst) + ":" + e);
+        }
+
+        if (createRequest != null){
+            if (createRequest.getSrcFile() != null){
+                FileUtils.copyFile(createRequest.getSrcFile(),dstFile);
+            } else if (createRequest.getFileLength() > 0) {
+                FileUtils.setFileLength(dstFile, createRequest.getFileLength());
+            }
+        }
+        return dst;
+    }
+
+    /**
+     * 获取文件句柄
+     *
+     * @param src
+     */
+    @Override
+    public File coreGetFile(CoreFileDTO src) {
+        return (isExist(src)) ? new File(getPath(src)) : null;
     }
 
     /**
@@ -212,6 +278,7 @@ public class DiskFileServer implements CoreFileServer {
     }
 
     @Override
+    @Deprecated
     public CoreFileDTO copyFile(CoreFileDTO basicSrc, CoreFileDTO basicDst) {
         if (isExist(basicDst)) {
             basicDst = coreCreateFile(getPath(basicDst));
@@ -228,17 +295,18 @@ public class DiskFileServer implements CoreFileServer {
     }
 
     @Override
-    public boolean coreSetFileLength(CoreFileDTO basicSrc, long fileLength) {
+    public boolean coreSetFileLength(CoreFileDTO src, long fileLength) {
         boolean isOk = true;
+        String path = getPath(src);
         RandomAccessFile file = null;
         try {
-            file = new RandomAccessFile(getPath(basicSrc.getScope(),basicSrc.getKey()),"rw");
+            file = new RandomAccessFile(path,"rw");
             file.setLength(fileLength);
         } catch (FileNotFoundException e) {
-            log.error("未找到文件" + getPath(basicSrc.getScope(),basicSrc.getKey()),e);
+            log.error("未找到文件" + path,e);
             isOk = false;
         } catch (IOException e) {
-            log.error("设置文件" + getPath(basicSrc.getScope(),basicSrc.getKey()) + "长度时出错",e);
+            log.error("设置文件" + path + "长度时出错",e);
             isOk = false;
         } finally {
             FileUtils.close(file);
@@ -251,11 +319,11 @@ public class DiskFileServer implements CoreFileServer {
     public CoreFileDTO coreMoveFile(CoreFileDTO src, CoreFileDTO dst) {
         if (!isExist(src)) return null;
         if (isExist(dst)) {
-            dst.setKey(getKeyWithStamp(dst.getKey()));
+            dst.setKey(getUniqueKey(dst.getKey()));
         }
         File srcFile = new File(getPath(src));
         File dstFile = new File(getPath(dst));
-        makeDirs(dst.getScope());
+        ensureDirExist(StringUtils.getDirName(getPath(dst)));
         boolean isSuccess = srcFile.renameTo(dstFile);
         assert (isSuccess);
         return dst;
@@ -329,7 +397,7 @@ public class DiskFileServer implements CoreFileServer {
         requestDTO.putParam(BASE_DIR_NAME,src.getScope());
         requestDTO.putParam(PATH_NAME,src.getKey());
         requestDTO.setMode(modeMapConst.getOrDefault(mode, FileServerConst.FILE_SERVER_MODE_RPC));
-        File f = new File(FILE_SERVER_PATH + "/" + src.getKey());
+        File f = new File(DEFAULT_BASE_DIR + "/" + src.getKey());
         requestDTO.putParam(KEY_SIZE,((Long)f.length()).toString());
         return requestDTO;
     }
@@ -366,13 +434,13 @@ public class DiskFileServer implements CoreFileServer {
 
         t0 = System.currentTimeMillis();
 
-        if (!((new File(FILE_SERVER_PATH + "/" + multipart.getScope())).isDirectory())) (new File(FILE_SERVER_PATH + "/" +multipart.getScope())).mkdirs();
+        if (!((new File(DEFAULT_BASE_DIR + "/" + multipart.getScope())).isDirectory())) (new File(DEFAULT_BASE_DIR + "/" +multipart.getScope())).mkdirs();
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
-                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey(), "rws");
+                rf = new RandomAccessFile(DEFAULT_BASE_DIR + "/" + multipart.getScope() + "/" + multipart.getKey(), "rws");
                 break;
             } catch (IOException e) {
-                log.warn("打开文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "出错");
+                log.warn("打开文件" + DEFAULT_BASE_DIR + "/" + multipart.getScope() + "/" + multipart.getKey() + "出错");
                 try {
                     Thread.sleep(TRY_DELAY);
                 } catch (InterruptedException e1) {
@@ -391,7 +459,7 @@ public class DiskFileServer implements CoreFileServer {
             result.setChunkSize(len);
             result.setStatus(ApiResponseConst.SUCCESS);
         } catch (IOException e) {
-            String msg = "写入文件" + FILE_SERVER_PATH + "/" + multipart.getScope() + "/" + multipart.getKey() + "时出错";
+            String msg = "写入文件" + DEFAULT_BASE_DIR + "/" + multipart.getScope() + "/" + multipart.getKey() + "时出错";
             log.warn(msg);
             result.setMsg(msg);
             result.setChunkSize(0);
@@ -429,13 +497,16 @@ public class DiskFileServer implements CoreFileServer {
 
         t0 = System.currentTimeMillis();
 
-        makeDirs(multipart.getScope());
+        CoreFileDTO dst = new CoreFileDTO(multipart.getScope(),multipart.getKey());
+        String path = StringUtils.getDirName(getPath(dst));
+        ensureDirExist(path);
+        path = getPath(dst);
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
-                rf = new RandomAccessFile(getPath(multipart.getScope(),multipart.getKey()), "rw");
+                rf = new RandomAccessFile(path, "rw");
                 break;
             } catch (IOException e) {
-                log.warn("打开文件" + getPath(multipart.getScope(),multipart.getKey()) + "出错");
+                log.warn("打开文件" + path + "出错");
                 try {
                     Thread.sleep(TRY_DELAY);
                 } catch (InterruptedException e1) {
@@ -453,7 +524,7 @@ public class DiskFileServer implements CoreFileServer {
                 rf.write(data, off, len);
             }
         } catch (IOException e) {
-            String msg = "写入文件" + getPath(multipart.getScope(),multipart.getKey()) + "时出错";
+            String msg = "写入文件" + path + "时出错";
             log.warn(msg);
             len = 0;
         } finally {
@@ -467,6 +538,16 @@ public class DiskFileServer implements CoreFileServer {
 
     }
 
+    private void ensureDirExist(String dirPath){
+        assert (StringUtils.isNotEmpty(dirPath));
+        File fd = new File(StringUtils.formatPath(dirPath));
+        if (!fd.exists()) {
+            boolean isSuccess = fd.mkdirs();
+            assert (isSuccess);
+        }
+    }
+
+    @Deprecated
     private void makeDirs(String scope){
         File dir = new File(getPath(scope));
         if (!dir.exists()) {
@@ -475,20 +556,30 @@ public class DiskFileServer implements CoreFileServer {
         }
     }
 
+    @Deprecated
     private String getPath(String path){
         return getPath(path,null);
     }
 
-    public static String getPath(CoreFileDTO file){
-        assert (file != null);
-        return getPath(file.getScope(),file.getKey());
-    }
-
+    @Deprecated
     public static String getPath(String scope,String key){
-        StringBuilder pathBuilder = new StringBuilder(FILE_SERVER_PATH);
+        StringBuilder pathBuilder = new StringBuilder(DEFAULT_BASE_DIR);
         if (!StringUtils.isEmpty(scope)) pathBuilder.append(StringUtils.SPLIT_PATH).append(scope);
         if (!StringUtils.isEmpty(key)) pathBuilder.append(StringUtils.SPLIT_PATH).append(key);
         return StringUtils.formatPath(pathBuilder.toString());
+    }
+
+    public static String getPath(CoreFileDTO file){
+        String baseDir = getBaseDir();
+        if ((file != null) && (StringUtils.isNotEmpty(file.getServerAddress()))) baseDir = file.getServerAddress();
+        String scope = DEFAULT_UNKNOWN_SCOPE_DIR;
+        if ((file != null) && (StringUtils.isNotEmpty(file.getScope()))) scope = file.getScope();
+        String key = UUID.randomUUID().toString();
+        if ((file != null) && (StringUtils.isNotEmpty(file.getKey()))) key = file.getKey();
+
+        String path = baseDir + StringUtils.SPLIT_PATH + scope + StringUtils.SPLIT_PATH + key;
+
+        return StringUtils.formatPath(path);
     }
 
     /**
@@ -523,10 +614,10 @@ public class DiskFileServer implements CoreFileServer {
         //打开文件
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
-                rf = new RandomAccessFile(FILE_SERVER_PATH + "/" + request.getScope() + "/" + request.getKey(), "r");
+                rf = new RandomAccessFile(DEFAULT_BASE_DIR + "/" + request.getScope() + "/" + request.getKey(), "r");
                 break;
             } catch (IOException e) {
-                log.warn("打开文件" + FILE_SERVER_PATH + "/" + request.getScope() + "/" + request.getKey() + "出错");
+                log.warn("打开文件" + DEFAULT_BASE_DIR + "/" + request.getScope() + "/" + request.getKey() + "出错");
                 try {
                     Thread.sleep(TRY_DELAY);
                 } catch (InterruptedException e1) {
@@ -537,7 +628,7 @@ public class DiskFileServer implements CoreFileServer {
         }
 
         try {
-            if (rf == null) throw new IOException("打开文件" + FILE_SERVER_PATH + "/" + request.getScope() + "/" + request.getKey() + "出错");
+            if (rf == null) throw new IOException("打开文件" + DEFAULT_BASE_DIR + "/" + request.getScope() + "/" + request.getKey() + "出错");
             //定位
             long length = rf.length();
             assert (pos >= 0) && (pos < length) && (size > 0);
@@ -659,18 +750,27 @@ public class DiskFileServer implements CoreFileServer {
     }
 
     private String getUniqueKey(String key){
-        assert (!StringUtils.isEmpty(key));
-        String fileName = StringUtils.getFileNameWithoutExt(key);
-        if (fileName.contains(FILE_NAME_SPLIT)) {
-            int len = fileName.length();
-            int splitLen = FILE_NAME_SPLIT.length();
-            int n = fileName.lastIndexOf(FILE_NAME_SPLIT);
-            if (splitLen == (len - n - splitLen)){
-                fileName = fileName.substring(0,n);
+        final String TIME_STAMP_FORMAT =  StringUtils.TIME_STAMP_FORMAT;
+
+        if (StringUtils.isEmpty(key)) {
+            key = UUID.randomUUID().toString();
+        } else {
+            String ext = StringUtils.getFileExt(key);
+            key = StringUtils.getFileNameWithoutExt(key);
+            if (StringUtils.isEmpty(key)) key = UUID.randomUUID().toString();
+            assert (key != null);
+            if (key.contains(FILE_NAME_SPLIT)) {
+                int timeStampLen = TIME_STAMP_FORMAT.length();
+                int len = key.length();
+                int n = key.lastIndexOf(FILE_NAME_SPLIT);
+                if (timeStampLen == (len - n - FILE_NAME_SPLIT.length())){
+                    key = key.substring(0,n);
+                }
             }
+            key += FILE_NAME_SPLIT + StringUtils.getTimeStamp(TIME_STAMP_FORMAT);
+            if (StringUtils.isNotEmpty(ext)) key += ext;
         }
-        fileName += FILE_NAME_SPLIT + StringUtils.getTimeStamp(StringUtils.TIME_STAMP_FORMAT);
-        return fileName + StringUtils.getFileExt(key);
+        return key;
     }
 
     @Deprecated
@@ -771,7 +871,7 @@ public class DiskFileServer implements CoreFileServer {
      * @param scope
      */
     @Override
-    public List<String> listFile(String scope) {
+    public List listFile(String scope) {
         return null;
     }
 

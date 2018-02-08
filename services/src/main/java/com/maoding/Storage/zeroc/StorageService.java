@@ -30,6 +30,8 @@ public interface StorageService extends com.zeroc.Ice.Object
     SimpleNodeDTO createMirror(FileNodeDTO src, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
+    java.util.List<SimpleNodeDTO> listOldNode(QueryNodeDTO query, com.zeroc.Ice.Current current);
+
     SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent, UpdateNodeDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
@@ -109,6 +111,20 @@ public interface StorageService extends com.zeroc.Ice.Object
         SimpleNodeDTO ret = obj.createMirror(iceP_src, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         SimpleNodeDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listOldNode(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        QueryNodeDTO iceP_query;
+        iceP_query = QueryNodeDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<SimpleNodeDTO> ret = obj.listOldNode(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SimpleNodeListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -318,6 +334,7 @@ public interface StorageService extends com.zeroc.Ice.Object
         "listAllNode",
         "listFileNodeInfo",
         "listNode",
+        "listOldNode",
         "updateNode",
         "updateNodeWithParent"
     };
@@ -397,9 +414,13 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 15:
             {
-                return _iceD_updateNode(this, in, current);
+                return _iceD_listOldNode(this, in, current);
             }
             case 16:
+            {
+                return _iceD_updateNode(this, in, current);
+            }
+            case 17:
             {
                 return _iceD_updateNodeWithParent(this, in, current);
             }
