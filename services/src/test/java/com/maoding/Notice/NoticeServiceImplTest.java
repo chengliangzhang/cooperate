@@ -2,6 +2,7 @@ package com.maoding.Notice;
 
 import com.maoding.Notice.zeroc.MessageDTO;
 import com.maoding.Notice.zeroc.NoticeClientPrx;
+import com.maoding.Notice.zeroc.NoticeRequestDTO;
 import com.maoding.Notice.zeroc.NoticeService;
 import com.maoding.User.zeroc.AccountDTO;
 import org.junit.After;
@@ -34,6 +35,14 @@ public class NoticeServiceImplTest {
     @Autowired
     NoticeService noticeService;
 //    NoticeServicePrx noticeServicePrx = NoticeServiceImpl.getInstance("NoticeServer;192.168.13.140");
+
+    @Test
+    public void testSendWebNotice() throws Exception{
+        NoticeRequestDTO request = new NoticeRequestDTO();
+        request.setUserId(getLocalAccount().getId());
+        request.setTypeIdString("5");
+        noticeService.sendNoticeForAccount(getLocalAccount(),request,null);
+    }
 
     @Test
     public void testSubscribe() throws Exception{

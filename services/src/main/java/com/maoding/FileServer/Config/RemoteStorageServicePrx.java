@@ -13,6 +13,7 @@ import java.util.List;
  * 日    期 : 2018/1/8 11:54
  * 描    述 :
  */
+@SuppressWarnings("deprecation")
 public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx> implements StorageServicePrx {
 
     private static StorageServicePrx lastPrx = null;

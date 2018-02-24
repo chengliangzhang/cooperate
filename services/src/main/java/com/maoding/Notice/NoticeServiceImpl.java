@@ -2,15 +2,20 @@ package com.maoding.Notice;
 
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Common.ConstService;
+import com.maoding.Common.Dto.StringElementDTO;
 import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.Config.IceConfig;
+import com.maoding.CoreNotice.CoreMessageDTO;
 import com.maoding.CoreNotice.CoreNoticeClient;
 import com.maoding.CoreNotice.CoreNoticeService;
+import com.maoding.CoreNotice.CoreReceiverDTO;
 import com.maoding.Notice.Config.NoticeConfig;
 import com.maoding.Notice.zeroc.*;
 import com.maoding.User.zeroc.AccountDTO;
+import com.maoding.User.zeroc.QueryMemberDTO;
 import com.maoding.User.zeroc.UserJoinDTO;
 import com.maoding.User.zeroc.UserServicePrx;
+import com.maoding.Utils.BeanUtils;
 import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.Current;
 import com.zeroc.Ice.Identity;
@@ -56,22 +61,22 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
         if (uj != null) {
             if (uj.getProjectList() != null){
                 for (IdNameDTO idName : uj.getProjectList()){
-                    subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + idName.getId(),client,current);
+                    subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_PROJECT) + idName.getId(),client,current);
                 }
             }
             if (uj.getTaskList() != null){
                 for (IdNameDTO idName : uj.getTaskList()){
-                    subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + idName.getId(),client,current);
+                    subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_TASK) + idName.getId(),client,current);
                 }
             }
             if (uj.getCompanyList() != null){
                 for (IdNameDTO idName : uj.getCompanyList()){
-                    subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + idName.getId(),client,current);
+                    subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_COMPANY) + idName.getId(),client,current);
                 }
             }
         }
         //注册用户频道
-        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_USER) + account.getId(),client,current);
+        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_USER) + account.getId(),client,current);
 
         //注册公共频道
         String commonTopicString = noticeConfig.getCommonTopic();
@@ -95,91 +100,91 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
 
     @Override
     public void subscribeTopicForWeb(String topic, NoticeClientPrx client, Current current) {
-        TopicPrx topicPrx = getTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + topic,current);
-        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + topic,client,current);
+        TopicPrx topicPrx = getTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_PROJECT) + topic,current);
+        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_PROJECT) + topic,client,current);
         NoticeClientImpl noticeClient = new NoticeClientImpl(topicPrx);
         getCommonNoticeService().subscribeTopic(topic,noticeClient);
     }
 
     @Override
     public void subscribeTopicForUser(String id, NoticeClientPrx client, Current current) {
-        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_USER) + id,client,current);
+        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_USER) + id,client,current);
     }
 
     @Override
     public void subscribeTopicForTask(String id, NoticeClientPrx client, Current current) {
-        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + id,client,current);
+        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_TASK) + id,client,current);
     }
 
     @Override
     public void subscribeTopicForProject(String id, NoticeClientPrx client, Current current) {
-        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + id,client,current);
+        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_PROJECT) + id,client,current);
     }
 
     @Override
     public void subscribeTopicForCompany(String id, NoticeClientPrx client, Current current) {
-        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + id,client,current);
+        subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_COMPANY) + id,client,current);
     }
 
     @Override
     public void subscribeTopicForTaskList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + id, client, current);
+            subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_TASK) + id, client, current);
         }
     }
 
     @Override
     public void subscribeTopicForProjectList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + id, client, current);
+            subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_PROJECT) + id, client, current);
         }
     }
 
     @Override
     public void subscribeTopicForCompanyList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + id, client, current);
+            subscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_COMPANY) + id, client, current);
         }
     }
 
     @Override
     public void unSubscribeTopicForUser(String id, NoticeClientPrx client, Current current) {
-        unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_USER) + id, client, current);
+        unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_USER) + id, client, current);
     }
 
     @Override
     public void unSubscribeTopicForTask(String id, NoticeClientPrx client, Current current) {
-        unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + id, client, current);
+        unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_TASK) + id, client, current);
     }
 
     @Override
     public void unSubscribeTopicForProject(String id, NoticeClientPrx client, Current current) {
-        unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + id, client, current);
+        unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_PROJECT) + id, client, current);
     }
 
     @Override
     public void unSubscribeTopicForCompany(String id, NoticeClientPrx client, Current current) {
-        unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + id, client, current);
+        unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_COMPANY) + id, client, current);
     }
 
     @Override
     public void unSubscribeTopicForTaskList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + id, client, current);
+            unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_TASK) + id, client, current);
         }
     }
 
     @Override
     public void unSubscribeTopicForProjectList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + id, client, current);
+            unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_PROJECT) + id, client, current);
         }
     }
 
     @Override
     public void unSubscribeTopicForCompanyList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + id, client, current);
+            unSubscribeTopic(ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_COMPANY) + id, client, current);
         }
     }
 
@@ -222,33 +227,37 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
 
     @Override
     public void noticeToUser(MessageDTO message, String id, Current current) {
-        notice(message, ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_USER) + id,current);
+        notice(message, ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_USER) + id,current);
     }
 
     @Override
     public void noticeToTask(MessageDTO message, String id, Current current) {
-        notice(message, ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_TASK) + id,current);
+        notice(message, ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_TASK) + id,current);
     }
 
     @Override
     public void noticeToProject(MessageDTO message, String id, Current current) {
-        notice(message, ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_PROJECT) + id,current);
+        notice(message, ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_PROJECT) + id,current);
     }
 
     @Override
     public void noticeToCompany(MessageDTO message, String id, Current current) {
-        notice(message, ConstService.getTopicPrefix(ConstService.NOTICE_SCOPE_COMPANY) + id,current);
+        notice(message, ConstService.getTopicPrefix(ConstService.NOTICE_TYPE_COMPANY) + id,current);
     }
 
     @Override
     public void notice(MessageDTO message, String topic, Current current) {
-        TopicPrx topicPrx = getTopic(topic,current);
+        TopicPrx topicPrx = getTopic(topic, current);
         assert (topicPrx != null);
         ObjectPrx publisher = topicPrx.getPublisher().ice_oneway();
         assert (publisher != null);
         NoticeClientPrx clientPrx = NoticeClientPrx.uncheckedCast(publisher);
         assert (clientPrx != null);
         clientPrx.notice(message);
+    }
+
+    private boolean isWebNotice(String topic){
+        return (StringUtils.isEmpty(topic)) || topic.startsWith("notify:");
     }
 
     @Override
@@ -312,6 +321,68 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
                 log.warn("无法创建" + topic + "频道" + e);
             }
         }
+    }
+
+    @Override
+    public void sendNoticeForAccount(AccountDTO account, NoticeRequestDTO request, Current current) {
+        String typeIdString = request.getTypeIdString();
+        if (StringUtils.isNotEmpty(typeIdString)) {
+            StringElementDTO stringElement = BeanUtils.createCleanFrom(request,StringElementDTO.class);
+            String[] typeArray = typeIdString.split(":");
+            for (String sTypeId : typeArray) {
+                Short typeId = Short.parseShort(sTypeId);
+                String topic = ConstService.getNoticeTopic(typeId);
+                topic = ConstService.convertString(topic,stringElement);
+                String title = ConstService.getNoticeTitle(typeId);
+                title = ConstService.convertString(title,stringElement);
+                String content = ConstService.getNoticeContent(typeId);
+                content = ConstService.convertString(content,stringElement);
+                String accountId = (account != null) ? account.getId() : null;
+                if (!isWebNotice(topic)) {
+                    MessageDTO message = new MessageDTO(accountId, title, content);
+                    notice(message, topic, current);
+                } else {
+                    CoreMessageDTO coreMessage = new CoreMessageDTO(accountId, title, content);
+                    CoreReceiverDTO coreReceiver = BeanUtils.createCleanFrom(request,CoreReceiverDTO.class);
+                    coreReceiver.setTopic(topic);
+                    if (StringUtils.isNotEmpty(request.getUserId())){
+                        coreReceiver.setUserId(request.getUserId());
+                    } else {
+                        QueryMemberDTO query = BeanUtils.createCleanFrom(request,QueryMemberDTO.class);
+                        List<IdNameDTO> userList = getUserService().listMember(query);
+                        if ((userList != null) && (!userList.isEmpty())) {
+                            List<String> idList = new ArrayList<>();
+                            for (IdNameDTO user : userList){
+                                idList.add(user.getId());
+                            }
+                            coreReceiver.setUserIdList(idList);
+                        }
+                    }
+                    getCommonNoticeService().sendMessage(coreMessage,coreReceiver);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void sendNotice(@NotNull NoticeRequestDTO request, Current current) {
+        sendNoticeForAccount(getUserService().getCurrent(),request,current);
+    }
+
+    private String getProjectNameById(String id){
+        return id;
+    }
+
+    private String getTaskNameById(String id){
+        return id;
+    }
+
+    private String getCompanyNameById(String id){
+        return id;
+    }
+
+    private String getUserNameById(String id){
+        return id;
     }
 
     /**

@@ -6,17 +6,53 @@ package com.maoding.Common.Dto;
  * 日    期 : 2018/1/13 9:37
  * 描    述 :
  */
-public class PathElementDTO {
+public class StringElementDTO {
+    private String projectId;
     private String projectName;
     private String classicName;
     private String issuePath;
+    private String taskId;
     private String taskPath;
+    private String companyId;
     private String companyName;
+    private String userId;
     private String userName;
     private String majorName;
     private String fileVersion;
     private String actionName;
     private String srcPath;
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getProjectName() {
         return projectName;

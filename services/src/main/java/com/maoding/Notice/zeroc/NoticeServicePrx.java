@@ -835,6 +835,65 @@ public interface NoticeServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default void sendNotice(NoticeRequestDTO request)
+    {
+        sendNotice(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void sendNotice(NoticeRequestDTO request, java.util.Map<String, String> context)
+    {
+        _iceI_sendNoticeAsync(request, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> sendNoticeAsync(NoticeRequestDTO request)
+    {
+        return _iceI_sendNoticeAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> sendNoticeAsync(NoticeRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_sendNoticeAsync(request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_sendNoticeAsync(NoticeRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "sendNotice", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     NoticeRequestDTO.ice_write(ostr, iceP_request);
+                 }, null);
+        return f;
+    }
+
+    default void sendNoticeForAccount(com.maoding.User.zeroc.AccountDTO account, NoticeRequestDTO request)
+    {
+        sendNoticeForAccount(account, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void sendNoticeForAccount(com.maoding.User.zeroc.AccountDTO account, NoticeRequestDTO request, java.util.Map<String, String> context)
+    {
+        _iceI_sendNoticeForAccountAsync(account, request, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> sendNoticeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, NoticeRequestDTO request)
+    {
+        return _iceI_sendNoticeForAccountAsync(account, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> sendNoticeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, NoticeRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_sendNoticeForAccountAsync(account, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_sendNoticeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, NoticeRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "sendNoticeForAccount", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     NoticeRequestDTO.ice_write(ostr, iceP_request);
+                 }, null);
+        return f;
+    }
+
     /**
      * Contacts the remote server to verify that the object implements this type.
      * Raises a local exception if a communication error occurs.

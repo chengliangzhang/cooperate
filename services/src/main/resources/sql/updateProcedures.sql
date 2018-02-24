@@ -717,7 +717,7 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,2,'合作类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,3,'任务类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,4,'财务类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,6,'节点类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,6,'财务节点类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,7,'动态类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,8,'个人任务类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,9,'邀请目的类型',null);
@@ -730,26 +730,26 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,17,'删除状态',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,19,'文件服务器类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,20,'文件操作类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,21,'父节点类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,21,'保留',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,22,'专业类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,23,'任务角色类型',null);
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,23,'保留',null);
   REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,24,'资料分类',null);
-  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,25,'角色分类类型',null);
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,25,'保留',null);
   REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,26,'角色类型',null);
-  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,27,'通知范围类型',null);
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,27,'通知类型',null);
 
-  -- 项目角色类型
-  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,27,'通知范围类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,0,'未定义范围',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,1,'用户','User');
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,2,'任务','Task');
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,3,'项目','Project');
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,4,'组织','Company');
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,5,'公共','Web');
+  -- -- -- -- --
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,27,'通知类型','0.主题;1.标题;2.内容');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,0,'未定义类型',';;');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,1,'用户通用消息','User{UserId};用户消息;普通用户消息');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,2,'任务通用消息','Task{TaskId};任务消息;普通任务消息');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,3,'项目通用消息','Project{ProjectId};项目消息;普通项目消息');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,4,'组织通用消息','Company{CompanyId};组织消息;普通组织消息');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (27,5,'公共通用消息','notify:web;公共消息;普通公共消息');
 
-  -- 角色类型
-  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,26,'角色类型','!!member_type,::permission_type');
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (26,0,'未知角色',null);
+  -- -- -- -- --
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,26,'角色类型','!!-web项目角色类型,::-web数据库组织角色类型');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (26,0,'未知角色','');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (26,1,'立项人','!0!');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (26,2,'经营负责人','!1!');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (26,3,'设计负责人','!2!');
@@ -765,33 +765,33 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (26,13,'财务管理',':6:');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (26,14,'统计及报表',':7:');
 
-  -- 角色分类类型
-  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,25,'角色分类类型',null);
+  -- -- -- -- --
+  REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,25,'保留',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (25,0,'未知分类',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (25,1,'项目角色',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (25,2,'任务角色',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (25,3,'组织角色',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (25,4,'任务用户角色',null);
 
-  -- 资料分类
+  -- -- -- -- --
   REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,24,'资料分类','!!-包含的任务类型，::-包含的存储节点类型');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (24,0,'未知分类',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (24,1,'设计','!0!1!2!:0:1:10:18:23:');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (24,2,'提资','!1!2!:2:3:32:33:');
 
-	-- 角色类型
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,23,'任务角色类型',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,0,'立项人',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,1,'经营负责人',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,2,'设计负责人',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,3,'任务负责人',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,4,'设计',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,5,'校对',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,6,'审核',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,10,'企业负责人',null);
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,11,'财务',null);
+  -- -- -- -- --
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,23,'保留','0.角色分类类型');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,0,'立项人','1');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,1,'经营负责人','1');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,2,'设计负责人','1');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,3,'任务负责人','2');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,4,'设计','2');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,5,'校对','2');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,6,'审核','2');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,10,'企业负责人','3');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (23,11,'财务','3');
 
-	-- 父节点类型
+  -- -- -- -- --
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,22,'专业类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (22,0,'规划',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (22,1,'建筑',null);
@@ -803,8 +803,8 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (22,7,'电气',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (22,8,'其他',null);
 
-	-- 父节点类型
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,21,'父节点类型',null);
+  -- -- -- -- --
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,21,'保留',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,0,'本树节点',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,1,'项目节点','project_id');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,2,'任务节点','task_id');
@@ -812,38 +812,38 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,4,'通告节点','notice_id');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (21,5,'公司节点','company_id');
 
-	-- 文件操作类型
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,20,'文件操作类型','0:生成的文件类型;1:存放文件的目录;2:存放文件的服务器类型;3:文件服务器地址');
+  -- -- -- -- --
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,20,'文件操作类型','0.新建节点类型:节点路径;1.文件服务器类型:文件服务器地址;2.通知类型(:分隔)');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,0,'无效','1;;;');
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,1,'备份','3;历史版本/{SrcFileNoExt}_{Time:yyyyMMddHHmmss}{Ext};;');
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,2,'校对','1;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};;');
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,3,'审核','1;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};;');
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,4,'提资','2;/{Project}/{Classic2}/{IssuePath}/{Major}/{Version}/{TaskPath}/{SrcPath};;');
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,5,'上传','4;;2;');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,1,'备份','3:历史版本/{SrcFileNoExt}_{Time:yyyyMMddHHmmss}{Ext};1;');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,2,'校对','1:{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};1;2');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,3,'审核','1:{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};1;2');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,4,'提资','2:/{Project}/{Classic2}/{IssuePath}/{Major}/{Version}/{TaskPath}/{SrcPath};1;3');
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (20,5,'上传',';2;5');
 
-	-- 文件服务器类型
+  -- -- -- -- --
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,19,'文件服务器类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (19,0,'无效',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (19,1,'本地磁盘',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (19,2,'网站空间',null);
 
-	-- 删除状态
+  -- -- -- -- --
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,17,'删除状态',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (17,0,'未删除',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (17,1,'已删除',null);
 
-	-- 同步模式
+  -- -- -- -- --
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,16,'同步模式',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (16,0,'手动同步',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (16,1,'自动同步',null);
 
-	-- 锁定状态
+  -- -- -- -- --
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,15,'锁定状态',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (15,0,'不锁定',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (15,1,'锁定',null);
 
-	-- 存储节点类型
-	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,14,'存储节点类型','1:是否目录，2:是否项目，3:是否任务，4:是否设计文档，5:是否提资文档，6:是否历史版本，[]:子目录类型，<>子文件类型');
+  -- -- -- -- --
+	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,14,'存储节点类型','[]<>前-节点属性，1:是否目录，2:是否项目，3:是否任务，4:是否设计文档，5:是否提资文档，6:是否历史版本，[]:子目录类型，<>子文件类型');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,0,'未知类型','000100[0]<1>');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,1,'设计文件','000100[0]<1>');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,2,'提资资料','000010[0]<2>');
@@ -872,11 +872,11 @@ BEGIN
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,50,'成果目录','100000[10]<1>');
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (14,60,'设计依据目录','100000[10]<1>');
 
-	-- 共享类型
+  -- -- -- -- --
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,11,'共享类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (11,0,'全部共享',null);
 
-	-- 文件类型
+  -- -- -- -- --
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (0,5,'文件类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,0,'未知类型',null);
 	REPLACE INTO maoding_const (classic_id,value_id,content,content_extra) VALUES (5,1,'CAD设计文档',null);

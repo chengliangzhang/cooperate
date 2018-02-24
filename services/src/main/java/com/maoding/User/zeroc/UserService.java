@@ -32,6 +32,8 @@ public interface UserService extends com.zeroc.Ice.Object
 
     UserJoinDTO listUserJoinForAccount(AccountDTO account, com.zeroc.Ice.Current current);
 
+    java.util.List<com.maoding.Common.zeroc.IdNameDTO> listMember(QueryMemberDTO query, com.zeroc.Ice.Current current);
+
     static final String[] _iceIds =
     {
         "::Ice::Object",
@@ -119,6 +121,20 @@ public interface UserService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listMember(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        QueryMemberDTO iceP_query;
+        iceP_query = QueryMemberDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<com.maoding.Common.zeroc.IdNameDTO> ret = obj.listMember(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Common.zeroc.IdNameListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     final static String[] _iceOps =
     {
         "getCurrent",
@@ -126,6 +142,7 @@ public interface UserService extends com.zeroc.Ice.Object
         "ice_ids",
         "ice_isA",
         "ice_ping",
+        "listMember",
         "listProjectRoleByProjectId",
         "listUserJoin",
         "listUserJoinForAccount",
@@ -166,17 +183,21 @@ public interface UserService extends com.zeroc.Ice.Object
             }
             case 5:
             {
-                return _iceD_listProjectRoleByProjectId(this, in, current);
+                return _iceD_listMember(this, in, current);
             }
             case 6:
             {
-                return _iceD_listUserJoin(this, in, current);
+                return _iceD_listProjectRoleByProjectId(this, in, current);
             }
             case 7:
             {
-                return _iceD_listUserJoinForAccount(this, in, current);
+                return _iceD_listUserJoin(this, in, current);
             }
             case 8:
+            {
+                return _iceD_listUserJoinForAccount(this, in, current);
+            }
+            case 9:
             {
                 return _iceD_login(this, in, current);
             }

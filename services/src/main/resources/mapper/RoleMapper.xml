@@ -61,4 +61,22 @@
             </if>
         </where>
     </select>
+
+    <select id="listMember" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="com.maoding.User.zeroc.QueryMemberDTO">
+        select distinct role.user_id as id, role.user_name as name from maoding_role role
+        <where>
+            <if test="userTypeIdString != null">
+                and (role.type_id in (#{userTypeIdString}))
+            </if>
+            <if test="projectId != null">
+                and (role.project_id = #{projectId})
+            </if>
+            <if test="taskId != null">
+                and (role.task_id = #{taskId})
+            </if>
+            <if test="companyId != null">
+                and (role.company_id = #{companyId})
+            </if>
+        </where>
+    </select>
 </mapper>

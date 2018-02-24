@@ -39,5 +39,8 @@ module zeroc {
         void unSubscribeTopicForProjectList(StringList idList, NoticeClient* client); //取消订阅频道
         void unSubscribeTopicForCompanyList(StringList idList, NoticeClient* client); //取消订阅频道
 
+        void sendNotice(NoticeRequestDTO request); //发送消息
+        void sendNoticeForAccount(AccountDTO account, NoticeRequestDTO request); //发送消息
+
     };
 };

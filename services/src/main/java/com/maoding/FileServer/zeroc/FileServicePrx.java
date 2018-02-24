@@ -19,7 +19,7 @@
 //
 
 package com.maoding.FileServer.zeroc;
-
+@SuppressWarnings("deprecation")
 public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 {
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listWebArchiveDir(String projectId)

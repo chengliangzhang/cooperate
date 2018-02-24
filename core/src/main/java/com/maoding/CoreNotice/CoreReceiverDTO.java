@@ -1,5 +1,7 @@
 package com.maoding.CoreNotice;
 
+import java.util.List;
+
 /**
  * 深圳市卯丁技术有限公司
  * 作    者 : 张成亮
@@ -8,13 +10,25 @@ package com.maoding.CoreNotice;
  */
 public class CoreReceiverDTO {
     /** 要发布的频道 */
-    String topic;
+    private String topic;
     /** 要发送到的项目id */
-    String projectId;
+    @Deprecated
+    private String projectId;
     /** 要发送到的组织id */
-    String companyId;
+    @Deprecated
+    private String companyId;
     /** 要发送到的用户id */
-    String userId;
+    private String userId;
+    /** 要发送到的用户id列表 */
+    private List<String> userIdList;
+
+    public List<String> getUserIdList() {
+        return userIdList;
+    }
+
+    public void setUserIdList(List<String> userIdList) {
+        this.userIdList = userIdList;
+    }
 
     public String getTopic() {
         return topic;

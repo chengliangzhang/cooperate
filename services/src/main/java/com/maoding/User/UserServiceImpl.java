@@ -3,12 +3,10 @@ package com.maoding.User;
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Bean.CoreResponse;
 import com.maoding.Common.Config.WebServiceConfig;
+import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.User.Dao.RoleDao;
 import com.maoding.User.zeroc.*;
-import com.maoding.Utils.FileUtils;
-import com.maoding.Utils.HttpUtils;
-import com.maoding.Utils.JsonUtils;
-import com.maoding.Utils.StringUtils;
+import com.maoding.Utils.*;
 import com.zeroc.Ice.Current;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +41,11 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     }
     public static UserServicePrx getInstance(){
         return getInstance(null);
+    }
+
+    @Override
+    public List<IdNameDTO> listMember(QueryMemberDTO query, Current current) {
+        return roleDao.listMember(BeanUtils.cleanProperties(query));
     }
 
     @Override
@@ -85,16 +89,51 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     public AccountDTO getCurrent(Current current) {
         CloseableHttpResponse response = HttpUtils.postData(webServiceConfig.getClient(), webServiceConfig.getGetCurrentUrl());
         if (!HttpUtils.isResponseOK(response)) return null;
-        CoreResponse result = getResult(response);
+        CoreResponse<?> resultUnknownType = getResult(response);
         FileUtils.close(response);
+        CoreResponse<Map<String,Object>> result = convertResponse(resultUnknownType);
         assert (result != null);
-        Map<String,Object> data = (Map<String,Object>)result.getData();
+        Map<String,Object> data = result.getData();
         if (data == null) return null;
         AccountDTO dto = new AccountDTO();
-        if (data.containsKey(webServiceConfig.getGetCurrentInfoKey())) data = (Map<String,Object>)data.get(webServiceConfig.getGetCurrentInfoKey());
+        if (data.containsKey(webServiceConfig.getGetCurrentInfoKey())) data = convertInfoKey(data.get(webServiceConfig.getGetCurrentInfoKey()));
         if (data.containsKey(webServiceConfig.getGetCurrentIdKey())) dto.setId((String)data.get(webServiceConfig.getGetCurrentIdKey()));
         if (data.containsKey(webServiceConfig.getGetCurrentNameKey())) dto.setName((String)data.get(webServiceConfig.getGetCurrentNameKey()));
         return dto;
+    }
+
+    private Map<String,Object> convertInfoKey(Object infoKeyUnknownType){
+        if (infoKeyUnknownType == null) return null;
+        if (!(infoKeyUnknownType instanceof Map)) return null;
+        Map<?,?> infoKeyMapUnknownType = (Map<?,?>)infoKeyUnknownType;
+        Map<String,Object> infoKeyMap = new HashMap<>();
+        for (Map.Entry<?, ?> entry : infoKeyMapUnknownType.entrySet()) {
+            String key = entry.getKey().toString();
+            Object value = entry.getValue();
+            infoKeyMap.put(key, value);
+        }
+        return infoKeyMap;
+    }
+
+    private CoreResponse<Map<String,Object>> convertResponse(CoreResponse<?> resultUnknownType){
+        if (resultUnknownType == null) return null;
+        CoreResponse<Map<String,Object>> result = new CoreResponse<>();
+        result.setCode(resultUnknownType.getCode());
+        result.setMsg(resultUnknownType.getMsg());
+        result.setStatus(resultUnknownType.getStatus());
+        result.setInfo(resultUnknownType.getInfo());
+        Map<?,?> webDataMap = HttpUtils.getResponseData(resultUnknownType,Map.class);
+        if (webDataMap != null) {
+            Map<String, Object> webData = new HashMap<>();
+            for (Map.Entry<?, ?> entry : webDataMap.entrySet()) {
+                String key = entry.getKey().toString();
+                Object value = entry.getValue();
+                webData.put(key, value);
+            }
+            result.setData(webData);
+        }
+        return result;
+
     }
 
 

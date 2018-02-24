@@ -37,4 +37,12 @@ public class CoreMessageDTO {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public CoreMessageDTO(){this(null,null,null);}
+    public CoreMessageDTO(String userId, String title, String content)
+    {
+        this.userId = userId;
+        this.title = title;
+        this.content = content;
+    }
 }

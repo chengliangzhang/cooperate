@@ -1,6 +1,7 @@
-package com.maoding.Common; 
+package com.maoding.Common;
 
-import com.maoding.Common.Dto.PathElementDTO;
+import com.maoding.Common.Dto.StringElementDTO;
+import com.maoding.Utils.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,10 +27,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ConstServiceTest { 
     @Test
     public void testConvertPath() throws Exception {
-        PathElementDTO pathElement = new PathElementDTO();
+        StringElementDTO pathElement = new StringElementDTO();
         pathElement.setSrcPath("a/b/c.txt");
         pathElement.setIssuePath("t1/t2");
-        String s = ConstService.convertPath("/{Project}/{Classic1}/{IssuePath}/{File}",pathElement);
+        String s = StringUtils.formatPath(ConstService.convertString("/{Project}/{Classic1}/{IssuePath}/{File}",pathElement));
         Assert.assertNotNull(s);
     } 
 

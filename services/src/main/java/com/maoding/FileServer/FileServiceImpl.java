@@ -2,7 +2,7 @@ package com.maoding.FileServer;
 
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Common.ConstService;
-import com.maoding.Common.Dto.PathElementDTO;
+import com.maoding.Common.Dto.StringElementDTO;
 import com.maoding.Common.zeroc.CustomException;
 import com.maoding.Common.zeroc.ErrorCode;
 import com.maoding.Common.zeroc.IdNameDTO;
@@ -13,6 +13,7 @@ import com.maoding.FileServer.Config.FileServerConfig;
 import com.maoding.FileServer.Dto.CopyRequestDTO;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Notice.zeroc.NoticeClientPrx;
+import com.maoding.Notice.zeroc.NoticeRequestDTO;
 import com.maoding.Notice.zeroc.NoticeServicePrx;
 import com.maoding.Project.zeroc.ProjectDTO;
 import com.maoding.Storage.zeroc.*;
@@ -32,6 +33,7 @@ import java.util.*;
  * 日    期 : 2017/10/25 10:08
  * 描    述 :
  */
+@SuppressWarnings("deprecation")
 @Service("fileService")
 public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements FileService, FileServicePrx {
 
@@ -114,12 +116,12 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
         Short serverTypeId;
         if (!ConstService.FILE_SERVER_TYPE_UNKNOWN.equals(request.getServerTypeId())) serverTypeId = request.getServerTypeId();
-        else if (!ConstService.FILE_SERVER_TYPE_UNKNOWN.equals(ConstService.getTargetServerTypeId(actionTypeId))) serverTypeId = ConstService.getTargetServerTypeId(actionTypeId);
+        else if (!ConstService.FILE_SERVER_TYPE_UNKNOWN.equals(ConstService.getActionFileServerTypeId(actionTypeId))) serverTypeId = ConstService.getActionFileServerTypeId(actionTypeId);
         else serverTypeId = setting.getServerTypeId();
 
         String serverAddress;
         if (StringUtils.isNotEmpty(request.getServerAddress())) serverAddress = request.getServerAddress();
-        else if (StringUtils.isNotEmpty(ConstService.getTargetServerAddress(actionTypeId))) serverAddress = ConstService.getTargetServerAddress(actionTypeId);
+        else if (StringUtils.isNotEmpty(ConstService.getActionFileServerAddress(actionTypeId))) serverAddress = ConstService.getActionFileServerAddress(actionTypeId);
         else serverAddress = null;
         CoreFileServer dstServer = setting.getFileServer(serverTypeId,serverAddress);
 
@@ -1107,12 +1109,12 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         String actionName = ConstService.getActionName(actionTypeId);
 
         //根据提交动作取出相关要提交的文件存放的相对位置
-        Short serverTypeId = ConstService.getTargetServerTypeId(actionTypeId);
-        String serverAddress = ConstService.getTargetServerAddress(actionTypeId);
-        String path = ConstService.getTargetPath(actionTypeId);
+        Short serverTypeId = ConstService.getActionFileServerTypeId(actionTypeId);
+        String serverAddress = ConstService.getActionFileServerAddress(actionTypeId);
+        String path = ConstService.getActionNodePath(actionTypeId);
         if (!StringUtils.isEmpty(path)){
             FullNodeDTO node = getFullNodeForAccount(account,src.getBasic(),current);
-            PathElementDTO pathElement = BeanUtils.createCleanFrom(request, PathElementDTO.class);
+            StringElementDTO pathElement = BeanUtils.createCleanFrom(request, StringElementDTO.class);
             path = convertPath(pathElement,node,path,actionName);
         }
 
@@ -1146,10 +1148,21 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
             targetNode = updateVersionForAccount(account,src,targetFile,versionRequest,current);
         }
 
+        //发送通知消息
+        String typeIdString = ConstService.getActionNoticeTypeIdString(actionTypeId);
+        if (StringUtils.isNotEmpty(typeIdString)){
+            NoticeRequestDTO noticeRequest = new NoticeRequestDTO();
+            noticeRequest.setTypeIdString(typeIdString);
+            noticeRequest.setProjectName(src.getBasic().getProjectName());
+            noticeRequest.setTaskName(src.getBasic().getTaskName());
+            noticeRequest.setCompanyName(src.getBasic().getCompanyName());
+            getNoticeService().sendNotice(noticeRequest);
+        }
+
         return targetNode;
     }
 
-    private String convertPath(@NotNull PathElementDTO pathElement, @NotNull FullNodeDTO node, String sPath, String actionName){
+    private String convertPath(@NotNull StringElementDTO pathElement, @NotNull FullNodeDTO node, String sPath, String actionName){
         String path = sPath;
         if (!StringUtils.isEmpty(path)){
             BeanUtils.copyProperties(node.getBasic(), pathElement);
@@ -1157,7 +1170,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
             pathElement.setSrcPath(node.getBasic().getStoragePath());
             pathElement.setUserName(node.getBasic().getOwnerName());
             pathElement.setActionName(actionName);
-            path = ConstService.convertPath(sPath,BeanUtils.cleanProperties(pathElement));
+            path = StringUtils.formatPath(ConstService.convertString(sPath,BeanUtils.cleanProperties(pathElement)));
         }
         return path;
     }
@@ -1190,7 +1203,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         targetFile = createRealFileForAccount(account,request.getServerTypeId(),targetFile,src);
 
         //设定创建节点申请
-        Short typeId = ConstService.getTargetType(actionTypeId);
+        Short typeId = ConstService.getActionNodeTypeId(actionTypeId);
         if (ConstService.STORAGE_ACTION_TYPE_UNKOWN.equals(typeId)) typeId = src.getBasic().getTypeId();
 
         //查找父节点
@@ -1245,7 +1258,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
         Short actionTypeId = (ConstService.STORAGE_ACTION_TYPE_UNKOWN.equals(request.getActionTypeId())) ?
                 ConstService.STORAGE_ACTION_TYPE_BACKUP : request.getActionTypeId();
-        Short typeId = ConstService.getTargetType(actionTypeId);
+        Short typeId = ConstService.getActionNodeTypeId(actionTypeId);
         if (ConstService.STORAGE_ACTION_TYPE_UNKOWN.equals(typeId)) typeId = src.getBasic().getTypeId();
         String path = request.getPath();
         CoreFileDTO targetFile = setting.getFileServer().coreCreateFile(path);
@@ -1269,10 +1282,10 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
             Short dActionTypeId = ConstService.STORAGE_ACTION_TYPE_BACKUP;
             String dActionName = ConstService.getActionName(dActionTypeId);
             String dFullName = dst.getBasic().getName();
-            String dsPath = ConstService.getTargetPath(dActionTypeId);
+            String dsPath = ConstService.getActionNodePath(dActionTypeId);
             if (!StringUtils.isEmpty(dsPath)){
                 FullNodeDTO dNode = getFullNodeForAccount(account,dst.getBasic(),current);
-                PathElementDTO pathElement = BeanUtils.createCleanFrom(request,PathElementDTO.class);
+                StringElementDTO pathElement = BeanUtils.createCleanFrom(request,StringElementDTO.class);
                 dFullName = convertPath(pathElement,dNode,dsPath,dActionName);
             }
             String dFullPath = dFullName;

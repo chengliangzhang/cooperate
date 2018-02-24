@@ -4,6 +4,8 @@ import com.maoding.CoreNotice.CoreMessageDTO;
 import com.maoding.CoreNotice.CoreNoticeClient;
 import com.maoding.CoreNotice.CoreNoticeService;
 import com.maoding.CoreNotice.CoreReceiverDTO;
+import com.maoding.Utils.BeanUtils;
+import com.maoding.Utils.StringUtils;
 import io.vertx.core.AbstractVerticle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.jms.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +30,10 @@ public class ActiveMQClient extends AbstractVerticle implements CoreNoticeServic
     /** 日志对象 */
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-//    @Autowired
-//    private AppConfig appConfig;
+    /** Web 用户消息 **/
+    private final static String WEB_USER_MESSAGE = "userMessage";
+    private final static String WEB_NOTICE = "notice";
+
     @Autowired
     private JmsTemplate jmsTemplate;
 
@@ -117,7 +122,27 @@ public class ActiveMQClient extends AbstractVerticle implements CoreNoticeServic
     }
 
     @Override
-    public void sendMessage(CoreMessageDTO msg, CoreReceiverDTO receiver) {
+    public void sendMessage(@NotNull CoreMessageDTO msg, @NotNull CoreReceiverDTO receiver) {
+        String topic = receiver.getTopic();
 
+        if (StringUtils.isNotEmpty(topic)) {
+            assert (receiver.getUserId() != null) || (receiver.getUserIdList() != null);
+            MessageDto activeMQMessage = BeanUtils.createFrom(msg,MessageDto.class);
+            if (receiver.getUserIdList() != null){
+                activeMQMessage.setMessageType(WEB_NOTICE );
+                activeMQMessage.setReceiverList(receiver.getUserIdList());
+            } else {
+                activeMQMessage.setMessageType(WEB_USER_MESSAGE);
+                activeMQMessage.setReceiver(receiver.getUserId());
+            }
+            try {
+                Connection connection = connectionFactory.createConnection();
+                Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                Destination destination = session.createQueue(topic);
+                jmsTemplate.convertAndSend(topic, activeMQMessage);
+            } catch (JMSException e) {
+                log.error("初始化ActiveMQ客户端错误", e);
+            }
+        }
     }
 }

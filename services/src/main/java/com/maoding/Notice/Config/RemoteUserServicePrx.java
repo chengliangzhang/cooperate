@@ -1,8 +1,11 @@
 package com.maoding.Notice.Config;
 
 import com.maoding.Base.BaseRemoteService;
+import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.User.zeroc.*;
 import com.maoding.Utils.SpringUtils;
+
+import java.util.List;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -10,6 +13,7 @@ import com.maoding.Utils.SpringUtils;
  * 日    期 : 2018/1/8 11:54
  * 描    述 :
  */
+@SuppressWarnings("deprecation")
 public class RemoteUserServicePrx extends BaseRemoteService<UserServicePrx> implements UserServicePrx {
 
     private static UserServicePrx lastPrx = null;
@@ -42,5 +46,10 @@ public class RemoteUserServicePrx extends BaseRemoteService<UserServicePrx> impl
     @Override
     public UserJoinDTO listUserJoinForAccount(AccountDTO account) {
         return getUserService().listUserJoinForAccount(account,null);
+    }
+
+    @Override
+    public List<IdNameDTO> listMember(QueryMemberDTO query) {
+        return getUserService().listMember(query,null);
     }
 }

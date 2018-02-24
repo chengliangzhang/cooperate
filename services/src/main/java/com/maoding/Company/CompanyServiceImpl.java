@@ -13,6 +13,7 @@ import java.util.List;
  * 日    期 : 2017/10/10 19:12
  * 描    述 :
  */
+@SuppressWarnings("deprecation")
 @Service("companyService")
 public class CompanyServiceImpl extends BaseLocalService<CompanyServicePrx> implements CompanyService,CompanyServicePrx {
 //    @Autowired

@@ -62,4 +62,12 @@ module zeroc {
         IdNameList companyList; //用户所属的组织
     };
     ["java:type:java.util.ArrayList<UserJoinDTO>"] sequence<UserJoinDTO> UserJoinList;
+
+    ["java:getset","clr:property"]
+    struct QueryMemberDTO {
+        string userTypeIdString; //参与者角色类型id，可以是用","分隔的多个id
+        string projectId; //参与项目id
+        string taskId; //参与任务id
+        string companyId; //参与组织id
+    };
 };

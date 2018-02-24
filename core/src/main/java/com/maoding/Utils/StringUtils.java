@@ -55,6 +55,17 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return (isEmpty(s)) ? ds : s;
     }
 
+    /** 替换字符串 */
+    public static String replace(String s, String src, String des, String ds){
+        if (isNotEmpty(s)) {
+            s = s.replace(src,getStringOrDefault(des,ds));
+        }
+        return s;
+    }
+    public static String replace(String s, String src, String des){
+        return replace(s,src,des,"");
+    }
+
     /** 判断目录是否根目录 */
     public static Boolean isRootPath(String path){
         return isSame(SPLIT_PATH,formatPath(path));

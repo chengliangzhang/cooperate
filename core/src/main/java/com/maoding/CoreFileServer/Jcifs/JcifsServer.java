@@ -25,6 +25,7 @@ import java.util.Map;
  * 描    述 :
  */
 @Service("jcifsServer")
+@SuppressWarnings("deprecation")
 public class JcifsServer implements CoreFileServer {
     /** 日志对象 */
     private final Logger log = LoggerFactory.getLogger(this.getClass());

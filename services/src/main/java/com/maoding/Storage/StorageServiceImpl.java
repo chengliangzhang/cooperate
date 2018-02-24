@@ -296,6 +296,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public SimpleNodeDTO createMirror(FileNodeDTO src, Current current) {
         return null;
     }
@@ -325,6 +326,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public SimpleNodeDTO updateNode(SimpleNodeDTO src, UpdateNodeDTO request, Current current) {
 
         long t = System.currentTimeMillis();
@@ -652,6 +654,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isDirectoryEmptyForAccount(AccountDTO account, String path, Current current) {
         long t = System.currentTimeMillis();
 
@@ -672,6 +675,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isDirectoryEmpty(String path, Current current) {
         return isDirectoryEmptyForAccount(userService.getCurrent(current),path,current);
     }
@@ -774,6 +778,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public SimpleNodeDTO createNode(@NotNull UpdateNodeDTO request, Current current) {
 
         long t = System.currentTimeMillis();

@@ -26,6 +26,7 @@ import java.util.UUID;
  * 描    述 :
  */
 @Service("ftpServer")
+@SuppressWarnings("deprecation")
 public class FtpServer implements CoreFileServer {
     protected static final Logger log = (Logger) LoggerFactory.getLogger(FtpServer.class);
     public FTPClient ftpClient = new FTPClient();
@@ -49,6 +50,7 @@ public class FtpServer implements CoreFileServer {
      * @param callbackSetting
      */
     @Override
+    @SuppressWarnings("deprecation")
     public BasicFileRequestDTO getUploadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
         //补全参数
         if (StringUtils.isEmpty(src.getScope())) src.setScope("");
@@ -75,6 +77,7 @@ public class FtpServer implements CoreFileServer {
      * @param callbackSetting
      */
     @Override
+    @SuppressWarnings("deprecation")
     public BasicFileRequestDTO getDownloadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
         //检查参数
         assert src != null;
@@ -104,6 +107,7 @@ public class FtpServer implements CoreFileServer {
      * @param request
      */
     @Override
+    @SuppressWarnings("deprecation")
     public BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
         BasicUploadResultDTO result = new BasicUploadResultDTO();
         //默认参数

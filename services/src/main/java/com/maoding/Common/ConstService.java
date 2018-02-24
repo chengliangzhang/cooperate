@@ -1,7 +1,7 @@
 package com.maoding.Common;
 
 import com.maoding.Common.Dao.ConstDao;
-import com.maoding.Common.Dto.PathElementDTO;
+import com.maoding.Common.Dto.StringElementDTO;
 import com.maoding.Common.Entity.ConstEntity;
 import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.Utils.SpringUtils;
@@ -43,8 +43,8 @@ public class ConstService {
     public static final Short CLASSIC_TYPE_ROLE_TASK = 23;
     public static final Short CLASSIC_TYPE_STORAGE_RANGE = 24;
     public static final Short CLASSIC_TYPE_ROLE = 25;
-    public static final Short CLASSIC_TYPE_ROLE_PROJECT = 26;
-    public static final Short CLASSIC_TYPE_NOTICE_SCOPE = 27;
+    public static final Short CLASSIC_TYPE_ROLE_TYPE = 26;
+    public static final Short CLASSIC_TYPE_NOTICE_TYPE = 27;
 
 
     //节点类型
@@ -106,13 +106,13 @@ public class ConstService {
     public static final Short STORAGE_ACTION_TYPE_COMMIT = 4;
     public static final Short STORAGE_ACTION_TYPE_ISSUE = 5;
 
-    /** 通知范围类型 */
-    public static final Short NOTICE_SCOPE_UNDEFINE = 0;
-    public static final Short NOTICE_SCOPE_USER = 1;
-    public static final Short NOTICE_SCOPE_TASK = 2;
-    public static final Short NOTICE_SCOPE_PROJECT = 3;
-    public static final Short NOTICE_SCOPE_COMPANY = 4;
-    public static final Short NOTICE_SCOPE_COMMON = 5;
+    /** 通知类型 */
+    public static final Short NOTICE_TYPE_UNDEFINE = 0;
+    public static final Short NOTICE_TYPE_USER = 1;
+    public static final Short NOTICE_TYPE_TASK = 2;
+    public static final Short NOTICE_TYPE_PROJECT = 3;
+    public static final Short NOTICE_TYPE_COMPANY = 4;
+    public static final Short NOTICE_TYPE_COMMON = 5;
 
     /** 文件服务器类型 */
     public static final Short FILE_SERVER_TYPE_UNKNOWN = 0;
@@ -237,27 +237,51 @@ public class ConstService {
         return getContent(CLASSIC_TYPE_ACTION,actionTypeId);
     }
 
-    public static String getTopicPrefix(Short noticeScopeId) {
-        return getExtra(CLASSIC_TYPE_NOTICE_SCOPE,noticeScopeId);
+    public static String getTopicPrefix(Short noticeTypeId) {
+        String sField = getNoticeTopic(noticeTypeId);
+        if (StringUtils.isEmpty(sField)) return "";
+        return (sField.contains("{") ? sField.substring(0,sField.indexOf("{")) : sField);
     }
-    public static Short getTargetType(Short actionTypeId){
+    public static String getNoticeTopic(Short noticeTypeId) {
+        return getExtraField(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId,0);
+    }
+
+    public static String getNoticeTitle(Short noticeTypeId) {
+        return getExtraField(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId,1);
+    }
+
+    public static String getNoticeContent(Short noticeTypeId) {
+        return getExtraField(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId,2);
+    }
+
+    public static Short getActionNodeTypeId(Short actionTypeId){
         String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,0);
-        return (!StringUtils.isEmpty(sField)) ? Short.parseShort(sField) : STORAGE_ACTION_TYPE_UNKOWN;
+        return (!StringUtils.isEmpty(sField))
+                ? Short.parseShort(sField.substring(0,sField.indexOf(":"))) : STORAGE_ACTION_TYPE_UNKOWN;
     }
 
-    public static String getTargetPath(Short actionTypeId){
+    public static String getActionNodePath(Short actionTypeId){
+        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,0);
+        return (!StringUtils.isEmpty(sField))
+                ? sField.substring(sField.indexOf(":") + 1) : null;
+    }
+
+    public static Short getActionFileServerTypeId(Short actionTypeId){
         String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,1);
-        return (!StringUtils.isEmpty(sField)) ? sField : null;
+        return (!StringUtils.isEmpty(sField))
+                ? Short.parseShort(sField.substring(0,sField.indexOf(":"))) : FILE_SERVER_TYPE_UNKNOWN;
     }
 
-    public static Short getTargetServerTypeId(Short actionTypeId){
+    public static String getActionFileServerAddress(Short actionTypeId){
+        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,1);
+        return (!StringUtils.isEmpty(sField))
+                ? sField.substring(sField.indexOf(":") + 1) : null;
+    }
+
+    public static String getActionNoticeTypeIdString(Short actionTypeId){
         String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,2);
-        return (!StringUtils.isEmpty(sField)) ? Short.parseShort(sField) : FILE_SERVER_TYPE_UNKNOWN;
-    }
-
-    public static String getTargetServerAddress(Short actionTypeId){
-        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,3);
-        return (!StringUtils.isEmpty(sField)) ? sField : null;
+        return (!StringUtils.isEmpty(sField))
+                ? sField : null;
     }
 
 
@@ -265,12 +289,18 @@ public class ConstService {
         return STORAGE_ACTION_TYPE_BACKUP.equals(actionTypeId);
     }
 
-    public static String convertPath(@NotNull String path, @NotNull PathElementDTO pathElement){
+    public static String convertString(String s, @NotNull StringElementDTO stringElement){
+        if (s == null) return null;
+
+        final String PROJECT_ID = "{ProjectId}";
         final String PROJECT_NAME = "{Project}";
         final String CLASSIC_NAME = "{Classic}";
         final String ISSUE_PATH = "{IssuePath}";
+        final String TASK_ID = "{TaskId}";
         final String TASK_PATH = "{TaskPath}";
+        final String USER_ID = "{UserId}";
         final String USER_NAME = "{User}";
+        final String COMPANY_ID = "{CompanyId}";
         final String COMPANY_NAME = "{Company}";
         final String MAJOR_NAME = "{Major}";
         final String VERSION_NAME = "{Version}";
@@ -284,65 +314,39 @@ public class ConstService {
         final String V_CLASSIC_NAME_START = "{Classic";
         final String V_ACTION_NAME_START = "{Action";
 
-        String s = path;
-        if (s.contains(PROJECT_NAME)){
-            s = s.replace(PROJECT_NAME, StringUtils.getStringOrDefault(pathElement.getProjectName(),""));
-        }
-        if (s.contains(CLASSIC_NAME)){
-            s = s.replace(CLASSIC_NAME, StringUtils.getStringOrDefault(pathElement.getClassicName(),""));
-        }
-        if (s.contains(ISSUE_PATH)){
-            s = s.replace(ISSUE_PATH, StringUtils.getStringOrDefault(pathElement.getIssuePath(),""));
-        }
-        if (s.contains(TASK_PATH)){
-            s = s.replace(TASK_PATH, StringUtils.getStringOrDefault(pathElement.getTaskPath(),""));
-        }
-        if (s.contains(COMPANY_NAME)){
-            s = s.replace(COMPANY_NAME, StringUtils.getStringOrDefault(pathElement.getCompanyName(),""));
-        }
-        if (s.contains(USER_NAME)){
-            s = s.replace(USER_NAME, StringUtils.getStringOrDefault(pathElement.getUserName(),""));
-        }
-        if (s.contains(VERSION_NAME)){
-            s = s.replace(VERSION_NAME, StringUtils.getStringOrDefault(pathElement.getFileVersion(),""));
-        }
-        if (s.contains(MAJOR_NAME)){
-            s = s.replace(MAJOR_NAME, StringUtils.getStringOrDefault(pathElement.getMajorName(),""));
-        }
-        if (s.contains(ACTION_NAME)){
-            s = s.replace(ACTION_NAME, StringUtils.getStringOrDefault(pathElement.getActionName(),""));
-        }
-        if (s.contains(SRC_PATH)){
-            s = s.replace(SRC_PATH, StringUtils.getStringOrDefault(pathElement.getSrcPath(),""));
-        }
-        if (s.contains(SRC_DIR)){
-            s = s.replace(SRC_DIR, StringUtils.getStringOrDefault(StringUtils.getDirName(pathElement.getSrcPath()),""));
-        }
-        if (s.contains(SRC_NAME)){
-            s = s.replace(SRC_NAME, StringUtils.getStringOrDefault(StringUtils.getFileName(pathElement.getSrcPath()),""));
-        }
-        if (s.contains(SRC_NAME_NO_EXT)){
-            s = s.replace(SRC_NAME_NO_EXT, StringUtils.getStringOrDefault(StringUtils.getFileNameWithoutExt(pathElement.getSrcPath()),""));
-        }
-        if (s.contains(SRC_EXT)){
-            s = s.replace(SRC_EXT, StringUtils.getStringOrDefault(StringUtils.getFileExt(pathElement.getSrcPath()),""));
-        }
+        s = StringUtils.replace(s,PROJECT_ID,stringElement.getProjectId());
+        s = StringUtils.replace(s,PROJECT_NAME,stringElement.getProjectName());
+        s = StringUtils.replace(s,CLASSIC_NAME,stringElement.getClassicName());
+        s = StringUtils.replace(s,ISSUE_PATH,stringElement.getIssuePath());
+        s = StringUtils.replace(s,TASK_ID,stringElement.getTaskId());
+        s = StringUtils.replace(s,TASK_PATH,stringElement.getTaskPath());
+        s = StringUtils.replace(s,COMPANY_ID,stringElement.getCompanyId());
+        s = StringUtils.replace(s,COMPANY_NAME,stringElement.getCompanyName());
+        s = StringUtils.replace(s,USER_ID,stringElement.getUserId());
+        s = StringUtils.replace(s,USER_NAME,stringElement.getUserName());
+        s = StringUtils.replace(s,VERSION_NAME,stringElement.getFileVersion());
+        s = StringUtils.replace(s,MAJOR_NAME,stringElement.getMajorName());
+        s = StringUtils.replace(s,ACTION_NAME,stringElement.getActionName());
+        s = StringUtils.replace(s,SRC_PATH,stringElement.getSrcPath());
+        s = StringUtils.replace(s,SRC_DIR,StringUtils.getDirName(stringElement.getSrcPath()));
+        s = StringUtils.replace(s,SRC_NAME,StringUtils.getFileName(stringElement.getSrcPath()));
+        s = StringUtils.replace(s,SRC_NAME_NO_EXT,StringUtils.getFileNameWithoutExt(stringElement.getSrcPath()));
+        s = StringUtils.replace(s,SRC_EXT,StringUtils.getFileExt(stringElement.getSrcPath()));
+
         if (s.contains(V_TIME_STAMP_START)){
             String fmt = s.substring(s.indexOf(V_TIME_STAMP_START) + V_TIME_STAMP_START.length(),s.indexOf(V_END,s.indexOf(V_TIME_STAMP_START)));
             String timeTxt = StringUtils.getTimeStamp(StringUtils.getStringOrDefault(fmt,StringUtils.DEFAULT_STAMP_FORMAT));
-            s = s.replace(V_TIME_STAMP_START + fmt + V_END,timeTxt);
+            s = StringUtils.replace(s,V_TIME_STAMP_START + fmt + V_END,timeTxt);
         }
         if (s.contains(V_CLASSIC_NAME_START)){
             String vClassic = s.substring(s.indexOf(V_CLASSIC_NAME_START) + V_CLASSIC_NAME_START.length(),s.indexOf(V_END,s.indexOf(V_CLASSIC_NAME_START)));
-            String vName = StringUtils.getStringOrDefault(getRangeName(Short.parseShort(vClassic)),"");
-            s = s.replace(V_CLASSIC_NAME_START + vClassic + V_END,vName);
+            s = StringUtils.replace(s,V_CLASSIC_NAME_START + vClassic + V_END,getRangeName(Short.parseShort(vClassic)));
         }
         if (s.contains(V_ACTION_NAME_START)){
             String vAction = s.substring(s.indexOf(V_ACTION_NAME_START) + V_ACTION_NAME_START.length(),s.indexOf(V_END,s.indexOf(V_CLASSIC_NAME_START)));
-            String vName = StringUtils.getStringOrDefault(getActionName(Short.parseShort(vAction)),"");
-            s = s.replace(V_ACTION_NAME_START + vAction + V_END,vName);
+            s = StringUtils.replace(s,V_ACTION_NAME_START + vAction + V_END,getActionName(Short.parseShort(vAction)));
         }
-        return StringUtils.formatPath(s);
+        return s;
     }
 
     public static boolean isDirectoryType(Short typeId) {

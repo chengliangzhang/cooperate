@@ -87,6 +87,7 @@ public class DiskFileServer implements CoreFileServer {
      */
     @Override
     @Deprecated
+    @SuppressWarnings("deprecation")
     public CoreFileDTO coreCreateFile(String path) {
         if (StringUtils.isEmpty(path)) return null;
 
@@ -330,6 +331,7 @@ public class DiskFileServer implements CoreFileServer {
     }
 
     /** 获取文件读写参数 */
+    @SuppressWarnings("deprecation")
     public BasicFileRequestDTO getFileRequest(CoreFileDTO src, short mode){
         assert (src != null);
         if ((FileServerConst.OPEN_MODE_READ_ONLY.equals(mode)) && (!isExist(src))) return null;
@@ -477,13 +479,13 @@ public class DiskFileServer implements CoreFileServer {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public int writeFile(CoreFileDataDTO multipart) {
         //检查参数
         assert (multipart != null);
         assert ((multipart.getPos() != null) && (multipart.getPos() >= 0));
         assert ((multipart.getSize() != null) && (multipart.getSize() > 0));
         assert (multipart.getData() != null);
-        assert (!StringUtils.isEmpty(multipart.getKey()));
 
         //补全参数
 
