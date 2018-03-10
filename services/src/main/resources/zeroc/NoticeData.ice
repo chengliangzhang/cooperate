@@ -14,13 +14,11 @@ module zeroc {
     ["java:getset","clr:property"]
     struct NoticeRequestDTO { //发送消息申请
         string typeIdString; //用:分隔的消息类型
-        string projectId; //项目id
-        string projectName; //项目名称
-        string taskId; //任务id
-        string taskName; //任务名称
-        string companyName; //公司名称
-        string userId; //发布者id
-        string userName; //发布者名称
+        string projectId; //要发布到的项目id
+        string taskId; //要发布到的任务id
+        string companyId; //要发布到的组织id
+        string userId; //要发布给的用户id
+        StringElementDTO stringElement; //用于替换的字符串
     };
     ["java:type:java.util.ArrayList<NoticeRequestDTO>"] sequence<NoticeRequestDTO> NoticeRequestList;
 

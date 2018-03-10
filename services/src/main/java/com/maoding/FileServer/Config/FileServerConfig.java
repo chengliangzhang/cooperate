@@ -3,8 +3,6 @@ package com.maoding.FileServer.Config;
 import com.maoding.Common.ConstService;
 import com.maoding.CoreFileServer.CoreFileServer;
 import com.maoding.CoreFileServer.Disk.DiskFileServer;
-import com.maoding.CoreFileServer.Ftp.FtpServer;
-import com.maoding.CoreFileServer.Jcifs.JcifsServer;
 import com.maoding.CoreFileServer.MaodingWeb.WebFileServer;
 import com.maoding.FileServer.zeroc.FileServicePrx;
 import com.maoding.Notice.zeroc.NoticeServicePrx;
@@ -82,7 +80,7 @@ public class FileServerConfig {
         this.noticeServiceAdapter = noticeServiceAdapter;
     }
 
-    public CoreFileServer getFileServer(Short serverTypeId, String serverAddress){
+    public CoreFileServer getCoreFileServer(Short serverTypeId, String serverAddress){
         if ((serverTypeId == null) || (ConstService.FILE_SERVER_TYPE_UNKNOWN.equals(serverTypeId))) {
             serverTypeId = getServerTypeId();
             if (serverTypeId == null) serverTypeId = ConstService.FILE_SERVER_TYPE_DISK;
@@ -104,23 +102,24 @@ public class FileServerConfig {
         return coreServer;
     }
 
-    public CoreFileServer getFileServer(){
-        if (ConstService.FILE_SERVER_TYPE_ALIYUN.equals(serverTypeId)) {
-//            if (aliyunServer == null) aliyunServer = new AliyunServer();
-            return aliyunServer;
-        } else if (ConstService.FILE_SERVER_TYPE_CIFS.equals(serverTypeId)){
-            if (jcifsServer == null) jcifsServer = new JcifsServer();
-            return jcifsServer;
-        } else if (ConstService.FILE_SERVER_TYPE_FTP.equals(serverTypeId)){
-            if (ftpServer == null) ftpServer = new FtpServer();
-            return ftpServer;
-        } else if (ConstService.FILE_SERVER_TYPE_DISK.equals(serverTypeId)){
-            if (diskServer == null) diskServer = new DiskFileServer();
-            return diskServer;
-        } else {
-            if (diskServer == null) diskServer = new DiskFileServer();
-            return diskServer;
-        }
+    public CoreFileServer getCoreFileServer(){
+        return getCoreFileServer(getServerTypeId(),getServerAddress());
+//        if (ConstService.FILE_SERVER_TYPE_ALIYUN.equals(serverTypeId)) {
+////            if (aliyunServer == null) aliyunServer = new AliyunServer();
+//            return aliyunServer;
+//        } else if (ConstService.FILE_SERVER_TYPE_CIFS.equals(serverTypeId)){
+//            if (jcifsServer == null) jcifsServer = new JcifsServer();
+//            return jcifsServer;
+//        } else if (ConstService.FILE_SERVER_TYPE_FTP.equals(serverTypeId)){
+//            if (ftpServer == null) ftpServer = new FtpServer();
+//            return ftpServer;
+//        } else if (ConstService.FILE_SERVER_TYPE_DISK.equals(serverTypeId)){
+//            if (diskServer == null) diskServer = new DiskFileServer();
+//            return diskServer;
+//        } else {
+//            if (diskServer == null) diskServer = new DiskFileServer();
+//            return diskServer;
+//        }
     }
 
     public FileServicePrx getRemoteFileService(String serverAddress){

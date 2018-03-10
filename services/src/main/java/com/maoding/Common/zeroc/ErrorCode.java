@@ -23,10 +23,11 @@ package com.maoding.Common.zeroc;
 public enum ErrorCode implements java.io.Serializable
 {
     Unknown(0),
-    ParameterLegal(1),
-    NoPermission(2),
-    DataNotFound(3),
-    DataIsInvalid(4);
+    Assert(1),
+    InvalidParameter(2),
+    NoPermission(3),
+    DataNotFound(4),
+    DataIsInvalid(5);
 
     public int value()
     {
@@ -40,12 +41,14 @@ public enum ErrorCode implements java.io.Serializable
         case 0:
             return Unknown;
         case 1:
-            return ParameterLegal;
+            return Assert;
         case 2:
-            return NoPermission;
+            return InvalidParameter;
         case 3:
-            return DataNotFound;
+            return NoPermission;
         case 4:
+            return DataNotFound;
+        case 5:
             return DataIsInvalid;
         }
         return null;
@@ -58,24 +61,24 @@ public enum ErrorCode implements java.io.Serializable
 
     public void ice_write(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeEnum(_value, 4);
+        ostr.writeEnum(_value, 5);
     }
 
     public static void ice_write(com.zeroc.Ice.OutputStream ostr, ErrorCode v)
     {
         if(v == null)
         {
-            ostr.writeEnum(com.maoding.Common.zeroc.ErrorCode.Unknown.value(), 4);
+            ostr.writeEnum(com.maoding.Common.zeroc.ErrorCode.Unknown.value(), 5);
         }
         else
         {
-            ostr.writeEnum(v.value(), 4);
+            ostr.writeEnum(v.value(), 5);
         }
     }
 
     public static ErrorCode ice_read(com.zeroc.Ice.InputStream istr)
     {
-        int v = istr.readEnum(4);
+        int v = istr.readEnum(5);
         return validate(v);
     }
 

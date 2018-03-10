@@ -1,6 +1,6 @@
 package com.maoding;
 
-import com.maoding.Config.IceConfig;
+import com.maoding.Base.IceConfig;
 import com.maoding.Utils.FileUtils;
 import com.maoding.Utils.StringUtils;
 import com.maoding.Utils.ThreadUtils;

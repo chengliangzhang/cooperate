@@ -205,7 +205,7 @@ public class HttpUtils {
                     responseString.append(responseLine).append("\n");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("发送web操作后接收返回值时错误",e);
             } finally {
                 FileUtils.close(in);
             }

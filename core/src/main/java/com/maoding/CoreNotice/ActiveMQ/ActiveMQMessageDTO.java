@@ -8,7 +8,7 @@ import java.util.List;
  * 日    期 : 2018/1/18 18:00
  * 描    述 :
  */
-public class MessageDto {
+public class ActiveMQMessageDTO {
     private String receiver;
     private List<String> receiverList;
     private String content;

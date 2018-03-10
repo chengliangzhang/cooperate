@@ -1,4 +1,4 @@
-package com.maoding.Config;
+package com.maoding.Base;
 
 
 import com.maoding.Utils.StringUtils;

@@ -4,13 +4,13 @@ Navicat MySQL Data Transfer
 Source Server         : RemotMySQL
 Source Server Version : 50625
 Source Host           : 172.16.6.71:3306
-Source Database       : maoding_qa
+Source Database       : maoding_new
 
 Target Server Type    : MYSQL
 Target Server Version : 50625
 File Encoding         : 65001
 
-Date: 2018-02-07 17:21:32
+Date: 2018-03-02 10:44:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -85,6 +85,7 @@ INSERT INTO `maoding_web_permission` VALUES ('5', 'project', '项目管理', nul
 INSERT INTO `maoding_web_permission` VALUES ('50', 'org_manager', '权限分配、删除项目、查看企业所有信息', '3', '3', '5800', '0', null, null, null, null, null);
 INSERT INTO `maoding_web_permission` VALUES ('51', 'project_manager', '任务签发', '5', '5', '2650', '0', null, null, null, null, null);
 INSERT INTO `maoding_web_permission` VALUES ('52', 'design_manager', '生产安排', '5', '5', '2660', '0', null, null, null, null, null);
+INSERT INTO `maoding_web_permission` VALUES ('53', 'super_project_edit', '给分公司、事业合伙人编辑项目基本信息', '5', '5', '2750', '1', null, null, null, null, null);
 INSERT INTO `maoding_web_permission` VALUES ('6', 'finance', '财务管理', null, '6', '1600', '0', null, null, null, null, null);
 INSERT INTO `maoding_web_permission` VALUES ('7', 'report', '统计及报表', null, '7', '1700', '1', null, null, null, null, null);
 INSERT INTO `maoding_web_permission` VALUES ('8', 'sys_role_permission', '权限分配', '1', '1', '1800', '0', null, null, null, null, null);

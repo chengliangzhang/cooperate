@@ -42,7 +42,7 @@ public final class FullNodeListHelper
     {
         final java.util.List<FullNodeDTO> v;
         v = new java.util.ArrayList<FullNodeDTO>();
-        final int len0 = istr.readAndCheckSeqSize(55);
+        final int len0 = istr.readAndCheckSeqSize(88);
         for(int i0 = 0; i0 < len0; i0++)
         {
             FullNodeDTO elem;

@@ -1,6 +1,6 @@
 package com.maoding.Storage.Dto;
 
-import com.maoding.Storage.Entity.StorageEntity;
+import com.maoding.Storage.Entity.StorageTreeEntity;
 import com.maoding.Storage.Entity.StorageFileEntity;
 import com.maoding.Storage.Entity.StorageFileHisEntity;
 
@@ -10,7 +10,7 @@ import com.maoding.Storage.Entity.StorageFileHisEntity;
  * 日    期 : 2017/12/18 20:09
  * 描    述 :
  */
-public class StorageEntityUnionDTO extends StorageEntity {
+public class StorageEntityUnionDTO extends StorageTreeEntity {
     /** 节点对应文件信息 */
     private StorageFileEntity fileEntity;
     /** 节点对应历史操作信息 */

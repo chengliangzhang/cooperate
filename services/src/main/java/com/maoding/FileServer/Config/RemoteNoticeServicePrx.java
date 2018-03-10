@@ -1,13 +1,12 @@
 package com.maoding.FileServer.Config;
 
 import com.maoding.Base.BaseRemoteService;
-import com.maoding.Notice.zeroc.NoticeClientPrx;
-import com.maoding.Notice.zeroc.NoticeService;
-import com.maoding.Notice.zeroc.NoticeServicePrx;
-import com.maoding.Notice.zeroc._NoticeServicePrxI;
+import com.maoding.Notice.zeroc.*;
+import com.maoding.User.zeroc.AccountDTO;
 import com.maoding.Utils.SpringUtils;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -20,7 +19,7 @@ public class RemoteNoticeServicePrx extends BaseRemoteService<NoticeServicePrx> 
     private static NoticeServicePrx lastPrx = null;
     private static NoticeService noticeService = null;
 
-    private NoticeService getUserService(){
+    private NoticeService getNoticeService(){
         if (noticeService == null) {
             noticeService = SpringUtils.getBean(NoticeService.class);
         }
@@ -42,11 +41,43 @@ public class RemoteNoticeServicePrx extends BaseRemoteService<NoticeServicePrx> 
 
     @Override
     public void subscribeTopicForUser(String id, NoticeClientPrx client) {
-        getUserService().subscribeTopicForUser(id,client,null);
+        getNoticeService().subscribeTopicForUser(id,client,null);
     }
 
     @Override
     public List<String> listSubscribedTopic(String userId) {
-        return getUserService().listSubscribedTopic(userId,null);
+        return getNoticeService().listSubscribedTopic(userId,null);
+    }
+
+    @Override
+    public void sendNotice(NoticeRequestDTO request) {
+        getNoticeService().sendNotice(request,null);
+    }
+
+    @Override
+    public void sendNoticeForAccount(AccountDTO account, NoticeRequestDTO request) {
+        getNoticeService().sendNoticeForAccount(account,request,null);
+    }
+
+    @Override
+    public CompletableFuture<Void> sendNoticeAsync(NoticeRequestDTO request) {
+        new Thread(){
+            @Override
+            public void run(){
+                getNoticeService().sendNotice(request,null);
+            }
+        }.start();
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<Void> sendNoticeForAccountAsync(AccountDTO account, NoticeRequestDTO request) {
+        new Thread(){
+            @Override
+            public void run(){
+                getNoticeService().sendNoticeForAccount(account,request,null);
+            }
+        }.start();
+        return null;
     }
 }

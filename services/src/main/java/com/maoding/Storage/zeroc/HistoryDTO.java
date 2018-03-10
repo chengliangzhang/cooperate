@@ -35,18 +35,6 @@ public class HistoryDTO implements java.lang.Cloneable,
         this.id = id;
     }
 
-    public String fileId;
-
-    public String getFileId()
-    {
-        return fileId;
-    }
-
-    public void setFileId(String fileId)
-    {
-        this.fileId = fileId;
-    }
-
     public String userId;
 
     public String getUserId()
@@ -57,6 +45,18 @@ public class HistoryDTO implements java.lang.Cloneable,
     public void setUserId(String userId)
     {
         this.userId = userId;
+    }
+
+    public String userName;
+
+    public String getUserName()
+    {
+        return userName;
+    }
+
+    public void setUserName(String userName)
+    {
+        this.userName = userName;
     }
 
     public String roleId;
@@ -71,16 +71,16 @@ public class HistoryDTO implements java.lang.Cloneable,
         this.roleId = roleId;
     }
 
-    public String userName;
+    public String roleName;
 
-    public String getUserName()
+    public String getRoleName()
     {
-        return userName;
+        return roleName;
     }
 
-    public void setUserName(String userName)
+    public void setRoleName(String roleName)
     {
-        this.userName = userName;
+        this.roleName = roleName;
     }
 
     public short actionTypeId;
@@ -143,30 +143,53 @@ public class HistoryDTO implements java.lang.Cloneable,
         this.remark = remark;
     }
 
+    /**
+     **/
+    @Deprecated
+    public String fileId;
+
+    /**
+     **/
+    @Deprecated
+    public String getFileId()
+    {
+        return fileId;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public void setFileId(String fileId)
+    {
+        this.fileId = fileId;
+    }
+
     public HistoryDTO()
     {
         this.id = "";
-        this.fileId = "";
         this.userId = "";
-        this.roleId = "";
         this.userName = "";
+        this.roleId = "";
+        this.roleName = "";
         this.actionName = "";
         this.actionTimeText = "";
         this.remark = "";
+        this.fileId = "";
     }
 
-    public HistoryDTO(String id, String fileId, String userId, String roleId, String userName, short actionTypeId, String actionName, long actionTimeStamp, String actionTimeText, String remark)
+    public HistoryDTO(String id, String userId, String userName, String roleId, String roleName, short actionTypeId, String actionName, long actionTimeStamp, String actionTimeText, String remark, String fileId)
     {
         this.id = id;
-        this.fileId = fileId;
         this.userId = userId;
-        this.roleId = roleId;
         this.userName = userName;
+        this.roleId = roleId;
+        this.roleName = roleName;
         this.actionTypeId = actionTypeId;
         this.actionName = actionName;
         this.actionTimeStamp = actionTimeStamp;
         this.actionTimeText = actionTimeText;
         this.remark = remark;
+        this.fileId = fileId;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -190,16 +213,16 @@ public class HistoryDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.fileId != r.fileId)
+            if(this.userId != r.userId)
             {
-                if(this.fileId == null || r.fileId == null || !this.fileId.equals(r.fileId))
+                if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
                 {
                     return false;
                 }
             }
-            if(this.userId != r.userId)
+            if(this.userName != r.userName)
             {
-                if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
+                if(this.userName == null || r.userName == null || !this.userName.equals(r.userName))
                 {
                     return false;
                 }
@@ -211,9 +234,9 @@ public class HistoryDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.userName != r.userName)
+            if(this.roleName != r.roleName)
             {
-                if(this.userName == null || r.userName == null || !this.userName.equals(r.userName))
+                if(this.roleName == null || r.roleName == null || !this.roleName.equals(r.roleName))
                 {
                     return false;
                 }
@@ -247,6 +270,13 @@ public class HistoryDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.fileId != r.fileId)
+            {
+                if(this.fileId == null || r.fileId == null || !this.fileId.equals(r.fileId))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
@@ -259,15 +289,16 @@ public class HistoryDTO implements java.lang.Cloneable,
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::HistoryDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, roleId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, roleId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, roleName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, remark);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileId);
         return h_;
     }
 
@@ -288,29 +319,31 @@ public class HistoryDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         ostr.writeString(this.id);
-        ostr.writeString(this.fileId);
         ostr.writeString(this.userId);
-        ostr.writeString(this.roleId);
         ostr.writeString(this.userName);
+        ostr.writeString(this.roleId);
+        ostr.writeString(this.roleName);
         ostr.writeShort(this.actionTypeId);
         ostr.writeString(this.actionName);
         ostr.writeLong(this.actionTimeStamp);
         ostr.writeString(this.actionTimeText);
         ostr.writeString(this.remark);
+        ostr.writeString(this.fileId);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.id = istr.readString();
-        this.fileId = istr.readString();
         this.userId = istr.readString();
-        this.roleId = istr.readString();
         this.userName = istr.readString();
+        this.roleId = istr.readString();
+        this.roleName = istr.readString();
         this.actionTypeId = istr.readShort();
         this.actionName = istr.readString();
         this.actionTimeStamp = istr.readLong();
         this.actionTimeText = istr.readString();
         this.remark = istr.readString();
+        this.fileId = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, HistoryDTO v)
@@ -365,5 +398,5 @@ public class HistoryDTO implements java.lang.Cloneable,
 
     private static final HistoryDTO _nullMarshalValue = new HistoryDTO();
 
-    public static final long serialVersionUID = -887692396L;
+    public static final long serialVersionUID = -266257344L;
 }

@@ -131,7 +131,7 @@ public class JcifsServer implements CoreFileServer {
      * @param src
      */
     @Override
-    public Boolean isExist(CoreFileDTO src) {
+    public Boolean coreIsExist(CoreFileDTO src) {
         return null;
     }
 
@@ -159,7 +159,7 @@ public class JcifsServer implements CoreFileServer {
      * @param src
      */
     @Override
-    public void deleteFile(CoreFileDTO src) {
+    public void coreDeleteFile(CoreFileDTO src) {
 
     }
 }

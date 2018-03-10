@@ -1,6 +1,5 @@
-package com.maoding.Config;
+package com.maoding.CoreNotice.ActiveMQ;
 
-import com.maoding.CoreNotice.ActiveMQ.ImQueueDTO;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
@@ -68,9 +67,10 @@ public class ActiveMQConfig {
     @Bean
     public ConnectionFactory connectionFactory() {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
-        connectionFactory.setBrokerURL("tcp://172.16.6.73:61616?jms.prefetchPolicy.queuePrefetch=1");
+        connectionFactory.setBrokerURL(brokerUrl);
         connectionFactory.setUserName(user);
         connectionFactory.setPassword(password);
+        connectionFactory.setTrustAllPackages(true);
         return connectionFactory;
     }
 
@@ -126,7 +126,7 @@ public class ActiveMQConfig {
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
         Map<String, Class<?>> idMappings = new HashMap<>();
-        idMappings.put(ImQueueDTO.class.getSimpleName(), ImQueueDTO.class);
+        idMappings.put(ActiveMQMessageDTO.class.getSimpleName(), ActiveMQMessageDTO.class);
         converter.setTypeIdMappings(idMappings);
         return converter;
     }

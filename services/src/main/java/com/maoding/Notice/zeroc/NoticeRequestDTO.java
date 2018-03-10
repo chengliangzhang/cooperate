@@ -47,18 +47,6 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
         this.projectId = projectId;
     }
 
-    public String projectName;
-
-    public String getProjectName()
-    {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName)
-    {
-        this.projectName = projectName;
-    }
-
     public String taskId;
 
     public String getTaskId()
@@ -71,28 +59,16 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
         this.taskId = taskId;
     }
 
-    public String taskName;
+    public String companyId;
 
-    public String getTaskName()
+    public String getCompanyId()
     {
-        return taskName;
+        return companyId;
     }
 
-    public void setTaskName(String taskName)
+    public void setCompanyId(String companyId)
     {
-        this.taskName = taskName;
-    }
-
-    public String companyName;
-
-    public String getCompanyName()
-    {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName)
-    {
-        this.companyName = companyName;
+        this.companyId = companyId;
     }
 
     public String userId;
@@ -107,40 +83,36 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
         this.userId = userId;
     }
 
-    public String userName;
+    public com.maoding.Common.zeroc.StringElementDTO stringElement;
 
-    public String getUserName()
+    public com.maoding.Common.zeroc.StringElementDTO getStringElement()
     {
-        return userName;
+        return stringElement;
     }
 
-    public void setUserName(String userName)
+    public void setStringElement(com.maoding.Common.zeroc.StringElementDTO stringElement)
     {
-        this.userName = userName;
+        this.stringElement = stringElement;
     }
 
     public NoticeRequestDTO()
     {
         this.typeIdString = "";
         this.projectId = "";
-        this.projectName = "";
         this.taskId = "";
-        this.taskName = "";
-        this.companyName = "";
+        this.companyId = "";
         this.userId = "";
-        this.userName = "";
+        this.stringElement = new com.maoding.Common.zeroc.StringElementDTO();
     }
 
-    public NoticeRequestDTO(String typeIdString, String projectId, String projectName, String taskId, String taskName, String companyName, String userId, String userName)
+    public NoticeRequestDTO(String typeIdString, String projectId, String taskId, String companyId, String userId, com.maoding.Common.zeroc.StringElementDTO stringElement)
     {
         this.typeIdString = typeIdString;
         this.projectId = projectId;
-        this.projectName = projectName;
         this.taskId = taskId;
-        this.taskName = taskName;
-        this.companyName = companyName;
+        this.companyId = companyId;
         this.userId = userId;
-        this.userName = userName;
+        this.stringElement = stringElement;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -171,13 +143,6 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.projectName != r.projectName)
-            {
-                if(this.projectName == null || r.projectName == null || !this.projectName.equals(r.projectName))
-                {
-                    return false;
-                }
-            }
             if(this.taskId != r.taskId)
             {
                 if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
@@ -185,16 +150,9 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.taskName != r.taskName)
+            if(this.companyId != r.companyId)
             {
-                if(this.taskName == null || r.taskName == null || !this.taskName.equals(r.taskName))
-                {
-                    return false;
-                }
-            }
-            if(this.companyName != r.companyName)
-            {
-                if(this.companyName == null || r.companyName == null || !this.companyName.equals(r.companyName))
+                if(this.companyId == null || r.companyId == null || !this.companyId.equals(r.companyId))
                 {
                     return false;
                 }
@@ -206,9 +164,9 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.userName != r.userName)
+            if(this.stringElement != r.stringElement)
             {
-                if(this.userName == null || r.userName == null || !this.userName.equals(r.userName))
+                if(this.stringElement == null || r.stringElement == null || !this.stringElement.equals(r.stringElement))
                 {
                     return false;
                 }
@@ -226,12 +184,10 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::NoticeRequestDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeIdString);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, stringElement);
         return h_;
     }
 
@@ -253,24 +209,20 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
     {
         ostr.writeString(this.typeIdString);
         ostr.writeString(this.projectId);
-        ostr.writeString(this.projectName);
         ostr.writeString(this.taskId);
-        ostr.writeString(this.taskName);
-        ostr.writeString(this.companyName);
+        ostr.writeString(this.companyId);
         ostr.writeString(this.userId);
-        ostr.writeString(this.userName);
+        com.maoding.Common.zeroc.StringElementDTO.ice_write(ostr, this.stringElement);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.typeIdString = istr.readString();
         this.projectId = istr.readString();
-        this.projectName = istr.readString();
         this.taskId = istr.readString();
-        this.taskName = istr.readString();
-        this.companyName = istr.readString();
+        this.companyId = istr.readString();
         this.userId = istr.readString();
-        this.userName = istr.readString();
+        this.stringElement = com.maoding.Common.zeroc.StringElementDTO.ice_read(istr);
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, NoticeRequestDTO v)
@@ -325,5 +277,5 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
 
     private static final NoticeRequestDTO _nullMarshalValue = new NoticeRequestDTO();
 
-    public static final long serialVersionUID = 1644428916L;
+    public static final long serialVersionUID = -1903643717L;
 }

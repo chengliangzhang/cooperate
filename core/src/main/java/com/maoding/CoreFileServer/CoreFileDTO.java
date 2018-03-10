@@ -1,5 +1,7 @@
 package com.maoding.CoreFileServer;
 
+import com.maoding.Utils.StringUtils;
+
 import java.io.Serializable;
 
 /**
@@ -10,11 +12,32 @@ import java.io.Serializable;
  */
 public class CoreFileDTO implements Serializable {
     /** 服务器地址 */
+    @Deprecated
     private String serverAddress;
     /** 文件空间，即阿里云的buchet或FastFDS的group */
     private String scope;
     /** 文件标志，即阿里云的key或FastFDS的key */
     private String key;
+    /** 文件长度 */
+    private Long length;
+    /** 文件校验和 */
+    private String checksum;
+
+    public Long getLength() {
+        return length;
+    }
+
+    public void setLength(Long length) {
+        this.length = length;
+    }
+
+    public String getChecksum() {
+        return checksum;
+    }
+
+    public void setChecksum(String checksum) {
+        this.checksum = checksum;
+    }
 
     public String getScope() {
         return scope;
@@ -46,11 +69,12 @@ public class CoreFileDTO implements Serializable {
         this.key = key;
     }
     public CoreFileDTO(String scope, String key){
-        this(null,scope,key);
+        this.scope = scope;
+        this.key = key;
     }
-//    public CoreFileDTO(String path){
-//        this(StringUtils.getDirName(path),StringUtils.getFileName(path));
-//    }
+    public CoreFileDTO(String path){
+        this(StringUtils.getDirName(path),StringUtils.getFileName(path));
+    }
     public CoreFileDTO(){
         this(null,null);
     }

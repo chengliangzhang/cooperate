@@ -4,7 +4,6 @@ import com.maoding.CoreMybatis.CustomMapper;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.MySqlMapper;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,19 +31,79 @@ public interface BaseDao<T extends BaseEntity> extends Mapper<T>, MySqlMapper<T>
         return n;
     }
 
-    default int updateById(T entity){
+    default int update(T entity) {
         return updateByPrimaryKeySelective(entity);
     }
-
-    default int fakeDeleteById(String id, String lastModifyUserId, Date lastModifyTime){
-        List<String> idList = new ArrayList<>();
-        idList.add(id);
-        return fakeDeleteById(idList,lastModifyUserId,lastModifyTime);
+    
+    default int updateExact(T entity) {
+        return updateByPrimaryKey(entity); 
     }
+
+    default int updateById(T entity){
+        return updateById(entity, entity.getId(), null, null);
+    }
+
+    default int updateById(T entity, String id){
+        return updateById(entity, id, null, null);
+    }
+
+    default int updateById(T entity, String id, String lastModifyUserId){
+        return updateById(entity, id, lastModifyUserId, null);
+    }
+
+    default int updateById(T entity, List<String> idList){
+        return updateByIdList(entity, idList, null, null);
+    }
+
+    default int updateById(T entity, List<String> idList, String lastModifyUserId){
+        return updateByIdList(entity, idList, lastModifyUserId, null);
+    }
+
+    default int updateById(T entity, List<String> idList, String lastModifyUserId, Date lastModifyTime){
+        return updateByIdList(entity, idList, lastModifyUserId, lastModifyTime);
+    }
+
+    default int updateExactById(T entity){
+        return updateExactById(entity, entity.getId(), null, null);
+    }
+
+    default int updateExactById(T entity, String id){
+        return updateExactById(entity, id, null, null);
+    }
+
+    default int updateExactById(T entity, String id, String lastModifyUserId){
+        return updateExactById(entity, id, lastModifyUserId, null);
+    }
+
+    default int updateExactById(T entity, List<String> idList){
+        return updateExactByIdList(entity, idList, null, null);
+    }
+
+    default int updateExactById(T entity, List<String> idList, String lastModifyUserId){
+        return updateExactByIdList(entity, idList, lastModifyUserId, null);
+    }
+
+    default int updateExactById(T entity, List<String> idList, String lastModifyUserId, Date lastModifyTime){
+        return updateExactByIdList(entity, idList, lastModifyUserId, lastModifyTime);
+    }
+
     default int fakeDeleteById(String id){
         return fakeDeleteById(id,null,null);
     }
+    
+    default int fakeDeleteById(String id, String lastModifyUserId){
+        return fakeDeleteById(id,lastModifyUserId,null);
+    }
+    
     default int fakeDeleteById(List<String> idList){
-        return fakeDeleteById(idList,null,null);
+        return fakeDeleteByIdList(idList,null,null);
+    }
+    
+    default int fakeDeleteById(List<String> idList, String lastModifyUserId){
+        return fakeDeleteByIdList(idList,lastModifyUserId,null);
+    }
+
+    default int fakeDeleteById(List<String> idList, String lastModifyUserId, Date lastModifyTime){
+        return fakeDeleteByIdList(idList,lastModifyUserId,lastModifyTime);
     }
 }

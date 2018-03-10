@@ -4,7 +4,7 @@ import com.maoding.Bean.CoreKeyValuePair;
 import com.maoding.Bean.CoreResponse;
 import com.maoding.Bean.CoreUploadFileItem;
 import com.maoding.CoreFileServer.CoreFileDTO;
-import com.maoding.CoreFileServer.CoreFileExtraDTO;
+import com.maoding.CoreFileServer.CoreCreateFileRequest;
 import com.maoding.CoreFileServer.CoreFileServer;
 import com.maoding.Utils.BeanUtils;
 import com.maoding.Utils.HttpUtils;
@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -31,7 +32,7 @@ public class WebFileServer implements CoreFileServer {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private static final Integer MAX_BLOCK_SIZE = (8192 * 1024);
-    private static final String DEFAULT_URL = "http://172.16.6.73:8071/fileCenter/netFile/uploadFile";
+    private static final String DEFAULT_URL = "http://127.0.0.1:8071/fileCenter/netFile/uploadFile";
     private String lastUrl = null;
 
     /**
@@ -49,7 +50,7 @@ public class WebFileServer implements CoreFileServer {
      */
     @Override
     public String coreGetServerAddress() {
-        return (lastUrl == null) ? DEFAULT_URL : lastUrl;
+        return (lastUrl != null) ? lastUrl : DEFAULT_URL;
     }
 
     /**
@@ -60,10 +61,10 @@ public class WebFileServer implements CoreFileServer {
      */
     @Override
     @Deprecated
-    public CoreResponse<WebFileResponse> upload(CoreFileDTO src, CoreFileExtraDTO request) {
+    public CoreResponse<WebFileResponse> upload(CoreFileDTO src, CoreCreateFileRequest request) {
 
         // 设定服务地址
-        String urlString = DEFAULT_URL;
+        String urlString = coreGetServerAddress();
 
         // 设定要上传的Field及其对应的value
         ArrayList<CoreKeyValuePair> ptyList = new ArrayList<>();
@@ -139,9 +140,57 @@ public class WebFileServer implements CoreFileServer {
         return result;
     }
 
+    /**
+     * 创建文件
+     *
+     * @param createRequest
+     */
+    @Override
+    public CoreFileDTO coreCreateFile(CoreCreateFileRequest createRequest) {
+        //设定要使用的url
+        String urlString = coreGetServerAddress();
+
+        // 设定要上传的Field及其对应的value
+        File srcFile = null;
+        ArrayList<CoreKeyValuePair> ptyList = new ArrayList<>();
+        ptyList.add(new CoreKeyValuePair("id", UUID.randomUUID().toString().replaceAll("-","")));
+        ptyList.add(new CoreKeyValuePair("type", HttpUtils.DEFAULT_FILE_CONTENT_TYPE));
+        if (createRequest != null) {
+            //设定要上传的文件名及要上传的文件
+            String fileName = null;
+            if (createRequest.getSrcFile() != null) {
+                srcFile = createRequest.getSrcFile();
+                fileName = StringUtils.getFileName(srcFile.getPath());
+            }
+            if (StringUtils.isNotEmpty(createRequest.getPath())){
+                fileName = StringUtils.getFileName(createRequest.getPath());
+            }
+            if (StringUtils.isNotEmpty(fileName)) ptyList.add(new CoreKeyValuePair("name",fileName));
+
+            //设定其他属性
+            if (StringUtils.isNotEmpty(createRequest.getPid())) ptyList.add(new CoreKeyValuePair("pid", createRequest.getPid()));
+            if (StringUtils.isNotEmpty(createRequest.getProjectId())) ptyList.add(new CoreKeyValuePair("projectId", createRequest.getProjectId()));
+            if (StringUtils.isNotEmpty(createRequest.getCompanyId())) ptyList.add(new CoreKeyValuePair("companyId", createRequest.getCompanyId()));
+            if (StringUtils.isNotEmpty(createRequest.getTaskId())) ptyList.add(new CoreKeyValuePair("taskId", createRequest.getTaskId()));
+            if (StringUtils.isNotEmpty(createRequest.getOwnerUserId())) ptyList.add(new CoreKeyValuePair("accountId", createRequest.getOwnerUserId()));
+            ptyList.add(new CoreKeyValuePair("lastModifiedDate",
+                    ((createRequest.getLastModifyTime() == null) ? (new Date()) : createRequest.getLastModifyTime()).toString()));
+        }
+
+        CoreResponse<FastdfsUploadResult> response = sendRequest(srcFile,0,-1,ptyList,urlString);
+
+        CoreFileDTO resultFile = null;
+        if ((response != null) && (response.isSuccessful())) {
+            FastdfsUploadResult webResponse = response.getData();
+            assert (webResponse != null);
+            resultFile = new CoreFileDTO(webResponse.getFastdfsGroup(),webResponse.getFastdfsPath());
+        }
+        return resultFile;
+
+    }
 
     @Override
-    public CoreFileDTO coreCreateFile(CoreFileDTO dst, CoreFileExtraDTO createRequest) {
+    public CoreFileDTO coreCreateFile(CoreFileDTO dst, CoreCreateFileRequest createRequest) {
         //设定要使用的url
         String urlString = coreGetServerAddress();
         if ((dst != null) && (StringUtils.isNotEmpty(dst.getServerAddress()))) urlString = dst.getServerAddress();

@@ -2,11 +2,8 @@ package com.maoding.Storage.Dao;
 
 import com.maoding.Base.BaseDao;
 import com.maoding.Storage.Dto.StorageEntityUnionDTO;
-import com.maoding.Storage.Entity.StorageEntity;
-import com.maoding.Storage.zeroc.FileNodeDTO;
-import com.maoding.Storage.zeroc.FullNodeDTO;
-import com.maoding.Storage.zeroc.QueryNodeDTO;
-import com.maoding.Storage.zeroc.SimpleNodeDTO;
+import com.maoding.Storage.Entity.StorageTreeEntity;
+import com.maoding.Storage.zeroc.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +16,7 @@ import java.util.List;
  * 描    述 :
  */
 @Repository
-public interface StorageDao extends BaseDao<StorageEntity> {
+public interface StorageDao extends BaseDao<StorageTreeEntity> {
     List<SimpleNodeDTO> listWebArchiveDir(QueryNodeDTO query);
     List<SimpleNodeDTO> listOldNode(QueryNodeDTO query);
 
@@ -45,4 +42,7 @@ public interface StorageDao extends BaseDao<StorageEntity> {
 
     List<String> listAllSubNodeIdByPath(String path);
     FileNodeDTO getFileNodeInfoByNodeId(String nodeId);
+
+    FullNodeDTO getNodeDetailByNodeId(@Param("id") String nodeId, @Param("request") QueryFullNodeDTO request);
+    StorageEntityUnionDTO selectUnionById(@Param("id") String id);
 }

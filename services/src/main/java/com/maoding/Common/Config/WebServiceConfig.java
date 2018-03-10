@@ -44,6 +44,10 @@ public class WebServiceConfig {
         return url + "/iWork/project/loadProjectDetails";
     }
 
+    public String getUploadUrl(){
+        return url + "/fileCenter/netFile/uploadFile";
+    }
+
     public CloseableHttpClient getClient() {
         if (client == null){
             client = HttpClients.createDefault();

@@ -1,6 +1,5 @@
 package com.maoding.Base;
 
-import com.maoding.Config.IceConfig;
 import com.maoding.Utils.StringUtils;
 import com.zeroc.Ice.*;
 import jodd.util.StringUtil;
@@ -180,7 +179,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
         }
         return prx;
     }
-    protected P getServicePrx(String serviceName, String adapterName, Class<P> proxy, Class<?> impl) {
+    public P getServicePrx(String serviceName, String adapterName, Class<P> proxy, Class<?> impl) {
         return getServicePrx(serviceName,adapterName,proxy,impl,null);
     }
 }

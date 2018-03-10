@@ -1,5 +1,6 @@
-package com.maoding.Config;
+package com.maoding.CoreMybatis;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -8,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 //@EnableAutoConfiguration
 //@Component
 @Configuration
-//@ConfigurationProperties(prefix = "druid")
+@ConfigurationProperties(prefix = "druid")
 public class DruidConfig {
     private String url;
     private String username;

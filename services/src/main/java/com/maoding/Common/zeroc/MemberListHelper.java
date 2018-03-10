@@ -19,7 +19,7 @@
 //
 
 package com.maoding.Common.zeroc;
-@SuppressWarnings("deprecation")
+
 public final class MemberListHelper
 {
     public static void write(com.zeroc.Ice.OutputStream ostr, java.util.List<MemberDTO> v)

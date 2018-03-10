@@ -155,16 +155,28 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.ownerUserId = ownerUserId;
     }
 
-    public String ownerRoleId;
+    public String lastModifyRoleId;
 
-    public String getOwnerRoleId()
+    public String getLastModifyRoleId()
     {
-        return ownerRoleId;
+        return lastModifyRoleId;
     }
 
-    public void setOwnerRoleId(String ownerRoleId)
+    public void setLastModifyRoleId(String lastModifyRoleId)
     {
-        this.ownerRoleId = ownerRoleId;
+        this.lastModifyRoleId = lastModifyRoleId;
+    }
+
+    public String accountId;
+
+    public String getAccountId()
+    {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId)
+    {
+        this.accountId = accountId;
     }
 
     public String parentPath;
@@ -179,28 +191,16 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.parentPath = parentPath;
     }
 
-    public String userId;
+    public String fuzzyId;
 
-    public String getUserId()
+    public String getFuzzyId()
     {
-        return userId;
+        return fuzzyId;
     }
 
-    public void setUserId(String userId)
+    public void setFuzzyId(String fuzzyId)
     {
-        this.userId = userId;
-    }
-
-    public String fuzzyIdString;
-
-    public String getFuzzyIdString()
-    {
-        return fuzzyIdString;
-    }
-
-    public void setFuzzyIdString(String fuzzyIdString)
-    {
-        this.fuzzyIdString = fuzzyIdString;
+        this.fuzzyId = fuzzyId;
     }
 
     public String fuzzyPath;
@@ -302,6 +302,51 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.fuzzyStoragePath = fuzzyStoragePath;
     }
 
+    /**
+     * @deprecated 使用lastModifyRoleId代替
+     **/
+    @Deprecated
+    public String ownerRoleId;
+
+    /**
+     * @deprecated 使用lastModifyRoleId代替
+     **/
+    @Deprecated
+    public String getOwnerRoleId()
+    {
+        return ownerRoleId;
+    }
+
+    /**
+     * @deprecated 使用lastModifyRoleId代替
+     **/
+    @Deprecated
+    public void setOwnerRoleId(String ownerRoleId)
+    {
+        this.ownerRoleId = ownerRoleId;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public String userId;
+
+    /**
+     **/
+    @Deprecated
+    public String getUserId()
+    {
+        return userId;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public void setUserId(String userId)
+    {
+        this.userId = userId;
+    }
+
     public QueryNodeDTO()
     {
         this.id = "";
@@ -315,18 +360,20 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.taskId = "";
         this.companyId = "";
         this.ownerUserId = "";
-        this.ownerRoleId = "";
+        this.lastModifyRoleId = "";
+        this.accountId = "";
         this.parentPath = "";
-        this.userId = "";
-        this.fuzzyIdString = "";
+        this.fuzzyId = "";
         this.fuzzyPath = "";
         this.classicId = "";
         this.storagePath = "";
         this.parentStoragePath = "";
         this.fuzzyStoragePath = "";
+        this.ownerRoleId = "";
+        this.userId = "";
     }
 
-    public QueryNodeDTO(String id, String pid, String name, String path, String typeId, String projectId, String rangeId, String issueId, String taskId, String companyId, String ownerUserId, String ownerRoleId, String parentPath, String userId, String fuzzyIdString, String fuzzyPath, String classicId, String storagePath, String parentStoragePath, String fuzzyStoragePath)
+    public QueryNodeDTO(String id, String pid, String name, String path, String typeId, String projectId, String rangeId, String issueId, String taskId, String companyId, String ownerUserId, String lastModifyRoleId, String accountId, String parentPath, String fuzzyId, String fuzzyPath, String classicId, String storagePath, String parentStoragePath, String fuzzyStoragePath, String ownerRoleId, String userId)
     {
         this.id = id;
         this.pid = pid;
@@ -339,15 +386,17 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.taskId = taskId;
         this.companyId = companyId;
         this.ownerUserId = ownerUserId;
-        this.ownerRoleId = ownerRoleId;
+        this.lastModifyRoleId = lastModifyRoleId;
+        this.accountId = accountId;
         this.parentPath = parentPath;
-        this.userId = userId;
-        this.fuzzyIdString = fuzzyIdString;
+        this.fuzzyId = fuzzyId;
         this.fuzzyPath = fuzzyPath;
         this.classicId = classicId;
         this.storagePath = storagePath;
         this.parentStoragePath = parentStoragePath;
         this.fuzzyStoragePath = fuzzyStoragePath;
+        this.ownerRoleId = ownerRoleId;
+        this.userId = userId;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -441,9 +490,16 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.ownerRoleId != r.ownerRoleId)
+            if(this.lastModifyRoleId != r.lastModifyRoleId)
             {
-                if(this.ownerRoleId == null || r.ownerRoleId == null || !this.ownerRoleId.equals(r.ownerRoleId))
+                if(this.lastModifyRoleId == null || r.lastModifyRoleId == null || !this.lastModifyRoleId.equals(r.lastModifyRoleId))
+                {
+                    return false;
+                }
+            }
+            if(this.accountId != r.accountId)
+            {
+                if(this.accountId == null || r.accountId == null || !this.accountId.equals(r.accountId))
                 {
                     return false;
                 }
@@ -455,16 +511,9 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.userId != r.userId)
+            if(this.fuzzyId != r.fuzzyId)
             {
-                if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
-                {
-                    return false;
-                }
-            }
-            if(this.fuzzyIdString != r.fuzzyIdString)
-            {
-                if(this.fuzzyIdString == null || r.fuzzyIdString == null || !this.fuzzyIdString.equals(r.fuzzyIdString))
+                if(this.fuzzyId == null || r.fuzzyId == null || !this.fuzzyId.equals(r.fuzzyId))
                 {
                     return false;
                 }
@@ -504,6 +553,20 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.ownerRoleId != r.ownerRoleId)
+            {
+                if(this.ownerRoleId == null || r.ownerRoleId == null || !this.ownerRoleId.equals(r.ownerRoleId))
+                {
+                    return false;
+                }
+            }
+            if(this.userId != r.userId)
+            {
+                if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
@@ -526,15 +589,17 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerRoleId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyRoleId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, accountId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, parentPath);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyIdString);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyPath);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, classicId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, storagePath);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, parentStoragePath);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyStoragePath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerRoleId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
         return h_;
     }
 
@@ -565,15 +630,17 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.taskId);
         ostr.writeString(this.companyId);
         ostr.writeString(this.ownerUserId);
-        ostr.writeString(this.ownerRoleId);
+        ostr.writeString(this.lastModifyRoleId);
+        ostr.writeString(this.accountId);
         ostr.writeString(this.parentPath);
-        ostr.writeString(this.userId);
-        ostr.writeString(this.fuzzyIdString);
+        ostr.writeString(this.fuzzyId);
         ostr.writeString(this.fuzzyPath);
         ostr.writeString(this.classicId);
         ostr.writeString(this.storagePath);
         ostr.writeString(this.parentStoragePath);
         ostr.writeString(this.fuzzyStoragePath);
+        ostr.writeString(this.ownerRoleId);
+        ostr.writeString(this.userId);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -589,15 +656,17 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.taskId = istr.readString();
         this.companyId = istr.readString();
         this.ownerUserId = istr.readString();
-        this.ownerRoleId = istr.readString();
+        this.lastModifyRoleId = istr.readString();
+        this.accountId = istr.readString();
         this.parentPath = istr.readString();
-        this.userId = istr.readString();
-        this.fuzzyIdString = istr.readString();
+        this.fuzzyId = istr.readString();
         this.fuzzyPath = istr.readString();
         this.classicId = istr.readString();
         this.storagePath = istr.readString();
         this.parentStoragePath = istr.readString();
         this.fuzzyStoragePath = istr.readString();
+        this.ownerRoleId = istr.readString();
+        this.userId = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, QueryNodeDTO v)
@@ -652,5 +721,5 @@ public class QueryNodeDTO implements java.lang.Cloneable,
 
     private static final QueryNodeDTO _nullMarshalValue = new QueryNodeDTO();
 
-    public static final long serialVersionUID = -978008526L;
+    public static final long serialVersionUID = 354582280L;
 }

@@ -2,14 +2,16 @@ package com.maoding.Storage;
 
 import com.maoding.Base.BaseLocalService;
 import com.maoding.Common.ConstService;
+import com.maoding.Common.zeroc.CustomException;
 import com.maoding.Project.zeroc.ProjectService;
 import com.maoding.Storage.Dao.StorageDao;
 import com.maoding.Storage.Dao.StorageFileDao;
 import com.maoding.Storage.Dao.StorageFileHisDao;
+import com.maoding.Storage.Dao.StorageTreeDao;
 import com.maoding.Storage.Dto.StorageEntityUnionDTO;
-import com.maoding.Storage.Entity.StorageEntity;
 import com.maoding.Storage.Entity.StorageFileEntity;
 import com.maoding.Storage.Entity.StorageFileHisEntity;
+import com.maoding.Storage.Entity.StorageTreeEntity;
 import com.maoding.Storage.zeroc.*;
 import com.maoding.User.zeroc.AccountDTO;
 import com.maoding.User.zeroc.UserService;
@@ -38,6 +40,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     private StorageDao storageDao;
 
     @Autowired
+    private StorageTreeDao storageTreeDao;
+
+    @Autowired
     private StorageFileDao storageFileDao;
 
     @Autowired
@@ -48,6 +53,50 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Autowired
     ProjectService projectService;
+
+    /**
+     * @param src
+     * @param request
+     * @param current The Current object for the invocation.  @deprecated 尚未实现
+     **/
+    @Override
+    public FullNodeDTO createMirror(@NotNull FullNodeDTO src, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
+        long t = System.currentTimeMillis();
+
+        assert (src.getBasic() != null);
+        assert (!ConstService.isDirectoryType(src.getBasic().getTypeId()));
+        String id = StringUtils.left(src.getBasic().getId(),StringUtils.DEFAULT_ID_LENGTH);
+        assert (StringUtils.isNotEmpty(id));
+        StorageEntityUnionDTO entityUnion = storageDao.selectUnionById(id);
+        assert (entityUnion != null);
+        StorageFileEntity srcFileEntity = entityUnion.getFileEntity();
+        StorageFileEntity fileEntity = BeanUtils.createCleanFrom(srcFileEntity,StorageFileEntity.class);
+        BeanUtils.copyProperties(request,fileEntity);
+        fileEntity.reset();
+        fileEntity.setFileTypeId(ConstService.STORAGE_FILE_TYPE_MIRROR);
+        assert (srcFileEntity != null);
+        fileEntity.setMainFileId(srcFileEntity.getId());
+        storageFileDao.insert(fileEntity);
+
+        NodeFileDTO file = src.getFileInfo();
+        file.setReadonlyMirrorPath(StringUtils.formatPath(fileEntity.getReadOnlyKey()));
+        file.setWritableMirrorPath(StringUtils.formatPath(fileEntity.getWritableKey()));
+
+        log.info("----> createMirror花费时间:" + (System.currentTimeMillis()-t) + "ms");
+        return src;
+    }
+
+    @Override
+    public FullNodeDTO getNodeInfo(@NotNull SimpleNodeDTO node, @NotNull QueryFullNodeDTO request, Current current) throws CustomException {
+        long t = System.currentTimeMillis();
+
+        FullNodeDTO fullNode = storageDao.getNodeDetailByNodeId(node.getId(),BeanUtils.cleanProperties(request));
+        if (fullNode == null) fullNode = new FullNodeDTO();
+        fullNode.setBasic(node);
+
+        log.info("----> getNodeInfo花费时间:" + (System.currentTimeMillis()-t) + "ms");
+        return fullNode;
+    }
 
     @Override
     public List<SimpleNodeDTO> listOldNode(@NotNull QueryNodeDTO query, Current current) {
@@ -130,13 +179,13 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     private StorageEntityUnionDTO insertPathNodeList(StorageEntityUnionDTO parentUnion,
-                                      @NotNull UpdateNodeDTO request,
-                                      @NotNull String dirName,
-                                      String pid,
-                                      String taskId,
-                                      String lastModifyUserId,
-                                      Short pTypeId){
-        List<StorageEntity> nodeList = new ArrayList<>();
+                                                     @NotNull UpdateNodeDTO request,
+                                                     @NotNull String dirName,
+                                                     String pid,
+                                                     String taskId,
+                                                     String lastModifyUserId,
+                                                     Short pTypeId){
+        List<StorageTreeEntity> nodeList = new ArrayList<>();
         StringBuilder pathBuilder = new StringBuilder();
         String parentPath = "";
         if (parentUnion != null) {
@@ -296,12 +345,6 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public SimpleNodeDTO createMirror(FileNodeDTO src, Current current) {
-        return null;
-    }
-
-    @Override
     public boolean deleteNodeById(String id, Current current) {
         assert (!StringUtils.isEmpty(id));
 
@@ -406,7 +449,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             n += storageFileDao.insert(fileEntity);
             assert (n > 0);
         }
-        n += storageDao.insert(srcUnion);
+        n += storageTreeDao.insert(srcUnion);
         assert (n > 0);
     }
 
@@ -417,7 +460,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                                     String pid,
                                     String taskId,
                                     String lastModifyUserId){
-        List<StorageEntity> nodeList = new ArrayList<>();
+        List<StorageTreeEntity> nodeList = new ArrayList<>();
         StringBuilder pathBuilder = new StringBuilder();
         String parentPath = "";
         if (parentUnion != null) {
@@ -428,7 +471,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         String[] nodeNameArray = fullPath.split(StringUtils.SPLIT_PATH);
         for (String nodeName : nodeNameArray) {
             if (StringUtils.isEmpty(nodeName)) continue;
-            StorageEntity pathNode = BeanUtils.createCleanFrom(request, StorageEntity.class);
+            StorageTreeEntity pathNode = BeanUtils.createCleanFrom(request, StorageTreeEntity.class);
             pathNode.setPid(pid);
             pathNode.setNodeName(nodeName);
             if (pathBuilder.length() > 0) pathBuilder.append(StringUtils.SPLIT_PATH);
@@ -613,12 +656,15 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public List<SimpleNodeDTO> listNode(@NotNull QueryNodeDTO query, Current current) {
-        query = BeanUtils.cleanProperties(query);
-        if (StringUtils.isEmpty(query.getPid()) && StringUtils.isRootPath(query.getParentPath())){
-            return storageDao.listRootNode(query.getOwnerUserId());
-        } else {
-            return storageDao.listNode(query);
-        }
+        long t = System.currentTimeMillis();
+
+        query.setPath(StringUtils.formatPath(query.getPath()));
+        query.setParentPath(StringUtils.formatPath(query.getParentPath()));
+        query.setFuzzyPath(StringUtils.formatPath(query.getFuzzyPath()));
+        List<SimpleNodeDTO> list = storageDao.listNode(BeanUtils.cleanProperties(query));
+
+        log.info("----> listNode花费时间:" + (System.currentTimeMillis()-t) + "ms");
+        return list;
     }
 
     @Override
@@ -681,7 +727,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
 
-    private boolean isOwner(AccountDTO account, StorageEntity nodeEntity){
+    private boolean isOwner(AccountDTO account, StorageTreeEntity nodeEntity){
         assert (nodeEntity != null);
         return isOwner(account,nodeEntity.getLastModifyUserId());
     }
@@ -692,7 +738,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
 
-    private SimpleNodeDTO convertToSimpleNodeDTO(StorageEntity entity,String fullPath){
+    private SimpleNodeDTO convertToSimpleNodeDTO(StorageTreeEntity entity, String fullPath){
         if (entity == null) return null;
         SimpleNodeDTO node = BeanUtils.createCleanFrom(entity,SimpleNodeDTO.class);
         if (entity.getTypeId() != null) {

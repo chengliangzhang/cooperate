@@ -175,6 +175,16 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
     }
 
+    public static String left(String str,String split){
+        if ((str == null) || (split == null) || (!str.contains(split))) return str;
+        return (str.substring(0,str.indexOf(split)));
+    }
+
+    public static String right(String str,String split){
+        if ((str == null) || (split == null) || (!str.contains(split))) return null;
+        return (str.substring(str.indexOf(split) + split.length()));
+    }
+
     //带单位计算字节传送速度
     public static String calSpeed(long length,long t,int digit){
         if (t == 0) return "?";

@@ -1,9 +1,9 @@
 package com.maoding.Common;
 
 import com.maoding.Common.Dao.ConstDao;
-import com.maoding.Common.Dto.StringElementDTO;
 import com.maoding.Common.Entity.ConstEntity;
 import com.maoding.Common.zeroc.IdNameDTO;
+import com.maoding.Common.zeroc.StringElementDTO;
 import com.maoding.Utils.SpringUtils;
 import com.maoding.Utils.StringUtils;
 
@@ -86,6 +86,7 @@ public class ConstService {
     public static final Short STORAGE_FILE_TYPE_LEGAL = 9;
     public static final Short STORAGE_FILE_TYPE_EXP = 20;
     public static final Short STORAGE_FILE_TYPE_NOTICE = 21;
+    public static final Short STORAGE_FILE_TYPE_MIRROR = 22;
 
     //默认值
     public static final Short STORAGE_NODE_TYPE_FILE_MIN = STORAGE_NODE_TYPE_FILE_MAIN;
@@ -122,6 +123,7 @@ public class ConstService {
     public static final Short FILE_SERVER_TYPE_ALIYUN = 4;
     public static final Short FILE_SERVER_TYPE_CIFS = 5;
     public static final Short FILE_SERVER_TYPE_FTP = 6;
+    public static final Short FILE_SERVER_TYPE_ICE = 7;
 
     public static final Integer POS_IS_DIRECTORY = 0;
     public static final Integer POS_IS_PROJECT = 1;
@@ -240,7 +242,7 @@ public class ConstService {
     public static String getTopicPrefix(Short noticeTypeId) {
         String sField = getNoticeTopic(noticeTypeId);
         if (StringUtils.isEmpty(sField)) return "";
-        return (sField.contains("{") ? sField.substring(0,sField.indexOf("{")) : sField);
+        return sField.contains("{") ? sField.substring(0,sField.indexOf("{")) : sField;
     }
     public static String getNoticeTopic(Short noticeTypeId) {
         return getExtraField(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId,0);
@@ -254,34 +256,39 @@ public class ConstService {
         return getExtraField(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId,2);
     }
 
-    public static Short getActionNodeTypeId(Short actionTypeId){
+    public static Short getActionNodeTypeId(@NotNull Short actionTypeId){
         String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,0);
-        return (!StringUtils.isEmpty(sField))
-                ? Short.parseShort(sField.substring(0,sField.indexOf(":"))) : STORAGE_ACTION_TYPE_UNKOWN;
+        if (StringUtils.isEmpty(sField)) return STORAGE_NODE_TYPE_UNKNOWN;
+        else return Short.parseShort(StringUtils.left(sField,":"));
     }
 
-    public static String getActionNodePath(Short actionTypeId){
+    public static String getActionNodePath(@NotNull Short actionTypeId){
         String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,0);
-        return (!StringUtils.isEmpty(sField))
-                ? sField.substring(sField.indexOf(":") + 1) : null;
+        return StringUtils.right(sField,":");
     }
 
-    public static Short getActionFileServerTypeId(Short actionTypeId){
-        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,1);
-        return (!StringUtils.isEmpty(sField))
-                ? Short.parseShort(sField.substring(0,sField.indexOf(":"))) : FILE_SERVER_TYPE_UNKNOWN;
+    public static String getActionNodePath(@NotNull Short actionTypeId, @NotNull StringElementDTO stringElement){
+        return StringUtils.formatPath(convertString(getActionNodePath(actionTypeId),stringElement));
     }
 
-    public static String getActionFileServerAddress(Short actionTypeId){
+    public static Short getActionFileServerTypeId(@NotNull Short actionTypeId){
         String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,1);
-        return (!StringUtils.isEmpty(sField))
-                ? sField.substring(sField.indexOf(":") + 1) : null;
+        if (StringUtils.isEmpty(sField)) return FILE_SERVER_TYPE_UNKNOWN;
+        else return Short.parseShort(StringUtils.left(sField,":"));
+    }
+
+    public static String getActionFileServerAddress(@NotNull Short actionTypeId){
+        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,1);
+        return StringUtils.right(sField,":");
+    }
+
+    public static String getActionFileServerAddress(@NotNull Short actionTypeId, @NotNull StringElementDTO stringElement){
+        return convertString(getActionFileServerAddress(actionTypeId),stringElement);
     }
 
     public static String getActionNoticeTypeIdString(Short actionTypeId){
         String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,2);
-        return (!StringUtils.isEmpty(sField))
-                ? sField : null;
+        return (!StringUtils.isEmpty(sField)) ? sField : null;
     }
 
 

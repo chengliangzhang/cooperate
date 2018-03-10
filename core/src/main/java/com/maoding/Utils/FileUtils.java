@@ -5,8 +5,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -18,9 +21,11 @@ public class FileUtils {
     /** 日志对象 */
     private static final Logger log = LoggerFactory.getLogger(FileUtils.class);
 
-    public static void ensureDirExist(String path){
-        if (StringUtils.isNotEmpty(path)) {
-            File fd = new File(StringUtils.formatPath(path));
+    private static final int DEFAULT_BUFFER_SIZE = 2048 * 1024;
+
+    public static void ensureDirExist(String dir){
+        if (StringUtils.isNotEmpty(dir)) {
+            File fd = new File(StringUtils.formatPath(dir));
             if (!fd.exists()) {
                 boolean isSuccess = fd.mkdirs();
                 assert (isSuccess);
@@ -28,6 +33,10 @@ public class FileUtils {
                 log.warn("存在同名文件");
             }
         }
+    }
+
+    public static void ensurePathExist(String path){
+        ensureDirExist(StringUtils.getDirName(path));
     }
 
     public static void close(Closeable handle) {
@@ -59,8 +68,6 @@ public class FileUtils {
     }
 
     public static void copyFile(@NotNull File srcFile, @NotNull File dstFile){
-        final int BUFFER_SIZE = 2048 * 1024;
-
         if (srcFile.exists()) {
             //复制文件
             FileChannel in = null;
@@ -69,7 +76,7 @@ public class FileUtils {
                 in = (new FileInputStream(srcFile)).getChannel();
                 out = (new FileOutputStream(dstFile)).getChannel();
                 while (in.position() < in.size()) {
-                    int length = BUFFER_SIZE;
+                    int length = DEFAULT_BUFFER_SIZE;
                     if ((in.size() - in.position()) < length) {
                         length = (int) (in.size() - in.position());
                     }
@@ -81,11 +88,53 @@ public class FileUtils {
             } catch (IOException e) {
                 log.error("从" + srcFile.getPath() + "复制到" + dstFile.getPath() + "时出错", e);
             } finally {
-                FileUtils.close(out);
-                FileUtils.close(in);
+                close(out);
+                close(in);
             }
         } else {
             log.warn("文件" + srcFile.getPath() + "不存在");
         }
     }
+
+    public static String calcChecksum(@NotNull File srcFile) {
+        assert (srcFile.exists() && srcFile.isFile());
+
+        MessageDigest md5Calc = null;
+        long len = 0;
+
+        try {
+            md5Calc = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            log.warn("初始化MD5计算器错误");
+        }
+
+        FileChannel in = null;
+        try {
+            in = (new FileInputStream(srcFile)).getChannel();
+            while (in.position() < in.size()){
+                int length = DEFAULT_BUFFER_SIZE;
+                if ((in.size() - in.position()) < length) {
+                    length = (int) (in.size() - in.position());
+                }
+                ByteBuffer buf = ByteBuffer.allocateDirect(length);
+                in.read(buf);
+                byte[] calcArray = new byte[length];
+                buf.flip();
+                buf.get(calcArray,0,calcArray.length);
+                assert (md5Calc != null);
+                md5Calc.update(calcArray);
+            }
+            len = in.size();
+        } catch (IOException e) {
+            log.error("读取文件" + srcFile.getPath() + "时出错",e);
+        } finally {
+            close(in);
+        }
+
+        assert (md5Calc != null);
+        byte[] md5Array = md5Calc.digest();
+        BigInteger md5Int = new BigInteger(1, md5Array);
+        return md5Int.toString();
+    }
+
 }

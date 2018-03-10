@@ -1,6 +1,6 @@
 package com.maoding.CoreNotice.Storm;
 
-import com.maoding.Config.IceConfig;
+import com.maoding.Base.IceConfig;
 import com.maoding.CoreNotice.CoreMessageDTO;
 import com.maoding.CoreNotice.CoreNoticeService;
 import com.maoding.CoreNotice.CoreReceiverDTO;

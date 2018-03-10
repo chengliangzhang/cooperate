@@ -1,6 +1,6 @@
 package com.maoding.FileServer.Dto;
 
-import com.maoding.CoreFileServer.CoreFileExtraDTO;
+import com.maoding.CoreFileServer.CoreCreateFileRequest;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -22,7 +22,7 @@ public class CopyRequestDTO {
     /** 目标文件名 */
     private String key;
     /** 文件额外描述信息 */
-    private CoreFileExtraDTO extra;
+    private CoreCreateFileRequest extra;
 
     public Short getSrcServerTypeId() {
         return srcServerTypeId;
@@ -72,11 +72,11 @@ public class CopyRequestDTO {
         this.key = key;
     }
 
-    public CoreFileExtraDTO getExtra() {
+    public CoreCreateFileRequest getExtra() {
         return extra;
     }
 
-    public void setExtra(CoreFileExtraDTO extra) {
+    public void setExtra(CoreCreateFileRequest extra) {
         this.extra = extra;
     }
 }

@@ -42,7 +42,7 @@ public final class NoticeRequestListHelper
     {
         final java.util.List<NoticeRequestDTO> v;
         v = new java.util.ArrayList<NoticeRequestDTO>();
-        final int len0 = istr.readAndCheckSeqSize(8);
+        final int len0 = istr.readAndCheckSeqSize(24);
         for(int i0 = 0; i0 < len0; i0++)
         {
             NoticeRequestDTO elem;

@@ -30,22 +30,61 @@ public class StorageFileEntity extends BaseEntity {
     private String fileChecksum;
     /** 文件所属专业id */
     @Column
+    private String majorTypeId;
+
+    @Column
+    @Deprecated
     private String majorId;
+
     /** 所对应的原始文件id */
     @Column
     private String mainFileId;
     /** 只读文件在文件服务器上的存储位置 */
     @Column
+    @Deprecated
     private String readFileScope;
+
     /** 只读文件在文件服务器上的存储名称 */
     @Column
+    private String readOnlyKey;
+    @Column
+    @Deprecated
     private String readFileKey;
+
     /** 可写文件在文件服务器上的存储位置 */
     @Column
+    @Deprecated
     private String writeFileScope;
     /** 可写文件在文件服务器上的存储名称 */
     @Column
+    private String writableKey;
+    @Column
+    @Deprecated
     private String writeFileKey;
+
+    public String getMajorTypeId() {
+        return majorTypeId;
+    }
+
+    public void setMajorTypeId(String majorTypeId) {
+        this.majorTypeId = majorTypeId;
+    }
+
+    public String getReadOnlyKey() {
+        return readOnlyKey;
+    }
+
+    public void setReadOnlyKey(String readOnlyKey) {
+        this.readOnlyKey = readOnlyKey;
+    }
+
+    public String getWritableKey() {
+        return writableKey;
+    }
+
+    public void setWritableKey(String writableKey) {
+        this.writableKey = writableKey;
+    }
 
     public Short getServerTypeId() {
         return serverTypeId;

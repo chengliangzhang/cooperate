@@ -357,7 +357,7 @@ public class FtpServer implements CoreFileServer {
      * @param src
      */
     @Override
-    public Boolean isExist(CoreFileDTO src) {
+    public Boolean coreIsExist(CoreFileDTO src) {
         FTPFile[] files;
         boolean status = false;
         try {
@@ -420,7 +420,7 @@ public class FtpServer implements CoreFileServer {
      * @param src
      */
     @Override
-    public void deleteFile(CoreFileDTO src) {
+    public void coreDeleteFile(CoreFileDTO src) {
         try {
             //切换目录
             ftpClient.changeWorkingDirectory(new String(src.getScope().getBytes("GBK"), "iso-8859-1"));
@@ -455,10 +455,6 @@ public class FtpServer implements CoreFileServer {
     /**
      * 连接到FTP服务器
      *
-     * @param hostname 主机名
-     * @param port     端口
-     * @param username 用户名
-     * @param password 密码
      * @return 是否连接成功
      * @throws IOException
      */

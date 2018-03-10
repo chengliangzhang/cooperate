@@ -1,7 +1,7 @@
 package com.maoding.Common.Config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.maoding.Config.DruidConfig;
+import com.maoding.CoreMybatis.DruidConfig;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;

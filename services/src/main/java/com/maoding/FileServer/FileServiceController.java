@@ -42,7 +42,7 @@ public class FileServiceController extends BaseController {
     @RequestMapping(value = "/testUpload", method = RequestMethod.GET)
     public void testUpload() {
         WebFileServer f = new WebFileServer();
-        f.writeFile(null);
+        f.coreWriteFile(null);
     }
 
 //    @RequestMapping(value = "/download", method = RequestMethod.POST)

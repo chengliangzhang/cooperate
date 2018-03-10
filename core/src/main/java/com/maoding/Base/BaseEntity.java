@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -24,9 +23,7 @@ public class BaseEntity implements Serializable,Cloneable {
 
     /** 删除标志 */
     @Column
-    @NotNull
-    @Deprecated
-    private Integer deleted;
+    private Short deleted;
 
     /** 创建时间 */
     @Column
@@ -54,11 +51,11 @@ public class BaseEntity implements Serializable,Cloneable {
         this.id = id;
     }
 
-    public Integer getDeleted() {
+    public Short getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Integer deleted) {
+    public void setDeleted(Short deleted) {
         this.deleted = deleted;
     }
 

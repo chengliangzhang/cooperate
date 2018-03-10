@@ -64,7 +64,7 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
-    public List<SimpleNodeDTO> listNode(QueryNodeDTO query) {
+    public List<SimpleNodeDTO> listNode(QueryNodeDTO query) throws CustomException{
         return getStorageService().listNode(query,null);
     }
 
@@ -79,7 +79,7 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
-    public boolean deleteNodeById(String id) {
+    public boolean deleteNodeById(String id) throws CustomException {
         return getStorageService().deleteNodeById(id,null);
     }
 
@@ -89,7 +89,7 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
-    public List<SimpleNodeDTO> listOldNode(QueryNodeDTO query) {
+    public List<SimpleNodeDTO> listOldNode(QueryNodeDTO query) throws CustomException  {
         return getStorageService().listOldNode(query,null);
     }
 }

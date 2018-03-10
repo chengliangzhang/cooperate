@@ -1,10 +1,10 @@
 package com.maoding.Notice;
 
 import com.maoding.Base.BaseLocalService;
+import com.maoding.Base.IceConfig;
 import com.maoding.Common.ConstService;
-import com.maoding.Common.Dto.StringElementDTO;
 import com.maoding.Common.zeroc.IdNameDTO;
-import com.maoding.Config.IceConfig;
+import com.maoding.Common.zeroc.StringElementDTO;
 import com.maoding.CoreNotice.CoreMessageDTO;
 import com.maoding.CoreNotice.CoreNoticeClient;
 import com.maoding.CoreNotice.CoreNoticeService;
@@ -327,16 +327,22 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
     public void sendNoticeForAccount(AccountDTO account, NoticeRequestDTO request, Current current) {
         String typeIdString = request.getTypeIdString();
         if (StringUtils.isNotEmpty(typeIdString)) {
-            StringElementDTO stringElement = BeanUtils.createCleanFrom(request,StringElementDTO.class);
+            StringElementDTO stringElement = request.getStringElement();
             String[] typeArray = typeIdString.split(":");
             for (String sTypeId : typeArray) {
                 Short typeId = Short.parseShort(sTypeId);
                 String topic = ConstService.getNoticeTopic(typeId);
-                topic = ConstService.convertString(topic,stringElement);
+                if (stringElement != null) {
+                    topic = ConstService.convertString(topic,stringElement);
+                }
                 String title = ConstService.getNoticeTitle(typeId);
-                title = ConstService.convertString(title,stringElement);
+                if (stringElement != null) {
+                    title = ConstService.convertString(title,stringElement);
+                }
                 String content = ConstService.getNoticeContent(typeId);
-                content = ConstService.convertString(content,stringElement);
+                if (stringElement != null) {
+                    content = ConstService.convertString(content,stringElement);
+                }
                 String accountId = (account != null) ? account.getId() : null;
                 if (!isWebNotice(topic)) {
                     MessageDTO message = new MessageDTO(accountId, title, content);
