@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maoding.Storage.Dao.StorageDao">
+    <select id="summaryNodeLength" parameterType="com.maoding.Storage.zeroc.QuerySummaryDTO" resultType="java.lang.Long">
+        select sum(storage_tree.file_length)
+        from maoding_storage_tree storage_tree
+        inner join maoding_storage_storage node on (storage_tree.id = substring(node.id,1,32))
+        <where>
+            storage_tree.deleted = 0
+            <if test="companyId != null">
+                and (node.company_id = #{companyId})
+            </if>
+            <if test="projectId != null">
+                and (node.project_id = #{projectId})
+            </if>
+            <if test="ownerUserId != null">
+                and (node.owner_user_id = #{ownerUserId})
+            </if>
+        </where>
+    </select>
+
     <sql id="ConditionForQueryNode">
         <if test="id != null">
             and find_in_set(node.id,#{id})
         </if>
         <if test="pid != null">
-            and find_in_set(node.pid,#{pid})
+            <choose>
+                <when test="pid == '-'.toString()">
+                    and (pid is null)
+                </when>
+                <otherwise>
+                    and find_in_set(node.pid,#{pid})
+                </otherwise>
+            </choose>
         </if>
         <if test="name != null">
             and find_in_set(node.name,#{name})
@@ -39,14 +64,7 @@
             and find_in_set(node.last_modify_role_id in #{lastModifyRoleId})
         </if>
         <if test="parentPath != null">
-            <choose>
-                <when test="parentPath == '/'.toString()">
-                    and (node.pid is null)
-                </when>
-                <otherwise>
-                    and (node.path like concat(#{parentPath},'/%'))
-                </otherwise>
-            </choose>
+            and (node.path like concat(#{parentPath},'/%'))
         </if>
         <if test="fuzzyPath != null">
             and (node.path = #{fuzzyPath} or #{fuzzyPath} like concat(node.path,'/%'))
@@ -70,31 +88,36 @@
         select
             storage_tree.path as storage_path
             <if test="request != null">
-                <if test="request.textQuery != null and request.textQuery != 0">
-                    ,node.path as path
-                    ,range_type.content as range_name
-                    ,company.company_name as company_name
-                    ,project.project_name as project_name
-                    ,task.issue_name as issue_name
-                    ,task.issue_path as issue_path
-                    ,task.task_name as task_name
-                    ,task.task_path as task_path
+                <if test="request.textQuery != null">
+                    ,node.path
+                    ,company.company_name
+                    ,project.project_name
+                    ,task.issue_name
+                    ,task.issue_path
+                    ,task.task_name
+                    ,task.task_path
                     ,account.user_name as owner_name
+                    <if test="request.textQuery.isQueryTypeName != null and request.textQuery.isQueryTypeName != 0">
+                        ,range_type.content as range_name
+                    </if>
                 </if>
-                <if test="request.fileQuery != null and request.fileQuery != 0">
-                    ,file.file_type_id as file_type_id
-                    ,file.file_version as file_version
-                    ,file.file_checksum as file_checksum
-                    ,file.major_id as major_id
-                    ,file.main_file_id as main_file_id
-                    ,file.server_type_id as server_type_id
-                    ,file.server_address as server_address
-                    ,file.read_file_scope as read_only_scope
-                    ,file.read_file_key as read_only_key
-                    ,file.write_file_scope as writable_scope
-                    ,file.write_file_key as writable_key
+                <if test="request.fileQuery != null">
+                    ,file.file_type_id
+                    ,file.file_version
+                    ,file.file_checksum
+                    ,file.major_type_id
+                    ,file.main_file_id
+                    ,file.server_type_id
+                    ,file.server_address
+                    ,file.base_dir
+                    ,file.read_only_key
+                    ,file.writable_key
+                    <if test="request.fileQuery.mirrorServerTypeId != null">
+                        ,mirror.read_only_key as read_only_mirror_key
+                        ,mirror.writable_key as writable_mirror_key
+                    </if>
                 </if>
-                <if test="request.historyQuery != null and request.historyQuery != 0">
+                <if test="request.historyQuery != null">
                     ,his.id as history_id
                     ,his.last_modify_user_id as history_action_user_id
                     ,his.action_type_id as history_action_type_id
@@ -107,24 +130,45 @@
         <choose>
             <when test="request != null">
                 <choose>
-                    <when test="request.textQuery != null and request.textQuery != 0">
+                    <when test="request.textQuery != null">
                         maoding_storage_copy node
                         left join maoding_storage_tree storage_tree on (storage_tree.id = substring(node.id,1,32))
-                        left join maoding_const range_type on (range_type.classic_id = 24 and range_type.value_id = node.range_id)
                         left join maoding_web_company company on (node.company_id = company.id)
                         left join maoding_web_project project on (node.project_id = project.id)
                         left join maoding_task task on (node.task_id = task.id)
                         left join maoding_web_account account on (node.owner_user_id = account.id)
+                        <if test="request.textQuery.isQueryTypeName != null and request.textQuery.isQueryTypeName != 0">
+                            left join maoding_const range_type on (range_type.classic_id = 24 and range_type.value_id = node.range_id)
+                        </if>
                     </when>
                     <otherwise>
                         maoding_storage_tree storage_tree
                     </otherwise>
                 </choose>
-                <if test="request.fileQuery != null and request.fileQuery != 0">
+                <if test="request.fileQuery != null">
                     left join maoding_storage_file file on (storage_tree.id = file.id)
+                    <if test="request.fileQuery.mirrorServerTypeId != null">
+                        left join maoding_storage_file mirror on (mirror.deleted = 0
+                                and mirror.main_file_id = file.id
+                                and mirror.server_type_id = #{request.fileQuery.mirrorServerTypeId}
+                            <if test="request.fileQuery.mirrorServerAddress != null">
+                                and mirror.server_address = #{request.fileQuery.mirrorServerAddress}
+                            </if>
+                            <if test="request.fileQuery.mirrorBaseDir != null">
+                                and mirror.base_dir = #{request.fileQuery.mirrorBaseDir}
+                            </if>
+                        )
+                    </if>
                 </if>
-                <if test="request.historyQuery != null and request.historyQuery != 0">
-                    left join maoding_storage_file_his his on (his.file_id = storage_tree.id)
+                <if test="request.historyQuery != null">
+                    left join maoding_storage_file_his his on (his.main_file_id = storage_tree.id
+                            <if test="request.historyQuery.historyStartTimeStamp != null and request.historyQuery.historyStartTimeStamp > 0">
+                                and his.last_modify_time >= #{request.historyQuery.historyStartTimeStamp}
+                            </if>
+                            <if test="request.historyQuery.historyEndTimeStamp != null and request.historyQuery.historyEndTimeStamp > 0">
+                                and #{request.historyQuery.historyStartTimeStamp} >= his.last_modify_time
+                            </if>
+                            )
                     left join maoding_web_account his_account on (his.last_modify_user_id = his_account.id)
                     left join maoding_const his_action_type on (his_action_type.classic_id = 20 and his.action_type_id = his_action_type.value_id)
                 </if>
@@ -134,14 +178,13 @@
             </otherwise>
         </choose>
         <where>
-            storage_tree.deleted = 0
             <if test="id != null">
                 <choose>
-                    <when test="request != null and request.textQuery != null and request.textQuery != 0">
-                        and node.id = #{id}
+                    <when test="request != null and request.textQuery != null">
+                        (node.id = #{id})
                     </when>
                     <otherwise>
-                        and storage_tree.id = substring(#{id},1,32)
+                        (storage_tree.deleted = 0) and (storage_tree.id = substring(#{id},1,32))
                     </otherwise>
                 </choose>
             </if>
@@ -164,22 +207,20 @@
         from maoding_storage_old_node node
         <where>
             <include refid="ConditionForQueryNode"/>
-            <if test="fuzzyIdString != null">
-                and (#{fuzzyIdString} like concat(node.project_id,",",
+            <if test="fuzzyId != null">
+                and (#{fuzzyId} like concat(node.project_id,",",
                         if(node.company_id is null,"",concat(node.company_id)),
                         '%'))
             </if>
         </where>
-        <if test="fuzzyPath != null or fuzzyIdString != null">
+        <if test="fuzzyPath != null or fuzzyId != null">
             order by (length(replace(node.path,'/','//')) - length(node.path)) desc
                 ,node.project_id,node.company_id,node.issue_id,node.task_id
             limit 1
         </if>
     </select>
 
-    <select id="listNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select node.*
-        from maoding_storage_copy node
+    <sql id="joinAndConditionSQL">
         <if test="accountId != null">
             inner join maoding_storage_root_copy root on (find_in_set(#{accountId},root.user_id_list) and node.root_id = root.id)
         </if>
@@ -189,12 +230,13 @@
                 and find_in_set(substring(node.id,1,32),#{fuzzyId})
             </if>
         </where>
-        <if test="fuzzyPath != null">
-            order by
-                (length(replace(node.path,'/','//')) - length(node.path)) desc
-            limit 1
-        </if>
+    </sql>
 
+    <select id="listNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
+        select node.* from maoding_storage_copy node <include refid="joinAndConditionSQL"/>
+        <if test="fuzzyPath != null">
+            order by (length(replace(path,'/','//')) - length(path)) desc
+        </if>
     </select>
 
 
@@ -535,6 +577,28 @@
 
     <select id="selectFileEntity" resultType="com.maoding.Storage.Entity.StorageFileEntity" parameterType="java.util.Map">
         select file.* from maoding_storage_file file where file.id = #{id}
+    </select>
+
+    <select id="selectFileMirrorEntity" resultType="com.maoding.Storage.Entity.StorageFileEntity" parameterType="java.util.Map">
+        select file.* from maoding_storage_file file
+        <where>
+            file.file_type_id = 22
+            <if test="id != null">
+                and file.id = #{id}
+            </if>
+            <if test="mainFileId != null">
+                and file.main_file_id = #{mainFileId}
+            </if>
+            <if test="mirrorServerTypeId != null">
+                and file.server_type_id = #{mirrorServerTypeId}
+            </if>
+            <if test="mirrorServerAddress != null">
+                and file.server_address = #{mirrorServerAddress}
+            </if>
+            <if test="mirrorBaseDir != null">
+                and file.base_dir = #{mirrorBaseDir}
+            </if>
+        </where>
     </select>
 
     <select id="selectHisEntity" resultType="com.maoding.Storage.Entity.StorageFileHisEntity" parameterType="java.util.Map">

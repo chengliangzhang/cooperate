@@ -21,6 +21,10 @@ public class BaseEntity implements Serializable,Cloneable {
     @Id
     private String id;
 
+    /** 名称 */
+    @Column
+    private String name;
+
     /** 删除标志 */
     @Column
     private Short deleted;
@@ -49,6 +53,14 @@ public class BaseEntity implements Serializable,Cloneable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Short getDeleted() {
@@ -96,26 +108,22 @@ public class BaseEntity implements Serializable,Cloneable {
     }
 
     /** 重新初始化 */
-    public BaseEntity reset() {
+    public void reset() {
         resetId();
         resetTime();
-        return this;
     }
 
     /** 准备更新 */
-    public BaseEntity update() {
+    public void update() {
         resetDeleted();
         resetLastModifyTime();
-        return this;
     }
 
     /** 清理被初始化的字段 */
-    public BaseEntity clear() {
+    public void clear() {
         setId(null);
-        setDeleted(null);
         setCreateTime(null);
         setLastModifyTime(null);
-        return this;
     }
 
     /** 重新初始化时间 */

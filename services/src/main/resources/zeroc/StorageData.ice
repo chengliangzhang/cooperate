@@ -116,23 +116,23 @@ module zeroc {
     ["java:getset","clr:property"]
     struct NodeFileDTO { //节点文件信息
         //文件节点特有信息
-        short fileTypeId; //文件类型
+        string id; //文件节点编号
+        string fileTypeId; //文件类型
         string fileVersion; //文件版本号
         string fileChecksum; //文件校验和
-        string majorId; //文件所属专业id
+        string majorTypeId; //文件所属专业id
         string mainFileId; //主文件id
 
         //实际文件存储位置
         string serverTypeId; //文件服务器类型id
         string serverAddress; //文件服务器地址
+        string baseDir; //文件在文件服务器上的存储位置
 
-        string readOnlyScope; //只读版本在文件服务器上的存储位置
         string readOnlyKey; //只读版本在文件服务器上的存储名称
-        string writableScope; //可写版本在文件服务器上的存储位置
         string writableKey; //可写版本在文件服务器上的存储名称
 
-        string readonlyMirrorPath; //只读版本在本地的镜像
-        string writableMirrorPath; //可写版本在本地的镜像
+        string readOnlyMirrorKey; //只读版本在本地的镜像文件相对路径
+        string writableMirrorKey; //可写版本在本地的镜像文件相对路径
     };
     ["java:type:java.util.ArrayList<NodeFileDTO>"] sequence<NodeFileDTO> NodeFileList;
 
@@ -150,6 +150,140 @@ module zeroc {
     };
     ["java:type:java.util.ArrayList<FullNodeDTO>"] sequence<FullNodeDTO> FullNodeList;
 
+    ["java:getset","clr:property"]
+    struct EmbedElementDTO { //嵌入的HTML元素，如小型位图等
+        string id; //元素id
+        string title; //元素占位文字
+        ByteArray dataArray; //元素内容
+
+        long createTimeStamp; //注解建立时间
+        string createTimeText; //注解建立时间文字
+        long lastModifyTimeStamp; //注解最后修改时间
+        string lastModifyTimeText; //注解最后修改时间文字
+        string lastModifyUserId; //注解最后编辑用户id
+        string lastModifyRoleId; //注解最后编辑角色id
+    };
+    ["java:type:java.util.ArrayList<EmbedElementDTO>"] sequence<EmbedElementDTO> EmbedElementList;
+
+    ["java:getset","clr:property"]
+    struct UpdateElementDTO { //嵌入的HTML元素更新申请
+        string title; //元素占位文字
+        ByteArray dataArray; //元素内容
+
+        //通用更改申请
+        long lastModifyTimeStamp; //最后修改时间
+        string lastModifyUserId; //最后编辑用户id
+        string lastModifyRoleId; //最后编辑角色id
+    };
+
+    ["java:getset","clr:property"]
+    struct AnnotateDTO { //校审意见注解
+        string id; //注解id
+        string relatedId; //校审意见id
+        string content; //注解详细内容
+        long createTimeStamp; //注解建立时间
+        string createTimeText; //注解建立时间文字
+        long lastModifyTimeStamp; //注解最后修改时间
+        string lastModifyTimeText; //注解最后修改时间文字
+        string lastModifyUserId; //注解最后编辑用户id
+        string lastModifyRoleId; //注解最后编辑角色id
+    };
+    ["java:type:java.util.ArrayList<AnnotateDTO>"] sequence<AnnotateDTO> AnnotateList;
+
+    ["java:getset","clr:property"]
+    struct UpdateAnnotateDTO { //注解更新申请
+        string relatedId; //校审意见id
+        string content; //注解详细内容
+
+        //通用更改申请
+        long lastModifyTimeStamp; //最后修改时间
+        string lastModifyUserId; //最后编辑用户id
+        string lastModifyRoleId; //最后编辑角色id
+    };
+
+    ["java:getset","clr:property"]
+    struct SuggestionDTO { //校审意见
+        string id; //校审意见编号
+        string name; //意见名称
+        long createTimeStamp; //意见建立时间
+        string createTimeText; //意见建立时间文字
+        long lastModifyTimeStamp; //意见最后修改时间
+        string lastModifyTimeText; //意见最后修改时间文字
+        string lastModifyUserId; //意见最后编辑用户id
+        string lastModifyRoleId; //意见最后编辑角色id
+
+        string typeId; //校审意见类别编号
+        string content; //校审意见详细内容
+        string mainFileId; //校审文件编号
+        string statusTypeId; //校审意见状态编号
+        string creatorUserId; //校审意见创建者用户编号
+        AnnotateList annotateList; //意见注解列表
+        NodeFileList accessoryList; //附件文件列表
+
+        ByteArray firstData; //单图片校审意见快捷数据入口
+
+    };
+    ["java:type:java.util.ArrayList<SuggestionDTO>"] sequence<SuggestionDTO> SuggestionList;
+
+    ["java:getset","clr:property"]
+    struct UpdateSuggestionDTO { //校审意见更新申请
+        string typeId; //校审意见类别编号
+        string content; //校审意见详细内容
+        string mainFileId; //校审文件编号
+        string statusTypeId; //校审意见状态编号
+
+        //通用更改申请
+        long lastModifyTimeStamp; //最后修改时间
+        string lastModifyUserId; //最后编辑用户id
+        string lastModifyRoleId; //最后编辑角色id
+    };
+
+    ["java:getset","clr:property"]
+    struct UpdateNodeFileDTO { //附件或文件更新申请
+        //文件服务器信息
+        string serverTypeId; //文件服务器类型
+        string serverAddress; //文件服务器地址
+        string baseDir; //文件在文件服务器上的存储位置
+
+        //文件节点信息
+        string fileTypeId; //目标文件类型Id
+        string fileVersion; //文件版本号
+        string fileChecksum; //文件校验和
+        string majorTypeId; //文件所属专业编号
+        string readOnlyKey; //只读版本在文件服务器上的存储名称
+        string writableKey; //可写版本在文件服务器上的存储名称
+
+        //镜像信息
+        string mirrorTypeId; //镜像文件服务器类型
+        string mirrorAddress; //镜像文件服务器地址
+        string mirrorBaseDir; //文件在镜像文件服务器上的存储位置
+        string readOnlyMirrorKey; //只读版本在本地的镜像
+        string writableMirrorKey; //可写版本在本地的镜像
+
+        //通用更改申请
+        long lastModifyTimeStamp; //最后修改时间
+        string lastModifyUserId; //最后编辑用户id
+        string lastModifyRoleId; //最后编辑角色id
+    };
+
+    ["java:getset","clr:property"]
+    struct QuerySuggestionDTO { //校审意见查询申请，每个属性都可以是逗号分隔的多个数据
+        //通用查询申请
+        string id; //记录id
+        string name; //记录名称
+        string typeId; //记录类型
+        string projectId; //记录所属项目id
+        string issueId; //记录所属签发任务id
+        string taskId; //记录所属生产任务id
+        string companyId; //记录所属组织id
+        string lastModifyUserId; //最后更改者用户id
+        string lastModifyRoleId; //最后更改者职责id
+        string accountId; //查询者用户id
+        long startTimeStamp; //起始时间
+        long endTimeStamp; //终止时间
+
+        string fuzzyId; //模糊匹配id字符串
+    };
 
     ["java:getset","clr:property"]
     struct QueryNodeDTO { //节点查询申请，每个属性都可以是逗号分隔的多个数据
@@ -181,12 +315,28 @@ module zeroc {
     };
 
     ["java:getset","clr:property"]
-    struct QueryFullNodeDTO { //节点详细资料查询申请
-        bool textQuery; //文字信息查询标志
-        bool fileQuery; //文件信息查询标志
-        bool historyQuery; //历史信息查询标志
+    struct QueryNodeInfoTextDTO { //文字详细信息查询申请
+        bool isQueryTypeName; //查询类型名称
+    };
+
+    ["java:getset","clr:property"]
+    struct QueryNodeInfoFileDTO { //文件详细信息查询申请
+        string mirrorServerTypeId; //镜像服务器类型
+        string mirrorServerAddress; //镜像服务器地址
+        string mirrorBaseDir; //镜像根目录
+    };
+
+    ["java:getset","clr:property"]
+    struct QueryNodeInfoHistoryDTO { //历史详细信息查询申请
         long historyStartTimeStamp; //历史信息的起始时间
         long historyEndTimeStamp; //历史信息的终止时间
+    };
+
+    ["java:getset","clr:property"]
+    struct QueryNodeInfoDTO { //节点详细资料查询申请
+        QueryNodeInfoTextDTO textQuery; //文字信息查询申请
+        QueryNodeInfoFileDTO fileQuery; //文件信息查询申请
+        QueryNodeInfoHistoryDTO historyQuery; //历史信息查询申请
     };
 
     ["java:getset","clr:property"]
@@ -194,44 +344,58 @@ module zeroc {
         //节点信息
         short typeId; //节点类型
         string pid; //父节点编号
-        ["deprecate:使用path代替"] string fullName; //要创建的节点名，可包含相对于父节点的路径
         string path; //绝对或相对路径，包含文件名
         string ownerUserId; //拥有者用户id
-        string lastModifyRoleId; //最后修改者职责id
 
         //节点关联属性
         string taskId; //所属任务Id
         string mainFileId; //主文件id
 
-        //目标位置信息
-        ["deprecate"] string parentPath; //父节点的全路径
-        ["deprecate"] short parentTypeId; //父节点的类型
-        ["deprecate"] string parentStoragePath; //父节点相对路径
-
         //文件服务器信息
         short serverTypeId; //文件服务器类型
         string serverAddress; //文件服务器地址
-        string mirrorPath; //本地镜像根目录路径
+        string baseDir; //文件在文件服务器上的存储位置
 
         //文件节点信息
         short fileTypeId; //目标文件类型Id
         long fileLength; //目标文件大小
         string fileVersion; //文件版本号
         string fileChecksum; //文件校验和
-        string majorId; //文件所属专业id
-        ["deprecate:使用readonlyScope代替"] string readFileScope; //只读版本在文件服务器上的存储位置
-        ["deprecate:使用readonlyKey代替"] string readFileKey; //只读版本在文件服务器上的存储名称
-        ["deprecate:使用writableScope代替"] string writeFileScope; //可写版本在文件服务器上的存储位置
-        ["deprecate:使用writableKey代替"] string writeFileKey; //可写版本在文件服务器上的存储名称
-        string readonlyScope; //只读版本在文件服务器上的存储位置
-        string readonlyKey; //只读版本在文件服务器上的存储名称
-        string writableScope; //可写版本在文件服务器上的存储位置
+        string majorTypeId; //文件所属专业编号
+        string readOnlyKey; //只读版本在文件服务器上的存储名称
         string writableKey; //可写版本在文件服务器上的存储名称
-        string readonlyMirrorPath; //只读版本在本地的镜像
-        string writableMirrorPath; //可写版本在本地的镜像
+
+        //镜像信息
+        short mirrorTypeId; //镜像文件服务器类型
+        string mirrorAddress; //镜像文件服务器地址
+        string mirrorBaseDir; //文件在镜像文件服务器上的存储位置
+        string readOnlyMirrorKey; //只读版本在本地的镜像
+        string writableMirrorKey; //可写版本在本地的镜像
 
         //历史节点信息
         short actionTypeId; //文件操作类型
         string remark; //文件操作注解
+
+        //操作者信息
+        string accountId; //操作者用户id
+        string accountRoleId; //操作者职责id
+
+
+        ["deprecate"] string readFileScope; //只读版本在文件服务器上的存储位置
+        ["deprecate:使用readOnlyKey代替"] string readFileKey; //只读版本在文件服务器上的存储名称
+        ["deprecate:使用writableScope代替"] string writeFileScope; //可写版本在文件服务器上的存储位置
+        ["deprecate:使用writableKey代替"] string writeFileKey; //可写版本在文件服务器上的存储名称
+        ["deprecate:使用path代替"] string fullName; //要创建的节点名，可包含相对于父节点的路径
+        ["deprecate"] string parentPath; //父节点的全路径
+        ["deprecate"] short parentTypeId; //父节点的类型
+        ["deprecate"] string parentStoragePath; //父节点相对路径
+        ["deprecate:使用accountRoleId代替"] string lastModifyRoleId; //最后修改者职责id
+    };
+
+    ["java:getset","clr:property"]
+    struct QuerySummaryDTO { //汇总查询申请
+        string companyId; //组织id
+        string projectId; //项目id
+        string ownerUserId; //拥有者用户id
     };
 };

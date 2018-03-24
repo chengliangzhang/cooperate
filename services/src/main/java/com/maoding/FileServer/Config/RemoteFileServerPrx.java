@@ -3,7 +3,7 @@ package com.maoding.FileServer.Config;
 import com.maoding.Base.BaseRemoteService;
 import com.maoding.FileServer.zeroc.FileServicePrx;
 import com.maoding.FileServer.zeroc._FileServicePrxI;
-import com.maoding.Utils.StringUtils;
+import com.maoding.CoreUtils.StringUtils;
 
 /**
  * 深圳市卯丁技术有限公司

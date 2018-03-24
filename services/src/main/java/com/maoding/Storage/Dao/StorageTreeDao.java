@@ -2,6 +2,7 @@ package com.maoding.Storage.Dao;
 
 import com.maoding.Base.BaseDao;
 import com.maoding.Storage.Entity.StorageTreeEntity;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,4 +13,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface StorageTreeDao extends BaseDao<StorageTreeEntity> {
+    StorageTreeEntity selectByTaskIdAndFuzzyPath(@Param("taskId") String taskId, @Param("fuzzyPath") String fuzzyPath);
+    int updateTaskIdByPid(@Param("pid") String pid,@Param("taskId") String taskId);
 }

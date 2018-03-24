@@ -1,23 +1,25 @@
 package com.maoding.CoreFileServer.Disk;
 
-import com.maoding.Const.ApiResponseConst;
 import com.maoding.Const.FileServerConst;
 import com.maoding.CoreFileServer.*;
-import com.maoding.Utils.BeanUtils;
-import com.maoding.Utils.FileUtils;
-import com.maoding.Utils.StringUtils;
+import com.maoding.CoreUtils.BeanUtils;
+import com.maoding.CoreUtils.FileUtils;
+import com.maoding.CoreUtils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -44,7 +46,7 @@ public class DiskFileServer implements CoreFileServer {
     private static final String FILE_DOWNLOAD_URL = "http://localhost:8087/FileServer/download";
     private static final String KEY_SIZE = "size";
     private static final String KEY_UPLOAD_ID = "uploadId";
-    private static String baseDir = null;
+    private String baseDir = null;
 
     private static final HashMap<Integer,Integer> modeMapConst = new HashMap<Integer,Integer>(){
         {
@@ -62,37 +64,55 @@ public class DiskFileServer implements CoreFileServer {
     private static long pos1 = 0; //下载速度计算参数
 
     /**
+     * 设定文件服务器存储空间
+     *
+     * @param baseDir
+     */
+    @Override
+    public void coreSetBaseDir(String baseDir) {
+        this.baseDir = baseDir;
+    }
+
+    /**
+     * 获取文件服务器存储空间
+     */
+    @Override
+    public String coreGetBaseDir() {
+        return (StringUtils.isNotEmpty(baseDir)) ? baseDir : DEFAULT_BASE_DIR;
+    }
+
+    /**
+     * 设置本地镜像根目录
+     *
+     * @param mirrorBaseDir
+     */
+    @Override
+    public void coreSetMirrorBaseDir(String mirrorBaseDir) {
+        coreSetBaseDir(mirrorBaseDir);
+    }
+
+    /**
+     * 获取本地镜像根目录
+     */
+    @Override
+    public String coreGetMirrorBaseDir() {
+        return coreGetBaseDir();
+    }
+
+    /**
      * 创建文件
      *
      * @param createRequest
      */
     @Override
     public CoreFileDTO coreCreateFile(CoreCreateFileRequest createRequest) {
-        CoreFileDTO dst = (createRequest != null) ? new CoreFileDTO(createRequest.getPath()) : new CoreFileDTO();
-        if (coreIsExist(dst)) {
-            dst.setKey(getUniqueKey(dst.getKey()));
-        }
-        String path = getPath(dst);
-        assert (StringUtils.isNotEmpty(path));
-
-        ensureDirExist(StringUtils.getDirName(path));
-
-        File dstFile = new File(path);
-        try {
-            boolean isOk = dstFile.createNewFile();
-            assert (isOk);
-        } catch (IOException e) {
-            log.warn("无法建立文件" + getPath(dst) + ":" + e);
-        }
-
+        CoreFileDTO dst;
         if (createRequest != null){
-            if (createRequest.getSrcFile() != null){
-                FileUtils.copyFile(createRequest.getSrcFile(),dstFile);
-            } else if (createRequest.getFileLength() > 0) {
-                FileUtils.setFileLength(dstFile, createRequest.getFileLength());
-            }
+            dst = new CoreFileDTO(createRequest.getPath());
+        } else {
+            dst = new CoreFileDTO();
         }
-        return dst;
+        return coreCreateFile(dst,createRequest);
     }
 
     /**
@@ -119,21 +139,48 @@ public class DiskFileServer implements CoreFileServer {
         }
     }
 
+    /**
+     * 判断在文件服务器上是否存在指定文件
+     *
+     */
     @Override
-    public String coreGetServerAddress(){
-        return getBaseDir();
+    public Boolean coreIsExist(String key) {
+        if (StringUtils.isEmpty(key)) return false;
+        File f = new File(getPath(key));
+        return f.exists() && f.isFile();
     }
 
     /**
-     * 获取本地镜像根目录
+     * 创建文件
+     *
+     * @param createRequest
      */
     @Override
-    public String coreGetMirrorBaseDir() {
-        return getBaseDir() + "/mirror";
-    }
+    public String coreCreateFileNew(CoreCreateFileRequest createRequest) {
+        String key = ((createRequest != null) && (StringUtils.isNotEmpty(createRequest.getKey()))) ? createRequest.getKey() : getUniqueKey();
+        if (coreIsExist(key)) {
+            key = getUniqueKey(key);
+        }
 
-    private static String getBaseDir(){
-        return (StringUtils.isEmpty(baseDir)) ? DEFAULT_BASE_DIR : baseDir;
+        String path = getPath(key);
+        ensureDirExist(StringUtils.getDirName(path));
+
+        try {
+            File dstFile = new File(path);
+            boolean isOk = dstFile.createNewFile();
+            assert (isOk);
+            if (createRequest != null){
+                if (createRequest.getSrcFile() != null){
+                    FileUtils.copyFile(createRequest.getSrcFile(),dstFile);
+                } else if (createRequest.getFileLength() > 0) {
+                    FileUtils.setFileLength(dstFile, createRequest.getFileLength());
+                }
+            }
+        } catch (IOException e) {
+            log.warn("无法建立文件" + key + ":" + e);
+        }
+
+        return key;
     }
 
     /**
@@ -177,30 +224,17 @@ public class DiskFileServer implements CoreFileServer {
      */
     @Override
     public CoreFileDTO coreCreateFile(CoreFileDTO dst,CoreCreateFileRequest createRequest) {
-        if (dst == null) dst = new CoreFileDTO();
-        if (coreIsExist(dst)) {
-            dst.setKey(getUniqueKey(dst.getKey()));
+        String key;
+        if (dst == null) {
+            dst = new CoreFileDTO();
+            key = coreCreateFileNew(createRequest);
+        } else {
+            key = dst.getScope() + StringUtils.SPLIT_PATH + dst.getKey();
+            createRequest.setKey(key);
+            key = coreCreateFileNew(createRequest);
         }
-        String path = getPath(dst);
-        assert (StringUtils.isNotEmpty(path));
-
-        ensureDirExist(StringUtils.getDirName(path));
-
-        File dstFile = new File(path);
-        try {
-            boolean isOk = dstFile.createNewFile();
-            assert (isOk);
-        } catch (IOException e) {
-            log.warn("无法建立文件" + getPath(dst) + ":" + e);
-        }
-
-        if (createRequest != null){
-            if (createRequest.getSrcFile() != null){
-                FileUtils.copyFile(createRequest.getSrcFile(),dstFile);
-            } else if (createRequest.getFileLength() > 0) {
-                FileUtils.setFileLength(dstFile, createRequest.getFileLength());
-            }
-        }
+        dst.setScope(StringUtils.getDirName(key));
+        dst.setKey(StringUtils.getFileName(key));
         return dst;
     }
 
@@ -378,131 +412,33 @@ public class DiskFileServer implements CoreFileServer {
     }
 
     /**
-     * 获取通过http方式下载文件数据库时的需要设置的部分参数
+     * 写入文件内容
      *
-     * @param src
-     * @param callbackSetting
+     * @param data 要写入的数据
+     * @param key 文件标识
      */
     @Override
-    @Deprecated
-    public BasicFileRequestDTO getDownloadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
-        //检查参数
-        assert (src != null);
-        assert (src.getKey() != null);
-        
-        //补全参数
-        if (StringUtils.isEmpty(src.getScope())) src.setScope("");
+    public int coreWriteFile(@NotNull CoreFileDataDTO data, String key) {
 
-        //建立申请下载参数对象
-        BasicFileRequestDTO requestDTO = BeanUtils.createFrom(src,BasicFileRequestDTO.class);
-        requestDTO.setUrl(FILE_DOWNLOAD_URL);
-        requestDTO.putParam(BASE_DIR_NAME,src.getScope());
-        requestDTO.putParam(PATH_NAME,src.getKey());
-        requestDTO.setMode(modeMapConst.getOrDefault(mode, FileServerConst.FILE_SERVER_MODE_RPC));
-        File f = new File(DEFAULT_BASE_DIR + "/" + src.getKey());
-        requestDTO.putParam(KEY_SIZE,((Long)f.length()).toString());
-        return requestDTO;
-    }
+        long t = System.currentTimeMillis();
 
-    /**
-     * 上传文件分片内容
-     *
-     * @param request
-     */
-    @Override
-    @Deprecated
-    public BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
-        //检查参数
-        assert (request != null);
-        assert (request.getMultipart() != null);
-        assert ((request.getMultipart().getPos() != null) && (request.getMultipart().getPos() >= 0));
-        assert ((request.getMultipart().getSize() != null) && (request.getMultipart().getSize() > 0));
-        assert (request.getMultipart().getData() != null);
-        assert (request.getMultipart().getScope() != null);
-        assert (!StringUtils.isEmpty(request.getMultipart().getKey()));
-
-        //补全参数
-
-        //写入文件
-        CoreFileDataDTO multipart = request.getMultipart();
-        BasicUploadResultDTO result = BeanUtils.createFrom(request,BasicUploadResultDTO.class);
-        result.setData(BeanUtils.createFrom(multipart,CoreFileDTO.class));
-        RandomAccessFile rf = null;
-
-        byte[] data = multipart.getData();
+        //获取参数
         int off = 0;
-        int len = multipart.getSize();
-        long pos = multipart.getPos();
-
-        t0 = System.currentTimeMillis();
-
-        if (!((new File(DEFAULT_BASE_DIR + "/" + multipart.getScope())).isDirectory())) (new File(DEFAULT_BASE_DIR + "/" +multipart.getScope())).mkdirs();
-        for (Integer i=0; i<MAX_TRY_TIMES; i++) {
-            try {
-                rf = new RandomAccessFile(DEFAULT_BASE_DIR + "/" + multipart.getScope() + "/" + multipart.getKey(), "rws");
-                break;
-            } catch (IOException e) {
-                log.warn("打开文件" + DEFAULT_BASE_DIR + "/" + multipart.getScope() + "/" + multipart.getKey() + "出错");
-                try {
-                    Thread.sleep(TRY_DELAY);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                rf = null;
-            }
+        long pos = data.getPos();
+        byte[] dataArray = data.getData();
+        assert (dataArray != null);
+        int len = data.getSize();
+        if (len <= 0){
+            len = dataArray.length;
         }
+        String path = getPath(key);
 
-        try {
-            if (rf == null) throw new IOException();
-            assert ((pos >= 0) && (len > 0) && (data != null) && (len <= data.length));
-            if (rf.length() < pos) rf.setLength(pos + len);
-            rf.seek(pos);
-            rf.write(data,off,len);
-            result.setChunkSize(len);
-            result.setStatus(ApiResponseConst.SUCCESS);
-        } catch (IOException e) {
-            String msg = "写入文件" + DEFAULT_BASE_DIR + "/" + multipart.getScope() + "/" + multipart.getKey() + "时出错";
-            log.warn(msg);
-            result.setMsg(msg);
-            result.setChunkSize(0);
-            result.setStatus(ApiResponseConst.FAILED);
-        } finally {
-            FileUtils.close(rf);
-        }
+        //创建路径
+        assert (StringUtils.isNotEmpty(path));
+        ensureDirExist(StringUtils.getDirName(path));
 
-        long t = (System.currentTimeMillis() - t0);
-        long rev = pos + len;
-        long cal = rev - pos0;
-        log.info("写入" + StringUtils.calBytes(rev) + ":用时" + t + "ms，速度"
-                + StringUtils.calSpeed(cal,t));
-        return result;
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public int coreWriteFile(CoreFileDataDTO multipart) {
-        //检查参数
-        assert (multipart != null);
-        assert ((multipart.getPos() != null) && (multipart.getPos() >= 0));
-        assert ((multipart.getSize() != null) && (multipart.getSize() > 0));
-        assert (multipart.getData() != null);
-
-        //补全参数
-
-        //写入文件
+        //打开文件
         RandomAccessFile rf = null;
-
-        byte[] data = multipart.getData();
-        int off = 0;
-        int len = multipart.getSize();
-        long pos = multipart.getPos();
-
-        t0 = System.currentTimeMillis();
-
-        CoreFileDTO dst = new CoreFileDTO(multipart.getScope(),multipart.getKey());
-        String path = StringUtils.getDirName(getPath(dst));
-        ensureDirExist(path);
-        path = getPath(dst);
         for (Integer i=0; i<MAX_TRY_TIMES; i++) {
             try {
                 rf = new RandomAccessFile(path, "rw");
@@ -518,12 +454,13 @@ public class DiskFileServer implements CoreFileServer {
             }
         }
 
+        //写入文件
         try {
             if (rf != null) {
-                assert ((pos >= 0) && (len > 0) && (data != null) && (len <= data.length));
+                assert ((pos >= 0) && (len > 0) && (dataArray != null) && (len <= dataArray.length));
                 if (rf.length() < pos) rf.setLength(pos + len);
                 rf.seek(pos);
-                rf.write(data, off, len);
+                rf.write(dataArray, off, len);
             }
         } catch (IOException e) {
             String msg = "写入文件" + path + "时出错";
@@ -533,11 +470,18 @@ public class DiskFileServer implements CoreFileServer {
             FileUtils.close(rf);
         }
 
-        long t = (System.currentTimeMillis() - t0);
-        log.info("写入" + StringUtils.calBytes(len) + ":用时" + t + "ms，速度"
-                + StringUtils.calSpeed(len,t));
+        log.info("\t----> coreWriteFile写入" + StringUtils.calBytes(len) + ":用时" + (System.currentTimeMillis() - t)
+                + "ms，速度" + StringUtils.calSpeed(len,t));
         return len;
+    }
 
+    @Override
+    @SuppressWarnings("deprecation")
+    public int coreWriteFile(CoreFileDataDTO multipart) {
+        assert (multipart != null);
+        assert (multipart.getKey() != null);
+        String key = multipart.getScope() + StringUtils.SPLIT_PATH + multipart.getKey();
+        return coreWriteFile(multipart,key);
     }
 
     private void ensureDirExist(String dirPath){
@@ -558,20 +502,19 @@ public class DiskFileServer implements CoreFileServer {
         }
     }
 
-    @Deprecated
-    private String getPath(String path){
-        return getPath(path,null);
+    private String getPath(String key){
+        return StringUtils.formatPath(coreGetBaseDir() + StringUtils.SPLIT_PATH + key);
     }
 
     private String getPath(String scope,String key){
-        StringBuilder pathBuilder = new StringBuilder(getBaseDir());
+        StringBuilder pathBuilder = new StringBuilder(coreGetBaseDir());
         if (!StringUtils.isEmpty(scope)) pathBuilder.append(StringUtils.SPLIT_PATH).append(scope);
         if (!StringUtils.isEmpty(key)) pathBuilder.append(StringUtils.SPLIT_PATH).append(key);
         return StringUtils.formatPath(pathBuilder.toString());
     }
 
     private String getPath(CoreFileDTO file){
-        StringBuilder pathBuilder = new StringBuilder(getBaseDir());
+        StringBuilder pathBuilder = new StringBuilder(coreGetBaseDir());
         if ((file != null) && !(StringUtils.isEmpty(file.getScope()))) {
             pathBuilder.append(StringUtils.SPLIT_PATH).append(file.getScope());
         } else {
@@ -585,90 +528,7 @@ public class DiskFileServer implements CoreFileServer {
         return StringUtils.formatPath(pathBuilder.toString());
     }
 
-    /**
-     * 下载文件分片内容
-     *
-     * @param request
-     */
-    @Override
-    @Deprecated
-    public BasicDownloadResultDTO download(BasicDownloadRequestDTO request) {
-        //检查参数
-        assert (request != null);
-        assert (request.getKey() != null);
-        assert ((request.getPos() != null) && (request.getPos() >= 0));
 
-        //补全参数
-        if (StringUtils.isEmpty(request.getScope())) request.setScope("");
-        if ((request.getSize() == null) || (request.getSize() <= 0)) request.setSize(DEFAULT_CHUNK_PER_SIZE);
-
-        //下载文件
-        BasicDownloadResultDTO result = BeanUtils.createFrom(request,BasicDownloadResultDTO.class);
-        RandomAccessFile rf = null;
-
-        long pos = request.getPos();
-        int size = request.getSize();
-
-        if (pos == 0) {
-            t1 = System.currentTimeMillis();
-            log.info("=====>接收到下载请求:" + new SimpleDateFormat("HH:mm:ss.sss").format(new Date(t1)));
-        }
-
-        //打开文件
-        for (Integer i=0; i<MAX_TRY_TIMES; i++) {
-            try {
-                rf = new RandomAccessFile(DEFAULT_BASE_DIR + "/" + request.getScope() + "/" + request.getKey(), "r");
-                break;
-            } catch (IOException e) {
-                log.warn("打开文件" + DEFAULT_BASE_DIR + "/" + request.getScope() + "/" + request.getKey() + "出错");
-                try {
-                    Thread.sleep(TRY_DELAY);
-                } catch (InterruptedException e1) {
-                    log.warn(e1.getMessage());
-                }
-                rf = null;
-            }
-        }
-
-        try {
-            if (rf == null) throw new IOException("打开文件" + DEFAULT_BASE_DIR + "/" + request.getScope() + "/" + request.getKey() + "出错");
-            //定位
-            long length = rf.length();
-            assert (pos >= 0) && (pos < length) && (size > 0);
-            rf.seek(pos);
-            //读取文件内容
-            byte[] bytes = new byte[size];
-            int n = rf.read(bytes);
-            assert (n > 0) && (n <= size);
-            bytes = Arrays.copyOfRange(bytes,0,n);
-            size = n;
-
-            //设置返回参数
-            long posLast = pos + size;
-            Integer chunkCount = (posLast < length) ? ((((int)(length - posLast)) / request.getChunkSize()) + 1) : 0;
-            CoreFileDataDTO multipart = BeanUtils.createFrom(request,CoreFileDataDTO.class);
-            multipart.setPos(pos);
-            multipart.setSize(size);
-            multipart.setData(bytes);
-
-            result.setChunkCount(chunkCount);
-            result.setChunkSize(size);
-            result.setData(multipart);
-            result.setStatus(ApiResponseConst.SUCCESS);
-        } catch (IOException e) {
-            log.error("下载时出错",e);
-            result.setError();
-        } finally {
-            FileUtils.close(rf);
-        }
-
-        if (result.getData() != null) {
-            long t = (System.currentTimeMillis() - t1);
-            long c = result.getData().getPos() + result.getData().getSize();
-            log.info("已准备好" + StringUtils.calBytes(c) + "数据，用时" + t + "ms,速度" + StringUtils.calSpeed(c,t));
-        }
-        return result;
-    }
 
     @Override
     public CoreFileDataDTO coreReadFile(CoreFileDTO file, long pos, int size) {
@@ -759,22 +619,33 @@ public class DiskFileServer implements CoreFileServer {
         if (StringUtils.isEmpty(key)) {
             key = UUID.randomUUID().toString();
         } else {
+            String dir = StringUtils.getDirName(key);
+            String fn = StringUtils.getFileNameWithoutExt(key);
             String ext = StringUtils.getFileExt(key);
-            key = StringUtils.getFileNameWithoutExt(key);
-            if (StringUtils.isEmpty(key)) key = UUID.randomUUID().toString();
-            assert (key != null);
-            if (key.contains(FILE_NAME_SPLIT)) {
+            assert (fn != null);
+            if (fn.contains(FILE_NAME_SPLIT)) {
                 int timeStampLen = TIME_STAMP_FORMAT.length();
-                int len = key.length();
-                int n = key.lastIndexOf(FILE_NAME_SPLIT);
+                int len = fn.length();
+                int n = fn.lastIndexOf(FILE_NAME_SPLIT);
                 if (timeStampLen == (len - n - FILE_NAME_SPLIT.length())){
-                    key = key.substring(0,n);
+                    fn = fn.substring(0,n);
                 }
             }
-            key += FILE_NAME_SPLIT + StringUtils.getTimeStamp(TIME_STAMP_FORMAT);
-            if (StringUtils.isNotEmpty(ext)) key += ext;
+            fn += FILE_NAME_SPLIT + StringUtils.getTimeStamp(TIME_STAMP_FORMAT);
+            StringBuilder keyBuilder = new StringBuilder(dir);
+            if (keyBuilder.length() > 0) {
+                keyBuilder.append(StringUtils.SPLIT_PATH);
+            }
+            keyBuilder.append(fn);
+            if (StringUtils.isNotEmpty(ext)) {
+                keyBuilder.append(ext);
+            }
+            key = keyBuilder.toString();
         }
         return key;
+    }
+    private String getUniqueKey(){
+        return getUniqueKey(null);
     }
 
     @Deprecated
@@ -814,48 +685,6 @@ public class DiskFileServer implements CoreFileServer {
         return key;
     }
 
-    /**
-     * 在文件服务器上复制文件，复制到同一空间，返回复制后的文件标识
-     *
-     * @param src
-     */
-    @Override
-    public String duplicateFile(CoreFileDTO src) {
-        final int BUFFER_SIZE = 2048 * 1024;
-
-        assert (coreIsExist(src));
-
-        String keyOut = null;
-
-        //复制文件
-        int length = BUFFER_SIZE;
-        FileChannel in = null;
-        FileChannel out = null;
-        try {
-            in = (new FileInputStream(getPath(src))).getChannel();
-            keyOut = getKeyWithStamp(src.getKey());
-            out = (new FileOutputStream(getPath(src.getScope(),keyOut))).getChannel();
-            while (in.position() < in.size())
-            {
-                if ((in.size() - in.position()) < length) {
-                    length = (int) (in.size() - in.position());
-                } else {
-                    length = BUFFER_SIZE;
-                }
-                ByteBuffer buf = ByteBuffer.allocateDirect(length);
-                in.read(buf);
-                buf.flip();
-                out.write(buf);
-//                out.force(false);
-            }
-        } catch (IOException e) {
-            log.error("复制文件" + getPath(src) + "时出错");
-        } finally {
-            FileUtils.close(out);
-            FileUtils.close(in);
-        }
-        return keyOut;
-    }
 
     /**
      * 判断在文件服务器上是否存在指定文件

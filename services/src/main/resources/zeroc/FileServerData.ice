@@ -82,4 +82,20 @@ module zeroc {
         int size; //数据有效字节数，为0则所有字节都有效
         ByteArray data; //当前分片数据
     };
+
+    ["java:getset","clr:property"]
+    struct SuggestionRequestDTO { //校审意见提交申请
+        string typeId; //校审意见类型
+        bool isPassed; //是否通过
+        string content; //校审意见正文
+        ByteArray data; //意见截图数据
+        NodeFileList accessoryList; //附件文件列表
+    };
+
+    ["java:getset","clr:property"]
+    struct AccessoryRequestDTO { //附件提交申请
+        string path; //附件路径
+        ByteArray data; //附件文件内容
+    };
+
 };

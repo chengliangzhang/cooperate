@@ -1,10 +1,11 @@
-package com.maoding.Utils;
+package com.maoding.CoreUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * Created by Wuwq on 2016/11/14.
@@ -77,5 +78,24 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static boolean isEmpty(Object object){
+        if (object == null) return true;
+        else if (object instanceof List) return (((List) object).size() <= 0);
+        else
+            return object instanceof String && StringUtils.isEmpty((String) object);
+    }
+
+    public static boolean isNotEmpty(Object object){
+        return !isEmpty(object);
+    }
+
+    public static <T> T getFirst(List<T> list){
+        if (isNotEmpty(list)){
+            return list.get(0);
+        } else {
+            return null;
+        }
     }
 }

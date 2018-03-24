@@ -6,7 +6,7 @@ import com.maoding.Common.Config.WebServiceConfig;
 import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.User.Dao.RoleDao;
 import com.maoding.User.zeroc.*;
-import com.maoding.Utils.*;
+import com.maoding.CoreUtils.*;
 import com.zeroc.Ice.Current;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;

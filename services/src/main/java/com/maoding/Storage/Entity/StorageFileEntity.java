@@ -15,13 +15,13 @@ import javax.persistence.Table;
 public class StorageFileEntity extends BaseEntity {
     /** 文件服务器类型 */
     @Column
-    private Short serverTypeId;
+    private String serverTypeId;
     /** 文件服务器地址 */
     @Column
     private String serverAddress;
     /** 文件类型 */
     @Column
-    private Short fileTypeId;
+    private String fileTypeId;
     /** 文件版本 */
     @Column
     private String fileVersion;
@@ -32,35 +32,28 @@ public class StorageFileEntity extends BaseEntity {
     @Column
     private String majorTypeId;
 
-    @Column
-    @Deprecated
-    private String majorId;
-
     /** 所对应的原始文件id */
     @Column
     private String mainFileId;
-    /** 只读文件在文件服务器上的存储位置 */
-    @Column
-    @Deprecated
-    private String readFileScope;
 
     /** 只读文件在文件服务器上的存储名称 */
     @Column
     private String readOnlyKey;
-    @Column
-    @Deprecated
-    private String readFileKey;
 
-    /** 可写文件在文件服务器上的存储位置 */
-    @Column
-    @Deprecated
-    private String writeFileScope;
-    /** 可写文件在文件服务器上的存储名称 */
     @Column
     private String writableKey;
+
+    /** 文件在文件服务器上的存储位置 */
     @Column
-    @Deprecated
-    private String writeFileKey;
+    private String baseDir;
+
+    public String getBaseDir() {
+        return baseDir;
+    }
+
+    public void setBaseDir(String baseDir) {
+        this.baseDir = baseDir;
+    }
 
     public String getMajorTypeId() {
         return majorTypeId;
@@ -86,28 +79,12 @@ public class StorageFileEntity extends BaseEntity {
         this.writableKey = writableKey;
     }
 
-    public Short getServerTypeId() {
-        return serverTypeId;
-    }
-
-    public void setServerTypeId(Short serverTypeId) {
-        this.serverTypeId = serverTypeId;
-    }
-
     public String getServerAddress() {
         return serverAddress;
     }
 
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
-    }
-
-    public Short getFileTypeId() {
-        return fileTypeId;
-    }
-
-    public void setFileTypeId(Short fileTypeId) {
-        this.fileTypeId = fileTypeId;
     }
 
     public String getFileVersion() {
@@ -126,14 +103,6 @@ public class StorageFileEntity extends BaseEntity {
         this.fileChecksum = fileChecksum;
     }
 
-    public String getMajorId() {
-        return majorId;
-    }
-
-    public void setMajorId(String majorId) {
-        this.majorId = majorId;
-    }
-
     public String getMainFileId() {
         return mainFileId;
     }
@@ -142,35 +111,19 @@ public class StorageFileEntity extends BaseEntity {
         this.mainFileId = mainFileId;
     }
 
-    public String getReadFileScope() {
-        return readFileScope;
+    public String getServerTypeId() {
+        return serverTypeId;
     }
 
-    public void setReadFileScope(String readFileScope) {
-        this.readFileScope = readFileScope;
+    public void setServerTypeId(String serverTypeId) {
+        this.serverTypeId = serverTypeId;
     }
 
-    public String getReadFileKey() {
-        return readFileKey;
+    public String getFileTypeId() {
+        return fileTypeId;
     }
 
-    public void setReadFileKey(String readFileKey) {
-        this.readFileKey = readFileKey;
-    }
-
-    public String getWriteFileScope() {
-        return writeFileScope;
-    }
-
-    public void setWriteFileScope(String writeFileScope) {
-        this.writeFileScope = writeFileScope;
-    }
-
-    public String getWriteFileKey() {
-        return writeFileKey;
-    }
-
-    public void setWriteFileKey(String writeFileKey) {
-        this.writeFileKey = writeFileKey;
+    public void setFileTypeId(String fileTypeId) {
+        this.fileTypeId = fileTypeId;
     }
 }

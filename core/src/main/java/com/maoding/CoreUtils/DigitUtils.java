@@ -1,4 +1,4 @@
-package com.maoding.Utils;
+package com.maoding.CoreUtils;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -28,6 +28,32 @@ public class DigitUtils {
                 || clazz.isAssignableFrom(Float.class)
                 || clazz.isAssignableFrom(Double.class)
         );
+    }
+
+    public static int parseInt(final Object value){
+        if (value == null) {
+            return 0;
+        } else if (value.getClass().isPrimitive()) {
+            return (int) value;
+        } else if (value instanceof Boolean) {
+            return ((Boolean)value) ? 1 : 0;
+        } else if (value instanceof Character) {
+            return (int)value.toString().charAt(0);
+        } else if (value instanceof Byte) {
+            return (int)Byte.parseByte(value.toString());
+        } else if (value instanceof Short) {
+            return (int)Short.parseShort(value.toString());
+        } else if (value instanceof Integer) {
+            return Integer.parseInt(value.toString());
+        } else if (value instanceof Long) {
+            return (int)Long.parseLong(value.toString());
+        } else if (value instanceof Float) {
+            return (int)Float.parseFloat(value.toString());
+        } else if (value instanceof Double) {
+            return (int)Double.parseDouble(value.toString());
+        } else {
+            return 0;
+        }
     }
     
 }

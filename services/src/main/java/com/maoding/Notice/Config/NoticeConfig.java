@@ -3,7 +3,7 @@ package com.maoding.Notice.Config;
 import com.maoding.CoreNotice.ActiveMQ.ActiveMQClient;
 import com.maoding.CoreNotice.CoreNoticeService;
 import com.maoding.User.zeroc.UserServicePrx;
-import com.maoding.Utils.SpringUtils;
+import com.maoding.CoreUtils.SpringUtils;
 import com.zeroc.IceStorm.TopicManagerPrx;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

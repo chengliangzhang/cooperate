@@ -1,4 +1,4 @@
-package com.maoding.Utils;
+package com.maoding.CoreUtils;
 
 import com.zeroc.Ice.Current;
 import org.slf4j.Logger;
@@ -48,6 +48,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static Boolean isSame(String s1,String s2){
         return (isEmpty(s1) && isEmpty(s2)) ||
                 (!isEmpty(s1) && !isEmpty(s2) && (s1.equals(s2)));
+    }
+
+    public static Boolean isNotSame(String s1,String s2){
+        return !isSame(s1,s2);
     }
 
     /** 如果字符串为空，返回默认值 */
@@ -123,28 +127,28 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /** 获取文件名 */
     public static String getFileName(String path){
-        if (path == null) return null;
+        if (path == null) return "";
         path = formatPath(path);
         return getLastSplit(path, SPLIT_PATH);
     }
 
     public static String getFileNameWithoutExt(String path){
         String fileName = getFileName(path);
-        if (fileName == null) return null;
+        if (fileName == null) return "";
         int pos = fileName.lastIndexOf(SPLIT_EXT);
         return (pos < 0) ? fileName : fileName.substring(0,pos);
     }
 
     public static String getFileExt(String path){
         String fileName = getFileName(path);
-        if (fileName == null) return null;
+        if (fileName == null) return "";
         int pos = fileName.lastIndexOf(SPLIT_EXT);
         return (pos < 0) ? "" : fileName.substring(pos);
     }
 
     /** 获取路径名 */
     public static String getDirName(String path){
-        if (path == null) return null;
+        if (path == null) return "";
         path = formatPath(path);
         int pos = path.lastIndexOf(SPLIT_PATH);
         if (pos < 0) return "";
@@ -167,8 +171,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     public static String left(String str,int length){
-        if ((str == null) || (length <= 0)) return null;
-        if (length < str.length()){
+        if (str == null) return null;
+        if (length <= 0) {
+            return "";
+        } else if (length < str.length()){
             return (str.substring(0,length));
         } else {
             return str;
@@ -181,8 +187,13 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     public static String right(String str,String split){
-        if ((str == null) || (split == null) || (!str.contains(split))) return null;
+        if ((str == null) || (split == null) || (!str.contains(split))) return str;
         return (str.substring(str.indexOf(split) + split.length()));
+    }
+
+    public static boolean isStartWith(String str,String s){
+        if (isEmpty(str)) return isEmpty(s);
+        return isSame(left(str,length(s)),s);
     }
 
     //带单位计算字节传送速度

@@ -4,6 +4,9 @@ import com.maoding.CoreMybatis.CustomMapper;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.MySqlMapper;
 
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -15,15 +18,15 @@ import java.util.List;
  */
 public interface BaseDao<T extends BaseEntity> extends Mapper<T>, MySqlMapper<T>, CustomMapper<T> {
     //FIXME 特别注意，该接口不能被扫描到，否则会出错
-    default T selectById(String id){
+    default T selectById(@NotNull String id){
         return selectByPrimaryKey(id);
     }
 
-    default int insert(T entity){
+    default int insert(@NotNull T entity){
         return insertSelective(entity);
     }
 
-    default int insertList(List<T> entityList){
+    default int insertList(@NotNull List<T> entityList){
         int n = 0;
         for (T entity : entityList){
             n += insertSelective(entity);
@@ -31,79 +34,88 @@ public interface BaseDao<T extends BaseEntity> extends Mapper<T>, MySqlMapper<T>
         return n;
     }
 
-    default int update(T entity) {
-        return updateByPrimaryKeySelective(entity);
+    default int update(@NotNull T entity) {
+        return updateById(entity,entity.getId());
     }
     
-    default int updateExact(T entity) {
-        return updateByPrimaryKey(entity); 
+    default int updateById(@NotNull T entity){
+        return updateById(entity, entity.getId());
     }
 
-    default int updateById(T entity){
-        return updateById(entity, entity.getId(), null, null);
+    default int updateById(@NotNull T entity, @NotNull List<String> idList){
+        return updateByIdList(entity, idList);
     }
 
-    default int updateById(T entity, String id){
-        return updateById(entity, id, null, null);
+    default int updateById(@NotNull T entity, @NotNull String id){
+        List<String> idList = new ArrayList<>();
+        String[] idArray = id.split(",");
+        Collections.addAll(idList, idArray);
+        return updateByIdList(entity,idList);
     }
 
-    default int updateById(T entity, String id, String lastModifyUserId){
-        return updateById(entity, id, lastModifyUserId, null);
+    default int updateExact(@NotNull T entity) {
+        return updateExactById(entity,entity.getId());
     }
 
-    default int updateById(T entity, List<String> idList){
-        return updateByIdList(entity, idList, null, null);
+    default int updateExactById(@NotNull T entity) {
+        return updateExactById(entity,entity.getId());
     }
 
-    default int updateById(T entity, List<String> idList, String lastModifyUserId){
-        return updateByIdList(entity, idList, lastModifyUserId, null);
+    default int updateExactById(@NotNull T entity, @NotNull List<String> idList){
+        return updateExactByIdList(entity, idList);
     }
 
-    default int updateById(T entity, List<String> idList, String lastModifyUserId, Date lastModifyTime){
-        return updateByIdList(entity, idList, lastModifyUserId, lastModifyTime);
+    default int updateExactById(@NotNull T entity, @NotNull String id) {
+        List<String> idList = new ArrayList<>();
+        String[] idArray = id.split(",");
+        Collections.addAll(idList, idArray);
+        return updateExactByIdList(entity, idList);
     }
 
-    default int updateExactById(T entity){
-        return updateExactById(entity, entity.getId(), null, null);
-    }
-
-    default int updateExactById(T entity, String id){
-        return updateExactById(entity, id, null, null);
-    }
-
-    default int updateExactById(T entity, String id, String lastModifyUserId){
-        return updateExactById(entity, id, lastModifyUserId, null);
-    }
-
-    default int updateExactById(T entity, List<String> idList){
-        return updateExactByIdList(entity, idList, null, null);
-    }
-
-    default int updateExactById(T entity, List<String> idList, String lastModifyUserId){
-        return updateExactByIdList(entity, idList, lastModifyUserId, null);
-    }
-
-    default int updateExactById(T entity, List<String> idList, String lastModifyUserId, Date lastModifyTime){
-        return updateExactByIdList(entity, idList, lastModifyUserId, lastModifyTime);
-    }
-
-    default int fakeDeleteById(String id){
-        return fakeDeleteById(id,null,null);
+    default int fakeDeleteById(@NotNull String id){
+        return fakeDeleteById(id,null,null,null);
     }
     
-    default int fakeDeleteById(String id, String lastModifyUserId){
-        return fakeDeleteById(id,lastModifyUserId,null);
-    }
-    
-    default int fakeDeleteById(List<String> idList){
-        return fakeDeleteByIdList(idList,null,null);
-    }
-    
-    default int fakeDeleteById(List<String> idList, String lastModifyUserId){
-        return fakeDeleteByIdList(idList,lastModifyUserId,null);
+    default int fakeDeleteById(@NotNull String id, String lastModifyUserId){
+        return fakeDeleteById(id,lastModifyUserId,null,null);
     }
 
-    default int fakeDeleteById(List<String> idList, String lastModifyUserId, Date lastModifyTime){
-        return fakeDeleteByIdList(idList,lastModifyUserId,lastModifyTime);
+    default int fakeDeleteById(@NotNull String id, String lastModifyUserId, String lastModifyRoleId){
+        return fakeDeleteById(id,lastModifyUserId,lastModifyRoleId,null);
+    }
+
+    default int fakeDeleteById(@NotNull String id, String lastModifyUserId, String lastModifyRoleId, Date lastModifyTime){
+        List<String> idList = new ArrayList<>();
+        String[] idArray = id.split(",");
+        Collections.addAll(idList, idArray);
+        return fakeDeleteByIdList(idList,lastModifyUserId,lastModifyRoleId, lastModifyTime);
+    }
+
+    default int fakeDeleteById(@NotNull List<String> idList){
+        return fakeDeleteByIdList(idList,null,null,null);
+    }
+    
+    default int fakeDeleteById(@NotNull List<String> idList, String lastModifyUserId){
+        return fakeDeleteByIdList(idList,lastModifyUserId,null,null);
+    }
+
+    default int fakeDeleteById(@NotNull List<String> idList, String lastModifyUserId, String lastModifyRoleId){
+        return fakeDeleteByIdList(idList,lastModifyUserId,lastModifyRoleId,null);
+    }
+
+    default int fakeDeleteById(@NotNull List<String> idList, String lastModifyUserId, String lastModifyRoleId, Date lastModifyTime){
+        return fakeDeleteByIdList(idList,lastModifyUserId,lastModifyRoleId,lastModifyTime);
+    }
+
+    default int fakeDeleteByIdList(@NotNull List<String> idList){
+        return fakeDeleteByIdList(idList,null,null,null);
+    }
+
+    default int fakeDeleteByIdList(@NotNull List<String> idList, String lastModifyUserId){
+        return fakeDeleteByIdList(idList,lastModifyUserId,null,null);
+    }
+
+    default int fakeDeleteByIdList(@NotNull List<String> idList, String lastModifyUserId, String lastModifyRoleId){
+        return fakeDeleteByIdList(idList,lastModifyUserId,lastModifyRoleId,null);
     }
 }

@@ -1,4 +1,4 @@
-package com.maoding.Utils;
+package com.maoding.CoreUtils;
 
 import com.esotericsoftware.reflectasm.MethodAccess;
 import org.slf4j.Logger;
@@ -238,7 +238,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             else if (outputFieldClass == short.class)
                 outputMethodAccess.invoke(output,setIndex,parseShort(inputValue));
             else if (outputFieldClass == int.class)
-                outputMethodAccess.invoke(output,setIndex,parseInt(inputValue));
+                outputMethodAccess.invoke(output,setIndex,DigitUtils.parseInt(inputValue));
             else if (outputFieldClass == long.class)
                 outputMethodAccess.invoke(output,setIndex,parseLong(inputValue));
             else if (outputFieldClass == float.class)
@@ -483,7 +483,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             else if (outputClass.isAssignableFrom(Character.class)) output = outputClass.cast(parseChar(input));
             else if (outputClass.isAssignableFrom(Byte.class)) output = outputClass.cast(parseByte(input));
             else if (outputClass.isAssignableFrom(Short.class)) output = outputClass.cast(parseShort(input));
-            else if (outputClass.isAssignableFrom(Integer.class)) output = outputClass.cast(parseInt(input));
+            else if (outputClass.isAssignableFrom(Integer.class)) output = outputClass.cast(DigitUtils.parseInt(input));
             else if (outputClass.isAssignableFrom(Long.class)) output = outputClass.cast(parseLong(input));
             else if (outputClass.isAssignableFrom(Float.class)) output = outputClass.cast(parseFloat(input));
             else if (outputClass.isAssignableFrom(Double.class)) output = outputClass.cast(parseDouble(input));
@@ -532,11 +532,10 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         if (obj == null) return null;
         if (obj.getClass().isPrimitive()) return obj;
         if (obj.getClass().isArray()){
-            for (int i=0; i<Array.getLength(obj); i++){
-                cleanProperties(Array.get(obj,i));
-            }
+            return (Array.getLength(obj) > 0) ? obj : null;
         }
         if (isEmpty(obj)) return null;
+        if (DigitUtils.isDigitalClass(obj.getClass())) return obj;
 
         MethodAccess objMethodAccess = methodMap.get(obj.getClass());
         if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
@@ -574,48 +573,6 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 || ((DigitUtils.isDigitalClass(obj.getClass())) && (DigitUtils.isSame(obj,0)));
     }
 
-    /**
-     * 写入Bean属性
-     */
-    @Deprecated
-    public static void putProperty(Object obj, final String ptyName, final Object value){
-        assert (obj != null) && (!obj.getClass().isPrimitive()) && (!obj.getClass().isArray());
-        assert (!StringUtils.isEmpty(ptyName));
-
-        MethodAccess objMethodAccess = methodMap.get(obj.getClass());
-        if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
-
-        List<String> fieldList = fieldMap.get(obj.getClass());
-        if (fieldList != null) {
-            assert (objMethodAccess != null);
-            String setKey = obj.getClass().getName() + DOT + SET + StringUtils.capitalize(ptyName);
-            Integer setIndex = methodIndexMap.get(setKey);
-            if (setIndex != null) {
-                //获取参数类型
-                Class[][] objParameterTypes = objMethodAccess.getParameterTypes();
-                assert (objParameterTypes != null);
-                Class<?> fieldClass = objParameterTypes[setIndex][0];
-                if (fieldClass == boolean.class)
-                    objMethodAccess.invoke(obj,setIndex,parseBoolean(value));
-                else if (fieldClass == char.class)
-                    objMethodAccess.invoke(obj,setIndex,parseChar(value));
-                else if (fieldClass == byte.class)
-                    objMethodAccess.invoke(obj,setIndex,parseByte(value));
-                else if (fieldClass == short.class)
-                    objMethodAccess.invoke(obj,setIndex,parseShort(value));
-                else if (fieldClass == int.class)
-                    objMethodAccess.invoke(obj,setIndex,parseInt(value));
-                else if (fieldClass == long.class)
-                    objMethodAccess.invoke(obj,setIndex,parseLong(value));
-                else if (fieldClass == float.class)
-                    objMethodAccess.invoke(obj,setIndex,parseFloat(value));
-                else if (fieldClass == double.class)
-                    objMethodAccess.invoke(obj,setIndex,parseDouble(value));
-                else
-                    objMethodAccess.invoke(obj,setIndex,createFrom(value,fieldClass));
-            }
-        }
-    }
 
     /**
      * 读取Bean属性
@@ -931,54 +888,6 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         else return (int)0;
     }
 
-    @Deprecated
-    public static <T> int parseInt(final T[] value, final int n){
-        assert (value != null);
-        assert (n < value.length);
-        return parseInt(value[n]);
-    }
-
-    @Deprecated
-    public static int parseInt(final Object value, final int n){
-        assert (value != null);
-        assert (value.getClass().isArray());
-        assert (n < getArrayLength(value));
-        Class<?> eleClass = value.getClass().getComponentType();
-        if (eleClass == boolean.class) return parseInt(((boolean[]) value)[n]);
-        else if (eleClass == char.class) return parseInt(((char[]) value)[n]);
-        else if (eleClass == byte.class) return parseInt(((byte[]) value)[n]);
-        else if (eleClass == short.class) return parseInt(((short[]) value)[n]);
-        else if (eleClass == int.class) return parseInt(((int[]) value)[n]);
-        else if (eleClass == long.class) return parseInt(((long[]) value)[n]);
-        else if (eleClass == float.class) return parseInt(((float[]) value)[n]);
-        else if (eleClass == double.class) return parseInt(((double[]) value)[n]);
-        else return parseInt (((Object[]) value)[n]);
-    }
-
-    @Deprecated
-    public static <T> int[] parseIntArray(final T[] value){
-        if (value == null) return null;
-
-        int[] output = new int[value.length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseInt(value,n);
-        }
-        return output;
-    }
-
-    @Deprecated
-    public static int[] parseIntArray(final Object value){
-        if (value == null) return null;
-
-        assert (value.getClass().isArray());
-        int length = getArrayLength(value);
-
-        int[] output = new int[length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseInt(value,n);
-        }
-        return output;
-    }
 
     /** 转换为long类型 */
     public static <T> long parseLong(final T value){

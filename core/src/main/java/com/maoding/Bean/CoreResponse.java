@@ -29,6 +29,16 @@ public class CoreResponse<T> implements Serializable {
     private String code; //同AjaxMessage.code
     private Object info; //同AjaxMessage.info
 
+    private Object extendData;
+
+    public Object getExtendData() {
+        return extendData;
+    }
+
+    public void setExtendData(Object extendData) {
+        this.extendData = extendData;
+    }
+
     public CoreResponse(Integer status, String msg, T data) {
         this.status = (status != null) ? status : ApiResponseConst.SUCCESS;
         this.msg = (msg != null) ? msg : ApiResponseConst.DEFAULT_MESSAGE.get(this.status);

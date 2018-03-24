@@ -1,8 +1,7 @@
 package com.maoding.Base;
 
-import com.maoding.Utils.StringUtils;
+import com.maoding.CoreUtils.StringUtils;
 import com.zeroc.Ice.*;
-import jodd.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +101,7 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
             P prx = null;
             try {
                 String fullServiceName = getFullServiceName();
-                if (StringUtil.isNotEmpty(fullServiceName)) {
+                if (StringUtils.isNotEmpty(fullServiceName)) {
                     prx = ObjectPrx._checkedCast(getCommunicator().stringToProxy(getFullServiceName()),
                             P.ice_staticId(), proxy, impl);
                     String serviceString = ((getCommunicator().getDefaultLocator() != null) ? "在" + getCommunicator().getDefaultLocator().toString() : "") + "找到" + getFullServiceName() + "服务";

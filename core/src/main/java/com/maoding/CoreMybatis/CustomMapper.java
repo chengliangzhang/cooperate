@@ -13,27 +13,18 @@ import java.util.List;
  * 描    述 : 通用SQL语句接口
  */
 public interface CustomMapper<T> {
-    /** 按id更新，entity字段为null不更新 */
-    @UpdateProvider(type = CustomProvider.class, method = "dynamicSQL")
-    int updateById(@Param("entity") T entity, @Param("id") String id, @Param("lastModifyUserId") String lastModifyUserId, @Param("lastModifyTime") Date lastModifyTime);
-
-    /** 按id严格更新，entity字段为null也更新到null */
-    @UpdateProvider(type = CustomProvider.class, method = "dynamicSQL")
-    int updateExactById(@Param("entity") T entity, @Param("id") String id, @Param("lastModifyUserId") String lastModifyUserId, @Param("lastModifyTime") Date lastModifyTime);
-
     /** 按idList更新，entity字段为null不更新 */
     @UpdateProvider(type = CustomProvider.class, method = "dynamicSQL")
-    int updateByIdList(@Param("entity") T entity, @Param("idList") List<String> idList, @Param("lastModifyUserId") String lastModifyUserId, @Param("lastModifyTime") Date lastModifyTime);
+    int updateByIdList(@Param("entity") T entity, @Param("idList") List<String> idList);
 
     /** 按idList严格更新，entity字段为null也更新到null */
     @UpdateProvider(type = CustomProvider.class, method = "dynamicSQL")
-    int updateExactByIdList(@Param("entity") T entity, @Param("idList") List<String> idList, @Param("lastModifyUserId") String lastModifyUserId, @Param("lastModifyTime") Date lastModifyTime);
-
-    /** 按id删除 */
-    @UpdateProvider(type = CustomProvider.class, method = "dynamicSQL")
-    int fakeDeleteById(@Param("id") String id, @Param("lastModifyUserId") String lastModifyUserId, @Param("lastModifyTime") Date lastModifyTime);
+    int updateExactByIdList(@Param("entity") T entity, @Param("idList") List<String> idList);
 
     /** 按idList删除 */
     @UpdateProvider(type = CustomProvider.class, method = "dynamicSQL")
-    int fakeDeleteByIdList(@Param("idList") List<String> idList, @Param("lastModifyUserId") String lastModifyUserId, @Param("lastModifyTime") Date lastModifyTime);
+    int fakeDeleteByIdList(@Param("idList") List<String> idList,
+                           @Param("lastModifyUserId") String lastModifyUserId,
+                           @Param("lastModifyRoleId") String lastModifyRoleId,
+                           @Param("lastModifyTime") Date lastModifyTime);
 }

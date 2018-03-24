@@ -19,6 +19,17 @@ public class StorageTreeEntity extends BaseTreeEntity {
     /** 相关联的任务id */
     @Column
     private String taskId;
+    /** 文件所属用户id */
+    @Column
+    private String ownerUserId;
+
+    public String getOwnerUserId() {
+        return ownerUserId;
+    }
+
+    public void setOwnerUserId(String ownerUserId) {
+        this.ownerUserId = ownerUserId;
+    }
 
     public String getTaskId() {
         return taskId;

@@ -1,4 +1,4 @@
-package com.maoding.Utils;
+package com.maoding.CoreUtils;
 
 import com.maoding.Bean.CoreKeyValuePair;
 import com.maoding.Bean.CoreResponse;

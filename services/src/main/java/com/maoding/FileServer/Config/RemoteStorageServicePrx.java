@@ -3,7 +3,8 @@ package com.maoding.FileServer.Config;
 import com.maoding.Base.BaseRemoteService;
 import com.maoding.Common.zeroc.CustomException;
 import com.maoding.Storage.zeroc.*;
-import com.maoding.Utils.SpringUtils;
+import com.maoding.User.zeroc.AccountDTO;
+import com.maoding.CoreUtils.SpringUtils;
 
 import java.util.List;
 
@@ -39,6 +40,41 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
+    public EmbedElementDTO createEmbedElement(UpdateElementDTO request) throws CustomException {
+        return getStorageService().createEmbedElement(request,null);
+    }
+
+    @Override
+    public NodeFileDTO createNodeFile(UpdateNodeFileDTO request) throws CustomException {
+        return getStorageService().createNodeFile(request,null);
+    }
+
+    @Override
+    public SuggestionDTO createSuggestion(UpdateSuggestionDTO request) throws CustomException {
+        return getStorageService().createSuggestion(request,null);
+    }
+
+    @Override
+    public FullNodeDTO getNodeInfo(SimpleNodeDTO node, QueryNodeInfoDTO request) throws CustomException {
+        return getStorageService().getNodeInfo(node,request,null);
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listChild(SimpleNodeDTO parent) throws CustomException {
+        return getStorageService().listChild(parent,null);
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listChildren(SimpleNodeDTO parent) throws CustomException {
+        return getStorageService().listChildren(parent,null);
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listRoot(String accountId) throws CustomException {
+        return getStorageService().listRoot(accountId,null);
+    }
+
+    @Override
     public SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent, UpdateNodeDTO request) throws CustomException {
         return getStorageService().createNodeWithParent(parent,request,null);
     }
@@ -49,18 +85,13 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
-    public SimpleNodeDTO createNode(UpdateNodeDTO request) {
-        return getStorageService().createNode(request,null);
+    public SimpleNodeDTO createNode(SimpleNodeDTO parent, UpdateNodeDTO request) throws CustomException {
+        return getStorageService().createNode(parent,request,null);
     }
 
     @Override
-    public SimpleNodeDTO updateNode(SimpleNodeDTO src, UpdateNodeDTO request) {
+    public SimpleNodeDTO updateNode(SimpleNodeDTO src, UpdateNodeDTO request) throws CustomException {
         return getStorageService().updateNode(src,request,null);
-    }
-
-    @Override
-    public List<SimpleNodeDTO> listAllNode(String userId) {
-        return getStorageService().listAllNode(userId,null);
     }
 
     @Override
@@ -78,10 +109,12 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
         return getStorageService().getFileNodeInfo(node,withHistory,null);
     }
 
+
     @Override
-    public boolean deleteNodeById(String id) throws CustomException {
-        return getStorageService().deleteNodeById(id,null);
+    public void deleteNode(AccountDTO account, SimpleNodeDTO node) throws CustomException {
+        getStorageService().deleteNode(account,node,null);
     }
+
 
     @Override
     public FullNodeDTO getFullNodeInfo(SimpleNodeDTO node) {

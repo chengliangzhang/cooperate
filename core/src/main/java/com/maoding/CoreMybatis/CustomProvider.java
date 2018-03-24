@@ -21,16 +21,6 @@ public class CustomProvider extends MapperTemplate {
         super(mapperClass, mapperHelper);
     }
 
-    /** 按id更新，entity字段为null不更新 */
-    public String updateById(MappedStatement ms){
-        return getUpdateString(ms,true);
-    }
-
-    /** 按id严格更新，entity字段为null也更新到null */
-    public String updateExactById(MappedStatement ms){
-        return getUpdateString(ms,false);
-    }
-
     /** 按idList更新, entity字段为null不更新 */
     public String updateByIdList(MappedStatement ms){
         return getUpdateString(ms,true);
@@ -40,9 +30,6 @@ public class CustomProvider extends MapperTemplate {
     public String updateExactByIdList(MappedStatement ms){
         return getUpdateString(ms,false);
     }
-
-    /** 按id删除 */
-    public String fakeDeleteById(MappedStatement ms){return getDeleteString(ms);}
 
     /** 按idList删除 */
     public String fakeDeleteByIdList(MappedStatement ms){return getDeleteString(ms);}
@@ -65,10 +52,6 @@ public class CustomProvider extends MapperTemplate {
             if (!column.isUpdatable()) continue;
             if (isId(column)) {
                 sqlWhere.append(getIdCondition(column));
-            } else if (isLastModifyUserId(column)) {
-                sqlSet.append(getLastModifyUserIdSetString(column));
-            } else if (isLastModifyTime(column)) {
-                sqlSet.append(getLastModifyTimeSetString(column));
             } else {
                 if (isIgnoreNull) {
                     //<if test="entity.<p>!=null">
@@ -123,6 +106,8 @@ public class CustomProvider extends MapperTemplate {
                 sqlWhere.append(getIdCondition(column));
             } else if (isLastModifyUserId(column)) {
                 sql.append(getLastModifyUserIdSetString(column));
+            } else if (isLastModifyRoleId(column)) {
+                sql.append(getLastModifyRoleIdSetString(column));
             } else if (isLastModifyTime(column)) {
                 sql.append(getLastModifyTimeSetString(column));
             }
@@ -142,21 +127,14 @@ public class CustomProvider extends MapperTemplate {
      *          #{id}
      *       </foreach>
      *   </if>
-     *   <if test="id != null">
-     *       and find_in_set(t.id,#{id})
-     *   </if>
      */
     private String getIdCondition(EntityColumn column){
         final String ID_LIST_PARAM = "idList"; //@Param内定义的字符串
-        final String ID_PARAM = "id"; //@Param内定义的字符串
         return "<if test=\"" + ID_LIST_PARAM + "!=null and " + ID_LIST_PARAM + ".size() > 0\">" +
                 " and t.`" + column.getColumn() + "` in " +
                 "<foreach collection=\"" + ID_LIST_PARAM + "\" item=\"id\" open=\"(\" separator=\",\" close=\")\">" +
                 "#{id}" +
                 "</foreach>" +
-                "</if>" +
-                "<if test=\"" + ID_PARAM + "!=null\">" +
-                " and find_in_set(t.`" + column.getColumn() + "`,#{" + ID_PARAM + "})" +
                 "</if>";
     }
 
@@ -167,6 +145,18 @@ public class CustomProvider extends MapperTemplate {
      */
     private String getLastModifyUserIdSetString(EntityColumn column){
         final String PARAM_NAME = "lastModifyUserId"; //@Param内定义的字符串
+        return "<if test=\"" + PARAM_NAME + "!=null\">" +
+                "t.`" + column.getColumn() + "`" + "=#{" + PARAM_NAME + "}" + "," +
+                "</if>";
+    }
+
+    /**
+     *  <if test="lastModifyRoleId != null">
+     *      t.`<c>` = #{lastModifyRoleId},
+     *  </if>
+     */
+    private String getLastModifyRoleIdSetString(EntityColumn column){
+        final String PARAM_NAME = "lastModifyRoleId"; //@Param内定义的字符串
         return "<if test=\"" + PARAM_NAME + "!=null\">" +
                 "t.`" + column.getColumn() + "`" + "=#{" + PARAM_NAME + "}" + "," +
                 "</if>";
@@ -200,6 +190,10 @@ public class CustomProvider extends MapperTemplate {
 
     private boolean isLastModifyUserId(EntityColumn column){
         return "last_modify_user_id".equals(column.getColumn());
+    }
+
+    private boolean isLastModifyRoleId(EntityColumn column){
+        return "last_modify_role_id".equals(column.getColumn());
     }
 
     private boolean isLastModifyTime(EntityColumn column){

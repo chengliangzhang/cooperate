@@ -15,9 +15,9 @@ public class CoreFileDataDTO {
     @Deprecated
     private String key;
     /** 分片数据在文件内的起始位置，为null则需要根据chunkId和chunkSize计算 */
-    private Long pos;
+    private long pos;
     /** 在分片数据数组内有效的字节个数，为null则分片数据数组内所有字节都有效 */
-    private Integer size;
+    private int size;
     /** 当前分片数据 */
     private byte[] data;
 
@@ -41,19 +41,19 @@ public class CoreFileDataDTO {
         this.key = key;
     }
 
-    public Long getPos() {
+    public long getPos() {
         return pos;
     }
 
-    public void setPos(Long pos) {
+    public void setPos(long pos) {
         this.pos = pos;
     }
 
-    public Integer getSize() {
+    public int getSize() {
         return size;
     }
 
-    public void setSize(Integer size) {
+    public void setSize(int size) {
         this.size = size;
     }
 

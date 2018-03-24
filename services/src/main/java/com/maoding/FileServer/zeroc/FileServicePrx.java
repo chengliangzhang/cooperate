@@ -22,6 +22,992 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default com.maoding.Storage.zeroc.SuggestionDTO createSuggestion(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, SuggestionRequestDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return createSuggestion(account, node, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.SuggestionDTO createSuggestion(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, SuggestionRequestDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_createSuggestionAsync(account, node, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SuggestionDTO> createSuggestionAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, SuggestionRequestDTO request)
+    {
+        return _iceI_createSuggestionAsync(account, node, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SuggestionDTO> createSuggestionAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, SuggestionRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createSuggestionAsync(account, node, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SuggestionDTO> _iceI_createSuggestionAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, SuggestionRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SuggestionDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createSuggestion", null, sync, _iceE_createSuggestion);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                     SuggestionRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.SuggestionDTO ret;
+                     ret = com.maoding.Storage.zeroc.SuggestionDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_createSuggestion =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.NodeFileDTO createAccessory(com.maoding.User.zeroc.AccountDTO account, AccessoryRequestDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return createAccessory(account, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.NodeFileDTO createAccessory(com.maoding.User.zeroc.AccountDTO account, AccessoryRequestDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_createAccessoryAsync(account, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.NodeFileDTO> createAccessoryAsync(com.maoding.User.zeroc.AccountDTO account, AccessoryRequestDTO request)
+    {
+        return _iceI_createAccessoryAsync(account, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.NodeFileDTO> createAccessoryAsync(com.maoding.User.zeroc.AccountDTO account, AccessoryRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createAccessoryAsync(account, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.NodeFileDTO> _iceI_createAccessoryAsync(com.maoding.User.zeroc.AccountDTO iceP_account, AccessoryRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.NodeFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createAccessory", null, sync, _iceE_createAccessory);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     AccessoryRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.NodeFileDTO ret;
+                     ret = com.maoding.Storage.zeroc.NodeFileDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_createAccessory =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default int writeFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return writeFile(account, file, data, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default int writeFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_writeFileAsync(account, file, data, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data)
+    {
+        return _iceI_writeFileAsync(account, file, data, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data, java.util.Map<String, String> context)
+    {
+        return _iceI_writeFileAsync(account, file, data, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> _iceI_writeFileAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.NodeFileDTO iceP_file, FileDataDTO iceP_data, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "writeFile", null, sync, _iceE_writeFile);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.NodeFileDTO.ice_write(ostr, iceP_file);
+                     FileDataDTO.ice_write(ostr, iceP_data);
+                 }, istr -> {
+                     int ret;
+                     ret = istr.readInt();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_writeFile =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default int writeFileAndRelease(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return writeFileAndRelease(account, file, data, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default int writeFileAndRelease(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_writeFileAndReleaseAsync(account, file, data, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileAndReleaseAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data)
+    {
+        return _iceI_writeFileAndReleaseAsync(account, file, data, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileAndReleaseAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data, java.util.Map<String, String> context)
+    {
+        return _iceI_writeFileAndReleaseAsync(account, file, data, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> _iceI_writeFileAndReleaseAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.NodeFileDTO iceP_file, FileDataDTO iceP_data, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "writeFileAndRelease", null, sync, _iceE_writeFileAndRelease);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.NodeFileDTO.ice_write(ostr, iceP_file);
+                     FileDataDTO.ice_write(ostr, iceP_data);
+                 }, istr -> {
+                     int ret;
+                     ret = istr.readInt();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_writeFileAndRelease =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default int releaseFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return releaseFile(account, file, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default int releaseFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_releaseFileAsync(account, file, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> releaseFileAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file)
+    {
+        return _iceI_releaseFileAsync(account, file, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> releaseFileAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, java.util.Map<String, String> context)
+    {
+        return _iceI_releaseFileAsync(account, file, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> _iceI_releaseFileAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.NodeFileDTO iceP_file, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "releaseFile", null, sync, _iceE_releaseFile);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.NodeFileDTO.ice_write(ostr, iceP_file);
+                 }, istr -> {
+                     int ret;
+                     ret = istr.readInt();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_releaseFile =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default java.util.List<com.maoding.Storage.zeroc.SuggestionDTO> listSuggestion(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QuerySuggestionDTO query)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listSuggestion(account, query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<com.maoding.Storage.zeroc.SuggestionDTO> listSuggestion(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QuerySuggestionDTO query, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listSuggestionAsync(account, query, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SuggestionDTO>> listSuggestionAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QuerySuggestionDTO query)
+    {
+        return _iceI_listSuggestionAsync(account, query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SuggestionDTO>> listSuggestionAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QuerySuggestionDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listSuggestionAsync(account, query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SuggestionDTO>> _iceI_listSuggestionAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.QuerySuggestionDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SuggestionDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listSuggestion", null, sync, _iceE_listSuggestion);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.QuerySuggestionDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     java.util.List<com.maoding.Storage.zeroc.SuggestionDTO> ret;
+                     ret = com.maoding.Storage.zeroc.SuggestionListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listSuggestion =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default boolean isEmpty(com.maoding.Storage.zeroc.SimpleNodeDTO node)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return isEmpty(node, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean isEmpty(com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_isEmptyAsync(node, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isEmptyAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node)
+    {
+        return _iceI_isEmptyAsync(node, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> isEmptyAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_isEmptyAsync(node, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_isEmptyAsync(com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "isEmpty", null, sync, _iceE_isEmpty);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_isEmpty =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default String getNodePath(com.maoding.Storage.zeroc.SimpleNodeDTO node)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return getNodePath(node, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default String getNodePath(com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_getNodePathAsync(node, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> getNodePathAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node)
+    {
+        return _iceI_getNodePathAsync(node, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> getNodePathAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_getNodePathAsync(node, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_getNodePathAsync(com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getNodePath", null, sync, _iceE_getNodePath);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                 }, istr -> {
+                     String ret;
+                     ret = istr.readString();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_getNodePath =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default String getNodePathForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return getNodePathForAccount(account, node, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default String getNodePathForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_getNodePathForAccountAsync(account, node, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> getNodePathForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node)
+    {
+        return _iceI_getNodePathForAccountAsync(account, node, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> getNodePathForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_getNodePathForAccountAsync(account, node, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_getNodePathForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getNodePathForAccount", null, sync, _iceE_getNodePathForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                 }, istr -> {
+                     String ret;
+                     ret = istr.readString();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_getNodePathForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getFileInfoWithHis(com.maoding.Storage.zeroc.SimpleNodeDTO node)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return getFileInfoWithHis(node, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getFileInfoWithHis(com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_getFileInfoWithHisAsync(node, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getFileInfoWithHisAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node)
+    {
+        return _iceI_getFileInfoWithHisAsync(node, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getFileInfoWithHisAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_getFileInfoWithHisAsync(node, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> _iceI_getFileInfoWithHisAsync(com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFileInfoWithHis", null, sync, _iceE_getFileInfoWithHis);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_getFileInfoWithHis =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getFileInfoWithHisForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return getFileInfoWithHisForAccount(account, node, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getFileInfoWithHisForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_getFileInfoWithHisForAccountAsync(account, node, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getFileInfoWithHisForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node)
+    {
+        return _iceI_getFileInfoWithHisForAccountAsync(account, node, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getFileInfoWithHisForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_getFileInfoWithHisForAccountAsync(account, node, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> _iceI_getFileInfoWithHisForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFileInfoWithHisForAccount", null, sync, _iceE_getFileInfoWithHisForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_getFileInfoWithHisForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getFileInfo(com.maoding.Storage.zeroc.SimpleNodeDTO node)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return getFileInfo(node, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getFileInfo(com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_getFileInfoAsync(node, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getFileInfoAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node)
+    {
+        return _iceI_getFileInfoAsync(node, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getFileInfoAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_getFileInfoAsync(node, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> _iceI_getFileInfoAsync(com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFileInfo", null, sync, _iceE_getFileInfo);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_getFileInfo =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getFileInfoForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return getFileInfoForAccount(account, node, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getFileInfoForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_getFileInfoForAccountAsync(account, node, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getFileInfoForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node)
+    {
+        return _iceI_getFileInfoForAccountAsync(account, node, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getFileInfoForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_getFileInfoForAccountAsync(account, node, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> _iceI_getFileInfoForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getFileInfoForAccount", null, sync, _iceE_getFileInfoForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_getFileInfoForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getNodeInfo(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.maoding.Storage.zeroc.QueryNodeInfoDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return getNodeInfo(node, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getNodeInfo(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.maoding.Storage.zeroc.QueryNodeInfoDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_getNodeInfoAsync(node, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getNodeInfoAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.maoding.Storage.zeroc.QueryNodeInfoDTO request)
+    {
+        return _iceI_getNodeInfoAsync(node, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getNodeInfoAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.maoding.Storage.zeroc.QueryNodeInfoDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_getNodeInfoAsync(node, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> _iceI_getNodeInfoAsync(com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, com.maoding.Storage.zeroc.QueryNodeInfoDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getNodeInfo", null, sync, _iceE_getNodeInfo);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                     com.maoding.Storage.zeroc.QueryNodeInfoDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_getNodeInfo =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getNodeInfoForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.maoding.Storage.zeroc.QueryNodeInfoDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return getNodeInfoForAccount(account, node, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.FullNodeDTO getNodeInfoForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.maoding.Storage.zeroc.QueryNodeInfoDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_getNodeInfoForAccountAsync(account, node, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getNodeInfoForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.maoding.Storage.zeroc.QueryNodeInfoDTO request)
+    {
+        return _iceI_getNodeInfoForAccountAsync(account, node, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FullNodeDTO> getNodeInfoForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.maoding.Storage.zeroc.QueryNodeInfoDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_getNodeInfoForAccountAsync(account, node, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> _iceI_getNodeInfoForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, com.maoding.Storage.zeroc.QueryNodeInfoDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.FullNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getNodeInfoForAccount", null, sync, _iceE_getNodeInfoForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                     com.maoding.Storage.zeroc.QueryNodeInfoDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_getNodeInfoForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listChildNode(com.maoding.Storage.zeroc.SimpleNodeDTO parent)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listChildNode(parent, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listChildNode(com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listChildNodeAsync(parent, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listChildNodeAsync(com.maoding.Storage.zeroc.SimpleNodeDTO parent)
+    {
+        return _iceI_listChildNodeAsync(parent, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listChildNodeAsync(com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.Map<String, String> context)
+    {
+        return _iceI_listChildNodeAsync(parent, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> _iceI_listChildNodeAsync(com.maoding.Storage.zeroc.SimpleNodeDTO iceP_parent, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listChildNode", null, sync, _iceE_listChildNode);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_parent);
+                 }, istr -> {
+                     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listChildNode =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listChildNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listChildNodeForAccount(account, parent, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listChildNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listChildNodeForAccountAsync(account, parent, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listChildNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent)
+    {
+        return _iceI_listChildNodeForAccountAsync(account, parent, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listChildNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.Map<String, String> context)
+    {
+        return _iceI_listChildNodeForAccountAsync(account, parent, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> _iceI_listChildNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.SimpleNodeDTO iceP_parent, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listChildNodeForAccount", null, sync, _iceE_listChildNodeForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_parent);
+                 }, istr -> {
+                     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listChildNodeForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listChildrenNode(com.maoding.Storage.zeroc.SimpleNodeDTO parent)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listChildrenNode(parent, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listChildrenNode(com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listChildrenNodeAsync(parent, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listChildrenNodeAsync(com.maoding.Storage.zeroc.SimpleNodeDTO parent)
+    {
+        return _iceI_listChildrenNodeAsync(parent, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listChildrenNodeAsync(com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.Map<String, String> context)
+    {
+        return _iceI_listChildrenNodeAsync(parent, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> _iceI_listChildrenNodeAsync(com.maoding.Storage.zeroc.SimpleNodeDTO iceP_parent, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listChildrenNode", null, sync, _iceE_listChildrenNode);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_parent);
+                 }, istr -> {
+                     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listChildrenNode =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listChildrenNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listChildrenNodeForAccount(account, parent, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listChildrenNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listChildrenNodeForAccountAsync(account, parent, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listChildrenNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent)
+    {
+        return _iceI_listChildrenNodeForAccountAsync(account, parent, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listChildrenNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.Map<String, String> context)
+    {
+        return _iceI_listChildrenNodeForAccountAsync(account, parent, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> _iceI_listChildrenNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.SimpleNodeDTO iceP_parent, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listChildrenNodeForAccount", null, sync, _iceE_listChildrenNodeForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_parent);
+                 }, istr -> {
+                     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listChildrenNodeForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listWebArchiveDir(String projectId)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -1262,12 +2248,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用issueFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO issueFile(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
         return issueFile(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用issueFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO issueFile(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -1285,11 +2280,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用issueFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> issueFileAsync(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
     {
         return _iceI_issueFileAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用issueFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> issueFileAsync(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
     {
         return _iceI_issueFileAsync(src, request, context, false);
@@ -1314,12 +2320,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用issueFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO issueFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
         return issueFileForAccount(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用issueFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO issueFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -1337,11 +2352,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用issueFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> issueFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
     {
         return _iceI_issueFileForAccountAsync(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用issueFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> issueFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
     {
         return _iceI_issueFileForAccountAsync(account, src, request, context, false);
@@ -1363,6 +2389,111 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_issueFileForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO issueFullNodeRequest(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return issueFullNodeRequest(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO issueFullNodeRequest(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_issueFullNodeRequestAsync(src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> issueFullNodeRequestAsync(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+    {
+        return _iceI_issueFullNodeRequestAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> issueFullNodeRequestAsync(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_issueFullNodeRequestAsync(src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> _iceI_issueFullNodeRequestAsync(com.maoding.Storage.zeroc.FullNodeDTO iceP_src, CommitRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "issueFullNodeRequest", null, sync, _iceE_issueFullNodeRequest);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     CommitRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_issueFullNodeRequest =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO issueFullNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return issueFullNodeRequestForAccount(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO issueFullNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_issueFullNodeRequestForAccountAsync(account, src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> issueFullNodeRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+    {
+        return _iceI_issueFullNodeRequestForAccountAsync(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> issueFullNodeRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_issueFullNodeRequestForAccountAsync(account, src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> _iceI_issueFullNodeRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.FullNodeDTO iceP_src, CommitRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "issueFullNodeRequestForAccount", null, sync, _iceE_issueFullNodeRequestForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     CommitRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_issueFullNodeRequestForAccount =
     {
         com.maoding.Common.zeroc.CustomException.class
     };
@@ -1577,12 +2708,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用checkFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO checkFileRequest(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
         return checkFileRequest(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用checkFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO checkFileRequest(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -1600,11 +2740,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用checkFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> checkFileRequestAsync(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
     {
         return _iceI_checkFileRequestAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用checkFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> checkFileRequestAsync(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
     {
         return _iceI_checkFileRequestAsync(src, request, context, false);
@@ -1629,12 +2780,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用checkFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO checkFileRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
         return checkFileRequestForAccount(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用checkFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO checkFileRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -1652,11 +2812,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用checkFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> checkFileRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
     {
         return _iceI_checkFileRequestForAccountAsync(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用checkFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> checkFileRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
     {
         return _iceI_checkFileRequestForAccountAsync(account, src, request, context, false);
@@ -1678,6 +2849,111 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_checkFileRequestForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO checkFullNodeRequest(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return checkFullNodeRequest(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO checkFullNodeRequest(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_checkFullNodeRequestAsync(src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> checkFullNodeRequestAsync(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+    {
+        return _iceI_checkFullNodeRequestAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> checkFullNodeRequestAsync(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_checkFullNodeRequestAsync(src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> _iceI_checkFullNodeRequestAsync(com.maoding.Storage.zeroc.FullNodeDTO iceP_src, CommitRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "checkFullNodeRequest", null, sync, _iceE_checkFullNodeRequest);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     CommitRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_checkFullNodeRequest =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO checkFullNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return checkFullNodeRequestForAccount(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO checkFullNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_checkFullNodeRequestForAccountAsync(account, src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> checkFullNodeRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+    {
+        return _iceI_checkFullNodeRequestForAccountAsync(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> checkFullNodeRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_checkFullNodeRequestForAccountAsync(account, src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> _iceI_checkFullNodeRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.FullNodeDTO iceP_src, CommitRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "checkFullNodeRequestForAccount", null, sync, _iceE_checkFullNodeRequestForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     CommitRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_checkFullNodeRequestForAccount =
     {
         com.maoding.Common.zeroc.CustomException.class
     };
@@ -1892,12 +3168,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用auditFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO auditFileRequest(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
         return auditFileRequest(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用auditFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO auditFileRequest(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -1915,11 +3200,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用auditFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> auditFileRequestAsync(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
     {
         return _iceI_auditFileRequestAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用auditFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> auditFileRequestAsync(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
     {
         return _iceI_auditFileRequestAsync(src, request, context, false);
@@ -1944,12 +3240,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用auditFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO auditFileRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
         return auditFileRequestForAccount(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用auditFullNodeRequest代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO auditFileRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -1967,11 +3272,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用auditFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> auditFileRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
     {
         return _iceI_auditFileRequestForAccountAsync(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用auditFullNodeRequest代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> auditFileRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
     {
         return _iceI_auditFileRequestForAccountAsync(account, src, request, context, false);
@@ -1993,6 +3309,111 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_auditFileRequestForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO auditFullNodeRequest(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return auditFullNodeRequest(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO auditFullNodeRequest(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_auditFullNodeRequestAsync(src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> auditFullNodeRequestAsync(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+    {
+        return _iceI_auditFullNodeRequestAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> auditFullNodeRequestAsync(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_auditFullNodeRequestAsync(src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> _iceI_auditFullNodeRequestAsync(com.maoding.Storage.zeroc.FullNodeDTO iceP_src, CommitRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "auditFullNodeRequest", null, sync, _iceE_auditFullNodeRequest);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     CommitRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_auditFullNodeRequest =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO auditFullNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return auditFullNodeRequestForAccount(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO auditFullNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_auditFullNodeRequestForAccountAsync(account, src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> auditFullNodeRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+    {
+        return _iceI_auditFullNodeRequestForAccountAsync(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> auditFullNodeRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_auditFullNodeRequestForAccountAsync(account, src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> _iceI_auditFullNodeRequestForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.FullNodeDTO iceP_src, CommitRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "auditFullNodeRequestForAccount", null, sync, _iceE_auditFullNodeRequestForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     CommitRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_auditFullNodeRequestForAccount =
     {
         com.maoding.Common.zeroc.CustomException.class
     };
@@ -2207,12 +3628,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用commitFullNode代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO commitFile(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
         return commitFile(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用commitFullNode代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO commitFile(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -2230,11 +3660,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用commitFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> commitFileAsync(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
     {
         return _iceI_commitFileAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用commitFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> commitFileAsync(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
     {
         return _iceI_commitFileAsync(src, request, context, false);
@@ -2259,12 +3700,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用commitFullNode代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO commitFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
         return commitFileForAccount(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用commitFullNode代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.SimpleNodeDTO commitFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -2282,11 +3732,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用commitFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> commitFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request)
     {
         return _iceI_commitFileForAccountAsync(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用commitFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> commitFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
     {
         return _iceI_commitFileForAccountAsync(account, src, request, context, false);
@@ -2308,6 +3769,111 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_commitFileForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO commitFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return commitFullNode(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO commitFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_commitFullNodeAsync(src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> commitFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+    {
+        return _iceI_commitFullNodeAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> commitFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_commitFullNodeAsync(src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> _iceI_commitFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO iceP_src, CommitRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "commitFullNode", null, sync, _iceE_commitFullNode);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     CommitRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_commitFullNode =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO commitFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return commitFullNodeForAccount(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.Storage.zeroc.SimpleNodeDTO commitFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_commitFullNodeForAccountAsync(account, src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> commitFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request)
+    {
+        return _iceI_commitFullNodeForAccountAsync(account, src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.SimpleNodeDTO> commitFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_commitFullNodeForAccountAsync(account, src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> _iceI_commitFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.FullNodeDTO iceP_src, CommitRequestDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.Storage.zeroc.SimpleNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "commitFullNodeForAccount", null, sync, _iceE_commitFullNodeForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     CommitRequestDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     com.maoding.Storage.zeroc.SimpleNodeDTO ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_commitFullNodeForAccount =
     {
         com.maoding.Common.zeroc.CustomException.class
     };
@@ -2732,12 +4298,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用setFullNodeLength代替
+     **/
+    @Deprecated
     default boolean setFileNodeLength(com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength)
         throws com.maoding.Common.zeroc.CustomException
     {
         return setFileNodeLength(src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用setFullNodeLength代替
+     **/
+    @Deprecated
     default boolean setFileNodeLength(com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -2755,11 +4330,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用setFullNodeLength代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFileNodeLengthAsync(com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength)
     {
         return _iceI_setFileNodeLengthAsync(src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用setFullNodeLength代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFileNodeLengthAsync(com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, java.util.Map<String, String> context)
     {
         return _iceI_setFileNodeLengthAsync(src, fileLength, context, false);
@@ -2784,12 +4370,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用setFullNodeLength代替
+     **/
+    @Deprecated
     default boolean setFileNodeLengthForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength)
         throws com.maoding.Common.zeroc.CustomException
     {
         return setFileNodeLengthForAccount(account, src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用setFullNodeLength代替
+     **/
+    @Deprecated
     default boolean setFileNodeLengthForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -2807,11 +4402,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用setFullNodeLength代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFileNodeLengthForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength)
     {
         return _iceI_setFileNodeLengthForAccountAsync(account, src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用setFullNodeLength代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFileNodeLengthForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, java.util.Map<String, String> context)
     {
         return _iceI_setFileNodeLengthForAccountAsync(account, src, fileLength, context, false);
@@ -2833,6 +4439,111 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_setFileNodeLengthForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default boolean setFullNodeLength(com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return setFullNodeLength(src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean setFullNodeLength(com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_setFullNodeLengthAsync(src, fileLength, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFullNodeLengthAsync(com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength)
+    {
+        return _iceI_setFullNodeLengthAsync(src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFullNodeLengthAsync(com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, java.util.Map<String, String> context)
+    {
+        return _iceI_setFullNodeLengthAsync(src, fileLength, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_setFullNodeLengthAsync(com.maoding.Storage.zeroc.FullNodeDTO iceP_src, long iceP_fileLength, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setFullNodeLength", null, sync, _iceE_setFullNodeLength);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     ostr.writeLong(iceP_fileLength);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_setFullNodeLength =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default boolean setFullNodeLengthForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return setFullNodeLengthForAccount(account, src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean setFullNodeLengthForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_setFullNodeLengthForAccountAsync(account, src, fileLength, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFullNodeLengthForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength)
+    {
+        return _iceI_setFullNodeLengthForAccountAsync(account, src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> setFullNodeLengthForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, java.util.Map<String, String> context)
+    {
+        return _iceI_setFullNodeLengthForAccountAsync(account, src, fileLength, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_setFullNodeLengthForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.FullNodeDTO iceP_src, long iceP_fileLength, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setFullNodeLengthForAccount", null, sync, _iceE_setFullNodeLengthForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     ostr.writeLong(iceP_fileLength);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_setFullNodeLengthForAccount =
     {
         com.maoding.Common.zeroc.CustomException.class
     };
@@ -2942,12 +4653,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用releaseFullNode代替
+     **/
+    @Deprecated
     default boolean releaseFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength)
         throws com.maoding.Common.zeroc.CustomException
     {
         return releaseFileNode(src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用releaseFullNode代替
+     **/
+    @Deprecated
     default boolean releaseFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -2965,11 +4685,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用releaseFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> releaseFileNodeAsync(com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength)
     {
         return _iceI_releaseFileNodeAsync(src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用releaseFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> releaseFileNodeAsync(com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, java.util.Map<String, String> context)
     {
         return _iceI_releaseFileNodeAsync(src, fileLength, context, false);
@@ -2994,12 +4725,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用releaseFullNode代替
+     **/
+    @Deprecated
     default boolean releaseFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength)
         throws com.maoding.Common.zeroc.CustomException
     {
         return releaseFileNodeForAccount(account, src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用releaseFullNode代替
+     **/
+    @Deprecated
     default boolean releaseFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -3017,11 +4757,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用releaseFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> releaseFileNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength)
     {
         return _iceI_releaseFileNodeForAccountAsync(account, src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用releaseFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> releaseFileNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, java.util.Map<String, String> context)
     {
         return _iceI_releaseFileNodeForAccountAsync(account, src, fileLength, context, false);
@@ -3043,6 +4794,111 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_releaseFileNodeForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default boolean releaseFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return releaseFullNode(src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean releaseFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_releaseFullNodeAsync(src, fileLength, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> releaseFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength)
+    {
+        return _iceI_releaseFullNodeAsync(src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> releaseFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, java.util.Map<String, String> context)
+    {
+        return _iceI_releaseFullNodeAsync(src, fileLength, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_releaseFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO iceP_src, long iceP_fileLength, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "releaseFullNode", null, sync, _iceE_releaseFullNode);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     ostr.writeLong(iceP_fileLength);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_releaseFullNode =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default boolean releaseFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return releaseFullNodeForAccount(account, src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean releaseFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_releaseFullNodeForAccountAsync(account, src, fileLength, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> releaseFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength)
+    {
+        return _iceI_releaseFullNodeForAccountAsync(account, src, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> releaseFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, java.util.Map<String, String> context)
+    {
+        return _iceI_releaseFullNodeForAccountAsync(account, src, fileLength, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_releaseFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.FullNodeDTO iceP_src, long iceP_fileLength, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "releaseFullNodeForAccount", null, sync, _iceE_releaseFullNodeForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     ostr.writeLong(iceP_fileLength);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_releaseFullNodeForAccount =
     {
         com.maoding.Common.zeroc.CustomException.class
     };
@@ -3150,12 +5006,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用reloadFullNode代替
+     **/
+    @Deprecated
     default boolean reloadFileNode(com.maoding.Storage.zeroc.FileNodeDTO src)
         throws com.maoding.Common.zeroc.CustomException
     {
         return reloadFileNode(src, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用reloadFullNode代替
+     **/
+    @Deprecated
     default boolean reloadFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -3173,11 +5038,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用reloadFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> reloadFileNodeAsync(com.maoding.Storage.zeroc.FileNodeDTO src)
     {
         return _iceI_reloadFileNodeAsync(src, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用reloadFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> reloadFileNodeAsync(com.maoding.Storage.zeroc.FileNodeDTO src, java.util.Map<String, String> context)
     {
         return _iceI_reloadFileNodeAsync(src, context, false);
@@ -3201,12 +5077,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用reloadFullNode代替
+     **/
+    @Deprecated
     default boolean reloadFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src)
         throws com.maoding.Common.zeroc.CustomException
     {
         return reloadFileNodeForAccount(account, src, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用reloadFullNode代替
+     **/
+    @Deprecated
     default boolean reloadFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -3224,11 +5109,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用reloadFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> reloadFileNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src)
     {
         return _iceI_reloadFileNodeForAccountAsync(account, src, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用reloadFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> reloadFileNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, java.util.Map<String, String> context)
     {
         return _iceI_reloadFileNodeForAccountAsync(account, src, context, false);
@@ -3253,12 +5149,124 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    default boolean reloadFullNode(com.maoding.Storage.zeroc.FullNodeDTO src)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return reloadFullNode(src, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean reloadFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_reloadFullNodeAsync(src, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> reloadFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO src)
+    {
+        return _iceI_reloadFullNodeAsync(src, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> reloadFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO src, java.util.Map<String, String> context)
+    {
+        return _iceI_reloadFullNodeAsync(src, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_reloadFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO iceP_src, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "reloadFullNode", null, sync, _iceE_reloadFullNode);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_reloadFullNode =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default boolean reloadFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return reloadFullNodeForAccount(account, src, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default boolean reloadFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_reloadFullNodeForAccountAsync(account, src, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> reloadFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src)
+    {
+        return _iceI_reloadFullNodeForAccountAsync(account, src, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Boolean> reloadFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, java.util.Map<String, String> context)
+    {
+        return _iceI_reloadFullNodeForAccountAsync(account, src, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> _iceI_reloadFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.FullNodeDTO iceP_src, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Boolean> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "reloadFullNodeForAccount", null, sync, _iceE_reloadFullNodeForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                 }, istr -> {
+                     boolean ret;
+                     ret = istr.readBool();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_reloadFullNodeForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    /**
+     * @deprecated 使用writeFullNode代替
+     **/
+    @Deprecated
     default int writeFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, FileDataDTO data)
         throws com.maoding.Common.zeroc.CustomException
     {
         return writeFileNode(src, data, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用writeFullNode代替
+     **/
+    @Deprecated
     default int writeFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, FileDataDTO data, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -3276,11 +5284,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用writeFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileNodeAsync(com.maoding.Storage.zeroc.FileNodeDTO src, FileDataDTO data)
     {
         return _iceI_writeFileNodeAsync(src, data, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用writeFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileNodeAsync(com.maoding.Storage.zeroc.FileNodeDTO src, FileDataDTO data, java.util.Map<String, String> context)
     {
         return _iceI_writeFileNodeAsync(src, data, context, false);
@@ -3305,12 +5324,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用writeFullNode代替
+     **/
+    @Deprecated
     default int writeFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, FileDataDTO data)
         throws com.maoding.Common.zeroc.CustomException
     {
         return writeFileNodeForAccount(account, src, data, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用writeFullNode代替
+     **/
+    @Deprecated
     default int writeFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, FileDataDTO data, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -3328,11 +5356,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用writeFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, FileDataDTO data)
     {
         return _iceI_writeFileNodeForAccountAsync(account, src, data, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用writeFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFileNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, FileDataDTO data, java.util.Map<String, String> context)
     {
         return _iceI_writeFileNodeForAccountAsync(account, src, data, context, false);
@@ -3463,12 +5502,126 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    default int writeFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, FileDataDTO data)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return writeFullNode(src, data, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default int writeFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, FileDataDTO data, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_writeFullNodeAsync(src, data, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO src, FileDataDTO data)
+    {
+        return _iceI_writeFullNodeAsync(src, data, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO src, FileDataDTO data, java.util.Map<String, String> context)
+    {
+        return _iceI_writeFullNodeAsync(src, data, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> _iceI_writeFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO iceP_src, FileDataDTO iceP_data, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "writeFullNode", null, sync, _iceE_writeFullNode);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     FileDataDTO.ice_write(ostr, iceP_data);
+                 }, istr -> {
+                     int ret;
+                     ret = istr.readInt();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_writeFullNode =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default int writeFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, FileDataDTO data)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return writeFullNodeForAccount(account, src, data, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default int writeFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, FileDataDTO data, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_writeFullNodeForAccountAsync(account, src, data, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, FileDataDTO data)
+    {
+        return _iceI_writeFullNodeForAccountAsync(account, src, data, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.Integer> writeFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, FileDataDTO data, java.util.Map<String, String> context)
+    {
+        return _iceI_writeFullNodeForAccountAsync(account, src, data, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> _iceI_writeFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.FullNodeDTO iceP_src, FileDataDTO iceP_data, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.Integer> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "writeFullNodeForAccount", null, sync, _iceE_writeFullNodeForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     FileDataDTO.ice_write(ostr, iceP_data);
+                 }, istr -> {
+                     int ret;
+                     ret = istr.readInt();
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_writeFullNodeForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    /**
+     * @deprecated 使用readFullNode代替
+     **/
+    @Deprecated
     default FileDataDTO readFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, long pos, int size)
         throws com.maoding.Common.zeroc.CustomException
     {
         return readFileNode(src, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用readFullNode代替
+     **/
+    @Deprecated
     default FileDataDTO readFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, long pos, int size, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -3486,11 +5639,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用readFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<FileDataDTO> readFileNodeAsync(com.maoding.Storage.zeroc.FileNodeDTO src, long pos, int size)
     {
         return _iceI_readFileNodeAsync(src, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用readFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<FileDataDTO> readFileNodeAsync(com.maoding.Storage.zeroc.FileNodeDTO src, long pos, int size, java.util.Map<String, String> context)
     {
         return _iceI_readFileNodeAsync(src, pos, size, context, false);
@@ -3516,12 +5680,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用readFullNode代替
+     **/
+    @Deprecated
     default FileDataDTO readFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long pos, int size)
         throws com.maoding.Common.zeroc.CustomException
     {
         return readFileNodeForAccount(account, src, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用readFullNode代替
+     **/
+    @Deprecated
     default FileDataDTO readFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long pos, int size, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -3539,11 +5712,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用readFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<FileDataDTO> readFileNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long pos, int size)
     {
         return _iceI_readFileNodeForAccountAsync(account, src, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用readFullNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<FileDataDTO> readFileNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long pos, int size, java.util.Map<String, String> context)
     {
         return _iceI_readFileNodeForAccountAsync(account, src, pos, size, context, false);
@@ -3673,6 +5857,113 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_readNodeForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default FileDataDTO readFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, long pos, int size)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return readFullNode(src, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default FileDataDTO readFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, long pos, int size, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_readFullNodeAsync(src, pos, size, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<FileDataDTO> readFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO src, long pos, int size)
+    {
+        return _iceI_readFullNodeAsync(src, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<FileDataDTO> readFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO src, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readFullNodeAsync(src, pos, size, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<FileDataDTO> _iceI_readFullNodeAsync(com.maoding.Storage.zeroc.FullNodeDTO iceP_src, long iceP_pos, int iceP_size, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<FileDataDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "readFullNode", null, sync, _iceE_readFullNode);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     ostr.writeLong(iceP_pos);
+                     ostr.writeInt(iceP_size);
+                 }, istr -> {
+                     FileDataDTO ret;
+                     ret = FileDataDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_readFullNode =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default FileDataDTO readFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long pos, int size)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return readFullNodeForAccount(account, src, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default FileDataDTO readFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long pos, int size, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_readFullNodeForAccountAsync(account, src, pos, size, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<FileDataDTO> readFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long pos, int size)
+    {
+        return _iceI_readFullNodeForAccountAsync(account, src, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<FileDataDTO> readFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readFullNodeForAccountAsync(account, src, pos, size, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<FileDataDTO> _iceI_readFullNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.FullNodeDTO iceP_src, long iceP_pos, int iceP_size, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<FileDataDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "readFullNodeForAccount", null, sync, _iceE_readFullNodeForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, iceP_src);
+                     ostr.writeLong(iceP_pos);
+                     ostr.writeInt(iceP_size);
+                 }, istr -> {
+                     FileDataDTO ret;
+                     ret = FileDataDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_readFullNodeForAccount =
     {
         com.maoding.Common.zeroc.CustomException.class
     };
@@ -4408,12 +6699,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeById(String parentId)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listSubNodeById(parentId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeById(String parentId, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -4431,11 +6731,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listSubNodeByIdAsync(String parentId)
     {
         return _iceI_listSubNodeByIdAsync(parentId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listSubNodeByIdAsync(String parentId, java.util.Map<String, String> context)
     {
         return _iceI_listSubNodeByIdAsync(parentId, context, false);
@@ -4459,12 +6770,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeByIdForAccount(com.maoding.User.zeroc.AccountDTO account, String parentId)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listSubNodeByIdForAccount(account, parentId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeByIdForAccount(com.maoding.User.zeroc.AccountDTO account, String parentId, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -4482,11 +6802,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listSubNodeByIdForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String parentId)
     {
         return _iceI_listSubNodeByIdForAccountAsync(account, parentId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listSubNodeByIdForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String parentId, java.util.Map<String, String> context)
     {
         return _iceI_listSubNodeByIdForAccountAsync(account, parentId, context, false);
@@ -4511,12 +6842,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeByPath(String parentPath)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listSubNodeByPath(parentPath, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeByPath(String parentPath, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -4534,11 +6874,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listSubNodeByPathAsync(String parentPath)
     {
         return _iceI_listSubNodeByPathAsync(parentPath, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listSubNodeByPathAsync(String parentPath, java.util.Map<String, String> context)
     {
         return _iceI_listSubNodeByPathAsync(parentPath, context, false);
@@ -4562,12 +6913,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeByPathForAccount(com.maoding.User.zeroc.AccountDTO account, String parentPath)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listSubNodeByPathForAccount(account, parentPath, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeByPathForAccount(com.maoding.User.zeroc.AccountDTO account, String parentPath, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -4585,11 +6945,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listSubNodeByPathForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String parentPath)
     {
         return _iceI_listSubNodeByPathForAccountAsync(account, parentPath, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listSubNodeByPathForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String parentPath, java.util.Map<String, String> context)
     {
         return _iceI_listSubNodeByPathForAccountAsync(account, parentPath, context, false);
@@ -4614,12 +6985,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeById(String parentId, java.util.List<java.lang.Short> typeIdList)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listFilterSubNodeById(parentId, typeIdList, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeById(String parentId, java.util.List<java.lang.Short> typeIdList, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -4637,11 +7017,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listFilterSubNodeByIdAsync(String parentId, java.util.List<java.lang.Short> typeIdList)
     {
         return _iceI_listFilterSubNodeByIdAsync(parentId, typeIdList, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listFilterSubNodeByIdAsync(String parentId, java.util.List<java.lang.Short> typeIdList, java.util.Map<String, String> context)
     {
         return _iceI_listFilterSubNodeByIdAsync(parentId, typeIdList, context, false);
@@ -4666,12 +7057,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeByIdForAccount(com.maoding.User.zeroc.AccountDTO account, String parentId, java.util.List<java.lang.Short> typeIdList)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listFilterSubNodeByIdForAccount(account, parentId, typeIdList, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeByIdForAccount(com.maoding.User.zeroc.AccountDTO account, String parentId, java.util.List<java.lang.Short> typeIdList, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -4689,11 +7089,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listFilterSubNodeByIdForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String parentId, java.util.List<java.lang.Short> typeIdList)
     {
         return _iceI_listFilterSubNodeByIdForAccountAsync(account, parentId, typeIdList, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listFilterSubNodeByIdForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String parentId, java.util.List<java.lang.Short> typeIdList, java.util.Map<String, String> context)
     {
         return _iceI_listFilterSubNodeByIdForAccountAsync(account, parentId, typeIdList, context, false);
@@ -4719,12 +7130,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeByPath(String parentPath, java.util.List<java.lang.Short> typeIdList)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listFilterSubNodeByPath(parentPath, typeIdList, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeByPath(String parentPath, java.util.List<java.lang.Short> typeIdList, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -4742,11 +7162,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listFilterSubNodeByPathAsync(String parentPath, java.util.List<java.lang.Short> typeIdList)
     {
         return _iceI_listFilterSubNodeByPathAsync(parentPath, typeIdList, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listFilterSubNodeByPathAsync(String parentPath, java.util.List<java.lang.Short> typeIdList, java.util.Map<String, String> context)
     {
         return _iceI_listFilterSubNodeByPathAsync(parentPath, typeIdList, context, false);
@@ -4771,12 +7202,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeByPathForAccount(com.maoding.User.zeroc.AccountDTO account, String parentPath, java.util.List<java.lang.Short> typeIdList)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listFilterSubNodeByPathForAccount(account, parentPath, typeIdList, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeByPathForAccount(com.maoding.User.zeroc.AccountDTO account, String parentPath, java.util.List<java.lang.Short> typeIdList, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -4794,11 +7234,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listFilterSubNodeByPathForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String parentPath, java.util.List<java.lang.Short> typeIdList)
     {
         return _iceI_listFilterSubNodeByPathForAccountAsync(account, parentPath, typeIdList, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listFilterSubNodeByPathForAccountAsync(com.maoding.User.zeroc.AccountDTO account, String parentPath, java.util.List<java.lang.Short> typeIdList, java.util.Map<String, String> context)
     {
         return _iceI_listFilterSubNodeByPathForAccountAsync(account, parentPath, typeIdList, context, false);
@@ -4820,6 +7271,106 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_listFilterSubNodeByPathForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listRootNode()
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listRootNode(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listRootNode(java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listRootNodeAsync(context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listRootNodeAsync()
+    {
+        return _iceI_listRootNodeAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listRootNodeAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_listRootNodeAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> _iceI_listRootNodeAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listRootNode", null, sync, _iceE_listRootNode);
+        f.invoke(true, context, null, null, istr -> {
+                     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listRootNode =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listRootNodeForAccount(com.maoding.User.zeroc.AccountDTO account)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listRootNodeForAccount(account, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listRootNodeForAccount(com.maoding.User.zeroc.AccountDTO account, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listRootNodeForAccountAsync(account, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listRootNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account)
+    {
+        return _iceI_listRootNodeForAccountAsync(account, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> listRootNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO account, java.util.Map<String, String> context)
+    {
+        return _iceI_listRootNodeForAccountAsync(account, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> _iceI_listRootNodeForAccountAsync(com.maoding.User.zeroc.AccountDTO iceP_account, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listRootNodeForAccount", null, sync, _iceE_listRootNodeForAccount);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                 }, istr -> {
+                     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret;
+                     ret = com.maoding.Storage.zeroc.SimpleNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listRootNodeForAccount =
     {
         com.maoding.Common.zeroc.CustomException.class
     };
@@ -5027,12 +7578,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用getFileInfo代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.FileNodeDTO getFile(com.maoding.Storage.zeroc.SimpleNodeDTO node, boolean withHistory)
         throws com.maoding.Common.zeroc.CustomException
     {
         return getFile(node, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用getFileInfo代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.FileNodeDTO getFile(com.maoding.Storage.zeroc.SimpleNodeDTO node, boolean withHistory, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -5050,11 +7610,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用getFileInfo代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FileNodeDTO> getFileAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node, boolean withHistory)
     {
         return _iceI_getFileAsync(node, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用getFileInfo代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FileNodeDTO> getFileAsync(com.maoding.Storage.zeroc.SimpleNodeDTO node, boolean withHistory, java.util.Map<String, String> context)
     {
         return _iceI_getFileAsync(node, withHistory, context, false);
@@ -5079,12 +7650,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用getFileInfo代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.FileNodeDTO getFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, boolean withHistory)
         throws com.maoding.Common.zeroc.CustomException
     {
         return getFileForAccount(account, node, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用getFileInfo代替
+     **/
+    @Deprecated
     default com.maoding.Storage.zeroc.FileNodeDTO getFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, boolean withHistory, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -5102,11 +7682,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用getFileInfo代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FileNodeDTO> getFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, boolean withHistory)
     {
         return _iceI_getFileForAccountAsync(account, node, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用getFileInfo代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<com.maoding.Storage.zeroc.FileNodeDTO> getFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, boolean withHistory, java.util.Map<String, String> context)
     {
         return _iceI_getFileForAccountAsync(account, node, withHistory, context, false);
@@ -5132,12 +7723,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listAllSubFile(com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.List<java.lang.Short> typeIdList, boolean withHistory)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listAllSubFile(parent, typeIdList, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listAllSubFile(com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.List<java.lang.Short> typeIdList, boolean withHistory, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -5155,11 +7755,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.FileNodeDTO>> listAllSubFileAsync(com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.List<java.lang.Short> typeIdList, boolean withHistory)
     {
         return _iceI_listAllSubFileAsync(parent, typeIdList, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.FileNodeDTO>> listAllSubFileAsync(com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.List<java.lang.Short> typeIdList, boolean withHistory, java.util.Map<String, String> context)
     {
         return _iceI_listAllSubFileAsync(parent, typeIdList, withHistory, context, false);
@@ -5185,12 +7796,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listAllSubFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.List<java.lang.Short> typeIdList, boolean withHistory)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listAllSubFileForAccount(account, parent, typeIdList, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listAllSubFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.List<java.lang.Short> typeIdList, boolean withHistory, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -5208,11 +7828,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.FileNodeDTO>> listAllSubFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.List<java.lang.Short> typeIdList, boolean withHistory)
     {
         return _iceI_listAllSubFileForAccountAsync(account, parent, typeIdList, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.FileNodeDTO>> listAllSubFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.List<java.lang.Short> typeIdList, boolean withHistory, java.util.Map<String, String> context)
     {
         return _iceI_listAllSubFileForAccountAsync(account, parent, typeIdList, withHistory, context, false);
@@ -5239,12 +7870,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listFile(com.maoding.Storage.zeroc.QueryNodeDTO query, boolean withHistory)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listFile(query, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listFile(com.maoding.Storage.zeroc.QueryNodeDTO query, boolean withHistory, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -5262,11 +7902,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.FileNodeDTO>> listFileAsync(com.maoding.Storage.zeroc.QueryNodeDTO query, boolean withHistory)
     {
         return _iceI_listFileAsync(query, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.FileNodeDTO>> listFileAsync(com.maoding.Storage.zeroc.QueryNodeDTO query, boolean withHistory, java.util.Map<String, String> context)
     {
         return _iceI_listFileAsync(query, withHistory, context, false);
@@ -5291,12 +7942,21 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    /**
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QueryNodeDTO query, boolean withHistory)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listFileForAccount(account, query, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QueryNodeDTO query, boolean withHistory, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -5314,11 +7974,22 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.FileNodeDTO>> listFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QueryNodeDTO query, boolean withHistory)
     {
         return _iceI_listFileForAccountAsync(account, query, withHistory, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     * @deprecated 使用listChildNode代替
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Storage.zeroc.FileNodeDTO>> listFileForAccountAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QueryNodeDTO query, boolean withHistory, java.util.Map<String, String> context)
     {
         return _iceI_listFileForAccountAsync(account, query, withHistory, context, false);
@@ -5540,6 +8211,7 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     /**
+     * @deprecated 使用isEmpty代替
      **/
     @Deprecated
     default boolean isExist(FileDTO src)
@@ -5549,6 +8221,7 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 
     /**
      * @param context The Context map to send with the invocation.
+     * @deprecated 使用isEmpty代替
      **/
     @Deprecated
     default boolean isExist(FileDTO src, java.util.Map<String, String> context)
@@ -5558,6 +8231,7 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 
     /**
      * @return A future that will be completed with the result.
+     * @deprecated 使用isEmpty代替
      **/
     @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> isExistAsync(FileDTO src)
@@ -5568,6 +8242,7 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     /**
      * @param context The Context map to send with the invocation.
      * @return A future that will be completed with the result.
+     * @deprecated 使用isEmpty代替
      **/
     @Deprecated
     default java.util.concurrent.CompletableFuture<java.lang.Boolean> isExistAsync(FileDTO src, java.util.Map<String, String> context)

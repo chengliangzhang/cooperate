@@ -20,60 +20,9 @@
 
 package com.maoding.Storage.zeroc;
 
-public class QueryFullNodeDTO implements java.lang.Cloneable,
-                                         java.io.Serializable
+public class QueryNodeInfoHistoryDTO implements java.lang.Cloneable,
+                                                java.io.Serializable
 {
-    public boolean textQuery;
-
-    public boolean getTextQuery()
-    {
-        return textQuery;
-    }
-
-    public void setTextQuery(boolean textQuery)
-    {
-        this.textQuery = textQuery;
-    }
-
-    public boolean isTextQuery()
-    {
-        return textQuery;
-    }
-
-    public boolean fileQuery;
-
-    public boolean getFileQuery()
-    {
-        return fileQuery;
-    }
-
-    public void setFileQuery(boolean fileQuery)
-    {
-        this.fileQuery = fileQuery;
-    }
-
-    public boolean isFileQuery()
-    {
-        return fileQuery;
-    }
-
-    public boolean historyQuery;
-
-    public boolean getHistoryQuery()
-    {
-        return historyQuery;
-    }
-
-    public void setHistoryQuery(boolean historyQuery)
-    {
-        this.historyQuery = historyQuery;
-    }
-
-    public boolean isHistoryQuery()
-    {
-        return historyQuery;
-    }
-
     public long historyStartTimeStamp;
 
     public long getHistoryStartTimeStamp()
@@ -98,15 +47,12 @@ public class QueryFullNodeDTO implements java.lang.Cloneable,
         this.historyEndTimeStamp = historyEndTimeStamp;
     }
 
-    public QueryFullNodeDTO()
+    public QueryNodeInfoHistoryDTO()
     {
     }
 
-    public QueryFullNodeDTO(boolean textQuery, boolean fileQuery, boolean historyQuery, long historyStartTimeStamp, long historyEndTimeStamp)
+    public QueryNodeInfoHistoryDTO(long historyStartTimeStamp, long historyEndTimeStamp)
     {
-        this.textQuery = textQuery;
-        this.fileQuery = fileQuery;
-        this.historyQuery = historyQuery;
         this.historyStartTimeStamp = historyStartTimeStamp;
         this.historyEndTimeStamp = historyEndTimeStamp;
     }
@@ -117,26 +63,14 @@ public class QueryFullNodeDTO implements java.lang.Cloneable,
         {
             return true;
         }
-        QueryFullNodeDTO r = null;
-        if(rhs instanceof QueryFullNodeDTO)
+        QueryNodeInfoHistoryDTO r = null;
+        if(rhs instanceof QueryNodeInfoHistoryDTO)
         {
-            r = (QueryFullNodeDTO)rhs;
+            r = (QueryNodeInfoHistoryDTO)rhs;
         }
 
         if(r != null)
         {
-            if(this.textQuery != r.textQuery)
-            {
-                return false;
-            }
-            if(this.fileQuery != r.fileQuery)
-            {
-                return false;
-            }
-            if(this.historyQuery != r.historyQuery)
-            {
-                return false;
-            }
             if(this.historyStartTimeStamp != r.historyStartTimeStamp)
             {
                 return false;
@@ -155,21 +89,18 @@ public class QueryFullNodeDTO implements java.lang.Cloneable,
     public int hashCode()
     {
         int h_ = 5381;
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::QueryFullNodeDTO");
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, textQuery);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileQuery);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, historyQuery);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::QueryNodeInfoHistoryDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, historyStartTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, historyEndTimeStamp);
         return h_;
     }
 
-    public QueryFullNodeDTO clone()
+    public QueryNodeInfoHistoryDTO clone()
     {
-        QueryFullNodeDTO c = null;
+        QueryNodeInfoHistoryDTO c = null;
         try
         {
-            c = (QueryFullNodeDTO)super.clone();
+            c = (QueryNodeInfoHistoryDTO)super.clone();
         }
         catch(CloneNotSupportedException ex)
         {
@@ -180,23 +111,17 @@ public class QueryFullNodeDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeBool(this.textQuery);
-        ostr.writeBool(this.fileQuery);
-        ostr.writeBool(this.historyQuery);
         ostr.writeLong(this.historyStartTimeStamp);
         ostr.writeLong(this.historyEndTimeStamp);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.textQuery = istr.readBool();
-        this.fileQuery = istr.readBool();
-        this.historyQuery = istr.readBool();
         this.historyStartTimeStamp = istr.readLong();
         this.historyEndTimeStamp = istr.readLong();
     }
 
-    static public void ice_write(com.zeroc.Ice.OutputStream ostr, QueryFullNodeDTO v)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, QueryNodeInfoHistoryDTO v)
     {
         if(v == null)
         {
@@ -208,14 +133,14 @@ public class QueryFullNodeDTO implements java.lang.Cloneable,
         }
     }
 
-    static public QueryFullNodeDTO ice_read(com.zeroc.Ice.InputStream istr)
+    static public QueryNodeInfoHistoryDTO ice_read(com.zeroc.Ice.InputStream istr)
     {
-        QueryFullNodeDTO v = new QueryFullNodeDTO();
+        QueryNodeInfoHistoryDTO v = new QueryNodeInfoHistoryDTO();
         v.ice_readMembers(istr);
         return v;
     }
 
-    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<QueryFullNodeDTO> v)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<QueryNodeInfoHistoryDTO> v)
     {
         if(v != null && v.isPresent())
         {
@@ -223,21 +148,21 @@ public class QueryFullNodeDTO implements java.lang.Cloneable,
         }
     }
 
-    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, QueryFullNodeDTO v)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, QueryNodeInfoHistoryDTO v)
     {
         if(ostr.writeOptional(tag, com.zeroc.Ice.OptionalFormat.VSize))
         {
-            ostr.writeSize(19);
+            ostr.writeSize(16);
             ice_write(ostr, v);
         }
     }
 
-    static public java.util.Optional<QueryFullNodeDTO> ice_read(com.zeroc.Ice.InputStream istr, int tag)
+    static public java.util.Optional<QueryNodeInfoHistoryDTO> ice_read(com.zeroc.Ice.InputStream istr, int tag)
     {
         if(istr.readOptional(tag, com.zeroc.Ice.OptionalFormat.VSize))
         {
             istr.skipSize();
-            return java.util.Optional.of(QueryFullNodeDTO.ice_read(istr));
+            return java.util.Optional.of(QueryNodeInfoHistoryDTO.ice_read(istr));
         }
         else
         {
@@ -245,7 +170,7 @@ public class QueryFullNodeDTO implements java.lang.Cloneable,
         }
     }
 
-    private static final QueryFullNodeDTO _nullMarshalValue = new QueryFullNodeDTO();
+    private static final QueryNodeInfoHistoryDTO _nullMarshalValue = new QueryNodeInfoHistoryDTO();
 
-    public static final long serialVersionUID = -1778831625L;
+    public static final long serialVersionUID = -1007485252L;
 }

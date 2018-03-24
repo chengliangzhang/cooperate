@@ -13,11 +13,21 @@ import javax.persistence.Table;
 @Table(name = "maoding_storage_file_his")
 public class StorageFileHisEntity extends BaseEntity {
     /** 协同文件编号id */
-    String fileId;
+    private String mainFileId;
+    @Deprecated
+    private String fileId;
     /** 校审动作类型id */
-    Short actionTypeId;
+    private Short actionTypeId;
     /** 操作注解 */
-    String remark;
+    private String remark;
+
+    public String getMainFileId() {
+        return mainFileId;
+    }
+
+    public void setMainFileId(String mainFileId) {
+        this.mainFileId = mainFileId;
+    }
 
     public String getFileId() {
         return fileId;

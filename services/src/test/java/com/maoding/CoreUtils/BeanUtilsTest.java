@@ -1,4 +1,4 @@
-package com.maoding.Utils;
+package com.maoding.CoreUtils;
 
 import com.maoding.Base.BaseEntity;
 import org.junit.After;
@@ -194,7 +194,7 @@ class TestClass2 {
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @SpringBootConfiguration
-@ComponentScan(basePackages = {"com.maoding.Utils"})
+@ComponentScan(basePackages = {"com.maoding.CoreUtils"})
 public class BeanUtilsTest {
 
     @Test

@@ -19,10 +19,11 @@ public class BaseTreeEntity extends BaseEntity{
 
     /** 细节类型 */
     @Column
-    private Short typeId;
+    private String typeId;
 
     /** 树节点名 */
     @Column
+    @Deprecated
     private String nodeName;
 
     public String getPid() {
@@ -41,18 +42,20 @@ public class BaseTreeEntity extends BaseEntity{
         this.path = path;
     }
 
-    public Short getTypeId() {
+    public String getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(Short typeId) {
+    public void setTypeId(String typeId) {
         this.typeId = typeId;
     }
 
+    @Deprecated
     public String getNodeName() {
         return nodeName;
     }
 
+    @Deprecated
     public void setNodeName(String nodeName) {
         this.nodeName = nodeName;
     }

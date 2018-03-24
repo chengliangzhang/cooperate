@@ -1,19 +1,13 @@
 package com.maoding.CoreFileServer.Jcifs;
 
-import com.maoding.Const.ApiResponseConst;
-import com.maoding.CoreFileServer.*;
-import com.maoding.Utils.BeanUtils;
-import com.maoding.Utils.FileUtils;
-import com.maoding.Utils.StringUtils;
-import jcifs.UniAddress;
-import jcifs.smb.*;
+import com.maoding.CoreFileServer.BasicCallbackDTO;
+import com.maoding.CoreFileServer.BasicFileRequestDTO;
+import com.maoding.CoreFileServer.CoreFileDTO;
+import com.maoding.CoreFileServer.CoreFileServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,72 +50,6 @@ public class JcifsServer implements CoreFileServer {
      */
     @Override
     public BasicFileRequestDTO getDownloadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
-        return null;
-    }
-
-    /**
-     * 上传文件分片内容
-     *
-     * @param request
-     */
-    @Override
-    public BasicUploadResultDTO upload(BasicUploadRequestDTO request) {
-        BasicUploadResultDTO result = BeanUtils.createFrom(request,BasicUploadResultDTO.class);
-        assert result != null;
-        CoreFileDataDTO multipart = request.getMultipart();
-        assert multipart != null;
-
-        SmbFileOutputStream smbOutput = null;
-        try {
-            String s = multipart.getScope() + "/" + multipart.getKey();
-            Boolean b = (!StringUtils.isEmpty(request.getUploadId()));
-            if (b) b = (Integer.parseInt(request.getUploadId())>0);
-            UniAddress dc = UniAddress.getByName("192.168.33.103");
-            NtlmPasswordAuthentication authentication = new NtlmPasswordAuthentication("idccapp.local", "idccapp25", "852");
-            SmbSession.logon(dc, authentication);
-            SmbFile remoteFile = new SmbFile(s,authentication);
-            smbOutput = new SmbFileOutputStream(remoteFile,b);
-        } catch (SmbException | MalformedURLException | UnknownHostException e) {
-            log.error(e.getMessage(),e);
-            FileUtils.close(smbOutput);
-        }
-
-        if (smbOutput != null) {
-            try {
-                smbOutput.write(multipart.getData());
-                smbOutput.flush();
-                smbOutput.close();
-                result.setChunkSize(multipart.getSize());
-                result.setStatus(ApiResponseConst.SUCCESS);
-                result.setMsg(ApiResponseConst.DEFAULT_MESSAGE.get(ApiResponseConst.SUCCESS));
-            } catch (IOException e) {
-                log.error(e.getMessage(),e);
-                FileUtils.close(smbOutput);
-                result.setChunkSize(0);
-                result.setStatus(ApiResponseConst.ERROR);
-                result.setMsg(ApiResponseConst.DEFAULT_MESSAGE.get(ApiResponseConst.ERROR));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * 下载文件分片内容
-     *
-     * @param request
-     */
-    @Override
-    public BasicDownloadResultDTO download(BasicDownloadRequestDTO request) {
-        return null;
-    }
-
-    /**
-     * 在文件服务器上复制文件，复制到同一空间，返回复制后的文件标识
-     *
-     * @param src
-     */
-    @Override
-    public String duplicateFile(CoreFileDTO src) {
         return null;
     }
 

@@ -1151,7 +1151,7 @@
         <repository>
             <id>wuweiqiang_nexus</id>
             <name>Wuweiqiang Nexus</name>
-            <url>http://192.168.17.168:8081/repository/maven-central</url>
+            <url>http://192.168.13.140:8081/repository/maven-central</url>
             <layout>default</layout>
             <releases>
                 <enabled>true</enabled>
@@ -1202,7 +1202,7 @@
         <pluginRepository>
             <id>wuweiqiang_plugins</id>
             <name>Wuweiqiang Plugins</name>
-            <url>http://192.168.17.168:8081/repository/maven-central</url>
+            <url>http://192.168.13.140:8081/repository/maven-central</url>
             <layout>default</layout>
             <releases>
                 <enabled>true</enabled>

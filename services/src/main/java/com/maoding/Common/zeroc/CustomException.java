@@ -25,27 +25,27 @@ public class CustomException extends com.zeroc.Ice.UserException
     public CustomException()
     {
         this.code = com.maoding.Common.zeroc.ErrorCode.Unknown;
-        this.msg = "\u672a\u5b9a\u4e49\u5f02\u5e38";
+        this.message = "\u672a\u5b9a\u4e49\u5f02\u5e38";
     }
 
     public CustomException(Throwable cause)
     {
         super(cause);
         this.code = com.maoding.Common.zeroc.ErrorCode.Unknown;
-        this.msg = "\u672a\u5b9a\u4e49\u5f02\u5e38";
+        this.message = "\u672a\u5b9a\u4e49\u5f02\u5e38";
     }
 
-    public CustomException(ErrorCode code, String msg)
+    public CustomException(ErrorCode code, String message)
     {
         this.code = code;
-        this.msg = msg;
+        this.message = message;
     }
 
-    public CustomException(ErrorCode code, String msg, Throwable cause)
+    public CustomException(ErrorCode code, String message, Throwable cause)
     {
         super(cause);
         this.code = code;
-        this.msg = msg;
+        this.message = message;
     }
 
     public String ice_id()
@@ -65,16 +65,16 @@ public class CustomException extends com.zeroc.Ice.UserException
         this.code = code;
     }
 
-    public String msg;
+    public String message;
 
-    public String getMsg()
+    public String getMessage()
     {
-        return msg;
+        return message;
     }
 
-    public void setMsg(String msg)
+    public void setMessage(String message)
     {
-        this.msg = msg;
+        this.message = message;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class CustomException extends com.zeroc.Ice.UserException
     {
         ostr_.startSlice("::zeroc::CustomException", -1, true);
         ErrorCode.ice_write(ostr_, code);
-        ostr_.writeString(msg);
+        ostr_.writeString(message);
         ostr_.endSlice();
     }
 
@@ -91,9 +91,9 @@ public class CustomException extends com.zeroc.Ice.UserException
     {
         istr_.startSlice();
         code = ErrorCode.ice_read(istr_);
-        msg = istr_.readString();
+        message = istr_.readString();
         istr_.endSlice();
     }
 
-    public static final long serialVersionUID = 1932648154L;
+    public static final long serialVersionUID = 185624072L;
 }

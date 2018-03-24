@@ -1,6 +1,6 @@
 package com.maoding.CoreFileServer;
 
-import com.maoding.Utils.StringUtils;
+import com.maoding.CoreUtils.StringUtils;
 
 import java.io.Serializable;
 

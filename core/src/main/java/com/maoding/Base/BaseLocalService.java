@@ -1,6 +1,6 @@
 package com.maoding.Base;
 
-import com.maoding.Utils.SpringUtils;
+import com.maoding.CoreUtils.SpringUtils;
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.ObjectPrx;

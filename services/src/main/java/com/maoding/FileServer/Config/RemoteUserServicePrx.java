@@ -2,7 +2,7 @@ package com.maoding.FileServer.Config;
 
 import com.maoding.Base.BaseRemoteService;
 import com.maoding.User.zeroc.*;
-import com.maoding.Utils.SpringUtils;
+import com.maoding.CoreUtils.SpringUtils;
 
 import java.util.List;
 

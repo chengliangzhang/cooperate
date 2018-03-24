@@ -29,4 +29,5 @@ DROP VIEW IF EXISTS `maoding_storage_node_root_copy`;
 DROP VIEW IF EXISTS `maoding_storage_node_copy`;
 DROP VIEW IF EXISTS `maoding_storage_root_copy`;
 DROP VIEW IF EXISTS `maoding_storage_copy`;
+DROP VIEW IF EXISTS `maoding_storage_old_node_copy`;
 

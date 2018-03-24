@@ -1,7 +1,7 @@
 package com.maoding.Base;
 
 
-import com.maoding.Utils.StringUtils;
+import com.maoding.CoreUtils.StringUtils;
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.Util;
 import org.slf4j.Logger;

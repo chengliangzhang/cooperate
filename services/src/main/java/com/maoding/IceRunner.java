@@ -1,9 +1,9 @@
 package com.maoding;
 
 import com.maoding.Base.IceConfig;
-import com.maoding.Utils.FileUtils;
-import com.maoding.Utils.StringUtils;
-import com.maoding.Utils.ThreadUtils;
+import com.maoding.CoreUtils.FileUtils;
+import com.maoding.CoreUtils.StringUtils;
+import com.maoding.CoreUtils.ThreadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

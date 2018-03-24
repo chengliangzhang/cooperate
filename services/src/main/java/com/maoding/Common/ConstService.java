@@ -4,8 +4,8 @@ import com.maoding.Common.Dao.ConstDao;
 import com.maoding.Common.Entity.ConstEntity;
 import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.Common.zeroc.StringElementDTO;
-import com.maoding.Utils.SpringUtils;
-import com.maoding.Utils.StringUtils;
+import com.maoding.CoreUtils.SpringUtils;
+import com.maoding.CoreUtils.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -174,7 +174,7 @@ public class ConstService {
 
     public static ConstEntity getConstEntity(Short classicId, Short valueId){
         Map<Short,ConstEntity> vMap = getConstMap(classicId);
-        return (vMap == null) ? null : vMap.get(valueId);
+        return (vMap == null) ? null : vMap.get((valueId != null) ? valueId : 0);
     }
 
     public static Short getMaxValueId(Short classicId){
@@ -223,16 +223,23 @@ public class ConstService {
         return getContent(CLASSIC_TYPE_STORAGE_RANGE,rangeId);
     }
 
-    public static Short getRangeId(Short typeId){
-        Map<Short,ConstEntity> rangeMap = getConstMap(CLASSIC_TYPE_STORAGE_RANGE);
-        for (Map.Entry<Short,ConstEntity> rangeEntry : rangeMap.entrySet()){
-            ConstEntity range = rangeEntry.getValue();
-            if (range != null){
-                String extra = range.getContentExtra();
-                if ((extra != null) && (extra.contains(":" + typeId + ":"))) return range.getValueId();
+    public static String getRangeId(@NotNull String typeId){
+        if (!isCustomType(typeId)) {
+            Short rangeId = null;
+            Map<Short, ConstEntity> rangeMap = getConstMap(CLASSIC_TYPE_STORAGE_RANGE);
+            for (Map.Entry<Short, ConstEntity> rangeEntry : rangeMap.entrySet()) {
+                ConstEntity range = rangeEntry.getValue();
+                if (range != null) {
+                    String extra = range.getContentExtra();
+                    if ((extra != null) && (extra.contains(":" + typeId + ":"))) {
+                        rangeId = range.getValueId();
+                    }
+                }
             }
+            return (rangeId != null) ? rangeId.toString() : STORAGE_RANGE_TYPE_UNKNOWN.toString();
+        } else {
+            return STORAGE_RANGE_TYPE_UNKNOWN.toString();
         }
-        return STORAGE_RANGE_TYPE_UNKNOWN;
     }
 
     public static String getActionName(Short actionTypeId){
@@ -356,68 +363,92 @@ public class ConstService {
         return s;
     }
 
-    public static boolean isDirectoryType(Short typeId) {
-        String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        if (StringUtils.isEmpty(extra)) return false;
-        Character t = extra.charAt(POS_IS_DIRECTORY);
-        return (t != '0');
+    public static boolean isUnknownDirectoryType(@NotNull String typeId){
+        return (isCustomType(typeId)) || (STORAGE_NODE_TYPE_DIR_UNKNOWN.equals(Short.parseShort(typeId)));
     }
 
-    public static boolean isProjectType(Short typeId) {
-        String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        if (StringUtils.isEmpty(extra)) return false;
-        Character t = extra.charAt(POS_IS_PROJECT);
-        return (t != '0');
+    public static boolean isUnknownFileType(@NotNull String typeId){
+        return (isCustomType(typeId)) || (STORAGE_NODE_TYPE_UNKNOWN.equals(Short.parseShort(typeId)));
     }
 
-    public static boolean isTaskType(Short typeId) {
-        String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        if (StringUtils.isEmpty(extra)) return false;
-        Character t = extra.charAt(POS_IS_TASK);
-        return (t != '0');
+    public static boolean isCustomType(@NotNull String typeId){
+        final Integer CUSTOM_TYPE_LENGTH = 32;
+        return typeId.length() >= CUSTOM_TYPE_LENGTH;
     }
 
-    public static boolean isDesignType(Short typeId) {
-        String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        if (StringUtils.isEmpty(extra)) return false;
-        Character t = extra.charAt(POS_IS_DESIGN);
-        return (t != '0');
+    public static boolean isSpecialType(@NotNull String typeId, int pos){
+        if (!isCustomType(typeId)) {
+            Short valueId = Short.parseShort(typeId);
+            String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE, valueId);
+            if (StringUtils.isEmpty(extra)) {
+                return false;
+            } else {
+                assert (extra != null);
+                Character t = extra.charAt(pos);
+                return (t != '0');
+            }
+        } else {
+            return false;
+        }
+    }
+    public static boolean isDirectoryType(@NotNull String typeId) {
+        return isSpecialType(typeId,POS_IS_DIRECTORY);
     }
 
-    public static boolean isCommitType(Short typeId){
-        String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        if (StringUtils.isEmpty(extra)) return false;
-        Character t = extra.charAt(POS_IS_COMMIT);
-        return (t != '0');
+    public static boolean isProjectType(@NotNull String typeId) {
+        return isSpecialType(typeId,POS_IS_PROJECT);
     }
 
-    public static boolean isHistoryType(Short typeId){
-        String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        if (StringUtils.isEmpty(extra)) return false;
-        Character t = extra.charAt(POS_IS_HISTORY);
-        return (t != '0');
+    public static boolean isTaskType(@NotNull String typeId) {
+        return isSpecialType(typeId,POS_IS_TASK);
     }
 
-    public static boolean isSystemType(Short typeId){
+    public static boolean isDesignType(@NotNull String typeId) {
+        return isSpecialType(typeId,POS_IS_DESIGN);
+    }
+
+    public static boolean isCommitType(@NotNull String typeId){
+        return isSpecialType(typeId,POS_IS_COMMIT);
+    }
+
+    public static boolean isHistoryType(@NotNull String typeId){
+        return isSpecialType(typeId,POS_IS_HISTORY);
+    }
+
+    public static boolean isSystemType(@NotNull String typeId){
         return isProjectType(typeId) || isTaskType(typeId);
     }
 
-    public static String getTypeName(Short typeId){
-        return getContent(CLASSIC_TYPE_STORAGE_NODE,typeId);
+    public static String getTypeName(@NotNull String typeId){
+        if (!isCustomType(typeId)) {
+            Short valueId = Short.parseShort(typeId);
+            return getContent(CLASSIC_TYPE_STORAGE_NODE,valueId);
+        } else {
+            return "";
+        }
     }
 
-    public static Short getPathType(Short typeId){
-        String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        if (extra == null) return STORAGE_NODE_TYPE_DIR_UNKNOWN;
-        String s = extra.substring(extra.indexOf("[")+1, extra.lastIndexOf("]"));
-        return StringUtils.isEmpty(s) ? STORAGE_NODE_TYPE_DIR_UNKNOWN : Short.parseShort(s);
+    public static String getPathType(@NotNull String typeId){
+        if (!isCustomType(typeId)) {
+            Short valueId = Short.parseShort(typeId);
+            String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE, valueId);
+            if (extra == null) return STORAGE_NODE_TYPE_DIR_UNKNOWN.toString();
+            String s = extra.substring(extra.indexOf("[") + 1, extra.lastIndexOf("]"));
+            return StringUtils.isEmpty(s) ? STORAGE_NODE_TYPE_DIR_UNKNOWN.toString() : s;
+        } else {
+            return STORAGE_NODE_TYPE_DIR_UNKNOWN.toString();
+        }
     }
 
-    public static Short getFileType(Short typeId){
-        String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE,typeId);
-        if (extra == null) return STORAGE_NODE_TYPE_UNKNOWN;
-        String s = extra.substring(extra.indexOf("<")+1, extra.lastIndexOf(">"));
-        return StringUtils.isEmpty(s) ? STORAGE_NODE_TYPE_UNKNOWN : Short.parseShort(s);
+    public static String getFileType(@NotNull String typeId){
+        if (!isCustomType(typeId)) {
+            Short valueId = Short.parseShort(typeId);
+            String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE, valueId);
+            if (extra == null) return STORAGE_NODE_TYPE_UNKNOWN.toString();
+            String s = extra.substring(extra.indexOf("<") + 1, extra.lastIndexOf(">"));
+            return StringUtils.isEmpty(s) ? STORAGE_NODE_TYPE_UNKNOWN.toString() : s;
+        } else {
+            return STORAGE_NODE_TYPE_UNKNOWN.toString();
+        }
     }
-
 }
