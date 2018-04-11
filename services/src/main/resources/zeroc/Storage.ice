@@ -12,6 +12,7 @@ module zeroc {
         NodeFileDTO createNodeFile(UpdateNodeFileDTO request) throws CustomException; //创建文件或镜像
         SuggestionDTO createSuggestion(UpdateSuggestionDTO request) throws CustomException; //提交校审意见
         NodeFileDTO updateNodeFile(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //更新文件属性
+        NodeFileList listNodeFile(QueryNodeFileDTO query) throws CustomException; //更新文件属性
 
         long summaryNodeLength(QuerySummaryDTO query) throws CustomException; //查询总使用空间
 
@@ -22,7 +23,7 @@ module zeroc {
 
         SimpleNodeDTO createNode(SimpleNodeDTO parent,UpdateNodeDTO request) throws CustomException; //创建节点
         SimpleNodeDTO createNodeWithRequestOnly(UpdateNodeDTO request) throws CustomException; //创建节点
-        SimpleNodeDTO updateNode(SimpleNodeDTO src,UpdateNodeDTO request) throws CustomException; //更改节点属性
+        SimpleNodeDTO updateNodeSimple(SimpleNodeDTO src,UpdateNodeDTO request) throws CustomException; //更改节点属性
         ["deprecate:使用createNodeFile代替"] FullNodeDTO createMirror(FullNodeDTO src,UpdateNodeDTO request) throws CustomException; //建立镜像
 
         SimpleNodeList listNode(QueryNodeDTO query) throws CustomException; //查询节点列表
@@ -36,11 +37,6 @@ module zeroc {
 
         FullNodeDTO getNodeInfo(SimpleNodeDTO node,QueryNodeInfoDTO request) throws CustomException; //查询节点详细信息
 
-        ["deprecate:使用updateNode代替"] SimpleNodeDTO updateNodeWithParent(SimpleNodeDTO src,SimpleNodeDTO parent,UpdateNodeDTO request) throws CustomException; //更改节点属性
-        ["deprecate:使用createNode代替"] SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent,UpdateNodeDTO request) throws CustomException; //创建节点
-
-        ["deprecate:使用listNode代替"] FileNodeList listFileNodeInfo(QueryNodeDTO query,bool withHistory); //查询文件信息
-        ["deprecate:使用getNodeInfo代替"] FullNodeDTO getFullNodeInfo(SimpleNodeDTO node); //通过节点查询节点额外信息
-        ["deprecate:使用getNodeInfo代替"] FileNodeDTO getFileNodeInfo(SimpleNodeDTO node,bool withHistory); //通过节点查询文件信息
+        SimpleNodeDTO updateNode(SimpleNodeDTO src,SimpleNodeDTO parent,UpdateNodeDTO request) throws CustomException; //更改节点属性
     };
 };

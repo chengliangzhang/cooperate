@@ -25,15 +25,16 @@ public class FileServerConfig {
     public static final Integer SERVER_TYPE_REMOTE = 1;
 
     private static final String DEFAULT_SERVER_TYPE_ID = ConstService.FILE_SERVER_TYPE_DISK.toString();
-    private static final String DEFAULT_SERVER_ADDRESS = "127.0.0.1;127.0.0.1";
+    private static final String DEFAULT_SERVER_ADDRESS = "127.0.0.1";
     private static final String DEFAULT_BASE_DIR = "c:/work/file_server";
     private static final String DEFAULT_MIRROR_BASE_DIR = "c:/work/file_server/.mirror";
 
-    private CoreFileServer aliyunServer;
-    private CoreFileServer jcifsServer;
-    private CoreFileServer ftpServer;
-    private CoreFileServer diskServer;
-    private CoreFileServer webServer;
+    @Deprecated private CoreFileServer aliyunServer;
+    @Deprecated private CoreFileServer jcifsServer;
+    @Deprecated private CoreFileServer ftpServer;
+    @Deprecated private CoreFileServer diskServer;
+    @Deprecated private CoreFileServer webServer;
+    private CoreFileServer localServer;
 
     private String storageServiceAdapter;
     private String userServiceAdapter;
@@ -57,7 +58,7 @@ public class FileServerConfig {
     }
 
     public String getServerTypeId(String serverTypeId) {
-        return StringUtils.isEmpty(serverTypeId) ? getServerTypeId() : ConstService.FILE_SERVER_TYPE_UNKNOWN.toString();
+        return StringUtils.isEmpty(serverTypeId) ? getServerTypeId() : serverTypeId;
     }
 
     public String getServerTypeId() {
@@ -116,8 +117,10 @@ public class FileServerConfig {
         this.noticeServiceAdapter = noticeServiceAdapter;
     }
 
-    public boolean isLocalServer(String serverAddress){
-        return StringUtils.isSame(serverAddress,getServerAddress());
+    public boolean isLocalServer(String serverTypeId,String serverAddress,String baseDir){
+        return StringUtils.isSame(getServerTypeId(serverTypeId),getServerTypeId()) &&
+                StringUtils.isSame(getServerAddress(serverAddress),getServerAddress()) &&
+                StringUtils.isSame(getBaseDir(baseDir),getBaseDir());
     }
     private boolean isDiskServer(String serverTypeId){
         return StringUtils.isSame(ConstService.FILE_SERVER_TYPE_DISK.toString(),serverTypeId);
@@ -125,22 +128,29 @@ public class FileServerConfig {
     private boolean isWebServer(String serverTypeId){
         return StringUtils.isSame(ConstService.FILE_SERVER_TYPE_WEB.toString(),serverTypeId);
     }
-    public CoreFileServer getCoreFileServer(String serverTypeId, String serverAddress,String baseDir){
-        CoreFileServer coreServer;
-        serverAddress = getServerAddress(serverAddress);
-        if (isLocalServer(serverAddress)){
-            if (isDiskServer(getServerTypeId(serverTypeId))) {
-                coreServer = (diskServer != null) ? diskServer : new DiskFileServer();;
-            } else {
-                coreServer = (webServer != null) ? webServer : new WebFileServer();
-            }
-            baseDir = getBaseDir(baseDir);
+
+    public CoreFileServer createCoreFileServer(String serverTypeId, String serverAddress,String baseDir){
+        if (isDiskServer(serverTypeId)) {
+            return new DiskFileServer();
+        } else if (isWebServer(getServerTypeId(serverTypeId))) {
+            return new WebFileServer();
         } else {
-            if (isWebServer(getServerTypeId(serverTypeId))) {
-                coreServer = new WebFileServer();
-            } else {
-                coreServer = new PrxFileServer();
+            return new PrxFileServer();
+        }
+    }
+
+    public CoreFileServer getCoreFileServer(String serverTypeId, String serverAddress,String baseDir){
+        serverTypeId = getServerTypeId(serverTypeId);
+        serverAddress = getServerAddress(serverAddress);
+        baseDir = getBaseDir(baseDir);
+        CoreFileServer coreServer;
+        if (isLocalServer(serverTypeId,serverAddress,baseDir)){
+            if (localServer == null){
+                localServer = createCoreFileServer(serverTypeId,serverAddress,baseDir);
             }
+            coreServer = localServer;
+        } else {
+            coreServer = createCoreFileServer(serverTypeId,serverAddress,baseDir);
             baseDir = getMirrorBaseDir(baseDir);
         }
 

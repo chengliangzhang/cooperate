@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * 日    期 : 2017/11/17 10:55
  * 描    述 :
  */
-@Table(name = "maoding_storage_tree")
+@Table(name = "md_tree_storage")
 public class StorageTreeEntity extends BaseTreeEntity {
     /** 文件长度，如果节点是目录则固定为0 */
     @Column

@@ -131,6 +131,18 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
         this.writableKey = writableKey;
     }
 
+    public String mainFileId;
+
+    public String getMainFileId()
+    {
+        return mainFileId;
+    }
+
+    public void setMainFileId(String mainFileId)
+    {
+        this.mainFileId = mainFileId;
+    }
+
     public String mirrorTypeId;
 
     public String getMirrorTypeId()
@@ -191,18 +203,6 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
         this.writableMirrorKey = writableMirrorKey;
     }
 
-    public long lastModifyTimeStamp;
-
-    public long getLastModifyTimeStamp()
-    {
-        return lastModifyTimeStamp;
-    }
-
-    public void setLastModifyTimeStamp(long lastModifyTimeStamp)
-    {
-        this.lastModifyTimeStamp = lastModifyTimeStamp;
-    }
-
     public String lastModifyUserId;
 
     public String getLastModifyUserId()
@@ -238,6 +238,7 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
         this.majorTypeId = "";
         this.readOnlyKey = "";
         this.writableKey = "";
+        this.mainFileId = "";
         this.mirrorTypeId = "";
         this.mirrorAddress = "";
         this.mirrorBaseDir = "";
@@ -247,7 +248,7 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
         this.lastModifyRoleId = "";
     }
 
-    public UpdateNodeFileDTO(String serverTypeId, String serverAddress, String baseDir, String fileTypeId, String fileVersion, String fileChecksum, String majorTypeId, String readOnlyKey, String writableKey, String mirrorTypeId, String mirrorAddress, String mirrorBaseDir, String readOnlyMirrorKey, String writableMirrorKey, long lastModifyTimeStamp, String lastModifyUserId, String lastModifyRoleId)
+    public UpdateNodeFileDTO(String serverTypeId, String serverAddress, String baseDir, String fileTypeId, String fileVersion, String fileChecksum, String majorTypeId, String readOnlyKey, String writableKey, String mainFileId, String mirrorTypeId, String mirrorAddress, String mirrorBaseDir, String readOnlyMirrorKey, String writableMirrorKey, String lastModifyUserId, String lastModifyRoleId)
     {
         this.serverTypeId = serverTypeId;
         this.serverAddress = serverAddress;
@@ -258,12 +259,12 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
         this.majorTypeId = majorTypeId;
         this.readOnlyKey = readOnlyKey;
         this.writableKey = writableKey;
+        this.mainFileId = mainFileId;
         this.mirrorTypeId = mirrorTypeId;
         this.mirrorAddress = mirrorAddress;
         this.mirrorBaseDir = mirrorBaseDir;
         this.readOnlyMirrorKey = readOnlyMirrorKey;
         this.writableMirrorKey = writableMirrorKey;
-        this.lastModifyTimeStamp = lastModifyTimeStamp;
         this.lastModifyUserId = lastModifyUserId;
         this.lastModifyRoleId = lastModifyRoleId;
     }
@@ -345,6 +346,13 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.mainFileId != r.mainFileId)
+            {
+                if(this.mainFileId == null || r.mainFileId == null || !this.mainFileId.equals(r.mainFileId))
+                {
+                    return false;
+                }
+            }
             if(this.mirrorTypeId != r.mirrorTypeId)
             {
                 if(this.mirrorTypeId == null || r.mirrorTypeId == null || !this.mirrorTypeId.equals(r.mirrorTypeId))
@@ -380,10 +388,6 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.lastModifyTimeStamp != r.lastModifyTimeStamp)
-            {
-                return false;
-            }
             if(this.lastModifyUserId != r.lastModifyUserId)
             {
                 if(this.lastModifyUserId == null || r.lastModifyUserId == null || !this.lastModifyUserId.equals(r.lastModifyUserId))
@@ -418,12 +422,12 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readOnlyKey);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableKey);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainFileId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mirrorTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mirrorAddress);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mirrorBaseDir);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readOnlyMirrorKey);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableMirrorKey);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyUserId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyRoleId);
         return h_;
@@ -454,12 +458,12 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
         ostr.writeString(this.majorTypeId);
         ostr.writeString(this.readOnlyKey);
         ostr.writeString(this.writableKey);
+        ostr.writeString(this.mainFileId);
         ostr.writeString(this.mirrorTypeId);
         ostr.writeString(this.mirrorAddress);
         ostr.writeString(this.mirrorBaseDir);
         ostr.writeString(this.readOnlyMirrorKey);
         ostr.writeString(this.writableMirrorKey);
-        ostr.writeLong(this.lastModifyTimeStamp);
         ostr.writeString(this.lastModifyUserId);
         ostr.writeString(this.lastModifyRoleId);
     }
@@ -475,12 +479,12 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
         this.majorTypeId = istr.readString();
         this.readOnlyKey = istr.readString();
         this.writableKey = istr.readString();
+        this.mainFileId = istr.readString();
         this.mirrorTypeId = istr.readString();
         this.mirrorAddress = istr.readString();
         this.mirrorBaseDir = istr.readString();
         this.readOnlyMirrorKey = istr.readString();
         this.writableMirrorKey = istr.readString();
-        this.lastModifyTimeStamp = istr.readLong();
         this.lastModifyUserId = istr.readString();
         this.lastModifyRoleId = istr.readString();
     }
@@ -537,5 +541,5 @@ public class UpdateNodeFileDTO implements java.lang.Cloneable,
 
     private static final UpdateNodeFileDTO _nullMarshalValue = new UpdateNodeFileDTO();
 
-    public static final long serialVersionUID = 1833129703L;
+    public static final long serialVersionUID = 713702259L;
 }

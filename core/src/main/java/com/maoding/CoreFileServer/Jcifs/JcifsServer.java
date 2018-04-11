@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,7 +29,6 @@ public class JcifsServer implements CoreFileServer {
      * @param src
      * @param callbackSetting
      */
-    @Override
     public BasicFileRequestDTO getUploadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
         BasicFileRequestDTO result = new BasicFileRequestDTO();
         result.setUrl("http://localhost:8087/FileServer/upload");
@@ -42,52 +40,7 @@ public class JcifsServer implements CoreFileServer {
 
     }
 
-    /**
-     * 获取通过http方式下载文件数据库时的需要设置的部分参数
-     *
-     * @param src
-     * @param callbackSetting
-     */
-    @Override
-    public BasicFileRequestDTO getDownloadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
-        return null;
-    }
 
-    /**
-     * 判断在文件服务器上是否存在指定文件
-     *
-     * @param src
-     */
-    @Override
-    public Boolean coreIsExist(CoreFileDTO src) {
-        return null;
-    }
 
-    /**
-     * 获取文件服务器上某一空间上的所有文件
-     *
-     * @param scope
-     */
-    @Override
-    public List listFile(String scope) {
-        return null;
-    }
 
-    /**
-     * 获取文件服务器上的所有空间
-     */
-    @Override
-    public List<String> listScope() {
-        return null;
-    }
-
-    /**
-     * 在文件服务器上删除指定文件
-     *
-     * @param src
-     */
-    @Override
-    public void coreDeleteFile(CoreFileDTO src) {
-
-    }
 }

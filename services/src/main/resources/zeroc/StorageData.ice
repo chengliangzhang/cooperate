@@ -254,6 +254,7 @@ module zeroc {
         string writableKey; //可写版本在文件服务器上的存储名称
 
         //镜像信息
+        string mainFileId; //源文件编号
         string mirrorTypeId; //镜像文件服务器类型
         string mirrorAddress; //镜像文件服务器地址
         string mirrorBaseDir; //文件在镜像文件服务器上的存储位置
@@ -261,7 +262,6 @@ module zeroc {
         string writableMirrorKey; //可写版本在本地的镜像
 
         //通用更改申请
-        long lastModifyTimeStamp; //最后修改时间
         string lastModifyUserId; //最后编辑用户id
         string lastModifyRoleId; //最后编辑角色id
     };
@@ -340,10 +340,19 @@ module zeroc {
     };
 
     ["java:getset","clr:property"]
+    struct QueryNodeFileDTO { //文件信息查询申请
+        string id; //树节点id
+        string serverTypeId; //文件或镜像服务器类型
+        string serverAddress; //文件或镜像服务器地址
+        string baseDir; //文件或镜像根目录
+        string key; //文件标识符
+    };
+
+
+    ["java:getset","clr:property"]
     struct UpdateNodeDTO { //节点更改申请
         //节点信息
         short typeId; //节点类型
-        string pid; //父节点编号
         string path; //绝对或相对路径，包含文件名
         string ownerUserId; //拥有者用户id
 
@@ -377,10 +386,10 @@ module zeroc {
         string remark; //文件操作注解
 
         //操作者信息
-        string accountId; //操作者用户id
-        string accountRoleId; //操作者职责id
+        string lastModifyUserId; //操作者用户id
+        string lastModifyRoleId; //操作者职责id
 
-
+        ["deprecate"] string pid; //父节点编号
         ["deprecate"] string readFileScope; //只读版本在文件服务器上的存储位置
         ["deprecate:使用readOnlyKey代替"] string readFileKey; //只读版本在文件服务器上的存储名称
         ["deprecate:使用writableScope代替"] string writeFileScope; //可写版本在文件服务器上的存储位置
@@ -389,7 +398,6 @@ module zeroc {
         ["deprecate"] string parentPath; //父节点的全路径
         ["deprecate"] short parentTypeId; //父节点的类型
         ["deprecate"] string parentStoragePath; //父节点相对路径
-        ["deprecate:使用accountRoleId代替"] string lastModifyRoleId; //最后修改者职责id
     };
 
     ["java:getset","clr:property"]

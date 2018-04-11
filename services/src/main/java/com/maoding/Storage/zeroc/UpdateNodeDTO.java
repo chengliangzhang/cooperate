@@ -35,18 +35,6 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.typeId = typeId;
     }
 
-    public String pid;
-
-    public String getPid()
-    {
-        return pid;
-    }
-
-    public void setPid(String pid)
-    {
-        this.pid = pid;
-    }
-
     public String path;
 
     public String getPath()
@@ -299,28 +287,49 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.remark = remark;
     }
 
-    public String accountId;
+    public String lastModifyUserId;
 
-    public String getAccountId()
+    public String getLastModifyUserId()
     {
-        return accountId;
+        return lastModifyUserId;
     }
 
-    public void setAccountId(String accountId)
+    public void setLastModifyUserId(String lastModifyUserId)
     {
-        this.accountId = accountId;
+        this.lastModifyUserId = lastModifyUserId;
     }
 
-    public String accountRoleId;
+    public String lastModifyRoleId;
 
-    public String getAccountRoleId()
+    public String getLastModifyRoleId()
     {
-        return accountRoleId;
+        return lastModifyRoleId;
     }
 
-    public void setAccountRoleId(String accountRoleId)
+    public void setLastModifyRoleId(String lastModifyRoleId)
     {
-        this.accountRoleId = accountRoleId;
+        this.lastModifyRoleId = lastModifyRoleId;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public String pid;
+
+    /**
+     **/
+    @Deprecated
+    public String getPid()
+    {
+        return pid;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public void setPid(String pid)
+    {
+        this.pid = pid;
     }
 
     /**
@@ -503,33 +512,8 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.parentStoragePath = parentStoragePath;
     }
 
-    /**
-     * @deprecated 使用accountRoleId代替
-     **/
-    @Deprecated
-    public String lastModifyRoleId;
-
-    /**
-     * @deprecated 使用accountRoleId代替
-     **/
-    @Deprecated
-    public String getLastModifyRoleId()
-    {
-        return lastModifyRoleId;
-    }
-
-    /**
-     * @deprecated 使用accountRoleId代替
-     **/
-    @Deprecated
-    public void setLastModifyRoleId(String lastModifyRoleId)
-    {
-        this.lastModifyRoleId = lastModifyRoleId;
-    }
-
     public UpdateNodeDTO()
     {
-        this.pid = "";
         this.path = "";
         this.ownerUserId = "";
         this.taskId = "";
@@ -546,8 +530,9 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.readOnlyMirrorKey = "";
         this.writableMirrorKey = "";
         this.remark = "";
-        this.accountId = "";
-        this.accountRoleId = "";
+        this.lastModifyUserId = "";
+        this.lastModifyRoleId = "";
+        this.pid = "";
         this.readFileScope = "";
         this.readFileKey = "";
         this.writeFileScope = "";
@@ -555,13 +540,11 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.fullName = "";
         this.parentPath = "";
         this.parentStoragePath = "";
-        this.lastModifyRoleId = "";
     }
 
-    public UpdateNodeDTO(short typeId, String pid, String path, String ownerUserId, String taskId, String mainFileId, short serverTypeId, String serverAddress, String baseDir, short fileTypeId, long fileLength, String fileVersion, String fileChecksum, String majorTypeId, String readOnlyKey, String writableKey, short mirrorTypeId, String mirrorAddress, String mirrorBaseDir, String readOnlyMirrorKey, String writableMirrorKey, short actionTypeId, String remark, String accountId, String accountRoleId, String readFileScope, String readFileKey, String writeFileScope, String writeFileKey, String fullName, String parentPath, short parentTypeId, String parentStoragePath, String lastModifyRoleId)
+    public UpdateNodeDTO(short typeId, String path, String ownerUserId, String taskId, String mainFileId, short serverTypeId, String serverAddress, String baseDir, short fileTypeId, long fileLength, String fileVersion, String fileChecksum, String majorTypeId, String readOnlyKey, String writableKey, short mirrorTypeId, String mirrorAddress, String mirrorBaseDir, String readOnlyMirrorKey, String writableMirrorKey, short actionTypeId, String remark, String lastModifyUserId, String lastModifyRoleId, String pid, String readFileScope, String readFileKey, String writeFileScope, String writeFileKey, String fullName, String parentPath, short parentTypeId, String parentStoragePath)
     {
         this.typeId = typeId;
-        this.pid = pid;
         this.path = path;
         this.ownerUserId = ownerUserId;
         this.taskId = taskId;
@@ -583,8 +566,9 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.writableMirrorKey = writableMirrorKey;
         this.actionTypeId = actionTypeId;
         this.remark = remark;
-        this.accountId = accountId;
-        this.accountRoleId = accountRoleId;
+        this.lastModifyUserId = lastModifyUserId;
+        this.lastModifyRoleId = lastModifyRoleId;
+        this.pid = pid;
         this.readFileScope = readFileScope;
         this.readFileKey = readFileKey;
         this.writeFileScope = writeFileScope;
@@ -593,7 +577,6 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.parentPath = parentPath;
         this.parentTypeId = parentTypeId;
         this.parentStoragePath = parentStoragePath;
-        this.lastModifyRoleId = lastModifyRoleId;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -613,13 +596,6 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
             if(this.typeId != r.typeId)
             {
                 return false;
-            }
-            if(this.pid != r.pid)
-            {
-                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
-                {
-                    return false;
-                }
             }
             if(this.path != r.path)
             {
@@ -753,16 +729,23 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.accountId != r.accountId)
+            if(this.lastModifyUserId != r.lastModifyUserId)
             {
-                if(this.accountId == null || r.accountId == null || !this.accountId.equals(r.accountId))
+                if(this.lastModifyUserId == null || r.lastModifyUserId == null || !this.lastModifyUserId.equals(r.lastModifyUserId))
                 {
                     return false;
                 }
             }
-            if(this.accountRoleId != r.accountRoleId)
+            if(this.lastModifyRoleId != r.lastModifyRoleId)
             {
-                if(this.accountRoleId == null || r.accountRoleId == null || !this.accountRoleId.equals(r.accountRoleId))
+                if(this.lastModifyRoleId == null || r.lastModifyRoleId == null || !this.lastModifyRoleId.equals(r.lastModifyRoleId))
+                {
+                    return false;
+                }
+            }
+            if(this.pid != r.pid)
+            {
+                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
                 {
                     return false;
                 }
@@ -820,13 +803,6 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.lastModifyRoleId != r.lastModifyRoleId)
-            {
-                if(this.lastModifyRoleId == null || r.lastModifyRoleId == null || !this.lastModifyRoleId.equals(r.lastModifyRoleId))
-                {
-                    return false;
-                }
-            }
 
             return true;
         }
@@ -839,7 +815,6 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::UpdateNodeDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
@@ -861,8 +836,9 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableMirrorKey);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, remark);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, accountId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, accountRoleId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyUserId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyRoleId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readFileScope);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readFileKey);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writeFileScope);
@@ -871,7 +847,6 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, parentPath);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, parentTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, parentStoragePath);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyRoleId);
         return h_;
     }
 
@@ -892,7 +867,6 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         ostr.writeShort(this.typeId);
-        ostr.writeString(this.pid);
         ostr.writeString(this.path);
         ostr.writeString(this.ownerUserId);
         ostr.writeString(this.taskId);
@@ -914,8 +888,9 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.writableMirrorKey);
         ostr.writeShort(this.actionTypeId);
         ostr.writeString(this.remark);
-        ostr.writeString(this.accountId);
-        ostr.writeString(this.accountRoleId);
+        ostr.writeString(this.lastModifyUserId);
+        ostr.writeString(this.lastModifyRoleId);
+        ostr.writeString(this.pid);
         ostr.writeString(this.readFileScope);
         ostr.writeString(this.readFileKey);
         ostr.writeString(this.writeFileScope);
@@ -924,13 +899,11 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.parentPath);
         ostr.writeShort(this.parentTypeId);
         ostr.writeString(this.parentStoragePath);
-        ostr.writeString(this.lastModifyRoleId);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.typeId = istr.readShort();
-        this.pid = istr.readString();
         this.path = istr.readString();
         this.ownerUserId = istr.readString();
         this.taskId = istr.readString();
@@ -952,8 +925,9 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.writableMirrorKey = istr.readString();
         this.actionTypeId = istr.readShort();
         this.remark = istr.readString();
-        this.accountId = istr.readString();
-        this.accountRoleId = istr.readString();
+        this.lastModifyUserId = istr.readString();
+        this.lastModifyRoleId = istr.readString();
+        this.pid = istr.readString();
         this.readFileScope = istr.readString();
         this.readFileKey = istr.readString();
         this.writeFileScope = istr.readString();
@@ -962,7 +936,6 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.parentPath = istr.readString();
         this.parentTypeId = istr.readShort();
         this.parentStoragePath = istr.readString();
-        this.lastModifyRoleId = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, UpdateNodeDTO v)
@@ -1017,5 +990,5 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
 
     private static final UpdateNodeDTO _nullMarshalValue = new UpdateNodeDTO();
 
-    public static final long serialVersionUID = -375052465L;
+    public static final long serialVersionUID = -1309810214L;
 }

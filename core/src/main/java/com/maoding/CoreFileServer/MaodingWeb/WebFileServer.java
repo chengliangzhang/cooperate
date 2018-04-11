@@ -3,7 +3,6 @@ package com.maoding.CoreFileServer.MaodingWeb;
 import com.maoding.Bean.CoreKeyValuePair;
 import com.maoding.Bean.CoreResponse;
 import com.maoding.Bean.CoreUploadFileItem;
-import com.maoding.CoreFileServer.CoreFileDTO;
 import com.maoding.CoreFileServer.CoreCreateFileRequest;
 import com.maoding.CoreFileServer.CoreFileServer;
 import com.maoding.CoreUtils.BeanUtils;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,81 +48,8 @@ public class WebFileServer implements CoreFileServer {
      */
     @Override
     public String coreGetServerAddress() {
-        return (lastUrl != null) ? lastUrl : DEFAULT_URL;
-    }
-
-    /**
-     * 把文件传到服务器
-     *
-     * @param src
-     * @param request
-     */
-    @Override
-    @Deprecated
-    public CoreResponse<WebFileResponse> upload(CoreFileDTO src, CoreCreateFileRequest request) {
-
-        // 设定服务地址
-        String urlString = coreGetServerAddress();
-
-        // 设定要上传的Field及其对应的value
-        ArrayList<CoreKeyValuePair> ptyList = new ArrayList<>();
-        ptyList.add(new CoreKeyValuePair("projectId", request.getProjectId()));
-        ptyList.add(new CoreKeyValuePair("pid", request.getPid()));
-        ptyList.add(new CoreKeyValuePair("accountId", request.getAccountId()));
-        ptyList.add(new CoreKeyValuePair("companyId", request.getCompanyId()));
-        ptyList.add(new CoreKeyValuePair("lastModifiedDate", (new Date()).toString()));
-
-
-        ptyList.add(new CoreKeyValuePair("id", "WU_FILE_0"));
-        ptyList.add(new CoreKeyValuePair("type", HttpUtils.DEFAULT_FILE_CONTENT_TYPE));
-
-        String fileName = StringUtils.formatPath(src.getScope() + StringUtils.SPLIT_PATH + src.getKey());
-        ptyList.add(new CoreKeyValuePair("name", fileName));
-        File file = new File(fileName);
-        Long fileLength = file.length();
-        ptyList.add(new CoreKeyValuePair("size", fileLength.toString()));
-        Integer chunkNum = 0;
-        CoreKeyValuePair chunk = new CoreKeyValuePair("chunk", chunkNum.toString());
-        ptyList.add(chunk);
-        Long pos = 0L;
-        Integer blockSize = fileLength.intValue();
-        if (fileLength > MAX_BLOCK_SIZE) {
-            Integer chunks = (int)(fileLength / MAX_BLOCK_SIZE) + 1;
-            ptyList.add(new CoreKeyValuePair("chunks", chunks.toString()));
-            ptyList.add(new CoreKeyValuePair("chunkPerSize", MAX_BLOCK_SIZE.toString()));
-            blockSize = MAX_BLOCK_SIZE;
-        }
-
-        //文件内容
-        CoreUploadFileItem fileItem = new CoreUploadFileItem("file", fileName);
-        CoreResponse<?> resultUnknownType = HttpUtils.postFileData(urlString,ptyList,fileItem,pos,blockSize,MAX_BLOCK_SIZE);
-        CoreResponse<FastdfsUploadResult> result = convertResponse(resultUnknownType);
-
-        if (fileLength > blockSize) {
-            FastdfsUploadResult uploadResult = result.getData();
-            ptyList.add(new CoreKeyValuePair("fastdfsGroup", uploadResult.getFastdfsGroup()));
-            ptyList.add(new CoreKeyValuePair("fastdfsPath", uploadResult.getFastdfsPath()));
-            Integer chunks = (int)(fileLength / MAX_BLOCK_SIZE) + 1;
-            while (++chunkNum < chunks){
-                ptyList.remove(chunk);
-                chunk = new CoreKeyValuePair("chunk", chunkNum.toString());
-                ptyList.add(chunk);
-                pos += blockSize;
-                if (fileLength < (pos + blockSize)) blockSize = (int)(fileLength - pos);
-                resultUnknownType = HttpUtils.postFileData(urlString,ptyList,fileItem,pos,blockSize,MAX_BLOCK_SIZE);
-                result = convertResponse(resultUnknownType);
-            }
-        }
-
-        CoreResponse<WebFileResponse> coreResponse = new CoreResponse<>();
-        coreResponse.setCode(result.getCode());
-        coreResponse.setMsg(result.getMsg());
-        coreResponse.setStatus(result.getStatus());
-        coreResponse.setInfo(result.getInfo());
-        WebFileResponse data = BeanUtils.createCleanFrom(result.getData(),WebFileResponse.class);
-        coreResponse.setData(data);
-
-        return coreResponse;
+        return DEFAULT_URL;
+//        return (lastUrl != null) ? lastUrl : DEFAULT_URL;
     }
 
     private CoreResponse<FastdfsUploadResult> convertResponse(CoreResponse<?> resultUnknownType){
@@ -146,14 +71,14 @@ public class WebFileServer implements CoreFileServer {
      * @param createRequest
      */
     @Override
-    public CoreFileDTO coreCreateFile(CoreCreateFileRequest createRequest) {
+    public String coreCreateFile(CoreCreateFileRequest createRequest) {
         //设定要使用的url
         String urlString = coreGetServerAddress();
 
         // 设定要上传的Field及其对应的value
         File srcFile = null;
         ArrayList<CoreKeyValuePair> ptyList = new ArrayList<>();
-        ptyList.add(new CoreKeyValuePair("id", UUID.randomUUID().toString().replaceAll("-","")));
+        ptyList.add(new CoreKeyValuePair("id", UUID.randomUUID().toString().replaceAll("-", "")));
         ptyList.add(new CoreKeyValuePair("type", HttpUtils.DEFAULT_FILE_CONTENT_TYPE));
         if (createRequest != null) {
             //设定要上传的文件名及要上传的文件
@@ -164,71 +89,46 @@ public class WebFileServer implements CoreFileServer {
             }
             if (StringUtils.isNotEmpty(createRequest.getPath())){
                 fileName = StringUtils.getFileName(createRequest.getPath());
+                //设定其他属性
+                String dirName = StringUtils.getDirName(createRequest.getPath());
+                String ptyName = StringUtils.getFileName(dirName);
+                String[] nodeArray = createRequest.getPath().split("-");
+                final int PROJECT_ID_POS = 0;
+                final int COMPANY_ID_POS = 1;
+                final int TASK_ID_POS = 2;
+                final int SKY_PID_POS = 3;
+                final int ACCOUNT_ID_POS = 4;
+
+                if (nodeArray.length >= PROJECT_ID_POS){
+                    ptyList.add(new CoreKeyValuePair("projectId", StringUtils.left(nodeArray[PROJECT_ID_POS],StringUtils.DEFAULT_ID_LENGTH)));
+                }
+                if (nodeArray.length >= COMPANY_ID_POS){
+                    ptyList.add(new CoreKeyValuePair("companyId", StringUtils.left(nodeArray[COMPANY_ID_POS],StringUtils.DEFAULT_ID_LENGTH)));
+                }
+                if (nodeArray.length >= TASK_ID_POS){
+                    ptyList.add(new CoreKeyValuePair("taskId", StringUtils.left(nodeArray[TASK_ID_POS],StringUtils.DEFAULT_ID_LENGTH)));
+                }
+                if (nodeArray.length >= SKY_PID_POS){
+                    ptyList.add(new CoreKeyValuePair("pid", StringUtils.left(nodeArray[SKY_PID_POS],StringUtils.DEFAULT_ID_LENGTH)));
+                }
+                if (nodeArray.length >= ACCOUNT_ID_POS){
+                    ptyList.add(new CoreKeyValuePair("accountId", StringUtils.left(nodeArray[ACCOUNT_ID_POS],StringUtils.DEFAULT_ID_LENGTH)));
+                }
             }
             if (StringUtils.isNotEmpty(fileName)) ptyList.add(new CoreKeyValuePair("name",fileName));
 
-            //设定其他属性
-            if (StringUtils.isNotEmpty(createRequest.getPid())) ptyList.add(new CoreKeyValuePair("pid", createRequest.getPid()));
-            if (StringUtils.isNotEmpty(createRequest.getProjectId())) ptyList.add(new CoreKeyValuePair("projectId", createRequest.getProjectId()));
-            if (StringUtils.isNotEmpty(createRequest.getCompanyId())) ptyList.add(new CoreKeyValuePair("companyId", createRequest.getCompanyId()));
-            if (StringUtils.isNotEmpty(createRequest.getTaskId())) ptyList.add(new CoreKeyValuePair("taskId", createRequest.getTaskId()));
-            if (StringUtils.isNotEmpty(createRequest.getOwnerUserId())) ptyList.add(new CoreKeyValuePair("accountId", createRequest.getOwnerUserId()));
-            ptyList.add(new CoreKeyValuePair("lastModifiedDate",
-                    ((createRequest.getLastModifyTime() == null) ? (new Date()) : createRequest.getLastModifyTime()).toString()));
+            ptyList.add(new CoreKeyValuePair("lastModifiedDate",StringUtils.getTimeStamp()));
         }
 
         CoreResponse<FastdfsUploadResult> response = sendRequest(srcFile,0,-1,ptyList,urlString);
 
-        CoreFileDTO resultFile = null;
+        String key = null;
         if ((response != null) && (response.isSuccessful())) {
             FastdfsUploadResult webResponse = response.getData();
             assert (webResponse != null);
-            resultFile = new CoreFileDTO(webResponse.getFastdfsGroup(),webResponse.getFastdfsPath());
+            key = webResponse.getFastdfsPath();
         }
-        return resultFile;
-
-    }
-
-    @Override
-    public CoreFileDTO coreCreateFile(CoreFileDTO dst, CoreCreateFileRequest createRequest) {
-        //设定要使用的url
-        String urlString = coreGetServerAddress();
-        if ((dst != null) && (StringUtils.isNotEmpty(dst.getServerAddress()))) urlString = dst.getServerAddress();
-
-        // 设定要上传的Field及其对应的value
-        ArrayList<CoreKeyValuePair> ptyList = new ArrayList<>();
-        ptyList.add(new CoreKeyValuePair("id", "WU_FILE_0"));
-        ptyList.add(new CoreKeyValuePair("type", HttpUtils.DEFAULT_FILE_CONTENT_TYPE));
-        String fileName = (dst == null) ? null : StringUtils.getFileName(dst.getKey());
-        File srcFile = null;
-        if (createRequest != null) {
-            if (StringUtils.isNotEmpty(createRequest.getPid())) ptyList.add(new CoreKeyValuePair("pid", createRequest.getPid()));
-            if (StringUtils.isNotEmpty(createRequest.getProjectId())) ptyList.add(new CoreKeyValuePair("projectId", createRequest.getProjectId()));
-            if (StringUtils.isNotEmpty(createRequest.getCompanyId())) ptyList.add(new CoreKeyValuePair("companyId", createRequest.getCompanyId()));
-            if (StringUtils.isNotEmpty(createRequest.getTaskId())) ptyList.add(new CoreKeyValuePair("taskId", createRequest.getTaskId()));
-            if (StringUtils.isNotEmpty(createRequest.getAccountId())) ptyList.add(new CoreKeyValuePair("accountId", createRequest.getAccountId()));
-            ptyList.add(new CoreKeyValuePair("lastModifiedDate",
-                    ((createRequest.getLastModifyTime() == null) ? (new Date()) : createRequest.getLastModifyTime()).toString()));
-            srcFile = createRequest.getSrcFile();
-            if ((fileName == null) && (srcFile != null)){
-                fileName = srcFile.getName();
-            }
-        }
-        ptyList.add(new CoreKeyValuePair("name", fileName));
-
-        CoreResponse<FastdfsUploadResult> response = sendRequest(srcFile,0,-1,ptyList,urlString);
-
-        CoreFileDTO resultFile = null;
-        assert (response != null);
-        if (response.isSuccessful()) {
-            FastdfsUploadResult webResponse = response.getData();
-            assert (webResponse != null);
-            resultFile = new CoreFileDTO();
-            resultFile.setServerAddress(urlString);
-            resultFile.setScope(webResponse.getFastdfsGroup());
-            resultFile.setKey(webResponse.getFastdfsPath());
-        }
-        return resultFile;
+        return key;
     }
 
     private CoreResponse<FastdfsUploadResult> sendRequest(File file, long pos, int size, ArrayList<CoreKeyValuePair> ptyList, String urlString){

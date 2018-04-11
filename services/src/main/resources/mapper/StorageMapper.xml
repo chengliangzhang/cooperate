@@ -3,8 +3,8 @@
 <mapper namespace="com.maoding.Storage.Dao.StorageDao">
     <select id="summaryNodeLength" parameterType="com.maoding.Storage.zeroc.QuerySummaryDTO" resultType="java.lang.Long">
         select sum(storage_tree.file_length)
-        from maoding_storage_tree storage_tree
-        inner join maoding_storage_storage node on (storage_tree.id = substring(node.id,1,32))
+        from md_tree_storage storage_tree
+        inner join md_node_storage node on (storage_tree.id = substring(node.id,1,32))
         <where>
             storage_tree.deleted = 0
             <if test="companyId != null">
@@ -71,9 +71,38 @@
         </if>
     </sql>
 
+    <select id="listNodeFile" resultType="com.maoding.Storage.zeroc.NodeFileDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeFileDTO">
+        select * from md_file file
+        <where>
+            <if test="id != null">
+                and find_in_set(file.id,#{id})
+            </if>
+            <if test="serverTypeId != null">
+                and (find_in_set(file.server_type_id,#{serverTypeId})
+                  or find_in_set(file.mirror_server_type_id,#{serverTypeId}))
+            </if>
+            <if test="serverAddress != null">
+                and (find_in_set(file.server_address,#{serverAddress})
+                  or find_in_set(file.mirror_server_address,#{serverAddress}))
+            </if>
+            <if test="baseDir != null">
+                and (find_in_set(file.base_dir,#{baseDir})
+                  or find_in_set(file.mirror_base_dir,#{baseDir}))
+            </if>
+            <if test="key != null">
+                and (find_in_set(file.read_only_key,#{key})
+                  or find_in_set(file.writable_key,#{key})
+                  or find_in_set(file.read_only_mirror_key,#{key})
+                  or find_in_set(file.writable_mirror_key,#{key}))
+            </if>
+        </where>
+    </select>
+
     <resultMap id="FileDetailMap" type="com.maoding.Storage.zeroc.FullNodeDTO" autoMapping="true" >
         <association property="textInfo" javaType="com.maoding.Storage.zeroc.NodeTextDTO" autoMapping="true" fetchType="eager"/>
-        <association property="fileInfo" javaType="com.maoding.Storage.zeroc.NodeFileDTO" autoMapping="true" fetchType="eager"/>
+        <association property="fileInfo" javaType="com.maoding.Storage.zeroc.NodeFileDTO" autoMapping="true" fetchType="eager">
+            <id column="file_id" property="id"/>
+        </association>
         <collection property="historyList" ofType="com.maoding.Storage.zeroc.HistoryDTO" autoMapping="true" fetchType="eager">
             <id column="history_id" property="id"/>
             <result column="history_action_user_id" property="userId"/>
@@ -98,10 +127,11 @@
                     ,task.task_path
                     ,account.user_name as owner_name
                     <if test="request.textQuery.isQueryTypeName != null and request.textQuery.isQueryTypeName != 0">
-                        ,range_type.content as range_name
+                        ,range_type.type_name as range_name
                     </if>
                 </if>
                 <if test="request.fileQuery != null">
+                    ,file.id as file_id
                     ,file.file_type_id
                     ,file.file_version
                     ,file.file_checksum
@@ -123,7 +153,7 @@
                     ,his.action_type_id as history_action_type_id
                     ,his.remark as history_remark
                     ,his_account.user_name as history_action_user_name
-                    ,his_action_type.value_id as history_action_name
+                    ,his_action_type.type_name as history_action_name
                 </if>
             </if>
         from
@@ -131,24 +161,24 @@
             <when test="request != null">
                 <choose>
                     <when test="request.textQuery != null">
-                        maoding_storage_copy node
-                        left join maoding_storage_tree storage_tree on (storage_tree.id = substring(node.id,1,32))
+                        md_node node
+                        left join md_tree_storage storage_tree on (storage_tree.id = substring(node.id,1,32))
                         left join maoding_web_company company on (node.company_id = company.id)
                         left join maoding_web_project project on (node.project_id = project.id)
-                        left join maoding_task task on (node.task_id = task.id)
+                        left join md_web_task task on (node.task_id = task.id)
                         left join maoding_web_account account on (node.owner_user_id = account.id)
                         <if test="request.textQuery.isQueryTypeName != null and request.textQuery.isQueryTypeName != 0">
-                            left join maoding_const range_type on (range_type.classic_id = 24 and range_type.value_id = node.range_id)
+                            left join md_type_range range_type on (range_type.type_id = node.range_id)
                         </if>
                     </when>
                     <otherwise>
-                        maoding_storage_tree storage_tree
+                        md_tree_storage storage_tree
                     </otherwise>
                 </choose>
                 <if test="request.fileQuery != null">
-                    left join maoding_storage_file file on (storage_tree.id = file.id)
+                    left join md_list_storage_file file on (storage_tree.id = file.id)
                     <if test="request.fileQuery.mirrorServerTypeId != null">
-                        left join maoding_storage_file mirror on (mirror.deleted = 0
+                        left join md_list_storage_file mirror on (mirror.deleted = 0
                                 and mirror.main_file_id = file.id
                                 and mirror.server_type_id = #{request.fileQuery.mirrorServerTypeId}
                             <if test="request.fileQuery.mirrorServerAddress != null">
@@ -161,7 +191,7 @@
                     </if>
                 </if>
                 <if test="request.historyQuery != null">
-                    left join maoding_storage_file_his his on (his.main_file_id = storage_tree.id
+                    left join md_list_storage_file_his his on (his.main_file_id = storage_tree.id
                             <if test="request.historyQuery.historyStartTimeStamp != null and request.historyQuery.historyStartTimeStamp > 0">
                                 and his.last_modify_time >= #{request.historyQuery.historyStartTimeStamp}
                             </if>
@@ -170,11 +200,11 @@
                             </if>
                             )
                     left join maoding_web_account his_account on (his.last_modify_user_id = his_account.id)
-                    left join maoding_const his_action_type on (his_action_type.classic_id = 20 and his.action_type_id = his_action_type.value_id)
+                    left join md_type_commit his_action_type on (his.action_type_id = his_action_type.type_id)
                 </if>
             </when>
             <otherwise>
-                maoding_storage_tree storage_tree
+                md_tree_storage storage_tree
             </otherwise>
         </choose>
         <where>
@@ -189,22 +219,12 @@
                 </choose>
             </if>
         </where>
+        limit 1
     </select>
 
-    <select id="listRootNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.util.Map">
-        select root.*
-            ,if(root.id is null,null,1) as is_read_only
-        from maoding_storage_root root
-        <where>
-            <if test="userId != null">
-                and (find_in_set(#{userId},root.user_id_list))
-            </if>
-        </where>
-    </select>
-
-    <select id="listOldNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
+    <select id="listWebArchiveDir" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
         select node.*
-        from maoding_storage_old_node node
+        from md_node_sky_drive node
         <where>
             <include refid="ConditionForQueryNode"/>
             <if test="fuzzyId != null">
@@ -220,9 +240,12 @@
         </if>
     </select>
 
-    <sql id="joinAndConditionSQL">
+
+    <select id="listNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
+        select node.*
+        from md_node node
         <if test="accountId != null">
-            inner join maoding_storage_root_copy root on (find_in_set(#{accountId},root.user_id_list) and node.root_id = root.id)
+            inner join md_node_root root on (find_in_set(#{accountId},root.user_id_list) and node.root_id = root.id)
         </if>
         <where>
             <include refid="ConditionForQueryNode"/>
@@ -230,80 +253,16 @@
                 and find_in_set(substring(node.id,1,32),#{fuzzyId})
             </if>
         </where>
-    </sql>
-
-    <select id="listNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select node.* from maoding_storage_copy node <include refid="joinAndConditionSQL"/>
         <if test="fuzzyPath != null">
             order by (length(replace(path,'/','//')) - length(path)) desc
+            limit 1
         </if>
     </select>
 
-
-    <select id="listAllNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="java.util.Map">
-        select node.*
-            <choose>
-                <when test="userId != null">
-                    ,if(node.id is null,null,if(node.is_design = 1
-                        and (node.owner_user_id is null or node.owner_user_id = #{userId}),0,1)) as is_read_only
-                </when>
-                <otherwise>
-                    ,if(node.id is null,null,1) as is_read_only
-                </otherwise>
-            </choose>
-        from
-            maoding_storage_node node
-            inner join maoding_storage_root root on (root.path=substring_index(node.path,'/',2))
-        <where>
-            <if test="userId != null">
-                and (find_in_set(#{userId},root.user_id_list))
-            </if>
-        </where>
-        group by node.id
-    </select>
 
     <resultMap id="FileWithBasicMap" type="com.maoding.Storage.zeroc.FileNodeDTO">
         <association property="basic" javaType="com.maoding.Storage.zeroc.SimpleNodeDTO" fetchType="eager"/>
     </resultMap>
-
-    <select id="listFileNode" resultMap="FileWithBasicMap" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select node.*
-            <choose>
-                <when test="userId != null">
-                    ,if(node.id is null,null,if(node.is_design = 1
-                    and (node.owner_user_id is null or node.owner_user_id = #{userId}),0,1)) as is_read_only
-                </when>
-                <otherwise>
-                    ,if(node.id is null,null,1) as is_read_only
-                </otherwise>
-            </choose>
-            ,file.file_type_id
-            ,file.file_version
-            ,file.file_checksum
-            ,file.major_id
-            ,file.main_file_id
-            ,file.server_type_id
-            ,file.server_address
-            ,file.read_file_scope
-            ,file.read_file_key
-            ,file.write_file_scope
-            ,file.write_file_key
-            ,server_type.content as server_type_name
-            ,major_type.content as major_name
-            ,his.remark as file_remark
-        from maoding_storage_node node
-            inner join maoding_storage_file file on (substring(node.id from 0 to 32) = file.id)
-            inner join maoding_const server_type on (server_type.classic_id = 19 and file.server_type_id = server_type.value_id)
-            left join maoding_const major_type on (major_type.classic_id = 22 and file.major_id = major_type.value_id)
-            left join maoding_storage_file_his his on (file.id = his.id)
-        <where>
-            <include refid="ConditionForQueryNode"/>
-        </where>
-        <if test="fuzzyPath != null">
-            order by (length(replace(node.path,'/','//')) - length(node.path)) desc
-            limit 1
-        </if>
-    </select>
 
     <resultMap id="FileWithBasicHistoryMap" type="com.maoding.Storage.zeroc.FileNodeDTO">
         <association property="basic" javaType="com.maoding.Storage.zeroc.SimpleNodeDTO" fetchType="eager"/>
@@ -312,84 +271,6 @@
         </collection>
     </resultMap>
 
-    <select id="listFileNodeWithHistory" resultMap="FileWithBasicHistoryMap" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select node.*
-            <choose>
-                <when test="userId != null">
-                    ,if(node.id is null,null,if(node.is_design = 1
-                    and (node.owner_user_id is null or node.owner_user_id = #{userId}),0,1)) as is_read_only
-                </when>
-                <otherwise>
-                    ,if(node.id is null,null,1) as is_read_only
-                </otherwise>
-            </choose>
-            ,file.file_type_id
-            ,file.file_version
-            ,file.file_checksum
-            ,file.major_id
-            ,file.main_file_id
-            ,file.server_type_id
-            ,file.server_address
-            ,file.read_file_scope
-            ,file.read_file_key
-            ,file.write_file_scope
-            ,file.write_file_key
-            ,server_type.content as server_type_name
-            ,major_type.content as major_name
-            ,his.remark as file_remark
-            ,all_his.id as history_id
-            ,all_his.file_id
-            ,all_his.last_modify_user_id as user_id
-            ,all_his.last_modify_role_id as role_id
-            ,all_his.action_type_id,
-            ,unix_timestamp(ifnull(all_his.last_modify_time,0)) as action_time_stamp
-            ,date_format(all_his.last_modify_time,'%Y-%m-%d %T') as action_time_text
-            ,all_his.remark
-            ,action_type.content as action_name
-            ,action_user.user_name as user_name
-        from maoding_storage_node node
-            inner join maoding_storage_file file on (substring(node.id from 0 to 32) = file.id)
-            inner join maoding_const server_type on (server_type.classic_id = 19 and file.server_type_id = server_type.value_id)
-            left join maoding_const major_type on (major_type.classic_id = 22 and file.major_id = major_type.value_id)
-            left join maoding_storage_file_his his on (file.id = his.id)
-            left join maoding_storage_file_his all_his on (file.main_file_id = all_his.file_id and file.last_modify_time >= all_his.last_modify_time)
-            left join maoding_const action_type on (action_type.classic_id = 20 and his.action_type_id = action_type.value_id)
-            left join maoding_web_account action_user on (his.last_modify_user_id = acction_user.id)
-        <where>
-            <include refid="ConditionForQueryNode"/>
-        </where>
-        <if test="fuzzyPath != null">
-            order by (length(replace(node.path,'/','//')) - length(node.path)) desc
-            limit 1
-        </if>
-    </select>
-
-
-    <select id="getNodeExtra" resultType="com.maoding.Storage.zeroc.FullNodeDTO" parameterType="java.util.Map">
-        select task.*
-        from maoding_task task
-        <where>
-            <if test="taskId != null">
-                and (task.id = #{taskId})
-            </if>
-        </where>
-    </select>
-
-    <select id="getFileNodeExtra" resultType="com.maoding.Storage.zeroc.FileNodeDTO" parameterType="java.util.Map">
-        select file.*
-            ,server_type.content as server_type_name
-            ,major_type.content as major_name
-            ,his.remark as file_remark
-        from maoding_storage_file file
-            inner join maoding_const server_type on (server_type.classic_id = 19 and file.server_type_id = server_type.value_id)
-            left join maoding_const major_type on (major_type.classic_id = 22 and file.major_id = major_type.value_id)
-            left join maoding_storage_file_his his on (file.id = his.id)
-        <where>
-            <if test="id != null">
-                and (file.id = #{id})
-            </if>
-        </where>
-    </select>
 
     <resultMap id="FileWithHistoryMap" type="com.maoding.Storage.zeroc.FileNodeDTO">
         <collection property="historyList" ofType="com.maoding.Storage.zeroc.HistoryDTO" fetchType="eager">
@@ -397,81 +278,6 @@
         </collection>
     </resultMap>
 
-    <select id="getFileNodeExtraWithHistory" resultMap="FileWithHistoryMap" parameterType="java.util.Map">
-        select file.*
-            ,server_type.content as server_type_name
-            ,major_type.content as major_name
-            ,his.remark as file_remark
-            ,all_his.id as history_id
-            ,all_his.file_id
-            ,all_his.last_modify_user_id as user_id
-            ,all_his.last_modify_role_id as role_id
-            ,all_his.action_type_id,
-            ,unix_timestamp(ifnull(all_his.last_modify_time,0)) as action_time_stamp
-            ,date_format(all_his.last_modify_time,'%Y-%m-%d %T') as action_time_text
-            ,all_his.remark
-            ,major_type.content as major_name
-            ,server_type.content as server_type_name
-            ,action_type.content as action_name
-            ,action_user.user_name as user_name
-        from maoding_storage_file file
-            inner join maoding_const server_type on (server_type.classic_id = 19 and file.server_type_id = server_type.value_id)
-            left join maoding_const major_type on (major_type.classic_id = 22 and file.major_id = major_type.value_id)
-            left join maoding_storage_file_his his on (file.id = his.id)
-            left join maoding_storage_file_his all_his on (file.main_file_id = all_his.file_id and file.last_modify_time >= all_his.last_modify_time)
-            left join maoding_const action_type on (action_type.classic_id = 20 and his.action_type_id = action_type.value_id)
-            left join maoding_web_account action_user on (his.last_modify_user_id = acction_user.id)
-        <where>
-            <if test="id != null">
-                and (file.id = #{id})
-            </if>
-        </where>
-    </select>
-
-    <select id="getNodeInfo" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select node.*
-            <choose>
-                <when test="ownerUserId != null">
-                    ,if(node.id is null,null,if(node.is_design = 1
-                    and (node.owner_user_id is null or node.owner_user_id = #{userId}),0,1)) as is_read_only
-                </when>
-                <otherwise>
-                    ,if(node.id is null,null,1) as is_read_only
-                </otherwise>
-            </choose>
-        from maoding_storage_node node
-        <where>
-            <if test="id != null">
-                and (node.id = #{id})
-            </if>
-            <if test="path != null">
-                and (node.path = #{path})
-            </if>
-        </where>
-    </select>
-
-    <select id="hasChild" resultType="java.lang.Boolean" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select 1 from maoding_storage_node node
-        <where>
-            <if test="id != null">
-                and (node.pid = #{id})
-            </if>
-            <if test="path != null">
-                and (node.path like concat(#{path},'/%'))
-            </if>
-        </where>
-        limit 1
-    </select>
-
-    <select id="hasRootChild" resultType="java.lang.Boolean" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select 1 from maoding_storage_root root
-        <where>
-            <if test="userId != null">
-                and (find_in_set(#{userId},root.user_id_list))
-            </if>
-        </where>
-        limit 1
-    </select>
 
     <resultMap id="StorageEntityUnionMap" type="com.maoding.Storage.Dto.StorageEntityUnionDTO">
         <association property="fileEntity" select="selectFileEntity" column="{id=id}" fetchType="eager"/>
@@ -479,145 +285,97 @@
     </resultMap>
 
     <select id="selectStorageEntityUnion" resultMap="StorageEntityUnionMap" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select node.*
-            ,concat('/',task.project_name,'/',classic_type.content,'/',task.path,'/',node.path) as full_path
-        from maoding_storage_tree node
-            inner join maoding_const classic_type on (classic_type.classic_id = 24 and position(concat(':',node.type_id,':') in (classic_type.content_extra)) > 0)
-            inner join maoding_task task on (node.task_id = task.id)
-        where (node.deleted = 0)
+        select storage_tree.*
+        from md_tree_storage storage_tree
+          <if test="path != null or fuzzyPath != null or parentPath != null or projectId != null or rangeId != null or issueId != null or companyId != null">
+            left join md_type_range range_type on (find_in_set(storage_tree.type_id,range_type.sub_node_type))
+            left join md_web_task task on (storage_tree.task_id = task.id)
+          </if>
+        where (storage_tree.deleted = 0)
             <if test="id != null">
-                and (node.id = #{id})
+                and (storage_tree.id = substring(#{id},1,32))
             </if>
             <if test="pid != null">
-                and (node.pid = #{pid})
+                and (storage_tree.pid = substring(#{pid},1,32))
             </if>
             <if test="path != null">
-                and (concat('/',task.project_name,'/',classic_type.content,'/',task.path,'/',node.path) = #{path})
+                and (concat('/',task.project_name,'/',range_type.content,'/',task.path,'/',storage_tree.path) = #{path})
             </if>
             <if test="typeId != null">
-                and (node.type_id = #{typeId})
+                and (storage_tree.type_id = #{typeId})
             </if>
             <if test="projectId != null">
                 and (task.project_id = #{projectId})
             </if>
             <if test="rangeId != null">
-                and (classic_type.value_id = #{rangeId})
+                and (range_type.value_id = #{rangeId})
             </if>
             <if test="issueId != null">
                 and (task.issue_id = #{issueId})
             </if>
             <if test="taskId != null">
-                and (task.id = #{taskId})
+                and (storage_tree.task_id = #{taskId})
             </if>
             <if test="companyId != null">
                 and (task.company_id = #{companyId})
             </if>
             <if test="ownerUserId != null">
-                and (node.last_modify_user_id = #{ownerUserId})
-            </if>
-            <if test="ownerRoleId != null">
-                and (node.last_modify_role_id = #{ownerRoleId})
+                and (storage_tree.owner_user_id = #{ownerUserId})
             </if>
             <if test="fuzzyPath != null">
-                and (concat('/',task.project_name,'/',classic_type.content,'/',task.path,'/',node.path) = #{fuzzyPath}
-                    or #{fuzzyPath} like concat(concat('/',task.project_name,'/',classic_type.content,'/',task.path,'/',node.path),'/%'))
+                and (concat('/',task.project_name,'/',range_type.content,'/',task.path,'/',storage_tree.path) = #{fuzzyPath}
+                    or #{fuzzyPath} like concat(concat('/',task.project_name,'/',range_type.content,'/',task.path,'/',storage_tree.path),'/%'))
             </if>
             <if test="parentPath != null">
-                and (node.path like concat(#{parentPath},'/%'))
+                and (concat('/',task.project_name,'/',range_type.content,'/',task.path,'/',storage_tree.path) like concat(#{parentPath},'/%'))
             </if>
         <if test="fuzzyPath != null">
-            order by (length(replace(concat(concat('/',task.project_name,'/',classic_type.content,'/',task.path,'/',node.path)),'/','//'))
-                  - length(concat(concat('/',task.project_name,'/',classic_type.content,'/',task.path,'/',node.path)))) desc
-            limit 1
+            order by (length(replace(concat(concat('/',task.project_name,'/',range_type.content,'/',task.path,'/',storage_tree.path)),'/','//'))
+                  - length(concat(concat('/',task.project_name,'/',range_type.content,'/',task.path,'/',storage_tree.path)))) desc
         </if>
+        limit 1
     </select>
 
-    <select id="quickSelectStorageEntityUnion" resultMap="StorageEntityUnionMap" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select node.*
-        from maoding_storage_tree node
-        where (node.deleted = 0)
-            <if test="id != null">
-                and (node.id = #{id})
-            </if>
-            <if test="pid != null">
-                and (node.pid = #{pid})
-            </if>
-            <if test="name != null">
-                and (node.node_name = #{name})
-            </if>
-            <if test="storagePath != null">
-                and (node.path = #{storagePath})
-            </if>
-            <if test="typeId != null">
-                and (node.type_id = #{typeId})
-            </if>
-            <if test="ownerUserId != null">
-                and (node.last_modify_user_id = #{ownerUserId})
-            </if>
-            <if test="ownerRoleId != null">
-                and (node.last_modify_role_id = #{ownerRoleId})
-            </if>
-            <if test="fuzzyStoragePath != null">
-                and (node.path = #{fuzzyStoragePath}
-                    or #{fuzzyStoragePath} like concat(node.path,'/%'))
-            </if>
-            <if test="parentStoragePath != null">
-                and (node.path like concat(#{parentStoragePath},'/%'))
-            </if>
-        <if test="fuzzyStoragePath != null">
-            order by (length(replace(node.path,'/','//'))
-                  - length(node.path)) desc
-            limit 1
-        </if>
-    </select>
-
-    <select id="selectUnionById" resultMap="StorageEntityUnionMap" parameterType="java.util.Map">
-        select storage_tree.* from maoding_storage_tree storage_tree where storage_tree.id = substring(#{id},1,32)
-    </select>
 
     <select id="selectFileEntity" resultType="com.maoding.Storage.Entity.StorageFileEntity" parameterType="java.util.Map">
-        select file.* from maoding_storage_file file where file.id = #{id}
-    </select>
-
-    <select id="selectFileMirrorEntity" resultType="com.maoding.Storage.Entity.StorageFileEntity" parameterType="java.util.Map">
-        select file.* from maoding_storage_file file
+        select
+            <choose>
+                <when test="mainFileId != null">
+                    mirror.*
+                </when>
+                <otherwise>
+                    file.*
+                </otherwise>
+            </choose>
+        from md_list_storage_file file
+            <if test="mainFileId != null">
+                left join md_list_storage_file mirror on (
+                    mirror.file_type_id = 22
+                    and mirror.main_file_id = file.id
+                    <if test="mirrorServerTypeId != null">
+                        and mirror.server_type_id = #{mirrorServerTypeId}
+                    </if>
+                    <if test="mirrorServerAddress != null">
+                        and mirror.server_address = #{mirrorServerAddress}
+                    </if>
+                    <if test="mirrorBaseDir != null">
+                        and mirror.base_dir = #{mirrorBaseDir}
+                    </if>
+                )
+            </if>
         <where>
-            file.file_type_id = 22
             <if test="id != null">
                 and file.id = #{id}
             </if>
             <if test="mainFileId != null">
-                and file.main_file_id = #{mainFileId}
-            </if>
-            <if test="mirrorServerTypeId != null">
-                and file.server_type_id = #{mirrorServerTypeId}
-            </if>
-            <if test="mirrorServerAddress != null">
-                and file.server_address = #{mirrorServerAddress}
-            </if>
-            <if test="mirrorBaseDir != null">
-                and file.base_dir = #{mirrorBaseDir}
+                and file.id = #{mainFileId}
             </if>
         </where>
+        limit 1
     </select>
 
     <select id="selectHisEntity" resultType="com.maoding.Storage.Entity.StorageFileHisEntity" parameterType="java.util.Map">
-        select his.* from maoding_storage_file_his his where his.id = #{id}
-    </select>
-
-    <select id="selectMajor" resultType="java.lang.String">
-        select content from maoding_const where classic_id=22
-    </select>
-
-    <select id="listAllSubNodeIdByPath" resultType="java.lang.String" parameterType="java.lang.String">
-        select node.id
-        from maoding_storage_tree node
-        <where>
-            (node.deleted = 0)
-            <if test="_parameter != null">
-                and (node.path like concat(#{_parameter},'/%'))
-            </if>
-        </where>
+        select his.* from md_list_storage_file_his his where his.id = #{id}
     </select>
 
 </mapper>

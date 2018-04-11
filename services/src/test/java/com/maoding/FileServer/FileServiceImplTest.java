@@ -56,18 +56,78 @@ public class FileServiceImplTest {
     }
 
     @Test
-    public void testWriteFile() throws Exception{
-        writeNodeFileInfo();
+    public void testDelete() throws Exception {
+//        fileService.deleteNodeForAccount(getLocalAccount(),getLocalNode(),null);
     }
 
-    private int writeNodeFileInfo() throws Exception{
-        FileDataDTO data = new FileDataDTO();
-        data.setData(new byte[]{1,2,3});
-        return fileService.writeFile(getLocalAccount(),getLocalNodeFile(),data,null);
+    @Test
+    public void testUpdateVersion() throws Exception {
+        updateVersion();
+    }
+
+    private SimpleNodeDTO updateVersion() throws Exception {
+        log.debug("\t>>>>>>>> updateVersion");
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setFileVersion("v2.0");
+        return fileService.updateVersion(getLocalAccount(),getLocalNode(),getLocalNode(),request,null);
+    }
+
+    @Test
+    public void testCreateVersion() throws Exception {
+        createVersion();
+    }
+
+    private SimpleNodeDTO createVersion() throws Exception {
+        log.debug("\t>>>>>>>> createVersion");
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setFileVersion("v1.0");
+        return fileService.createVersion(getLocalAccount(),getLocalNode(),"a.txt",request,null);
+    }
+
+    @Test
+    public void testMoveNode() throws Exception {
+//        changeFileName();
+//        moveFile();
+//        changeDirName();
+        moveDir();
+    }
+
+    private SimpleNodeDTO moveDir() throws Exception {
+        log.debug("\t>>>>>>>> changeDirName");
+        MoveNodeRequestDTO request = new MoveNodeRequestDTO();
+        request.setFullName("ab/cde");
+        return fileService.moveNodeForAccount(getLocalAccount(), getLocalDir(),getLocalTask(),request,null);
+    }
+
+    private SimpleNodeDTO changeDirName() throws Exception {
+        log.debug("\t>>>>>>>> changeDirName");
+        MoveNodeRequestDTO request = new MoveNodeRequestDTO();
+        request.setFullName("abcde");
+        return fileService.moveNodeForAccount(getLocalAccount(), getLocalDir(),null,request,null);
+    }
+
+    private SimpleNodeDTO changeFileName() throws Exception {
+        log.debug("\t>>>>>>>> changeFileName");
+        MoveNodeRequestDTO request = new MoveNodeRequestDTO();
+        request.setFullName("axax.txt");
+        return fileService.moveNodeForAccount(getLocalAccount(),getLocalNode(), getLocalDir(),request,null);
+    }
+
+    private SimpleNodeDTO moveFile() throws Exception {
+        log.debug("\t>>>>>>>> moveFile");
+        MoveNodeRequestDTO request = new MoveNodeRequestDTO();
+        request.setFullName("x/y/aaaa.txt");
+        return fileService.moveNodeForAccount(getLocalAccount(),getLocalNode(), getLocalDir(),request,null);
     }
 
     private NodeFileDTO getLocalNodeFile() throws Exception {
-        return getLocalFullNode().getFileInfo();
+        QueryNodeFileDTO query = new QueryNodeFileDTO();
+        query.setId("108163A863344C208E10FBEDC961F7F5");
+        query.setServerTypeId("1");
+        query.setServerAddress("127.0.0.1");
+//        query.setServerAddress("c:/work/file_server");
+        List<NodeFileDTO> fileList = fileService.listFile(getLocalAccount(),query,null);
+        return fileList.get(0);
     }
 
     @Test
@@ -77,6 +137,7 @@ public class FileServiceImplTest {
     }
 
     private NodeFileDTO createAccessoryWithData() throws Exception{
+        log.debug("\t>>>>>>>> createAccessoryWithData");
         AccessoryRequestDTO request = new AccessoryRequestDTO();
         request.setPath("a/b/c.txt");
         request.setData(new byte[]{1,2,3});
@@ -84,6 +145,7 @@ public class FileServiceImplTest {
     }
 
     private NodeFileDTO createAccessorySimple() throws Exception{
+        log.debug("\t>>>>>>>> createAccessorySimple");
         AccessoryRequestDTO request = new AccessoryRequestDTO();
         request.setPath("a/b/c.txt");
         return fileService.createAccessory(getLocalAccount(),request,null);
@@ -96,6 +158,7 @@ public class FileServiceImplTest {
     }
 
     private SuggestionDTO createSuggestionSimple() throws Exception {
+        log.debug("\t>>>>>>>> createSuggestionSimple");
         SuggestionRequestDTO request = new SuggestionRequestDTO();
         request.setTypeId("1");
         request.setContent("this is a test");
@@ -103,6 +166,7 @@ public class FileServiceImplTest {
     }
 
     private SuggestionDTO createSuggestionWithEmbed() throws Exception {
+        log.debug("\t>>>>>>>> createSuggestionWithEmbed");
         SuggestionRequestDTO request = new SuggestionRequestDTO();
         request.setTypeId("1");
         request.setData(new byte[]{1,2,3});
@@ -111,22 +175,20 @@ public class FileServiceImplTest {
 
     @Test
     public void testListNode() throws Exception{
-//        listAllNode();
+        listAllNode();
 //        listRootNode();
 //        listChildNode();
 //        listChildrenNode();
-        assert(getLocalFullNode() != null);
-        assert(getLocalFullNode() != null);
     }
 
     private List<SimpleNodeDTO> listChildrenNode() throws Exception {
         log.debug("\t>>>>>>>> listChildrenNode");
-        return fileService.listChildrenNodeForAccount(getLocalAccount(), getLocalPath(),null);
+        return fileService.listChildrenNodeForAccount(getLocalAccount(), getLocalDir(),null);
     }
 
     private List<SimpleNodeDTO> listChildNode() throws Exception {
         log.debug("\t>>>>>>>> listChild");
-        return fileService.listChildNodeForAccount(getLocalAccount(), getLocalPath(),null);
+        return fileService.listChildNodeForAccount(getLocalAccount(), getLocalDir(),null);
     }
 
     private List<SimpleNodeDTO> listRootNode() throws Exception {
@@ -139,13 +201,26 @@ public class FileServiceImplTest {
         return fileService.listAllNodeForAccount(getLocalAccount(), null);
     }
 
+    private AccountDTO getRemoteAccount(){
+        AccountDTO account = new AccountDTO();
+        account.setId("d437448683314cad91dc30b68879901d");
+        return account;
+    }
+
     private AccountDTO getLocalAccount(){
         AccountDTO account = new AccountDTO();
         account.setId("41d244733ec54f09a255836637f2b21d");
         return account;
     }
 
-    private SimpleNodeDTO getLocalPath() throws Exception {
+    private SimpleNodeDTO getLocalDir() throws Exception {
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setId("DC503075EEEE4CABB8878ACB21D2C9D3-1");
+        List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
+        return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
+    }
+
+    private SimpleNodeDTO getLocalTask() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
         query.setId("2a1c1afc5dcf449ab01d237b63182fd6-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
@@ -154,152 +229,157 @@ public class FileServiceImplTest {
 
     private SimpleNodeDTO getLocalNode() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("436833ABCAED4105AFC53FFEC9E8AECF-1");
+        query.setId("6CA3B98693D846FFB00D73311165E7FB-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
 
     private FullNodeDTO getLocalFullNode() throws Exception {
-        return fileService.getFileInfoForAccount(getLocalAccount(),getLocalNode(),null);
+        return fileService.getFullNodeForAccount(getLocalAccount(),getLocalNode(),null);
     }
 
+    @Test
+    public void testRead() throws Exception {
+//        readFile();
+        FileDataDTO data = readNode();
+    }
 
-//
-//    @Test
-//    public void testCopyRealFile() throws Exception{
-////        copyRealFileFromDiskToDisk();
-//        copyRealFileFromDiskToWeb();
-//    }
-//
-//    private void copyRealFileFromDiskToDisk() throws Exception {
-//        FileNodeDTO src = getLocalFileNode();
-//        CoreFileDTO dst = new CoreFileDTO(null,"立项测试1/设计/初步设计/初步设计/初设一层/初设二层/1112","bbbb.txt");
-//        FileServiceImpl fv = SpringUtils.getBean(FileServiceImpl.class);
-//        dst = fv.createRealFileForAccount(getLocalAccount(),ConstService.FILE_SERVER_TYPE_DISK,dst,src);
-//        Assert.assertNotNull(dst);
-//    }
-//
-//    private void copyRealFileFromDiskToWeb() throws Exception {
-////        FileNodeDTO src = getLocalFileNode();
-////        CoreFileDTO dst = new CoreFileDTO("http://172.16.6.73:8071/fileCenter/netFile/uploadFile","设计成果/施工图设计/建筑施工图","test1.txt");
-////
-////        FileServiceImpl fv = SpringUtils.getBean(FileServiceImpl.class);
-////        dst = fv.createRealFileForAccount(getLocalAccount(),ConstService.FILE_SERVER_TYPE_WEB,dst,src);
-////        Assert.assertNotNull(dst);
-//    }
-//
-//    @Test
-//    public void testChangeOwner() throws Exception{
-//        UserDTO user = new UserDTO("075be84d8fd64921b9760a9779c69b10","沈习荣");
-//        AccountDTO userAccount = BeanUtils.createFrom(user,AccountDTO.class);
-//        UserDTO accountUser = BeanUtils.createFrom(getLocalAccount(),UserDTO.class);
-//        fileService.changeNodeOwnerForAccount(getLocalAccount(),getLocalNode(),user,null);
-//        fileService.changeNodeOwnerForAccount(userAccount,getLocalNode(),accountUser,null);
-//    }
+    private FileDataDTO readNode() throws Exception {
+        log.debug("\t>>>>>>>> readNode");
+        return fileService.readNodeForAccount(getLocalAccount(),getLocalNode(),0,0,null);
+    }
 
-//
-//    private FileNodeDTO getLocalFileNode() throws Exception{
-//        SimpleNodeDTO node = getLocalNode();
-//        return fileService.getFileForAccount(getLocalAccount(),node,false,null);
-//    }
-//    private SimpleNodeDTO getLocalNode() throws Exception {
-//        return fileService.getNodeByIdForAccount(getLocalAccount(),"BB6992A070FF4C5DA270122FC6668E1F1",null);
-//    }
-//
-//    @Test
-//    public void testMoveNode() throws Exception{
-//        MoveNodeRequestDTO request = new MoveNodeRequestDTO();
-//        request.setFullName("aaaa.txt");
-//        fileService.moveNodeForAccount(getLocalAccount(),getLocalNode(),null,request,null);
-//    }
-//
+    private FileDataDTO readFile() throws Exception {
+        log.debug("\t>>>>>>>> readFile");
+        return fileService.readFile(getLocalAccount(),getLocalNodeFile(),0,0,null);
+    }
+
     @Test
     public void testLogin() throws Exception {
-        loginLocal();
-        loginRemote();
+        assert (loginLocal());
+//        loginRemote();
     }
-
-    private LoginDTO getLocalLoginInfo() {
-        LoginDTO loginInfo = new LoginDTO();
-        loginInfo.setAccountId("13680809727");
-        loginInfo.setPassword("123456");
-        return loginInfo;
-    }
-
-    private LoginDTO getRemoteLoginInfo() {
-        LoginDTO loginInfo = new LoginDTO();
-        loginInfo.setAccountId("13680809727");
-        loginInfo.setPassword("123456");
-        return loginInfo;
-    }
-
     private boolean loginRemote() throws Exception {
+        log.debug("\t>>>>>>>> login");
         return getRemote().login(getRemoteLoginInfo());
     }
 
     private boolean loginLocal() throws Exception {
+        log.debug("\t>>>>>>>> login");
         return fileService.login(getLocalLoginInfo(),null);
     }
-//    @Test
-//    public void testCommitFile() throws Exception {
-////        commitFileToDisk();
-//        commitFileToWeb();
-////        remoteCommitFileToDisk();
-//    }
-//
-//    private void commitFileToWeb() throws Exception{
-//        FileNodeDTO node = getLocalFileNode();
-//        CommitRequestDTO request = new CommitRequestDTO();
-//        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_ISSUE);
-//        request.setRemark("abcde");
-//        request.setUserId("12345");
-//        request.setFileVersion("二提");
-//        request.setMajorName("水电");
-//        SimpleNodeDTO target = fileService.commitFileForAccount(getLocalAccount(),node,request,null);
-//        Assert.assertNotNull(target);
-//    }
-//
-//    private void commitFileToDisk() throws Exception{
-//        FileNodeDTO node = getLocalFileNode();
-//        CommitRequestDTO request = new CommitRequestDTO();
-//        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_COMMIT);
-//        request.setRemark("abcde");
-//        request.setUserId("12345");
-//        request.setFileVersion("二提");
-//        request.setMajorName("水电");
-//        SimpleNodeDTO target = fileService.commitFileForAccount(getLocalAccount(),node,request,null);
-//        Assert.assertNotNull(target);
-//    }
-//
-//    private void remoteCommitFileToDisk() throws Exception{
-//        SimpleNodeDTO node = getRemote().getNodeById("33BB8B903D2D484492BAC3FFB40904F51");
-//        assert (node != null);
-//        CommitRequestDTO request = new CommitRequestDTO();
-//        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_COMMIT);
-//        request.setRemark("abcde");
-//        request.setUserId("12345");
-//        request.setFileVersion("二提");
-//        request.setMajorName("水电");
-//        SimpleNodeDTO target = getRemote().commitNode(node,request);
-//        Assert.assertNotNull(target);
-//    }
-//
-//    @Test
-//    public void testReleaseFileNode() throws Exception {
-//        fileService.releaseNodeForAccount(getLocalAccount(),getLocalNode(),0,null);
-//    }
-//
-//    @Test
-//    public void testReloadFileNode() throws Exception {
-//        fileService.reloadNodeForAccount(getLocalAccount(),getLocalNode(),null);
-//    }
-//
-    @Test
-    public void testWriteFileNode() throws Exception {
-        writeFile(testLocalFile,getLocalNode());
+
+
+    private LoginDTO getLocalLoginInfo() {
+        return new LoginDTO(
+                "",
+                "",
+                false,
+                "123456",
+                "13680809727");
     }
 
-    private long writeFile(String localFile, SimpleNodeDTO file) throws Exception {
+    private LoginDTO getRemoteLoginInfo() {
+        return new LoginDTO(
+                "",
+                "",
+                false,
+                "123456",
+                "13680809727");
+    }
+
+
+    @Test
+    public void testCommit() throws Exception {
+//        commitNode();
+//        checkNode();
+        issueNode();
+    }
+
+    private SimpleNodeDTO issueNode() throws Exception {
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setOwnerUserId("123");
+        request.setMajorName("建筑");
+        request.setFileVersion("v3.0");
+        request.setPid(getLocalSkyParent().getId());
+        return fileService.issueNodeForAccount(getLocalAccount(),getLocalNode(),request,null);
+    }
+
+    private SimpleNodeDTO getLocalSkyParent() throws Exception {
+        List<SimpleNodeDTO> list = fileService.listWebArchiveDirForAccount(getLocalAccount(),getLocalNode().getProjectId(),null);
+        return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
+    }
+
+    private SimpleNodeDTO checkNode() throws Exception {
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setOwnerUserId("123");
+        request.setMajorName("建筑");
+        request.setFileVersion("v3.0");
+        return fileService.checkNodeRequestForAccount(getLocalAccount(),getLocalNode(),request,null);
+    }
+
+    private SimpleNodeDTO commitNode() throws Exception {
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setOwnerUserId("123");
+        request.setMajorName("建筑");
+        request.setFileVersion("v3.0");
+        return fileService.commitNodeForAccount(getLocalAccount(),getLocalNode(),request,null);
+    }
+
+
+    @Test
+    public void testRelease() throws Exception {
+//        releaseFile();
+//        releaseNode();
+        releaseNodeWithLength();
+    }
+
+    private void releaseNodeWithLength() throws Exception {
+        log.debug("\t>>>>>>>> releaseNodeWithLength");
+        fileService.releaseNodeForAccount(getLocalAccount(),getLocalNode(),100,null);
+    }
+
+    private void releaseNode() throws Exception {
+        log.debug("\t>>>>>>>> releaseNode");
+        fileService.releaseNodeForAccount(getLocalAccount(),getLocalNode(),0,null);
+    }
+
+    private void releaseFile() throws Exception {
+        log.debug("\t>>>>>>>> releaseFile");
+        fileService.releaseFile(getLocalAccount(),getLocalNodeFile(),"a/b/c.txt",null);
+    }
+
+    @Test
+    public void testReloadFileNode() throws Exception {
+//        reloadFile();
+        reloadNode();
+    }
+
+    private void reloadNode() throws Exception {
+        log.debug("\t>>>>>>>> reloadNode");
+        fileService.reloadNodeForAccount(getLocalAccount(),getLocalNode(),null);
+    }
+
+    private void reloadFile() throws Exception {
+        log.debug("\t>>>>>>>> reloadFile");
+        fileService.reloadFile(getLocalAccount(),getLocalNodeFile(),"a/b/c.txt",null);
+    }
+
+    @Test
+    public void testWrite() throws Exception {
+        writeNode(testLocalFile,getLocalNode());
+//        writeFile();
+    }
+
+    private int writeFile() throws Exception{
+        log.debug("\t>>>>>>>> writeFile");
+        FileDataDTO data = new FileDataDTO();
+        data.setData(new byte[]{0x30,0x31,0x32});
+        return fileService.writeFile(getLocalAccount(),getLocalNodeFile(),data,"x/c.txt",null);
+    }
+
+    private long writeNode(String localFile, SimpleNodeDTO file) throws Exception {
+        log.debug("\t>>>>>>>> writeNode");
         File f = new File(localFile);
         long length = f.length();
         int size = 15;
@@ -325,53 +405,19 @@ public class FileServiceImplTest {
 
         return fileData;
     }
-//
-//    @Test
-//    public void testReadFileNode() throws Exception {
-//        FileNodeDTO file = getLocalFileNode();
-//        readFile(file,testLocalFile + "download.txt");
-//    }
-//
-//
-//
-//    private void readFile(FileNodeDTO file,String localFile) throws Exception {
-//        File f = new File(localFile);
-//        int size = 10;
-//
-//        RandomAccessFile out = new RandomAccessFile(f, "rw");
-//        long pos = 0;
-//        while (size > 0){
-//            FileDataDTO fileData = fileService.readFileNode(file, pos,size,null);
-//            if (fileData == null) break;
-//            pos = fileData.getPos();
-//            size = fileData.getSize();
-//            if (out.length() < (pos + size)) out.setLength(pos + size);
-//            out.seek(pos);
-//            out.write(fileData.getData(),0,size);
-//            pos += size;
-//        }
-//        out.close();
-//    }
-//
-//    @Test
-//    public void testIssueNode() throws Exception {
-//        issueLocal();
-//    }
-//
-//    private void issueLocal() throws Exception {
-//        FileNodeDTO node = getLocalFileNode();
-//        CommitRequestDTO request = new CommitRequestDTO();
-//        request.setPid("2e6611ef581848048f76eaa64c385ca9");
-//        request.setUserId("4736bc67a64f418e9a585f303e95eb2b");
-//        LoginDTO user = new LoginDTO(null,null,false,"123456","15353032981");
-//        fileService.login(user,null);
-//        fileService.issueFileForAccount(getLocalAccount(),node,request,null);
-//    }
-//
+
     @Test
     public void testCreateNode() throws Exception {
-        createLocalDirectory();
-        createLocalFile();
+//        createLocalDirectory();
+//        createLocalFile();
+    }
+
+    private SimpleNodeDTO createRemoteDirectory() throws Exception{
+        log.debug("\t>>>>>>>> createRemoteDirectory");
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setIsDirectory(true);
+        request.setFullName("father/child/child3");
+        return fileService.createNodeForAccount(getLocalAccount(), getLocalDir(),request,null);
     }
 
 
@@ -381,7 +427,7 @@ public class FileServiceImplTest {
         request.setIsDirectory(false);
         request.setFileLength(10);
         request.setFullName("/father2/aaaa.txt");
-        return fileService.createNodeForAccount(getLocalAccount(),getLocalPath(),request,null);
+        return fileService.createNodeForAccount(getLocalAccount(), getLocalDir(),request,null);
     }
 
     private SimpleNodeDTO createLocalDirectory() throws Exception{
@@ -389,7 +435,7 @@ public class FileServiceImplTest {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setIsDirectory(true);
         request.setFullName("father/child/child3");
-        return fileService.createNodeForAccount(getLocalAccount(),getLocalPath(),request,null);
+        return fileService.createNodeForAccount(getLocalAccount(), getLocalDir(),request,null);
     }
 
     /** action before each test */

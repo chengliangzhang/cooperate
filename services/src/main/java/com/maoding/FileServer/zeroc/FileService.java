@@ -28,19 +28,7 @@ public interface FileService extends com.zeroc.Ice.Object
     com.maoding.Storage.zeroc.NodeFileDTO createAccessory(com.maoding.User.zeroc.AccountDTO account, AccessoryRequestDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    int writeFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    int writeFileAndRelease(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    int releaseFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
     java.util.List<com.maoding.Storage.zeroc.SuggestionDTO> listSuggestion(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QuerySuggestionDTO query, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    boolean isEmpty(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     String getNodePath(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
@@ -49,22 +37,43 @@ public interface FileService extends com.zeroc.Ice.Object
     String getNodePathForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    com.maoding.Storage.zeroc.FullNodeDTO getFileInfoWithHis(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
+    java.util.List<com.maoding.Storage.zeroc.HistoryDTO> listHistory(com.maoding.Storage.zeroc.SimpleNodeDTO node, long startTime, long endTime, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    com.maoding.Storage.zeroc.FullNodeDTO getFileInfoWithHisForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
+    java.util.List<com.maoding.Storage.zeroc.HistoryDTO> listHistoryForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, long startTime, long endTime, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    com.maoding.Storage.zeroc.FullNodeDTO getFileInfo(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
+    com.maoding.Storage.zeroc.NodeFileDTO getFileInfo(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    com.maoding.Storage.zeroc.FullNodeDTO getFileInfoForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
+    com.maoding.Storage.zeroc.NodeFileDTO getFileInfoForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    com.maoding.Storage.zeroc.NodeTextDTO getTextInfo(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    com.maoding.Storage.zeroc.NodeTextDTO getTextInfoForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    com.maoding.Storage.zeroc.FullNodeDTO getFullNodeWithHis(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    com.maoding.Storage.zeroc.FullNodeDTO getFullNodeWithHisForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    com.maoding.Storage.zeroc.FullNodeDTO getFullNode(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    com.maoding.Storage.zeroc.FullNodeDTO getFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     com.maoding.Storage.zeroc.FullNodeDTO getNodeInfo(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.maoding.Storage.zeroc.QueryNodeInfoDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     com.maoding.Storage.zeroc.FullNodeDTO getNodeInfoForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.maoding.Storage.zeroc.QueryNodeInfoDTO request, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    java.util.List<com.maoding.Storage.zeroc.NodeFileDTO> listFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QueryNodeFileDTO query, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listChildNode(com.maoding.Storage.zeroc.SimpleNodeDTO parent, com.zeroc.Ice.Current current)
@@ -123,20 +132,6 @@ public interface FileService extends com.zeroc.Ice.Object
     com.maoding.Project.zeroc.ProjectDTO getProjectInfoByPathForAccount(com.maoding.User.zeroc.AccountDTO account, String path, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    /**
-     * @param current The Current object for the invocation.
-     **/
-    @Deprecated
-    com.maoding.User.zeroc.UserServicePrx getUserService(com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     **/
-    @Deprecated
-    com.maoding.Notice.zeroc.NoticeServicePrx getNoticeService(com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
     boolean login(com.maoding.User.zeroc.LoginDTO loginInfo, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
@@ -173,28 +168,6 @@ public interface FileService extends com.zeroc.Ice.Object
     com.maoding.Storage.zeroc.SimpleNodeDTO issueNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用issueFullNodeRequest代替
-     **/
-    @Deprecated
-    com.maoding.Storage.zeroc.SimpleNodeDTO issueFile(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用issueFullNodeRequest代替
-     **/
-    @Deprecated
-    com.maoding.Storage.zeroc.SimpleNodeDTO issueFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO issueFullNodeRequest(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO issueFullNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
     CommitListResultDTO checkNodeListRequest(java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> srcList, CommitRequestDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
@@ -205,28 +178,6 @@ public interface FileService extends com.zeroc.Ice.Object
         throws com.maoding.Common.zeroc.CustomException;
 
     com.maoding.Storage.zeroc.SimpleNodeDTO checkNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用checkFullNodeRequest代替
-     **/
-    @Deprecated
-    com.maoding.Storage.zeroc.SimpleNodeDTO checkFileRequest(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用checkFullNodeRequest代替
-     **/
-    @Deprecated
-    com.maoding.Storage.zeroc.SimpleNodeDTO checkFileRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO checkFullNodeRequest(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO checkFullNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     CommitListResultDTO auditNodeListRequest(java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> srcList, CommitRequestDTO request, com.zeroc.Ice.Current current)
@@ -241,28 +192,6 @@ public interface FileService extends com.zeroc.Ice.Object
     com.maoding.Storage.zeroc.SimpleNodeDTO auditNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用auditFullNodeRequest代替
-     **/
-    @Deprecated
-    com.maoding.Storage.zeroc.SimpleNodeDTO auditFileRequest(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用auditFullNodeRequest代替
-     **/
-    @Deprecated
-    com.maoding.Storage.zeroc.SimpleNodeDTO auditFileRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO auditFullNodeRequest(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO auditFullNodeRequestForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
     CommitListResultDTO commitNodeList(java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> srcList, CommitRequestDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
@@ -275,38 +204,10 @@ public interface FileService extends com.zeroc.Ice.Object
     com.maoding.Storage.zeroc.SimpleNodeDTO commitNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用commitFullNode代替
-     **/
-    @Deprecated
-    com.maoding.Storage.zeroc.SimpleNodeDTO commitFile(com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
+    com.maoding.Storage.zeroc.SimpleNodeDTO createVersion(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, String path, CommitRequestDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用commitFullNode代替
-     **/
-    @Deprecated
-    com.maoding.Storage.zeroc.SimpleNodeDTO commitFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO commitFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO commitFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, CommitRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO createVersion(com.maoding.Storage.zeroc.FileNodeDTO src, CreateVersionRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO createVersionForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, CreateVersionRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO updateVersion(com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst, CreateVersionRequestDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.SimpleNodeDTO updateVersionForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, com.maoding.Storage.zeroc.FileNodeDTO dst, CreateVersionRequestDTO request, com.zeroc.Ice.Current current)
+    com.maoding.Storage.zeroc.SimpleNodeDTO updateVersion(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, com.maoding.Storage.zeroc.SimpleNodeDTO dst, CommitRequestDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     boolean deleteNode(com.maoding.Storage.zeroc.SimpleNodeDTO src, com.zeroc.Ice.Current current)
@@ -321,26 +222,13 @@ public interface FileService extends com.zeroc.Ice.Object
     boolean setNodeLengthForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用setFullNodeLength代替
-     **/
-    @Deprecated
-    boolean setFileNodeLength(com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用setFullNodeLength代替
-     **/
-    @Deprecated
-    boolean setFileNodeLengthForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
     boolean setFullNodeLength(com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     boolean setFullNodeLengthForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    void releaseFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, String path, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     boolean releaseNode(com.maoding.Storage.zeroc.SimpleNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
@@ -349,26 +237,7 @@ public interface FileService extends com.zeroc.Ice.Object
     boolean releaseNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用releaseFullNode代替
-     **/
-    @Deprecated
-    boolean releaseFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用releaseFullNode代替
-     **/
-    @Deprecated
-    boolean releaseFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    boolean releaseFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    boolean releaseFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long fileLength, com.zeroc.Ice.Current current)
+    void reloadFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, String path, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     boolean reloadNode(com.maoding.Storage.zeroc.SimpleNodeDTO src, com.zeroc.Ice.Current current)
@@ -377,42 +246,13 @@ public interface FileService extends com.zeroc.Ice.Object
     boolean reloadNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用reloadFullNode代替
-     **/
-    @Deprecated
-    boolean reloadFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, com.zeroc.Ice.Current current)
+    int writeFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data, String path, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用reloadFullNode代替
-     **/
-    @Deprecated
-    boolean reloadFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, com.zeroc.Ice.Current current)
+    int writeFileAndRelease(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data, String path, long fileLength, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    boolean reloadFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    boolean reloadFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用writeFullNode代替
-     **/
-    @Deprecated
-    int writeFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, FileDataDTO data, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用writeFullNode代替
-     **/
-    @Deprecated
-    int writeFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, FileDataDTO data, com.zeroc.Ice.Current current)
+    int writeAccessory(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, FileDataDTO data, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     int writeNode(com.maoding.Storage.zeroc.SimpleNodeDTO src, FileDataDTO data, com.zeroc.Ice.Current current)
@@ -421,26 +261,7 @@ public interface FileService extends com.zeroc.Ice.Object
     int writeNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, FileDataDTO data, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    int writeFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, FileDataDTO data, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    int writeFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, FileDataDTO data, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用readFullNode代替
-     **/
-    @Deprecated
-    FileDataDTO readFileNode(com.maoding.Storage.zeroc.FileNodeDTO src, long pos, int size, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用readFullNode代替
-     **/
-    @Deprecated
-    FileDataDTO readFileNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FileNodeDTO src, long pos, int size, com.zeroc.Ice.Current current)
+    FileDataDTO readFile(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, long pos, int size, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     FileDataDTO readNode(com.maoding.Storage.zeroc.SimpleNodeDTO src, long pos, int size, com.zeroc.Ice.Current current)
@@ -449,10 +270,7 @@ public interface FileService extends com.zeroc.Ice.Object
     FileDataDTO readNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, long pos, int size, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    FileDataDTO readFullNode(com.maoding.Storage.zeroc.FullNodeDTO src, long pos, int size, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    FileDataDTO readFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.FullNodeDTO src, long pos, int size, com.zeroc.Ice.Current current)
+    boolean isEmpty(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     com.maoding.Storage.zeroc.SimpleNodeDTO moveNode(com.maoding.Storage.zeroc.SimpleNodeDTO src, com.maoding.Storage.zeroc.SimpleNodeDTO dstParent, MoveNodeRequestDTO request, com.zeroc.Ice.Current current)
@@ -497,70 +315,6 @@ public interface FileService extends com.zeroc.Ice.Object
     com.maoding.Storage.zeroc.SimpleNodeDTO getNodeByFuzzyPathForAccount(com.maoding.User.zeroc.AccountDTO account, String fuzzyPath, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeById(String parentId, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeByIdForAccount(com.maoding.User.zeroc.AccountDTO account, String parentId, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeByPath(String parentPath, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listSubNodeByPathForAccount(com.maoding.User.zeroc.AccountDTO account, String parentPath, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeById(String parentId, java.util.List<java.lang.Short> typeIdList, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeByIdForAccount(com.maoding.User.zeroc.AccountDTO account, String parentId, java.util.List<java.lang.Short> typeIdList, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeByPath(String parentPath, java.util.List<java.lang.Short> typeIdList, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listFilterSubNodeByPathForAccount(com.maoding.User.zeroc.AccountDTO account, String parentPath, java.util.List<java.lang.Short> typeIdList, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listRootNode(com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
@@ -578,85 +332,6 @@ public interface FileService extends com.zeroc.Ice.Object
 
     java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> listNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QueryNodeDTO query, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用getFileInfo代替
-     **/
-    @Deprecated
-    com.maoding.Storage.zeroc.FileNodeDTO getFile(com.maoding.Storage.zeroc.SimpleNodeDTO node, boolean withHistory, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用getFileInfo代替
-     **/
-    @Deprecated
-    com.maoding.Storage.zeroc.FileNodeDTO getFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, boolean withHistory, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listChildNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listAllSubFile(com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.List<java.lang.Short> typeIdList, boolean withHistory, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listChildNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listAllSubFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO parent, java.util.List<java.lang.Short> typeIdList, boolean withHistory, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listChildNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listFile(com.maoding.Storage.zeroc.QueryNodeDTO query, boolean withHistory, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用listChildNode代替
-     **/
-    @Deprecated
-    java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> listFileForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.QueryNodeDTO query, boolean withHistory, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.FullNodeDTO getFullNode(com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    com.maoding.Storage.zeroc.FullNodeDTO getFullNodeForAccount(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     **/
-    @Deprecated
-    void setFileServerType(int type, com.zeroc.Ice.Current current);
-
-    /**
-     * @param current The Current object for the invocation.
-     **/
-    @Deprecated
-    int getFileServerType(com.zeroc.Ice.Current current);
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用isEmpty代替
-     **/
-    @Deprecated
-    boolean isExist(FileDTO src, com.zeroc.Ice.Current current);
-
-    /**
-     * @param current The Current object for the invocation.
-     **/
-    @Deprecated
-    FileDTO copyFile(FileDTO src, FileDTO dst, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -717,61 +392,6 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.NodeFileDTO iceP_file;
-        FileDataDTO iceP_data;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_file = com.maoding.Storage.zeroc.NodeFileDTO.ice_read(istr);
-        iceP_data = FileDataDTO.ice_read(istr);
-        inS.endReadParams();
-        int ret = obj.writeFile(iceP_account, iceP_file, iceP_data, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeInt(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeFileAndRelease(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.NodeFileDTO iceP_file;
-        FileDataDTO iceP_data;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_file = com.maoding.Storage.zeroc.NodeFileDTO.ice_read(istr);
-        iceP_data = FileDataDTO.ice_read(istr);
-        inS.endReadParams();
-        int ret = obj.writeFileAndRelease(iceP_account, iceP_file, iceP_data, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeInt(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_releaseFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.NodeFileDTO iceP_file;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_file = com.maoding.Storage.zeroc.NodeFileDTO.ice_read(istr);
-        inS.endReadParams();
-        int ret = obj.releaseFile(iceP_account, iceP_file, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeInt(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listSuggestion(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
@@ -785,21 +405,6 @@ public interface FileService extends com.zeroc.Ice.Object
         java.util.List<com.maoding.Storage.zeroc.SuggestionDTO> ret = obj.listSuggestion(iceP_account, iceP_query, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         com.maoding.Storage.zeroc.SuggestionListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_isEmpty(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
-        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
-        inS.endReadParams();
-        boolean ret = obj.isEmpty(iceP_node, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -836,34 +441,42 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFileInfoWithHis(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listHistory(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
+        long iceP_startTime;
+        long iceP_endTime;
         iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        iceP_startTime = istr.readLong();
+        iceP_endTime = istr.readLong();
         inS.endReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getFileInfoWithHis(iceP_node, current);
+        java.util.List<com.maoding.Storage.zeroc.HistoryDTO> ret = obj.listHistory(iceP_node, iceP_startTime, iceP_endTime, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, ret);
+        com.maoding.Storage.zeroc.HistoryListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFileInfoWithHisForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listHistoryForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.User.zeroc.AccountDTO iceP_account;
         com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
+        long iceP_startTime;
+        long iceP_endTime;
         iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
         iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        iceP_startTime = istr.readLong();
+        iceP_endTime = istr.readLong();
         inS.endReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getFileInfoWithHisForAccount(iceP_account, iceP_node, current);
+        java.util.List<com.maoding.Storage.zeroc.HistoryDTO> ret = obj.listHistoryForAccount(iceP_account, iceP_node, iceP_startTime, iceP_endTime, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, ret);
+        com.maoding.Storage.zeroc.HistoryListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -876,9 +489,9 @@ public interface FileService extends com.zeroc.Ice.Object
         com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
         iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
         inS.endReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getFileInfo(iceP_node, current);
+        com.maoding.Storage.zeroc.NodeFileDTO ret = obj.getFileInfo(iceP_node, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, ret);
+        com.maoding.Storage.zeroc.NodeFileDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -893,7 +506,103 @@ public interface FileService extends com.zeroc.Ice.Object
         iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
         iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
         inS.endReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getFileInfoForAccount(iceP_account, iceP_node, current);
+        com.maoding.Storage.zeroc.NodeFileDTO ret = obj.getFileInfoForAccount(iceP_account, iceP_node, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Storage.zeroc.NodeFileDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getTextInfo(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
+        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        inS.endReadParams();
+        com.maoding.Storage.zeroc.NodeTextDTO ret = obj.getTextInfo(iceP_node, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Storage.zeroc.NodeTextDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getTextInfoForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        inS.endReadParams();
+        com.maoding.Storage.zeroc.NodeTextDTO ret = obj.getTextInfoForAccount(iceP_account, iceP_node, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Storage.zeroc.NodeTextDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFullNodeWithHis(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
+        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        inS.endReadParams();
+        com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getFullNodeWithHis(iceP_node, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFullNodeWithHisForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        inS.endReadParams();
+        com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getFullNodeWithHisForAccount(iceP_account, iceP_node, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFullNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
+        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        inS.endReadParams();
+        com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getFullNode(iceP_node, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFullNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        inS.endReadParams();
+        com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getFullNodeForAccount(iceP_account, iceP_node, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
@@ -932,6 +641,23 @@ public interface FileService extends com.zeroc.Ice.Object
         com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getNodeInfoForAccount(iceP_account, iceP_node, iceP_request, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        com.maoding.Storage.zeroc.QueryNodeFileDTO iceP_query;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_query = com.maoding.Storage.zeroc.QueryNodeFileDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<com.maoding.Storage.zeroc.NodeFileDTO> ret = obj.listFile(iceP_account, iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        com.maoding.Storage.zeroc.NodeFileListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -1136,32 +862,6 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getUserService(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        inS.readEmptyParams();
-        com.maoding.User.zeroc.UserServicePrx ret = obj.getUserService(current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeProxy(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getNoticeService(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        inS.readEmptyParams();
-        com.maoding.Notice.zeroc.NoticeServicePrx ret = obj.getNoticeService(current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeProxy(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_login(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
@@ -1352,80 +1052,6 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_issueFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.issueFile(iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_issueFileForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.issueFileForAccount(iceP_account, iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_issueFullNodeRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.issueFullNodeRequest(iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_issueFullNodeRequestForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.issueFullNodeRequestForAccount(iceP_account, iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_checkNodeListRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
@@ -1492,80 +1118,6 @@ public interface FileService extends com.zeroc.Ice.Object
         iceP_request = CommitRequestDTO.ice_read(istr);
         inS.endReadParams();
         com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.checkNodeRequestForAccount(iceP_account, iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_checkFileRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.checkFileRequest(iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_checkFileRequestForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.checkFileRequestForAccount(iceP_account, iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_checkFullNodeRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.checkFullNodeRequest(iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_checkFullNodeRequestForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.checkFullNodeRequestForAccount(iceP_account, iceP_src, iceP_request, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
@@ -1644,80 +1196,6 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_auditFileRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.auditFileRequest(iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_auditFileRequestForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.auditFileRequestForAccount(iceP_account, iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_auditFullNodeRequest(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.auditFullNodeRequest(iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_auditFullNodeRequestForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.auditFullNodeRequestForAccount(iceP_account, iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_commitNodeList(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
@@ -1790,110 +1268,21 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_commitFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.commitFile(iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_commitFileForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.commitFileForAccount(iceP_account, iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_commitFullNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.commitFullNode(iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_commitFullNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        CommitRequestDTO iceP_request;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_request = CommitRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.commitFullNodeForAccount(iceP_account, iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createVersion(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        CreateVersionRequestDTO iceP_request;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CreateVersionRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.createVersion(iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createVersionForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        CreateVersionRequestDTO iceP_request;
+        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_src;
+        String iceP_path;
+        CommitRequestDTO iceP_request;
         iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CreateVersionRequestDTO.ice_read(istr);
+        iceP_src = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        iceP_path = istr.readString();
+        iceP_request = CommitRequestDTO.ice_read(istr);
         inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.createVersionForAccount(iceP_account, iceP_src, iceP_request, current);
+        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.createVersion(iceP_account, iceP_src, iceP_path, iceP_request, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
@@ -1905,35 +1294,16 @@ public interface FileService extends com.zeroc.Ice.Object
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_dst;
-        CreateVersionRequestDTO iceP_request;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_dst = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CreateVersionRequestDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.updateVersion(iceP_src, iceP_dst, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_updateVersionForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_dst;
-        CreateVersionRequestDTO iceP_request;
+        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_src;
+        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_dst;
+        CommitRequestDTO iceP_request;
         iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_dst = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_request = CreateVersionRequestDTO.ice_read(istr);
+        iceP_src = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        iceP_dst = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
+        iceP_request = CommitRequestDTO.ice_read(istr);
         inS.endReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.updateVersionForAccount(iceP_account, iceP_src, iceP_dst, iceP_request, current);
+        com.maoding.Storage.zeroc.SimpleNodeDTO ret = obj.updateVersion(iceP_account, iceP_src, iceP_dst, iceP_request, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
@@ -2008,44 +1378,6 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setFileNodeLength(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        long iceP_fileLength;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_fileLength = istr.readLong();
-        inS.endReadParams();
-        boolean ret = obj.setFileNodeLength(iceP_src, iceP_fileLength, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setFileNodeLengthForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        long iceP_fileLength;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_fileLength = istr.readLong();
-        inS.endReadParams();
-        boolean ret = obj.setFileNodeLengthForAccount(iceP_account, iceP_src, iceP_fileLength, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setFullNodeLength(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
@@ -2080,6 +1412,22 @@ public interface FileService extends com.zeroc.Ice.Object
         ostr.writeBool(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_releaseFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        com.maoding.Storage.zeroc.NodeFileDTO iceP_file;
+        String iceP_path;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_file = com.maoding.Storage.zeroc.NodeFileDTO.ice_read(istr);
+        iceP_path = istr.readString();
+        inS.endReadParams();
+        obj.releaseFile(iceP_account, iceP_file, iceP_path, current);
+        return inS.setResult(inS.writeEmptyParams());
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_releaseNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -2118,78 +1466,20 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_releaseFileNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        long iceP_fileLength;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_fileLength = istr.readLong();
-        inS.endReadParams();
-        boolean ret = obj.releaseFileNode(iceP_src, iceP_fileLength, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_releaseFileNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_reloadFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        long iceP_fileLength;
+        com.maoding.Storage.zeroc.NodeFileDTO iceP_file;
+        String iceP_path;
         iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_fileLength = istr.readLong();
+        iceP_file = com.maoding.Storage.zeroc.NodeFileDTO.ice_read(istr);
+        iceP_path = istr.readString();
         inS.endReadParams();
-        boolean ret = obj.releaseFileNodeForAccount(iceP_account, iceP_src, iceP_fileLength, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_releaseFullNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        long iceP_fileLength;
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_fileLength = istr.readLong();
-        inS.endReadParams();
-        boolean ret = obj.releaseFullNode(iceP_src, iceP_fileLength, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_releaseFullNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        long iceP_fileLength;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_fileLength = istr.readLong();
-        inS.endReadParams();
-        boolean ret = obj.releaseFullNodeForAccount(iceP_account, iceP_src, iceP_fileLength, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
+        obj.reloadFile(iceP_account, iceP_file, iceP_path, current);
+        return inS.setResult(inS.writeEmptyParams());
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_reloadNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -2224,104 +1514,63 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_reloadFileNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        inS.endReadParams();
-        boolean ret = obj.reloadFileNode(iceP_src, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_reloadFileNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        inS.endReadParams();
-        boolean ret = obj.reloadFileNodeForAccount(iceP_account, iceP_src, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_reloadFullNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        inS.endReadParams();
-        boolean ret = obj.reloadFullNode(iceP_src, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_reloadFullNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        inS.endReadParams();
-        boolean ret = obj.reloadFullNodeForAccount(iceP_account, iceP_src, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeFileNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
+        com.maoding.Storage.zeroc.NodeFileDTO iceP_file;
         FileDataDTO iceP_data;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
+        String iceP_path;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_file = com.maoding.Storage.zeroc.NodeFileDTO.ice_read(istr);
         iceP_data = FileDataDTO.ice_read(istr);
+        iceP_path = istr.readString();
         inS.endReadParams();
-        int ret = obj.writeFileNode(iceP_src, iceP_data, current);
+        int ret = obj.writeFile(iceP_account, iceP_file, iceP_data, iceP_path, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         ostr.writeInt(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeFileNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeFileAndRelease(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
+        com.maoding.Storage.zeroc.NodeFileDTO iceP_file;
+        FileDataDTO iceP_data;
+        String iceP_path;
+        long iceP_fileLength;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_file = com.maoding.Storage.zeroc.NodeFileDTO.ice_read(istr);
+        iceP_data = FileDataDTO.ice_read(istr);
+        iceP_path = istr.readString();
+        iceP_fileLength = istr.readLong();
+        inS.endReadParams();
+        int ret = obj.writeFileAndRelease(iceP_account, iceP_file, iceP_data, iceP_path, iceP_fileLength, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeInt(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeAccessory(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        com.maoding.Storage.zeroc.NodeFileDTO iceP_file;
         FileDataDTO iceP_data;
         iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
+        iceP_file = com.maoding.Storage.zeroc.NodeFileDTO.ice_read(istr);
         iceP_data = FileDataDTO.ice_read(istr);
         inS.endReadParams();
-        int ret = obj.writeFileNodeForAccount(iceP_account, iceP_src, iceP_data, current);
+        int ret = obj.writeAccessory(iceP_account, iceP_file, iceP_data, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         ostr.writeInt(ret);
         inS.endWriteParams(ostr);
@@ -2364,78 +1613,21 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeFullNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        FileDataDTO iceP_data;
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_data = FileDataDTO.ice_read(istr);
-        inS.endReadParams();
-        int ret = obj.writeFullNode(iceP_src, iceP_data, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeInt(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_writeFullNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_readFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        FileDataDTO iceP_data;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_data = FileDataDTO.ice_read(istr);
-        inS.endReadParams();
-        int ret = obj.writeFullNodeForAccount(iceP_account, iceP_src, iceP_data, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeInt(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_readFileNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
-        long iceP_pos;
-        int iceP_size;
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
-        iceP_pos = istr.readLong();
-        iceP_size = istr.readInt();
-        inS.endReadParams();
-        FileDataDTO ret = obj.readFileNode(iceP_src, iceP_pos, iceP_size, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        FileDataDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_readFileNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FileNodeDTO iceP_src;
+        com.maoding.Storage.zeroc.NodeFileDTO iceP_file;
         long iceP_pos;
         int iceP_size;
         iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FileNodeDTO.ice_read(istr);
+        iceP_file = com.maoding.Storage.zeroc.NodeFileDTO.ice_read(istr);
         iceP_pos = istr.readLong();
         iceP_size = istr.readInt();
         inS.endReadParams();
-        FileDataDTO ret = obj.readFileNodeForAccount(iceP_account, iceP_src, iceP_pos, iceP_size, current);
+        FileDataDTO ret = obj.readFile(iceP_account, iceP_file, iceP_pos, iceP_size, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         FileDataDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
@@ -2482,42 +1674,17 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_readFullNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_isEmpty(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        long iceP_pos;
-        int iceP_size;
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_pos = istr.readLong();
-        iceP_size = istr.readInt();
+        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
+        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
         inS.endReadParams();
-        FileDataDTO ret = obj.readFullNode(iceP_src, iceP_pos, iceP_size, current);
+        boolean ret = obj.isEmpty(iceP_node, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        FileDataDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_readFullNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.FullNodeDTO iceP_src;
-        long iceP_pos;
-        int iceP_size;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_src = com.maoding.Storage.zeroc.FullNodeDTO.ice_read(istr);
-        iceP_pos = istr.readLong();
-        iceP_size = istr.readInt();
-        inS.endReadParams();
-        FileDataDTO ret = obj.readFullNodeForAccount(iceP_account, iceP_src, iceP_pos, iceP_size, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        FileDataDTO.ice_write(ostr, ret);
+        ostr.writeBool(ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -2766,150 +1933,6 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listSubNodeById(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        String iceP_parentId;
-        iceP_parentId = istr.readString();
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret = obj.listSubNodeById(iceP_parentId, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listSubNodeByIdForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        String iceP_parentId;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_parentId = istr.readString();
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret = obj.listSubNodeByIdForAccount(iceP_account, iceP_parentId, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listSubNodeByPath(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        String iceP_parentPath;
-        iceP_parentPath = istr.readString();
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret = obj.listSubNodeByPath(iceP_parentPath, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listSubNodeByPathForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        String iceP_parentPath;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_parentPath = istr.readString();
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret = obj.listSubNodeByPathForAccount(iceP_account, iceP_parentPath, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listFilterSubNodeById(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        String iceP_parentId;
-        java.util.List<java.lang.Short> iceP_typeIdList;
-        iceP_parentId = istr.readString();
-        iceP_typeIdList = com.maoding.Common.zeroc.ShortListHelper.read(istr);
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret = obj.listFilterSubNodeById(iceP_parentId, iceP_typeIdList, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listFilterSubNodeByIdForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        String iceP_parentId;
-        java.util.List<java.lang.Short> iceP_typeIdList;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_parentId = istr.readString();
-        iceP_typeIdList = com.maoding.Common.zeroc.ShortListHelper.read(istr);
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret = obj.listFilterSubNodeByIdForAccount(iceP_account, iceP_parentId, iceP_typeIdList, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listFilterSubNodeByPath(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        String iceP_parentPath;
-        java.util.List<java.lang.Short> iceP_typeIdList;
-        iceP_parentPath = istr.readString();
-        iceP_typeIdList = com.maoding.Common.zeroc.ShortListHelper.read(istr);
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret = obj.listFilterSubNodeByPath(iceP_parentPath, iceP_typeIdList, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listFilterSubNodeByPathForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        String iceP_parentPath;
-        java.util.List<java.lang.Short> iceP_typeIdList;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_parentPath = istr.readString();
-        iceP_typeIdList = com.maoding.Common.zeroc.ShortListHelper.read(istr);
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> ret = obj.listFilterSubNodeByPathForAccount(iceP_account, iceP_parentPath, iceP_typeIdList, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listRootNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
@@ -2996,241 +2019,22 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
-        boolean iceP_withHistory;
-        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
-        iceP_withHistory = istr.readBool();
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO ret = obj.getFile(iceP_node, iceP_withHistory, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FileNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFileForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
-        boolean iceP_withHistory;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
-        iceP_withHistory = istr.readBool();
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.FileNodeDTO ret = obj.getFileForAccount(iceP_account, iceP_node, iceP_withHistory, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FileNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listAllSubFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_parent;
-        java.util.List<java.lang.Short> iceP_typeIdList;
-        boolean iceP_withHistory;
-        iceP_parent = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
-        iceP_typeIdList = com.maoding.Common.zeroc.ShortListHelper.read(istr);
-        iceP_withHistory = istr.readBool();
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> ret = obj.listAllSubFile(iceP_parent, iceP_typeIdList, iceP_withHistory, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FileNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listAllSubFileForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_parent;
-        java.util.List<java.lang.Short> iceP_typeIdList;
-        boolean iceP_withHistory;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_parent = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
-        iceP_typeIdList = com.maoding.Common.zeroc.ShortListHelper.read(istr);
-        iceP_withHistory = istr.readBool();
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> ret = obj.listAllSubFileForAccount(iceP_account, iceP_parent, iceP_typeIdList, iceP_withHistory, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FileNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.QueryNodeDTO iceP_query;
-        boolean iceP_withHistory;
-        iceP_query = com.maoding.Storage.zeroc.QueryNodeDTO.ice_read(istr);
-        iceP_withHistory = istr.readBool();
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> ret = obj.listFile(iceP_query, iceP_withHistory, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FileNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listFileForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.QueryNodeDTO iceP_query;
-        boolean iceP_withHistory;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_query = com.maoding.Storage.zeroc.QueryNodeDTO.ice_read(istr);
-        iceP_withHistory = istr.readBool();
-        inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.FileNodeDTO> ret = obj.listFileForAccount(iceP_account, iceP_query, iceP_withHistory, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FileNodeListHelper.write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFullNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
-        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getFullNode(iceP_node, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFullNodeForAccount(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        com.maoding.User.zeroc.AccountDTO iceP_account;
-        com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node;
-        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
-        iceP_node = com.maoding.Storage.zeroc.SimpleNodeDTO.ice_read(istr);
-        inS.endReadParams();
-        com.maoding.Storage.zeroc.FullNodeDTO ret = obj.getFullNodeForAccount(iceP_account, iceP_node, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Storage.zeroc.FullNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setFileServerType(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        int iceP_type;
-        iceP_type = istr.readInt();
-        inS.endReadParams();
-        obj.setFileServerType(iceP_type, current);
-        return inS.setResult(inS.writeEmptyParams());
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFileServerType(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        inS.readEmptyParams();
-        int ret = obj.getFileServerType(current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeInt(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_isExist(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        FileDTO iceP_src;
-        iceP_src = FileDTO.ice_read(istr);
-        inS.endReadParams();
-        boolean ret = obj.isExist(iceP_src, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeBool(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_copyFile(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        FileDTO iceP_src;
-        FileDTO iceP_dst;
-        iceP_src = FileDTO.ice_read(istr);
-        iceP_dst = FileDTO.ice_read(istr);
-        inS.endReadParams();
-        FileDTO ret = obj.copyFile(iceP_src, iceP_dst, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        FileDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
     final static String[] _iceOps =
     {
-        "auditFileRequest",
-        "auditFileRequestForAccount",
-        "auditFullNodeRequest",
-        "auditFullNodeRequestForAccount",
         "auditNodeListRequest",
         "auditNodeListRequestForAccount",
         "auditNodeRequest",
         "auditNodeRequestForAccount",
         "changeNodeOwner",
         "changeNodeOwnerForAccount",
-        "checkFileRequest",
-        "checkFileRequestForAccount",
-        "checkFullNodeRequest",
-        "checkFullNodeRequestForAccount",
         "checkNodeListRequest",
         "checkNodeListRequestForAccount",
         "checkNodeRequest",
         "checkNodeRequestForAccount",
-        "commitFile",
-        "commitFileForAccount",
-        "commitFullNode",
-        "commitFullNodeForAccount",
         "commitNode",
         "commitNodeForAccount",
         "commitNodeList",
         "commitNodeListForAccount",
-        "copyFile",
         "createAccessory",
         "createDirectory",
         "createDirectoryForAccount",
@@ -3242,18 +2046,14 @@ public interface FileService extends com.zeroc.Ice.Object
         "createNodeForAccount",
         "createSuggestion",
         "createVersion",
-        "createVersionForAccount",
         "deleteNode",
         "deleteNodeForAccount",
-        "getFile",
-        "getFileForAccount",
         "getFileInfo",
         "getFileInfoForAccount",
-        "getFileInfoWithHis",
-        "getFileInfoWithHisForAccount",
-        "getFileServerType",
         "getFullNode",
         "getFullNodeForAccount",
+        "getFullNodeWithHis",
+        "getFullNodeWithHisForAccount",
         "getNodeByFuzzyPath",
         "getNodeByFuzzyPathForAccount",
         "getNodeById",
@@ -3264,20 +2064,15 @@ public interface FileService extends com.zeroc.Ice.Object
         "getNodeInfoForAccount",
         "getNodePath",
         "getNodePathForAccount",
-        "getNoticeService",
         "getProjectInfoByPath",
         "getProjectInfoByPathForAccount",
-        "getUserService",
+        "getTextInfo",
+        "getTextInfoForAccount",
         "ice_id",
         "ice_ids",
         "ice_isA",
         "ice_ping",
         "isEmpty",
-        "isExist",
-        "issueFile",
-        "issueFileForAccount",
-        "issueFullNodeRequest",
-        "issueFullNodeRequestForAccount",
         "issueNode",
         "issueNodeForAccount",
         "issueNodeList",
@@ -3286,18 +2081,13 @@ public interface FileService extends com.zeroc.Ice.Object
         "listActionForAccount",
         "listAllNode",
         "listAllNodeForAccount",
-        "listAllSubFile",
-        "listAllSubFileForAccount",
         "listChildNode",
         "listChildNodeForAccount",
         "listChildrenNode",
         "listChildrenNodeForAccount",
         "listFile",
-        "listFileForAccount",
-        "listFilterSubNodeById",
-        "listFilterSubNodeByIdForAccount",
-        "listFilterSubNodeByPath",
-        "listFilterSubNodeByPathForAccount",
+        "listHistory",
+        "listHistoryForAccount",
         "listMajor",
         "listMajorForAccount",
         "listNode",
@@ -3306,51 +2096,30 @@ public interface FileService extends com.zeroc.Ice.Object
         "listProjectRoleByProjectIdForAccount",
         "listRootNode",
         "listRootNodeForAccount",
-        "listSubNodeById",
-        "listSubNodeByIdForAccount",
-        "listSubNodeByPath",
-        "listSubNodeByPathForAccount",
         "listSuggestion",
         "listWebArchiveDir",
         "listWebArchiveDirForAccount",
         "login",
         "moveNode",
         "moveNodeForAccount",
-        "readFileNode",
-        "readFileNodeForAccount",
-        "readFullNode",
-        "readFullNodeForAccount",
+        "readFile",
         "readNode",
         "readNodeForAccount",
         "releaseFile",
-        "releaseFileNode",
-        "releaseFileNodeForAccount",
-        "releaseFullNode",
-        "releaseFullNodeForAccount",
         "releaseNode",
         "releaseNodeForAccount",
-        "reloadFileNode",
-        "reloadFileNodeForAccount",
-        "reloadFullNode",
-        "reloadFullNodeForAccount",
+        "reloadFile",
         "reloadNode",
         "reloadNodeForAccount",
-        "setFileNodeLength",
-        "setFileNodeLengthForAccount",
-        "setFileServerType",
         "setFullNodeLength",
         "setFullNodeLengthForAccount",
         "setNodeLength",
         "setNodeLengthForAccount",
         "setNoticeClient",
         "updateVersion",
-        "updateVersionForAccount",
+        "writeAccessory",
         "writeFile",
         "writeFileAndRelease",
-        "writeFileNode",
-        "writeFileNodeForAccount",
-        "writeFullNode",
-        "writeFullNodeForAccount",
         "writeNode",
         "writeNodeForAccount"
     };
@@ -3370,597 +2139,405 @@ public interface FileService extends com.zeroc.Ice.Object
         {
             case 0:
             {
-                return _iceD_auditFileRequest(this, in, current);
+                return _iceD_auditNodeListRequest(this, in, current);
             }
             case 1:
             {
-                return _iceD_auditFileRequestForAccount(this, in, current);
+                return _iceD_auditNodeListRequestForAccount(this, in, current);
             }
             case 2:
             {
-                return _iceD_auditFullNodeRequest(this, in, current);
+                return _iceD_auditNodeRequest(this, in, current);
             }
             case 3:
             {
-                return _iceD_auditFullNodeRequestForAccount(this, in, current);
+                return _iceD_auditNodeRequestForAccount(this, in, current);
             }
             case 4:
             {
-                return _iceD_auditNodeListRequest(this, in, current);
+                return _iceD_changeNodeOwner(this, in, current);
             }
             case 5:
             {
-                return _iceD_auditNodeListRequestForAccount(this, in, current);
+                return _iceD_changeNodeOwnerForAccount(this, in, current);
             }
             case 6:
             {
-                return _iceD_auditNodeRequest(this, in, current);
+                return _iceD_checkNodeListRequest(this, in, current);
             }
             case 7:
             {
-                return _iceD_auditNodeRequestForAccount(this, in, current);
+                return _iceD_checkNodeListRequestForAccount(this, in, current);
             }
             case 8:
             {
-                return _iceD_changeNodeOwner(this, in, current);
+                return _iceD_checkNodeRequest(this, in, current);
             }
             case 9:
             {
-                return _iceD_changeNodeOwnerForAccount(this, in, current);
+                return _iceD_checkNodeRequestForAccount(this, in, current);
             }
             case 10:
             {
-                return _iceD_checkFileRequest(this, in, current);
+                return _iceD_commitNode(this, in, current);
             }
             case 11:
             {
-                return _iceD_checkFileRequestForAccount(this, in, current);
+                return _iceD_commitNodeForAccount(this, in, current);
             }
             case 12:
             {
-                return _iceD_checkFullNodeRequest(this, in, current);
+                return _iceD_commitNodeList(this, in, current);
             }
             case 13:
             {
-                return _iceD_checkFullNodeRequestForAccount(this, in, current);
+                return _iceD_commitNodeListForAccount(this, in, current);
             }
             case 14:
             {
-                return _iceD_checkNodeListRequest(this, in, current);
+                return _iceD_createAccessory(this, in, current);
             }
             case 15:
             {
-                return _iceD_checkNodeListRequestForAccount(this, in, current);
+                return _iceD_createDirectory(this, in, current);
             }
             case 16:
             {
-                return _iceD_checkNodeRequest(this, in, current);
+                return _iceD_createDirectoryForAccount(this, in, current);
             }
             case 17:
             {
-                return _iceD_checkNodeRequestForAccount(this, in, current);
+                return _iceD_createFile(this, in, current);
             }
             case 18:
             {
-                return _iceD_commitFile(this, in, current);
+                return _iceD_createFileForAccount(this, in, current);
             }
             case 19:
             {
-                return _iceD_commitFileForAccount(this, in, current);
+                return _iceD_createMirror(this, in, current);
             }
             case 20:
             {
-                return _iceD_commitFullNode(this, in, current);
+                return _iceD_createMirrorForAccount(this, in, current);
             }
             case 21:
             {
-                return _iceD_commitFullNodeForAccount(this, in, current);
+                return _iceD_createNode(this, in, current);
             }
             case 22:
             {
-                return _iceD_commitNode(this, in, current);
+                return _iceD_createNodeForAccount(this, in, current);
             }
             case 23:
             {
-                return _iceD_commitNodeForAccount(this, in, current);
+                return _iceD_createSuggestion(this, in, current);
             }
             case 24:
             {
-                return _iceD_commitNodeList(this, in, current);
+                return _iceD_createVersion(this, in, current);
             }
             case 25:
             {
-                return _iceD_commitNodeListForAccount(this, in, current);
+                return _iceD_deleteNode(this, in, current);
             }
             case 26:
             {
-                return _iceD_copyFile(this, in, current);
+                return _iceD_deleteNodeForAccount(this, in, current);
             }
             case 27:
             {
-                return _iceD_createAccessory(this, in, current);
+                return _iceD_getFileInfo(this, in, current);
             }
             case 28:
             {
-                return _iceD_createDirectory(this, in, current);
+                return _iceD_getFileInfoForAccount(this, in, current);
             }
             case 29:
             {
-                return _iceD_createDirectoryForAccount(this, in, current);
+                return _iceD_getFullNode(this, in, current);
             }
             case 30:
             {
-                return _iceD_createFile(this, in, current);
+                return _iceD_getFullNodeForAccount(this, in, current);
             }
             case 31:
             {
-                return _iceD_createFileForAccount(this, in, current);
+                return _iceD_getFullNodeWithHis(this, in, current);
             }
             case 32:
             {
-                return _iceD_createMirror(this, in, current);
+                return _iceD_getFullNodeWithHisForAccount(this, in, current);
             }
             case 33:
             {
-                return _iceD_createMirrorForAccount(this, in, current);
+                return _iceD_getNodeByFuzzyPath(this, in, current);
             }
             case 34:
             {
-                return _iceD_createNode(this, in, current);
+                return _iceD_getNodeByFuzzyPathForAccount(this, in, current);
             }
             case 35:
             {
-                return _iceD_createNodeForAccount(this, in, current);
+                return _iceD_getNodeById(this, in, current);
             }
             case 36:
             {
-                return _iceD_createSuggestion(this, in, current);
+                return _iceD_getNodeByIdForAccount(this, in, current);
             }
             case 37:
             {
-                return _iceD_createVersion(this, in, current);
+                return _iceD_getNodeByPath(this, in, current);
             }
             case 38:
             {
-                return _iceD_createVersionForAccount(this, in, current);
+                return _iceD_getNodeByPathForAccount(this, in, current);
             }
             case 39:
             {
-                return _iceD_deleteNode(this, in, current);
+                return _iceD_getNodeInfo(this, in, current);
             }
             case 40:
             {
-                return _iceD_deleteNodeForAccount(this, in, current);
+                return _iceD_getNodeInfoForAccount(this, in, current);
             }
             case 41:
             {
-                return _iceD_getFile(this, in, current);
+                return _iceD_getNodePath(this, in, current);
             }
             case 42:
             {
-                return _iceD_getFileForAccount(this, in, current);
+                return _iceD_getNodePathForAccount(this, in, current);
             }
             case 43:
             {
-                return _iceD_getFileInfo(this, in, current);
+                return _iceD_getProjectInfoByPath(this, in, current);
             }
             case 44:
             {
-                return _iceD_getFileInfoForAccount(this, in, current);
+                return _iceD_getProjectInfoByPathForAccount(this, in, current);
             }
             case 45:
             {
-                return _iceD_getFileInfoWithHis(this, in, current);
+                return _iceD_getTextInfo(this, in, current);
             }
             case 46:
             {
-                return _iceD_getFileInfoWithHisForAccount(this, in, current);
+                return _iceD_getTextInfoForAccount(this, in, current);
             }
             case 47:
             {
-                return _iceD_getFileServerType(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 48:
             {
-                return _iceD_getFullNode(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 49:
             {
-                return _iceD_getFullNodeForAccount(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 50:
             {
-                return _iceD_getNodeByFuzzyPath(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 51:
             {
-                return _iceD_getNodeByFuzzyPathForAccount(this, in, current);
+                return _iceD_isEmpty(this, in, current);
             }
             case 52:
             {
-                return _iceD_getNodeById(this, in, current);
+                return _iceD_issueNode(this, in, current);
             }
             case 53:
             {
-                return _iceD_getNodeByIdForAccount(this, in, current);
+                return _iceD_issueNodeForAccount(this, in, current);
             }
             case 54:
             {
-                return _iceD_getNodeByPath(this, in, current);
+                return _iceD_issueNodeList(this, in, current);
             }
             case 55:
             {
-                return _iceD_getNodeByPathForAccount(this, in, current);
+                return _iceD_issueNodeListForAccount(this, in, current);
             }
             case 56:
             {
-                return _iceD_getNodeInfo(this, in, current);
+                return _iceD_listAction(this, in, current);
             }
             case 57:
             {
-                return _iceD_getNodeInfoForAccount(this, in, current);
+                return _iceD_listActionForAccount(this, in, current);
             }
             case 58:
             {
-                return _iceD_getNodePath(this, in, current);
+                return _iceD_listAllNode(this, in, current);
             }
             case 59:
             {
-                return _iceD_getNodePathForAccount(this, in, current);
+                return _iceD_listAllNodeForAccount(this, in, current);
             }
             case 60:
             {
-                return _iceD_getNoticeService(this, in, current);
+                return _iceD_listChildNode(this, in, current);
             }
             case 61:
             {
-                return _iceD_getProjectInfoByPath(this, in, current);
+                return _iceD_listChildNodeForAccount(this, in, current);
             }
             case 62:
             {
-                return _iceD_getProjectInfoByPathForAccount(this, in, current);
+                return _iceD_listChildrenNode(this, in, current);
             }
             case 63:
             {
-                return _iceD_getUserService(this, in, current);
+                return _iceD_listChildrenNodeForAccount(this, in, current);
             }
             case 64:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_listFile(this, in, current);
             }
             case 65:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return _iceD_listHistory(this, in, current);
             }
             case 66:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return _iceD_listHistoryForAccount(this, in, current);
             }
             case 67:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return _iceD_listMajor(this, in, current);
             }
             case 68:
             {
-                return _iceD_isEmpty(this, in, current);
+                return _iceD_listMajorForAccount(this, in, current);
             }
             case 69:
             {
-                return _iceD_isExist(this, in, current);
+                return _iceD_listNode(this, in, current);
             }
             case 70:
             {
-                return _iceD_issueFile(this, in, current);
+                return _iceD_listNodeForAccount(this, in, current);
             }
             case 71:
             {
-                return _iceD_issueFileForAccount(this, in, current);
+                return _iceD_listProjectRoleByProjectId(this, in, current);
             }
             case 72:
             {
-                return _iceD_issueFullNodeRequest(this, in, current);
+                return _iceD_listProjectRoleByProjectIdForAccount(this, in, current);
             }
             case 73:
             {
-                return _iceD_issueFullNodeRequestForAccount(this, in, current);
+                return _iceD_listRootNode(this, in, current);
             }
             case 74:
             {
-                return _iceD_issueNode(this, in, current);
+                return _iceD_listRootNodeForAccount(this, in, current);
             }
             case 75:
             {
-                return _iceD_issueNodeForAccount(this, in, current);
+                return _iceD_listSuggestion(this, in, current);
             }
             case 76:
             {
-                return _iceD_issueNodeList(this, in, current);
+                return _iceD_listWebArchiveDir(this, in, current);
             }
             case 77:
             {
-                return _iceD_issueNodeListForAccount(this, in, current);
+                return _iceD_listWebArchiveDirForAccount(this, in, current);
             }
             case 78:
             {
-                return _iceD_listAction(this, in, current);
+                return _iceD_login(this, in, current);
             }
             case 79:
             {
-                return _iceD_listActionForAccount(this, in, current);
+                return _iceD_moveNode(this, in, current);
             }
             case 80:
             {
-                return _iceD_listAllNode(this, in, current);
+                return _iceD_moveNodeForAccount(this, in, current);
             }
             case 81:
             {
-                return _iceD_listAllNodeForAccount(this, in, current);
+                return _iceD_readFile(this, in, current);
             }
             case 82:
             {
-                return _iceD_listAllSubFile(this, in, current);
+                return _iceD_readNode(this, in, current);
             }
             case 83:
             {
-                return _iceD_listAllSubFileForAccount(this, in, current);
+                return _iceD_readNodeForAccount(this, in, current);
             }
             case 84:
             {
-                return _iceD_listChildNode(this, in, current);
+                return _iceD_releaseFile(this, in, current);
             }
             case 85:
             {
-                return _iceD_listChildNodeForAccount(this, in, current);
+                return _iceD_releaseNode(this, in, current);
             }
             case 86:
             {
-                return _iceD_listChildrenNode(this, in, current);
+                return _iceD_releaseNodeForAccount(this, in, current);
             }
             case 87:
             {
-                return _iceD_listChildrenNodeForAccount(this, in, current);
+                return _iceD_reloadFile(this, in, current);
             }
             case 88:
             {
-                return _iceD_listFile(this, in, current);
+                return _iceD_reloadNode(this, in, current);
             }
             case 89:
             {
-                return _iceD_listFileForAccount(this, in, current);
+                return _iceD_reloadNodeForAccount(this, in, current);
             }
             case 90:
             {
-                return _iceD_listFilterSubNodeById(this, in, current);
+                return _iceD_setFullNodeLength(this, in, current);
             }
             case 91:
             {
-                return _iceD_listFilterSubNodeByIdForAccount(this, in, current);
+                return _iceD_setFullNodeLengthForAccount(this, in, current);
             }
             case 92:
             {
-                return _iceD_listFilterSubNodeByPath(this, in, current);
+                return _iceD_setNodeLength(this, in, current);
             }
             case 93:
             {
-                return _iceD_listFilterSubNodeByPathForAccount(this, in, current);
+                return _iceD_setNodeLengthForAccount(this, in, current);
             }
             case 94:
             {
-                return _iceD_listMajor(this, in, current);
+                return _iceD_setNoticeClient(this, in, current);
             }
             case 95:
             {
-                return _iceD_listMajorForAccount(this, in, current);
+                return _iceD_updateVersion(this, in, current);
             }
             case 96:
             {
-                return _iceD_listNode(this, in, current);
+                return _iceD_writeAccessory(this, in, current);
             }
             case 97:
             {
-                return _iceD_listNodeForAccount(this, in, current);
+                return _iceD_writeFile(this, in, current);
             }
             case 98:
             {
-                return _iceD_listProjectRoleByProjectId(this, in, current);
+                return _iceD_writeFileAndRelease(this, in, current);
             }
             case 99:
             {
-                return _iceD_listProjectRoleByProjectIdForAccount(this, in, current);
-            }
-            case 100:
-            {
-                return _iceD_listRootNode(this, in, current);
-            }
-            case 101:
-            {
-                return _iceD_listRootNodeForAccount(this, in, current);
-            }
-            case 102:
-            {
-                return _iceD_listSubNodeById(this, in, current);
-            }
-            case 103:
-            {
-                return _iceD_listSubNodeByIdForAccount(this, in, current);
-            }
-            case 104:
-            {
-                return _iceD_listSubNodeByPath(this, in, current);
-            }
-            case 105:
-            {
-                return _iceD_listSubNodeByPathForAccount(this, in, current);
-            }
-            case 106:
-            {
-                return _iceD_listSuggestion(this, in, current);
-            }
-            case 107:
-            {
-                return _iceD_listWebArchiveDir(this, in, current);
-            }
-            case 108:
-            {
-                return _iceD_listWebArchiveDirForAccount(this, in, current);
-            }
-            case 109:
-            {
-                return _iceD_login(this, in, current);
-            }
-            case 110:
-            {
-                return _iceD_moveNode(this, in, current);
-            }
-            case 111:
-            {
-                return _iceD_moveNodeForAccount(this, in, current);
-            }
-            case 112:
-            {
-                return _iceD_readFileNode(this, in, current);
-            }
-            case 113:
-            {
-                return _iceD_readFileNodeForAccount(this, in, current);
-            }
-            case 114:
-            {
-                return _iceD_readFullNode(this, in, current);
-            }
-            case 115:
-            {
-                return _iceD_readFullNodeForAccount(this, in, current);
-            }
-            case 116:
-            {
-                return _iceD_readNode(this, in, current);
-            }
-            case 117:
-            {
-                return _iceD_readNodeForAccount(this, in, current);
-            }
-            case 118:
-            {
-                return _iceD_releaseFile(this, in, current);
-            }
-            case 119:
-            {
-                return _iceD_releaseFileNode(this, in, current);
-            }
-            case 120:
-            {
-                return _iceD_releaseFileNodeForAccount(this, in, current);
-            }
-            case 121:
-            {
-                return _iceD_releaseFullNode(this, in, current);
-            }
-            case 122:
-            {
-                return _iceD_releaseFullNodeForAccount(this, in, current);
-            }
-            case 123:
-            {
-                return _iceD_releaseNode(this, in, current);
-            }
-            case 124:
-            {
-                return _iceD_releaseNodeForAccount(this, in, current);
-            }
-            case 125:
-            {
-                return _iceD_reloadFileNode(this, in, current);
-            }
-            case 126:
-            {
-                return _iceD_reloadFileNodeForAccount(this, in, current);
-            }
-            case 127:
-            {
-                return _iceD_reloadFullNode(this, in, current);
-            }
-            case 128:
-            {
-                return _iceD_reloadFullNodeForAccount(this, in, current);
-            }
-            case 129:
-            {
-                return _iceD_reloadNode(this, in, current);
-            }
-            case 130:
-            {
-                return _iceD_reloadNodeForAccount(this, in, current);
-            }
-            case 131:
-            {
-                return _iceD_setFileNodeLength(this, in, current);
-            }
-            case 132:
-            {
-                return _iceD_setFileNodeLengthForAccount(this, in, current);
-            }
-            case 133:
-            {
-                return _iceD_setFileServerType(this, in, current);
-            }
-            case 134:
-            {
-                return _iceD_setFullNodeLength(this, in, current);
-            }
-            case 135:
-            {
-                return _iceD_setFullNodeLengthForAccount(this, in, current);
-            }
-            case 136:
-            {
-                return _iceD_setNodeLength(this, in, current);
-            }
-            case 137:
-            {
-                return _iceD_setNodeLengthForAccount(this, in, current);
-            }
-            case 138:
-            {
-                return _iceD_setNoticeClient(this, in, current);
-            }
-            case 139:
-            {
-                return _iceD_updateVersion(this, in, current);
-            }
-            case 140:
-            {
-                return _iceD_updateVersionForAccount(this, in, current);
-            }
-            case 141:
-            {
-                return _iceD_writeFile(this, in, current);
-            }
-            case 142:
-            {
-                return _iceD_writeFileAndRelease(this, in, current);
-            }
-            case 143:
-            {
-                return _iceD_writeFileNode(this, in, current);
-            }
-            case 144:
-            {
-                return _iceD_writeFileNodeForAccount(this, in, current);
-            }
-            case 145:
-            {
-                return _iceD_writeFullNode(this, in, current);
-            }
-            case 146:
-            {
-                return _iceD_writeFullNodeForAccount(this, in, current);
-            }
-            case 147:
-            {
                 return _iceD_writeNode(this, in, current);
             }
-            case 148:
+            case 100:
             {
                 return _iceD_writeNodeForAccount(this, in, current);
             }

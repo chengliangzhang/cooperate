@@ -23,7 +23,6 @@ public class BaseTreeEntity extends BaseEntity{
 
     /** 树节点名 */
     @Column
-    @Deprecated
     private String nodeName;
 
     public String getPid() {
@@ -50,12 +49,10 @@ public class BaseTreeEntity extends BaseEntity{
         this.typeId = typeId;
     }
 
-    @Deprecated
     public String getNodeName() {
         return nodeName;
     }
 
-    @Deprecated
     public void setNodeName(String nodeName) {
         this.nodeName = nodeName;
     }

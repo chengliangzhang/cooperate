@@ -10,7 +10,7 @@ import javax.persistence.Table;
  * 日    期 : 2018/3/19 20:04
  * 描    述 :
  */
-@Table(name = "maoding_element")
+@Table(name = "md_list_element")
 public class ElementEntity extends BaseEntity {
     private String title;
     private byte[] dataArray;

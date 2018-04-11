@@ -10,7 +10,7 @@ import javax.persistence.Table;
  * 日    期 : 2017/12/28 14:47
  * 描    述 :
  */
-@Table(name = "maoding_storage_file_his")
+@Table(name = "md_list_storage_file_his")
 public class StorageFileHisEntity extends BaseEntity {
     /** 协同文件编号id */
     private String mainFileId;

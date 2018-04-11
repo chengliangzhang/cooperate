@@ -32,8 +32,8 @@ module zeroc {
     struct StringElementDTO {
         string projectId; //{ProjectId}替换字符串
         string projectName; //{Project}替换字符串
-        string classicId; //{ClassicId}替换字符串
-        string classicName; //{Classic}替换字符串
+        string rangeId; //{RangeId}替换字符串
+        string rangeName; //{Range}替换字符串
         string issueId; //{IssueId}替换字符串
         string issueName; //{Issue}替换字符串
         string issuePath; //{IssuePath}替换字符串
@@ -44,11 +44,14 @@ module zeroc {
         string companyName; //{Company}替换字符串
         string userId; //{UserId}替换字符串
         string userName; //{User}替换字符串
+        string ownerUserId; //{OwnerUserId}替换字符串
+        string ownerUserName; //{Owner}替换字符串
         string actionId; //{ActionId}替换字符串
         string actionName; //{Action}替换字符串
         string majorName; //{Major}替换字符串
         string fileVersion; //{Version}替换字符串
         string srcPath; //{SrcPath}替换字符串
+        string skyPid; //{SkyPid}替换字符串
     };
     ["java:type:java.util.ArrayList<StringElementDTO>"] sequence<StringElementDTO> StringElementList;
     

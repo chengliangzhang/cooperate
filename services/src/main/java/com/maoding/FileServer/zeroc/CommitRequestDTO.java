@@ -23,52 +23,91 @@ package com.maoding.FileServer.zeroc;
 public class CommitRequestDTO implements java.lang.Cloneable,
                                          java.io.Serializable
 {
-    public short actionTypeId;
+    public String actionTypeId;
 
-    public short getActionTypeId()
+    public String getActionTypeId()
     {
         return actionTypeId;
     }
 
-    public void setActionTypeId(short actionTypeId)
+    public void setActionTypeId(String actionTypeId)
     {
         this.actionTypeId = actionTypeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public String pid;
 
+    /**
+     **/
+    @Deprecated
     public String getPid()
     {
         return pid;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setPid(String pid)
     {
         this.pid = pid;
     }
 
+    /**
+     **/
+    @Deprecated
     public String path;
 
+    /**
+     **/
+    @Deprecated
     public String getPath()
     {
         return path;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setPath(String path)
     {
         this.path = path;
     }
 
+    /**
+     **/
+    @Deprecated
     public String userId;
 
+    /**
+     **/
+    @Deprecated
     public String getUserId()
     {
         return userId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setUserId(String userId)
     {
         this.userId = userId;
+    }
+
+    public String ownerUserId;
+
+    public String getOwnerUserId()
+    {
+        return ownerUserId;
+    }
+
+    public void setOwnerUserId(String ownerUserId)
+    {
+        this.ownerUserId = ownerUserId;
     }
 
     public String fileVersion;
@@ -81,6 +120,18 @@ public class CommitRequestDTO implements java.lang.Cloneable,
     public void setFileVersion(String fileVersion)
     {
         this.fileVersion = fileVersion;
+    }
+
+    public String majorId;
+
+    public String getMajorId()
+    {
+        return majorId;
+    }
+
+    public void setMajorId(String majorId)
+    {
+        this.majorId = majorId;
     }
 
     public String majorName;
@@ -107,14 +158,14 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         this.remark = remark;
     }
 
-    public short serverTypeId;
+    public String serverTypeId;
 
-    public short getServerTypeId()
+    public String getServerTypeId()
     {
         return serverTypeId;
     }
 
-    public void setServerTypeId(short serverTypeId)
+    public void setServerTypeId(String serverTypeId)
     {
         this.serverTypeId = serverTypeId;
     }
@@ -131,28 +182,48 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         this.serverAddress = serverAddress;
     }
 
+    public String baseDir;
+
+    public String getBaseDir()
+    {
+        return baseDir;
+    }
+
+    public void setBaseDir(String baseDir)
+    {
+        this.baseDir = baseDir;
+    }
+
     public CommitRequestDTO()
     {
+        this.actionTypeId = "";
         this.pid = "";
         this.path = "";
         this.userId = "";
+        this.ownerUserId = "";
         this.fileVersion = "";
+        this.majorId = "";
         this.majorName = "";
         this.remark = "";
+        this.serverTypeId = "";
         this.serverAddress = "";
+        this.baseDir = "";
     }
 
-    public CommitRequestDTO(short actionTypeId, String pid, String path, String userId, String fileVersion, String majorName, String remark, short serverTypeId, String serverAddress)
+    public CommitRequestDTO(String actionTypeId, String pid, String path, String userId, String ownerUserId, String fileVersion, String majorId, String majorName, String remark, String serverTypeId, String serverAddress, String baseDir)
     {
         this.actionTypeId = actionTypeId;
         this.pid = pid;
         this.path = path;
         this.userId = userId;
+        this.ownerUserId = ownerUserId;
         this.fileVersion = fileVersion;
+        this.majorId = majorId;
         this.majorName = majorName;
         this.remark = remark;
         this.serverTypeId = serverTypeId;
         this.serverAddress = serverAddress;
+        this.baseDir = baseDir;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -171,7 +242,10 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         {
             if(this.actionTypeId != r.actionTypeId)
             {
-                return false;
+                if(this.actionTypeId == null || r.actionTypeId == null || !this.actionTypeId.equals(r.actionTypeId))
+                {
+                    return false;
+                }
             }
             if(this.pid != r.pid)
             {
@@ -194,9 +268,23 @@ public class CommitRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.ownerUserId != r.ownerUserId)
+            {
+                if(this.ownerUserId == null || r.ownerUserId == null || !this.ownerUserId.equals(r.ownerUserId))
+                {
+                    return false;
+                }
+            }
             if(this.fileVersion != r.fileVersion)
             {
                 if(this.fileVersion == null || r.fileVersion == null || !this.fileVersion.equals(r.fileVersion))
+                {
+                    return false;
+                }
+            }
+            if(this.majorId != r.majorId)
+            {
+                if(this.majorId == null || r.majorId == null || !this.majorId.equals(r.majorId))
                 {
                     return false;
                 }
@@ -217,11 +305,21 @@ public class CommitRequestDTO implements java.lang.Cloneable,
             }
             if(this.serverTypeId != r.serverTypeId)
             {
-                return false;
+                if(this.serverTypeId == null || r.serverTypeId == null || !this.serverTypeId.equals(r.serverTypeId))
+                {
+                    return false;
+                }
             }
             if(this.serverAddress != r.serverAddress)
             {
                 if(this.serverAddress == null || r.serverAddress == null || !this.serverAddress.equals(r.serverAddress))
+                {
+                    return false;
+                }
+            }
+            if(this.baseDir != r.baseDir)
+            {
+                if(this.baseDir == null || r.baseDir == null || !this.baseDir.equals(r.baseDir))
                 {
                     return false;
                 }
@@ -241,11 +339,14 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileVersion);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, remark);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverAddress);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, baseDir);
         return h_;
     }
 
@@ -265,28 +366,34 @@ public class CommitRequestDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeShort(this.actionTypeId);
+        ostr.writeString(this.actionTypeId);
         ostr.writeString(this.pid);
         ostr.writeString(this.path);
         ostr.writeString(this.userId);
+        ostr.writeString(this.ownerUserId);
         ostr.writeString(this.fileVersion);
+        ostr.writeString(this.majorId);
         ostr.writeString(this.majorName);
         ostr.writeString(this.remark);
-        ostr.writeShort(this.serverTypeId);
+        ostr.writeString(this.serverTypeId);
         ostr.writeString(this.serverAddress);
+        ostr.writeString(this.baseDir);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.actionTypeId = istr.readShort();
+        this.actionTypeId = istr.readString();
         this.pid = istr.readString();
         this.path = istr.readString();
         this.userId = istr.readString();
+        this.ownerUserId = istr.readString();
         this.fileVersion = istr.readString();
+        this.majorId = istr.readString();
         this.majorName = istr.readString();
         this.remark = istr.readString();
-        this.serverTypeId = istr.readShort();
+        this.serverTypeId = istr.readString();
         this.serverAddress = istr.readString();
+        this.baseDir = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CommitRequestDTO v)
@@ -341,5 +448,5 @@ public class CommitRequestDTO implements java.lang.Cloneable,
 
     private static final CommitRequestDTO _nullMarshalValue = new CommitRequestDTO();
 
-    public static final long serialVersionUID = -1450025388L;
+    public static final long serialVersionUID = -1842319950L;
 }

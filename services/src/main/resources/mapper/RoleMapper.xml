@@ -21,11 +21,11 @@
 
     <select id="listProjectRoleByProjectId" resultMap="ProjectRoleMap" parameterType="java.util.Map">
         select role.*
-            ,if(role.type_id in (1,2,3),role.id,null) as project_role_id
-            ,if(role.type_id in (1,2,3),role.type_name,null) as project_role_name
-            ,if(role.type_id in (4,5,6,7),role.id,null) as task_role_id
-            ,if(role.type_id in (4,5,6,7),role.type_name,null) as task_role_name
-        from maoding_role role
+            ,if(role.is_project_role,role.type_id,null) as project_role_id
+            ,if(role.is_project_role,role.type_name,null) as project_role_name
+            ,if(role.is_task_role,role.type_id,null) as task_role_id
+            ,if(role.is_task_role,role.type_name,null) as task_role_name
+        from md_web_role_project role
         <where>
             <if test="projectId != null">
                 and role.project_id = #{projectId}
@@ -35,7 +35,7 @@
     </select>
 
     <select id="listProject" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="java.util.Map">
-        select distinct role.project_id as id, role.project_name as name from maoding_role role
+        select distinct role.project_id as id, role.project_name as name from md_web_role_project role
         <where>
             role.project_id is not null
             <if test="userId != null">
@@ -44,7 +44,7 @@
         </where>
     </select>
     <select id="listTask" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="java.util.Map">
-        select distinct role.task_id as id, role.task_name as name from maoding_role role
+        select distinct role.task_id as id, role.task_name as name from md_web_role_project role
         <where>
             role.task_id is not null
             <if test="userId != null">
@@ -53,7 +53,7 @@
         </where>
     </select>
     <select id="listCompany" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="java.util.Map">
-        select distinct role.company_id as id, role.company_name as name from maoding_role role
+        select distinct role.company_id as id, role.company_name as name from md_web_role_project role
         <where>
             role.company_id is not null
             <if test="userId != null">
@@ -63,7 +63,7 @@
     </select>
 
     <select id="listMember" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="com.maoding.User.zeroc.QueryMemberDTO">
-        select distinct role.user_id as id, role.user_name as name from maoding_role role
+        select distinct role.user_id as id, role.user_name as name from md_web_role_project role
         <where>
             <if test="userTypeIdString != null">
                 and (role.type_id in (#{userTypeIdString}))

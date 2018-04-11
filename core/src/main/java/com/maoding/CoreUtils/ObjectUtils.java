@@ -81,10 +81,13 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
     }
 
     public static boolean isEmpty(Object object){
-        if (object == null) return true;
-        else if (object instanceof List) return (((List) object).size() <= 0);
-        else
+        if (object == null) {
+            return true;
+        } else if (object instanceof List) {
+            return (((List) object).size() <= 0);
+        } else {
             return object instanceof String && StringUtils.isEmpty((String) object);
+        }
     }
 
     public static boolean isNotEmpty(Object object){

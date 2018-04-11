@@ -1,6 +1,7 @@
-package com.maoding.CoreUtils;
+package com.maoding.Utils;
 
 import com.maoding.Base.BaseEntity;
+import com.maoding.CoreUtils.BeanUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,12 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
-* BeanUtils Tester.
-*
+/** 
+* BeanUtils Tester. 
+* 
 * @author Zhangchengliang
-* @since 10/27/2017
-* @version 1.0
+* @since 10/27/2017 
+* @version 1.0 
 */
 class Father {
     private Integer i;
@@ -194,7 +195,7 @@ class TestClass2 {
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @SpringBootConfiguration
-@ComponentScan(basePackages = {"com.maoding.CoreUtils"})
+@ComponentScan(basePackages = {"com.maoding.Utils"})
 public class BeanUtilsTest {
 
     @Test
@@ -314,12 +315,12 @@ public class BeanUtilsTest {
 
     /** for method: copyProperties(final Map<String, Object> input, final Object output) */
     @Test
-    public void testCopyPropertiesForInputOutput() throws Exception {
+    public void testCopyPropertiesForInputOutput() throws Exception { 
     }
 
-    /** for method: getProperty(final Object obj, final String ptyName) */
+    /** for method: getProperty(final Object obj, final String ptyName) */ 
     @Test
-    public void testGetProperty() throws Exception {
+    public void testGetProperty() throws Exception { 
 
     }
 
@@ -329,11 +330,11 @@ public class BeanUtilsTest {
 
     /** action before each test */
     @Before
-    public void before() throws Exception {
-    }
-
+    public void before() throws Exception { 
+    } 
+    
     /** action after every test */
     @After
-    public void after() throws Exception {
-    }
-}
+    public void after() throws Exception { 
+    } 
+} 

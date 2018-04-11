@@ -224,9 +224,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         //如果输入为空，不做处理
         if (inputValue != null) {
             if (outputFieldClass.isAssignableFrom(inputValue.getClass())) {
-                if ((isClean) && !(outputFieldClass.isPrimitive())) {
-                    outputMethodAccess.invoke(output, setIndex, cleanProperties(inputValue));
-                } else {
+                if ((!isClean) || ObjectUtils.isNotEmpty(inputValue)) { //如果isClean为真，仅设置非空值
                     outputMethodAccess.invoke(output, setIndex, inputValue);
                 }
             } else if (outputFieldClass == boolean.class)

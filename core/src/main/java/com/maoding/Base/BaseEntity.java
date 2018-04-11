@@ -21,10 +21,6 @@ public class BaseEntity implements Serializable,Cloneable {
     @Id
     private String id;
 
-    /** 名称 */
-    @Column
-    private String name;
-
     /** 删除标志 */
     @Column
     private Short deleted;
@@ -53,14 +49,6 @@ public class BaseEntity implements Serializable,Cloneable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Short getDeleted() {

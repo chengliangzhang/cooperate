@@ -49,6 +49,33 @@ public class StorageServiceImplTest {
     }
 
     @Test
+    public void testListNodeFile() throws Exception {
+//        listNodeFileById();
+//        listNodeFileByServer();
+        listNodeFileByKey();
+    }
+
+    private List<NodeFileDTO> listNodeFileByKey() throws Exception {
+        QueryNodeFileDTO query = new QueryNodeFileDTO();
+        query.setKey("c_3.txt");
+        return storageService.listNodeFile(query,null);
+    }
+
+    private List<NodeFileDTO> listNodeFileByServer() throws Exception {
+        QueryNodeFileDTO query = new QueryNodeFileDTO();
+        query.setId("02419B839D9546DEB07C03DBECAF10A8");
+        query.setServerTypeId("1");
+        query.setServerAddress("127.0.0.1");
+        return storageService.listNodeFile(query,null);
+    }
+
+    private List<NodeFileDTO> listNodeFileById() throws Exception {
+        QueryNodeFileDTO query = new QueryNodeFileDTO();
+        query.setId("02419B839D9546DEB07C03DBECAF10A8");
+        return storageService.listNodeFile(query,null);
+    }
+
+    @Test
     public void testCreateSuggestion() throws Exception{
         UpdateSuggestionDTO request = new UpdateSuggestionDTO();
         request.setContent("aaa");
@@ -203,7 +230,6 @@ public class StorageServiceImplTest {
     private NodeFileDTO getLocalNodeFile() throws Exception {
         FullNodeDTO fileNode = getLocalFullNode();
         NodeFileDTO fileInfo = fileNode.getFileInfo();
-        fileInfo.setId(StringUtils.left(fileNode.getBasic().getId(), StringUtils.DEFAULT_ID_LENGTH));
         return fileInfo;
     }
 
@@ -283,8 +309,8 @@ public class StorageServiceImplTest {
 
     private void createHisFile() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setAccountId("hisaccount");
-        request.setAccountRoleId("hisaccountRoleId");
+        request.setLastModifyUserId("hisaccount");
+        request.setLastModifyRoleId("hisaccountRoleId");
         request.setOwnerUserId("3333");
         request.setPath("abcde.txt");
         request.setServerTypeId((short)1);
@@ -300,8 +326,8 @@ public class StorageServiceImplTest {
 
     private void createMirrorFile() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setAccountId("accountId");
-        request.setAccountRoleId("accountRoleId");
+        request.setLastModifyUserId("accountId");
+        request.setLastModifyRoleId("accountRoleId");
         request.setOwnerUserId("3333");
         request.setPath("abcde.txt");
         request.setServerTypeId((short)1);
@@ -319,8 +345,8 @@ public class StorageServiceImplTest {
     private void createPathFile() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setOwnerUserId("12345");
-        request.setAccountId("11111");
-        request.setAccountRoleId("11111");
+        request.setLastModifyUserId("11111");
+        request.setLastModifyRoleId("11111");
         request.setTypeId(ConstService.STORAGE_NODE_TYPE_UNKNOWN);
         request.setPath("abcde.txt");
         request.setServerTypeId((short)1);
@@ -350,10 +376,10 @@ public class StorageServiceImplTest {
         request.setOwnerUserId("12345");
         request.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN);
         request.setPath("/1/2/3/abcde");
-        request.setAccountId("111");
-        request.setAccountRoleId("111");
+        request.setLastModifyUserId("111");
+        request.setLastModifyRoleId("111");
         request.setOwnerUserId("222");
-        request.setAccountId("222");
+        request.setLastModifyUserId("222");
         SimpleNodeDTO dto = storageService.createNode(parent,request,null);
     }
 
@@ -367,20 +393,25 @@ public class StorageServiceImplTest {
     }
 
     @Test
-    public void testUpdateNode() throws Exception {
-//        updateNodeRenameFile();
-//        updateNodeMoveFileByPath();
-//        updateNodeMoveFileByPid();
-//        updateNodeRenamePath();
-//        updateNodeMovePath();
-//        updateNodeTreePty();
-//        updateNodeFilePty();
-//        updateNodeHisPty();
-//        updateNodeMirrorPty();
-        updateNodeFile();
+    public void testUpdateNodeFile() throws Exception {
+//        updateNodeFileSimple();
+        updateNodeFileWithMirror();
     }
 
-    private NodeFileDTO updateNodeFile() throws Exception {
+    private NodeFileDTO updateNodeFileWithMirror() throws Exception {
+        UpdateNodeFileDTO request = new UpdateNodeFileDTO();
+        request.setLastModifyUserId("accountId");
+        request.setLastModifyRoleId("accountRoleId");
+        request.setMainFileId(StringUtils.left(getLocalNode().getId(),32));
+        request.setMirrorTypeId("1");
+        request.setMirrorAddress("127.0.0.1");
+        request.setBaseDir("c:/work/file_server");
+        request.setWritableMirrorKey(".mirror/abc.txt");
+        NodeFileDTO file = storageService.updateNodeFile(getLocalNodeFile(),request,null);
+        return file;
+    }
+
+    private NodeFileDTO updateNodeFileSimple() throws Exception {
         UpdateNodeFileDTO request = new UpdateNodeFileDTO();
         request.setLastModifyUserId("accountId");
         request.setLastModifyRoleId("accountRoleId");
@@ -388,44 +419,58 @@ public class StorageServiceImplTest {
         return file;
     }
 
+
+    @Test
+    public void testUpdateNode() throws Exception {
+        updateNodeRenameFile();
+        updateNodeMoveFileByPath();
+        updateNodeMoveFileByPid();
+        updateNodeRenamePath();
+        updateNodeMovePath();
+        updateNodeTreePty();
+        updateNodeFilePty();
+        updateNodeHisPty();
+        updateNodeMirrorPty();
+    }
+
     private void updateNodeMirrorPty() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setAccountId("accountId");
-        request.setAccountRoleId("accountRoleId");
+        request.setLastModifyUserId("accountId");
+        request.setLastModifyRoleId("accountRoleId");
         request.setMirrorTypeId((short)1);
         request.setMirrorAddress("127.0.0.1");
         request.setMirrorBaseDir("c:/work/.mirror");
         request.setReadOnlyMirrorKey("readonlymirror");
         request.setWritableMirrorKey("writableMirror");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),request,null);
-        request.setAccountId("41d244733ec54f09a255836637f2b21d");
-        request.setAccountRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
+        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),null,request,null);
+        request.setLastModifyUserId("41d244733ec54f09a255836637f2b21d");
+        request.setLastModifyRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
         request.setMirrorTypeId((short)1);
         request.setMirrorAddress("127.0.0.1");
         request.setMirrorBaseDir("c:/work/.mirror");
         request.setReadOnlyMirrorKey("aaaa.txt");
         request.setWritableMirrorKey("bbbb.txt");
-        storageService.updateNode(file,request,null);
+        storageService.updateNode(file,null,request,null);
     }
 
     private void updateNodeHisPty() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setAccountId("accountId");
-        request.setAccountRoleId("accountRoleId");
+        request.setLastModifyUserId("accountId");
+        request.setLastModifyRoleId("accountRoleId");
         request.setActionTypeId((short)2);
         request.setRemark("remark");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),request,null);
-        request.setAccountId("41d244733ec54f09a255836637f2b21d");
-        request.setAccountRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
+        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),null,request,null);
+        request.setLastModifyUserId("41d244733ec54f09a255836637f2b21d");
+        request.setLastModifyRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
         request.setActionTypeId((short)3);
         request.setRemark("1111111111");
-        storageService.updateNode(file,request,null);
+        storageService.updateNode(file,null,request,null);
     }
 
     private void updateNodeFilePty() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setAccountId("accountId");
-        request.setAccountRoleId("accountRoleId");
+        request.setLastModifyUserId("accountId");
+        request.setLastModifyRoleId("accountRoleId");
         request.setServerTypeId((short)2);
         request.setServerAddress("serverAddress");
         request.setBaseDir("baseDir");
@@ -435,9 +480,9 @@ public class StorageServiceImplTest {
         request.setFileVersion("fileVersion");
         request.setMajorTypeId("majorTypeId");
         request.setFileChecksum("fileChecksum");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),request,null);
-        request.setAccountId("41d244733ec54f09a255836637f2b21d");
-        request.setAccountRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
+        SimpleNodeDTO file = storageService.updateNodeSimple(getLocalNode(),request,null);
+        request.setLastModifyUserId("41d244733ec54f09a255836637f2b21d");
+        request.setLastModifyRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
         request.setServerTypeId((short)1);
         request.setServerAddress("c:");
         request.setBaseDir("/work/file_server");
@@ -447,67 +492,71 @@ public class StorageServiceImplTest {
         request.setFileVersion("v1.0");
         request.setMajorTypeId("1");
         request.setFileChecksum("1111111111111111111111111111");
-        storageService.updateNode(file,request,null);
+        storageService.updateNode(file,null,request,null);
     }
 
     private void updateNodeTreePty() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setTaskId("f05fefd3cb204314b74503290b8410f3");
         request.setOwnerUserId("ownerUserId");
-        request.setAccountId("accountId");
-        request.setAccountRoleId("accountRoleId");
+        request.setLastModifyUserId("accountId");
+        request.setLastModifyRoleId("accountRoleId");
         request.setFileLength(111L);
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),request,null);
+        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),null,request,null);
         request.setTaskId("f04c86a1a7da43d5b27b951eb5c69a32");
         request.setOwnerUserId("0623b7a797ac4341aaf2220bb375d670");
-        request.setAccountId("41d244733ec54f09a255836637f2b21d");
-        request.setAccountRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
+        request.setLastModifyUserId("41d244733ec54f09a255836637f2b21d");
+        request.setLastModifyRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
         request.setFileLength(153L);
-        storageService.updateNode(file,request,null);
+        storageService.updateNode(file,null,request,null);
     }
 
     private void updateNodeMovePath() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setPid("f43cb268d3334c76b920db4298b0239f-1");
+        SimpleNodeDTO parent = getLocalNode("f43cb268d3334c76b920db4298b0239f-1");
         request.setPath("/bbb/haili");
-        SimpleNodeDTO dir = storageService.updateNode(getLocalPath(),request,null);
-        request.setPid("f38eecabf0fe4217ad372750374fdd0b-1");
+        SimpleNodeDTO dir = storageService.updateNode(getLocalPath(),parent,request,null);
+        parent = getLocalNode("f38eecabf0fe4217ad372750374fdd0b-1");
         request.setPath("aaa/海里haili");
-        storageService.updateNode(dir,request,null);
+        storageService.updateNode(dir,parent,request,null);
+    }
+
+    private SimpleNodeDTO getLocalNode(String id) throws Exception {
+        return storageService.getNodeById(id,null);
     }
 
     private void updateNodeRenamePath() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setPath("haili");
-        SimpleNodeDTO dir = storageService.updateNode(getLocalPath(),request,null);
+        SimpleNodeDTO dir = storageService.updateNode(getLocalPath(),null,request,null);
         request.setPath("海里haili");
-        storageService.updateNode(dir,request,null);
+        storageService.updateNode(dir,null,request,null);
     }
 
     private void updateNodeMoveFileByPid() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setPid("f43cb268d3334c76b920db4298b0239f-1");
+        SimpleNodeDTO parent = getLocalNode("f43cb268d3334c76b920db4298b0239f-1");
         request.setPath("/xx/xxxx.txt");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),request,null);
-        request.setPid(getLocalPath().getId());
+        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),parent,request,null);
+        parent = getLocalNode(getLocalPath().getId());
         request.setPath("kk/kkk.txt");
-        storageService.updateNode(file,request,null);
+        storageService.updateNode(file,parent,request,null);
     }
 
     private void updateNodeMoveFileByPath() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setPath("/maoding/设计/施工配合/施工图配合1/ww/yyy.txt");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),request,null);
+        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),null,request,null);
         request.setPath("/海狸大厦-生产安排设置人员测试/设计/施工图设计阶段/给排水施工图/废水系统/yy.txt");
-        storageService.updateNode(file,request,null);
+        storageService.updateNode(file,null,request,null);
     }
 
     private void updateNodeRenameFile() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setPath("xxxx.txt");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),request,null);
+        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),null,request,null);
         request.setPath("yyyy.txt");
-        storageService.updateNode(file,request,null);
+        storageService.updateNode(file,null,request,null);
     }
 
 //    private void updateNodeMove() throws Exception {

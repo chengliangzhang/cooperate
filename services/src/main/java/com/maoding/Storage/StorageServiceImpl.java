@@ -4,14 +4,14 @@ import com.maoding.Base.BaseLocalService;
 import com.maoding.Common.CheckService;
 import com.maoding.Common.ConstService;
 import com.maoding.Common.zeroc.CustomException;
+import com.maoding.CoreUtils.BeanUtils;
+import com.maoding.CoreUtils.ObjectUtils;
+import com.maoding.CoreUtils.StringUtils;
 import com.maoding.Storage.Dao.*;
 import com.maoding.Storage.Dto.StorageEntityUnionDTO;
 import com.maoding.Storage.Entity.*;
 import com.maoding.Storage.zeroc.*;
 import com.maoding.User.zeroc.AccountDTO;
-import com.maoding.CoreUtils.BeanUtils;
-import com.maoding.CoreUtils.ObjectUtils;
-import com.maoding.CoreUtils.StringUtils;
 import com.zeroc.Ice.Current;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -53,6 +55,16 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     private SuggestionDao suggestionDao;
 
     @Override
+    public List<NodeFileDTO> listNodeFile(QueryNodeFileDTO query, Current current) throws CustomException {
+        long t = System.currentTimeMillis();
+
+        List<NodeFileDTO> fileList = storageDao.listNodeFile(BeanUtils.cleanProperties(query));
+
+        log.info("\t----> listNodeFile花费时间:" + (System.currentTimeMillis()-t) + "ms");
+        return fileList;
+    }
+
+    @Override
     public EmbedElementDTO createEmbedElement(UpdateElementDTO request, Current current) throws CustomException {
         long t = System.currentTimeMillis();
 
@@ -80,27 +92,52 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public NodeFileDTO updateNodeFile(@NotNull NodeFileDTO src, UpdateNodeFileDTO request, Current current) throws CustomException {
+    public NodeFileDTO updateNodeFile(@NotNull NodeFileDTO file, UpdateNodeFileDTO request, Current current) throws CustomException {
+        final String QUERY_FIELD_ID = "id";
+        final String QUERY_MAIN_FIELD_ID = "mainFileId";
+        final String QUERY_MIRROR_SERVER_TYPE_ID = "mirrorServerTypeId";
+        final String QUERY_MIRROR_SERVER_ADDRESS = "mirrorServerAddress";
+        final String QUERY_MIRROR_BASE_DIR = "mirrorBaseDir";
         long t = System.currentTimeMillis();
 
-        StorageFileEntity fileEntity = storageFileDao.selectById(src.getId());
-        if (fileEntity != null) {
-            BeanUtils.copyCleanProperties(request, fileEntity);
-            fileEntity.update();
-            storageFileDao.update(fileEntity);
+        //更新节点信息
+        Map<String,Object> queryFile = new HashMap<>();
+        queryFile.put(QUERY_FIELD_ID,file.getId());
+        StorageFileEntity fileEntity = storageDao.selectFileEntity(queryFile);
+        CheckService.check(fileEntity != null);
+        BeanUtils.copyCleanProperties(request, fileEntity);
+        fileEntity.update();
+        storageFileDao.update(fileEntity);
+
+        //更新镜像信息
+        if (isMirrorInfoValid(request)){
+            Map<String,Object> queryMirror = new HashMap<>();
+            if (StringUtils.isNotEmpty(file.getId())) {
+                queryMirror.put(QUERY_MAIN_FIELD_ID,file.getId());
+            }
+            if (StringUtils.isNotEmpty(request.getMirrorTypeId())) {
+                queryMirror.put(QUERY_MIRROR_SERVER_TYPE_ID, request.getMirrorTypeId());
+            }
+            if (StringUtils.isNotEmpty(request.getMirrorAddress())) {
+                queryMirror.put(QUERY_MIRROR_SERVER_ADDRESS, request.getMirrorAddress());
+            }
+            if (StringUtils.isNotEmpty(request.getMirrorBaseDir())) {
+                queryMirror.put(QUERY_MIRROR_BASE_DIR, request.getMirrorBaseDir());
+            }
+            StorageFileEntity mirrorEntity = storageDao.selectFileEntity(queryMirror);
+            if (mirrorEntity == null){
+                mirrorEntity = new StorageFileEntity();
+                updateMirrorEntity(request,file.getId(),mirrorEntity);
+                storageFileDao.insert(mirrorEntity);
+            } else {
+                updateMirrorEntity(request,file.getId(),mirrorEntity);
+                storageFileDao.update(mirrorEntity);
+            }
         }
-//        NodeFileDTO result = BeanUtils.createCleanFrom(fileEntity,NodeFileDTO.class);
-//        if (isMirrorInfoValid(request)){
-//            StorageFileEntity mirrorEntity = BeanUtils.createCleanFrom(request, StorageFileEntity.class);
-//            updateMirrorEntity(request,fileEntity.getId(),mirrorEntity);
-//            mirrorEntity = storageFileDao.selectOne(mirrorEntity);
-//
-//            result.setReadOnlyMirrorKey(StringUtils.formatPath(mirrorEntity.getReadOnlyKey()));
-//            result.setWritableMirrorKey(StringUtils.formatPath(mirrorEntity.getWritableKey()));
-//        }
+        BeanUtils.copyCleanProperties(request,file);
 
         log.info("\t----> updateNodeFile花费时间:" + (System.currentTimeMillis()-t) + "ms");
-        return null;
+        return file;
     }
 
     @Override
@@ -200,82 +237,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public List<SimpleNodeDTO> listOldNode(@NotNull QueryNodeDTO query, Current current) {
-        return storageDao.listOldNode(BeanUtils.cleanProperties(query));
-    }
-
-    @Override
-    public SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent, @NotNull UpdateNodeDTO request, Current current) {
-        long t = System.currentTimeMillis();
-        //只在申请中包含的参数
-        String fullName = StringUtils.formatPath(request.getFullName());
-        String nodeName = StringUtils.getFileName(fullName);
-        String lastModifyUserId = request.getOwnerUserId();
-
-        //可使用父节点信息的参数
-        String pid = StringUtils.left(request.getPid(), StringUtils.DEFAULT_ID_LENGTH);
-        String taskId = request.getTaskId();
-        Short pTypeId = ConstService.STORAGE_NODE_TYPE_DIR_DESIGN;
-        String storagePath = fullName;
-        StorageEntityUnionDTO parentUnion = null;
-        if (parent != null){
-            pTypeId = parent.getTypeId();
-            pid = StringUtils.left(parent.getId(), StringUtils.DEFAULT_ID_LENGTH);
-            taskId = parent.getTaskId();
-            QueryNodeDTO unionQuery = new QueryNodeDTO();
-            unionQuery.setId(pid);
-            parentUnion = storageDao.quickSelectStorageEntityUnion(BeanUtils.cleanProperties(unionQuery));
-            if (parentUnion != null) {
-                pTypeId = Short.parseShort(parentUnion.getTypeId());
-                taskId = parentUnion.getTaskId();
-            }
-        }
-
-        String dirName = StringUtils.getDirName(fullName);
-        if (!StringUtils.isEmpty(dirName)){
-            parentUnion = insertPathNodeList(parentUnion,request,dirName,pid,taskId,lastModifyUserId,pTypeId);
-            if (parentUnion != null) {
-                pid = parentUnion.getId();
-                taskId = parentUnion.getTaskId();
-                pTypeId = Short.parseShort(parentUnion.getTypeId());
-                storagePath = parentUnion.getPath() + StringUtils.SPLIT_PATH + nodeName;
-            }
-        }
-
-        //格式化节点类型
-        Short typeId = request.getTypeId();
-        if ((ConstService.STORAGE_NODE_TYPE_UNKNOWN.equals(typeId)) || (ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN.equals(typeId))) {
-            if (ConstService.STORAGE_NODE_TYPE_UNKNOWN.equals(typeId)) {
-                typeId = Short.parseShort(ConstService.getFileType(pTypeId.toString()));
-            } else {
-                typeId = Short.parseShort(ConstService.getPathType(pTypeId.toString()));
-            }
-        }
-
-        StorageEntityUnionDTO nodeUnion = BeanUtils.createCleanFrom(request,StorageEntityUnionDTO.class);
-        nodeUnion.setNodeName(StringUtils.getFileName(fullName));
-        nodeUnion.setPath(storagePath);
-        nodeUnion.setTypeId(typeId.toString());
-        if (!StringUtils.isEmpty(taskId)) nodeUnion.setTaskId(taskId);
-        if (StringUtils.isEmpty(pid)) pid = StringUtils.SPLIT_PATH;
-        nodeUnion.setPid(pid);
-        if(!StringUtils.isEmpty(lastModifyUserId)) nodeUnion.setLastModifyUserId(lastModifyUserId);
-        if (!ConstService.isDirectoryType(typeId.toString())){
-            StorageFileEntity fileEntity = BeanUtils.createCleanFrom(nodeUnion,StorageFileEntity.class);
-            BeanUtils.copyCleanProperties(request,fileEntity);
-            nodeUnion.setFileEntity(fileEntity);
-            if (ConstService.isHistoryType(typeId.toString())){
-                StorageFileHisEntity hisEntity = BeanUtils.createCleanFrom(nodeUnion,StorageFileHisEntity.class);
-                BeanUtils.copyCleanProperties(request,hisEntity);
-                hisEntity.setFileId(request.getMainFileId());
-                nodeUnion.setHisEntity(hisEntity);
-            }
-        }
-        insertStorageUnion(nodeUnion);
-
-        String path = fullName;
-        if (parent != null) path = StringUtils.formatPath(parent.getPath() + StringUtils.SPLIT_PATH + nodeUnion.getPath());
-        log.info("===>createNodeWithParent:" + (System.currentTimeMillis()-t) + "ms");
-        return convertToSimpleNodeDTO(nodeUnion,path);
+        return storageDao.listWebArchiveDir(BeanUtils.cleanProperties(query));
     }
 
     private StorageFileEntity updateMirrorEntity(@NotNull UpdateNodeFileDTO request, @NotNull String fileId, @NotNull StorageFileEntity mirrorEntity){
@@ -293,18 +255,18 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         mirrorEntity.setWritableKey(request.getWritableMirrorKey());
         assert (StringUtils.isNotEmpty(fileId));
         mirrorEntity.setMainFileId(fileId);
+        if (StringUtils.isNotEmpty(request.getLastModifyUserId())){
+            mirrorEntity.setLastModifyUserId(request.getLastModifyUserId());
+        }
+        if (StringUtils.isNotEmpty(request.getLastModifyRoleId())){
+            mirrorEntity.setLastModifyRoleId(request.getLastModifyRoleId());
+        }
         return mirrorEntity;
     }
 
     private StorageFileEntity updateMirrorEntity(@NotNull UpdateNodeDTO request, @NotNull String fileId, @NotNull StorageFileEntity mirrorEntity){
         UpdateNodeFileDTO updateFileRequest = BeanUtils.createCleanFrom(request,UpdateNodeFileDTO.class);
         updateMirrorEntity(updateFileRequest,fileId,mirrorEntity);
-        if (StringUtils.isNotEmpty(request.getAccountId())) {
-            mirrorEntity.setLastModifyUserId(request.getAccountId());
-        }
-        if (StringUtils.isNotEmpty(request.getAccountRoleId())) {
-            mirrorEntity.setLastModifyRoleId(request.getAccountRoleId());
-        }
         return mirrorEntity;
     }
 
@@ -329,7 +291,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return (!ConstService.FILE_SERVER_TYPE_UNKNOWN.equals(request.getServerTypeId()))
                 || (ObjectUtils.isNotEmpty(request.getServerAddress()))
                 || (ObjectUtils.isNotEmpty(request.getReadOnlyKey()))
-                || (ObjectUtils.isNotEmpty(request.getWritableKey()));
+                || (ObjectUtils.isNotEmpty(request.getWritableKey()))
+                || isHisInfoValid(request)
+                || isMirrorInfoValid(request);
     }
 
     private boolean isMirrorInfoValid(@NotNull UpdateNodeDTO request) {
@@ -351,7 +315,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                 path = StringUtils.substring(path,StringUtils.SPLIT_PATH.length());
             }
         }
-        if (lastEntity != null) path = StringUtils.formatPath(lastEntity.getPath() + StringUtils.SPLIT_PATH + path);
+        if (lastEntity != null) {
+            path = StringUtils.formatPath(lastEntity.getPath() + StringUtils.SPLIT_PATH + path);
+        }
         String taskId = (parent != null) ? parent.getTaskId() : null;
         if (StringUtils.isNotEmpty(taskId) && StringUtils.isNotEmpty(path)) {
             lastEntity = storageTreeDao.selectByTaskIdAndFuzzyPath(taskId, path);
@@ -415,268 +381,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return lastEntity;
     }
 
-    @Deprecated
-    private StorageEntityUnionDTO insertPathNodeList(StorageEntityUnionDTO parentUnion,
-                                                     @NotNull UpdateNodeDTO request,
-                                                     @NotNull String dirName,
-                                                     String pid,
-                                                     String taskId,
-                                                     String lastModifyUserId,
-                                                     Short pTypeId){
-        List<StorageTreeEntity> nodeList = new ArrayList<>();
-        StringBuilder pathBuilder = new StringBuilder();
-        String parentPath = "";
-        if (parentUnion != null) {
-            parentPath = parentUnion.getPath();
-            pathBuilder.append(parentPath);
-        }
-
-        StorageEntityUnionDTO lastPathNode = null;
-        String[] nodeNameArray = dirName.split(StringUtils.SPLIT_PATH);
-        for (String nodeName : nodeNameArray) {
-            if (StringUtils.isEmpty(nodeName)) continue;
-            QueryNodeDTO query = new QueryNodeDTO();
-            query.setPid(pid);
-            query.setName(nodeName);
-            lastPathNode = storageDao.quickSelectStorageEntityUnion(BeanUtils.cleanProperties(query));
-            if (lastPathNode == null){
-                lastPathNode = BeanUtils.createCleanFrom(request, StorageEntityUnionDTO.class);
-                lastPathNode.setPid(pid);
-                lastPathNode.setNodeName(nodeName);
-                if (pathBuilder.length() > 0) pathBuilder.append(StringUtils.SPLIT_PATH);
-                pathBuilder.append(nodeName);
-                lastPathNode.setPath(pathBuilder.toString());
-                lastPathNode.setTypeId(ConstService.getPathType(pTypeId.toString()));
-                if (!StringUtils.isEmpty(lastModifyUserId)) lastPathNode.setLastModifyUserId(lastModifyUserId);
-                lastPathNode.setFileLength(0L);
-                if (!StringUtils.isEmpty(taskId)) lastPathNode.setTaskId(taskId);
-                nodeList.add(lastPathNode);
-            }
-            pid = lastPathNode.getId();
-        }
-        if (!nodeList.isEmpty()) {
-            int n = storageTreeDao.insertList(nodeList);
-            assert (n > 0);
-        }
-
-        return lastPathNode;
-    }
-
 
     @Override
-    public SimpleNodeDTO updateNodeWithParent(@NotNull SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request, Current current) {
-        long t = System.currentTimeMillis();
-        //找目标节点
-        QueryNodeDTO query = new QueryNodeDTO();
-        query.setId(StringUtils.left(src.getId(),StringUtils.DEFAULT_ID_LENGTH));
-        StorageEntityUnionDTO srcUnion = storageDao.quickSelectStorageEntityUnion(BeanUtils.cleanProperties(query));
-        assert (srcUnion != null);
-
-
-        String fullName = null;
-        String lastModifyUserId = null;
-        Long fileLength = 0L;
-        String pid = null;
-        String taskId = null;
-        Short typeId = src.getTypeId();
-        //申请变动属性
-        if (request != null){
-            lastModifyUserId = request.getOwnerUserId();
-            fullName = StringUtils.formatPath(request.getFullName());
-            fileLength = request.getFileLength();
-            pid = StringUtils.left(request.getPid(), StringUtils.DEFAULT_ID_LENGTH);
-            taskId = request.getTaskId();
-            typeId = request.getTypeId();
-        }
-        if (!StringUtils.isEmpty(fullName)) {
-            srcUnion.setNodeName(StringUtils.getFileName(fullName));
-        }
-
-        //父节点变动属性
-        StorageEntityUnionDTO parentUnion = null;
-        StringBuilder storagePathBuilder = new StringBuilder();
-        if (!isSameParent(src,parent,request)){
-            pid = StringUtils.left(parent.getId(), StringUtils.DEFAULT_ID_LENGTH);
-            taskId = parent.getTaskId();
-            QueryNodeDTO unionQuery = new QueryNodeDTO();
-            unionQuery.setId(pid);
-            parentUnion = storageDao.quickSelectStorageEntityUnion(BeanUtils.cleanProperties(unionQuery));
-            Short pTypeId = parent.getTypeId();
-            String dirName = StringUtils.getDirName(fullName);
-            if (!StringUtils.isEmpty(dirName)){
-                parentUnion = insertPathNodeList(parentUnion,request,dirName,pid,taskId,lastModifyUserId,pTypeId);
-            }
-            if (parentUnion != null) {
-                pid = parentUnion.getId();
-                storagePathBuilder.append(parentUnion.getPath());
-                pTypeId = Short.parseShort(parentUnion.getTypeId());
-            } else {
-                pTypeId = parent.getTypeId();
-                storagePathBuilder.append(parent.getStoragePath());
-            }
-            if (ConstService.isDirectoryType((new Short(src.getTypeId())).toString())) {
-                typeId = Short.parseShort(ConstService.getPathType(pTypeId.toString()));
-            } else {
-                typeId = Short.parseShort(ConstService.getFileType(pTypeId.toString()));
-            }
-        } else {
-            storagePathBuilder.append(StringUtils.getDirName(srcUnion.getPath()));
-        }
-        if (storagePathBuilder.length() > 0) storagePathBuilder.append(StringUtils.SPLIT_PATH);
-        storagePathBuilder.append(srcUnion.getNodeName());
-        srcUnion.setPath(StringUtils.formatPath(storagePathBuilder.toString()));
-
-        if (!StringUtils.isEmpty(pid)) srcUnion.setPid(pid);
-        if (!StringUtils.isEmpty(taskId)) srcUnion.setTaskId(taskId);
-        if (!typeId.equals(src.getTypeId())) {
-            srcUnion.setTypeId(typeId.toString());
-        }
-
-        if (!StringUtils.isEmpty(lastModifyUserId)) srcUnion.setLastModifyUserId(lastModifyUserId);
-        if (fileLength > 0) srcUnion.setFileLength(fileLength);
-
-        //文件节点属性
-        if (!ConstService.isDirectoryType(srcUnion.getTypeId()) && (srcUnion.getFileEntity() == null)) srcUnion.setFileEntity(new StorageFileEntity());
-        if (srcUnion.getFileEntity() != null) {
-            StorageFileEntity fileEntity = srcUnion.getFileEntity();
-            if (request != null) {
-                BeanUtils.copyCleanProperties(request, fileEntity);
-            }
-            fileEntity.update();
-        }
-
-        //文件历史节点属性
-        if (ConstService.isHistoryType(srcUnion.getTypeId()) && (srcUnion.getHisEntity() == null)) srcUnion.setHisEntity(new StorageFileHisEntity());
-        if (srcUnion.getHisEntity() != null) {
-            StorageFileHisEntity hisEntity = srcUnion.getHisEntity();
-            if (request != null) {
-                BeanUtils.copyCleanProperties(request, hisEntity);
-                if (!StringUtils.isEmpty(request.getMainFileId())) hisEntity.setFileId(request.getMainFileId());
-            }
-            if (StringUtils.isEmpty(hisEntity.getFileId())) hisEntity.setFileId(srcUnion.getId());
-            hisEntity.update();
-        }
-
-        srcUnion.update();
-        updateStorageUnion(srcUnion);
-
-        String path = StringUtils.replace(src.getPath(),src.getStoragePath(), srcUnion.getPath());
-        log.info("===>updateNodeWithParent:" + (System.currentTimeMillis()-t) + "ms");
-        return convertToSimpleNodeDTO(srcUnion,path);
-    }
-
-    private boolean isSameParent(@NotNull SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request){
-        StringBuilder pathBuilder = new StringBuilder();
-        if (parent != null){
-            pathBuilder.append(parent.getPath());
-        } else {
-            pathBuilder.append(StringUtils.getDirName(src.getPath()));
-        }
-        if ((request != null) && (!StringUtils.isEmpty(request.getFullName()))){
-            String dirName = StringUtils.getDirName(request.getFullName());
-            if (StringUtils.isNotEmpty(dirName)) {
-                if (pathBuilder.length() > 0) pathBuilder.append(StringUtils.SPLIT_PATH);
-                pathBuilder.append(dirName);
-            }
-        }
-        return StringUtils.isSame(StringUtils.getDirName(src.getPath()),StringUtils.formatPath(pathBuilder.toString()));
-    }
-
-    @Override
-    public void deleteNodeByIdList(AccountDTO account, List<String> idList, Current current) throws CustomException {
-        if (ObjectUtils.isNotEmpty(idList)) {
-            String accountId = (account != null) ? account.getId() : null;
-            int n = 0;
-            n += storageDao.fakeDeleteById(idList, accountId);
-            n += storageFileDao.fakeDeleteById(idList, accountId);
-            n += storageFileHisDao.fakeDeleteById(idList, accountId);
-            log.debug("删除" + n + "条记录");
-        }
-    }
-
-    @Override
-    public void deleteNodeById(AccountDTO account, @NotNull String id, Current current) throws CustomException {
-        long t = System.currentTimeMillis();
-
-        List<String> idList = new ArrayList<>();
-        id = StringUtils.left(id, StringUtils.DEFAULT_ID_LENGTH);
-        if (StringUtils.isNotEmpty(id)) {
-            idList.add(id);
-        }
-        deleteNodeByIdList(account,idList,current);
-
-        log.info("===>deleteNodeById:" + (System.currentTimeMillis()-t) + "ms");
-    }
-
-    @Override
-    public void deleteNodeList(AccountDTO account, List<SimpleNodeDTO> nodeList, Current current) throws CustomException {
-        long t = System.currentTimeMillis();
-
-        List<String> idList = new ArrayList<>();
-        for (SimpleNodeDTO node : nodeList) {
-            if (node.getIsDirectory()) {
-                List<SimpleNodeDTO> children = listChildren(node, current);
-                if (ObjectUtils.isNotEmpty(children)) {
-                    for (SimpleNodeDTO child : children) {
-                        idList.add(StringUtils.left(child.getId(), StringUtils.DEFAULT_ID_LENGTH));
-                    }
-                }
-            }
-            idList.add(StringUtils.left(node.getId(),StringUtils.DEFAULT_ID_LENGTH));
-        }
-        deleteNodeByIdList(account,idList,current);
-
-        log.info("===>deleteNodeList:" + (System.currentTimeMillis()-t) + "ms");
-    }
-
-    @Override
-    public void deleteNode(AccountDTO account, @NotNull SimpleNodeDTO node, Current current) throws CustomException {
-        List<SimpleNodeDTO> list = new ArrayList<>();
-        list.add(node);
-        deleteNodeList(account,list,current);
-    }
-
-    private boolean isRoot(@NotNull SimpleNodeDTO parent){
-        return StringUtils.isEmpty(parent.getId());
-    }
-
-    @Override
-    public List<SimpleNodeDTO> listChild(@NotNull SimpleNodeDTO parent, Current current) throws CustomException {
-        if (isRoot(parent)) return listRoot(null,current);
-
-        CheckService.check(parent.getIsDirectory());
-        QueryNodeDTO query = new QueryNodeDTO();
-        query.setPid(parent.getId());
-        return listNode(query,current);
-
-    }
-
-    @Override
-    public List<SimpleNodeDTO> listChildren(@NotNull SimpleNodeDTO parent, Current current) throws CustomException {
-        QueryNodeDTO nodeQuery = new QueryNodeDTO();
-        if (!isRoot(parent)) {
-            CheckService.check(parent.getIsDirectory());
-            QueryNodeInfoDTO infoQuery = new QueryNodeInfoDTO();
-            QueryNodeInfoTextDTO txtQuery = new QueryNodeInfoTextDTO();
-            infoQuery.setTextQuery(txtQuery);
-            FullNodeDTO parentInfo = getNodeInfo(parent, infoQuery, current);
-            CheckService.check((parentInfo != null) && (parentInfo.getTextInfo() != null) && (StringUtils.isNotEmpty(parentInfo.getTextInfo().getPath())));
-            nodeQuery.setParentPath(parentInfo.getTextInfo().getPath());
-        }
-        return listNode(nodeQuery,current);
-    }
-
-    @Override
-    public List<SimpleNodeDTO> listRoot(String accountId, Current current) throws CustomException {
-        QueryNodeDTO query = new QueryNodeDTO();
-        query.setPid("-");
-        query.setAccountId(accountId);
-        return listNode(query,current);
-    }
-
-
-    @Override
-    public SimpleNodeDTO updateNode(@NotNull SimpleNodeDTO src, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
+    public SimpleNodeDTO updateNode(@NotNull SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request, Current current) throws CustomException {
         long t = System.currentTimeMillis();
 
         QueryNodeDTO query = new QueryNodeDTO();
@@ -691,7 +398,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         if (StringUtils.isNotEmpty(request.getPath())) {
             srcUnion.setNodeName(StringUtils.getFileName(request.getPath()));
         }
-        StorageTreeEntity parentEntity = getParentEntity(request,current);
+        StorageTreeEntity parentEntity = getParentEntity(parent,request,current);
         if (parentEntity != null) {
             srcUnion.setPid(parentEntity.getId());
             srcUnion.setPath(StringUtils.formatPath(parentEntity.getPath() + StringUtils.SPLIT_PATH + srcUnion.getNodeName()));
@@ -719,11 +426,11 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         if (StringUtils.isNotEmpty(request.getOwnerUserId())) {
             srcUnion.setOwnerUserId(request.getOwnerUserId());
         }
-        if (StringUtils.isNotEmpty(request.getAccountId())) {
-            srcUnion.setLastModifyUserId(request.getAccountId());
+        if (StringUtils.isNotEmpty(request.getLastModifyUserId())) {
+            srcUnion.setLastModifyUserId(request.getLastModifyUserId());
         }
-        if (StringUtils.isNotEmpty(request.getAccountRoleId())) {
-            srcUnion.setLastModifyRoleId(request.getAccountRoleId());
+        if (StringUtils.isNotEmpty(request.getLastModifyRoleId())) {
+            srcUnion.setLastModifyRoleId(request.getLastModifyRoleId());
         }
         if (!ConstService.isDirectoryType(srcUnion.getTypeId())){
             if  (isFileInfoValid(request)) {
@@ -786,6 +493,127 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
         log.info("\t----> updateNode:" + (System.currentTimeMillis()-t) + "ms");
         return node;
+    }
+
+    private boolean isSameParent(@NotNull SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request){
+        StringBuilder pathBuilder = new StringBuilder();
+        if (parent != null){
+            pathBuilder.append(parent.getPath());
+        } else {
+            pathBuilder.append(StringUtils.getDirName(src.getPath()));
+        }
+        if ((request != null) && (!StringUtils.isEmpty(request.getFullName()))){
+            String dirName = StringUtils.getDirName(request.getFullName());
+            if (StringUtils.isNotEmpty(dirName)) {
+                if (pathBuilder.length() > 0) pathBuilder.append(StringUtils.SPLIT_PATH);
+                pathBuilder.append(dirName);
+            }
+        }
+        return StringUtils.isSame(StringUtils.getDirName(src.getPath()),StringUtils.formatPath(pathBuilder.toString()));
+    }
+
+    @Override
+    public void deleteNodeByIdList(AccountDTO account, List<String> idList, Current current) throws CustomException {
+        if (ObjectUtils.isNotEmpty(idList)) {
+            String accountId = (account != null) ? account.getId() : null;
+            int n = 0;
+            n += storageDao.fakeDeleteById(idList, accountId);
+            n += storageFileDao.fakeDeleteById(idList, accountId);
+            n += storageFileHisDao.fakeDeleteById(idList, accountId);
+            log.debug("\t----> deleteNodeByIdList：删除了" + n + "条记录");
+        }
+    }
+
+    @Override
+    public void deleteNodeById(AccountDTO account, @NotNull String id, Current current) throws CustomException {
+        long t = System.currentTimeMillis();
+
+        List<String> idList = new ArrayList<>();
+        id = StringUtils.left(id, StringUtils.DEFAULT_ID_LENGTH);
+        if (StringUtils.isNotEmpty(id)) {
+            idList.add(id);
+        }
+        deleteNodeByIdList(account,idList,current);
+
+        log.info("===>deleteNodeById:" + (System.currentTimeMillis()-t) + "ms");
+    }
+
+    @Override
+    public void deleteNodeList(AccountDTO account, @NotNull List<SimpleNodeDTO> nodeList, Current current) throws CustomException {
+        long t = System.currentTimeMillis();
+
+        List<String> idList = new ArrayList<>();
+        for (SimpleNodeDTO node : nodeList) {
+            if (node.getIsDirectory()) {
+                List<SimpleNodeDTO> children = listChildren(node, current);
+                if (ObjectUtils.isNotEmpty(children)) {
+                    for (SimpleNodeDTO child : children) {
+                        idList.add(StringUtils.left(child.getId(), StringUtils.DEFAULT_ID_LENGTH));
+                    }
+                }
+            }
+            idList.add(StringUtils.left(node.getId(),StringUtils.DEFAULT_ID_LENGTH));
+        }
+        deleteNodeByIdList(account,idList,current);
+
+        log.info("\t----> deleteNodeList花费时间:" + (System.currentTimeMillis()-t) + "ms");
+    }
+
+    @Override
+    public void deleteNode(AccountDTO account, @NotNull SimpleNodeDTO node, Current current) throws CustomException {
+        if (StringUtils.isNotEmpty(node.getId())) {
+            List<SimpleNodeDTO> list = new ArrayList<>();
+            list.add(node);
+            deleteNodeList(account, list, current);
+        }
+    }
+
+    private boolean isRoot(@NotNull SimpleNodeDTO parent){
+        return StringUtils.isEmpty(parent.getId());
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listChild(@NotNull SimpleNodeDTO parent, Current current) throws CustomException {
+        if (isRoot(parent)) return listRoot(null,current);
+
+        CheckService.check(parent.getIsDirectory());
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setPid(parent.getId());
+        return listNode(query,current);
+
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listChildren(@NotNull SimpleNodeDTO parent, Current current) throws CustomException {
+        QueryNodeDTO nodeQuery = new QueryNodeDTO();
+        if (!isRoot(parent)) {
+            CheckService.check(parent.getIsDirectory());
+            QueryNodeInfoDTO infoQuery = new QueryNodeInfoDTO();
+            QueryNodeInfoTextDTO txtQuery = new QueryNodeInfoTextDTO();
+            infoQuery.setTextQuery(txtQuery);
+            FullNodeDTO parentInfo = getNodeInfo(parent, infoQuery, current);
+            CheckService.check((parentInfo != null) && (parentInfo.getTextInfo() != null) && (StringUtils.isNotEmpty(parentInfo.getTextInfo().getPath())));
+            nodeQuery.setParentPath(parentInfo.getTextInfo().getPath());
+        }
+        return listNode(nodeQuery,current);
+    }
+
+    @Override
+    public List<SimpleNodeDTO> listRoot(String accountId, Current current) throws CustomException {
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setPid("-");
+        query.setAccountId(accountId);
+        return listNode(query,current);
+    }
+
+
+    @Override
+    public SimpleNodeDTO updateNodeSimple(@NotNull SimpleNodeDTO src, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
+        SimpleNodeDTO parent = null;
+        if (StringUtils.isNotEmpty(request.getPid())){
+            parent = getNodeById(request.getPid(),current);
+        }
+        return updateNode(src,parent,request,current);
     }
 
     private void updateStorageUnion(@NotNull StorageEntityUnionDTO srcUnion){
@@ -899,78 +727,6 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return srcUnion;
     }
 
-    private StorageEntityUnionDTO getParentUnion(SimpleNodeDTO src, UpdateNodeDTO request){
-        StorageEntityUnionDTO nodeUnion = null;
-        String parentPath = StringUtils.formatPath(request.getParentPath());
-        String fullName = StringUtils.formatPath(request.getFullName());
-        if (!StringUtils.isEmpty(fullName) || !StringUtils.isEmpty(parentPath)) {
-            String pid = request.getPid();
-            String taskId = request.getTaskId();
-            Short parentTypeId = request.getParentTypeId();
-            //重新组合父目录和相对目录
-            if (StringUtils.isEmpty(fullName)) {
-                if (src != null) fullName = src.getName();
-            }
-            String path = fullName;
-            if (!StringUtils.isSame(StringUtils.left(fullName, 1), StringUtils.SPLIT_PATH)) {
-                if (StringUtils.isEmpty(parentPath)) {
-                    if (src != null) parentPath = StringUtils.getDirName(src.getPath());
-                }
-                path = parentPath;
-                if (!StringUtils.isEmpty(path)) path += StringUtils.SPLIT_PATH;
-                path += fullName;
-            } else {
-                parentPath = "";
-            }
-            String srcPath = null;
-            if (src != null) srcPath = src.getPath();
-            if (!StringUtils.isSame(path,srcPath) && StringUtils.contains(fullName, StringUtils.SPLIT_PATH)) {
-                String fullPath = parentPath;
-                if (!StringUtils.isEmpty(fullPath)) fullPath += StringUtils.SPLIT_PATH;
-                fullPath += fullName;
-                String parentFullPath = StringUtils.getDirName(fullPath);
-
-                SimpleNodeDTO rootNode = getNodeByFuzzyPathOld(parentFullPath);
-
-                if (rootNode != null) {
-                    QueryNodeDTO unionQuery = new QueryNodeDTO();
-                    unionQuery.setId(StringUtils.left(rootNode.getId(), StringUtils.DEFAULT_ID_LENGTH));
-                    nodeUnion = storageDao.quickSelectStorageEntityUnion(BeanUtils.cleanProperties(unionQuery));
-                    parentPath = rootNode.getPath();
-                    fullName = StringUtils.substring(fullPath, StringUtils.length(rootNode.getPath() + StringUtils.SPLIT_PATH));
-                    pid = rootNode.getId();
-                    taskId = rootNode.getTaskId();
-                    parentTypeId = rootNode.getTypeId();
-                }
-            } else {
-                if (src != null) pid = src.getPid();
-                if (!StringUtils.isEmpty(pid)){
-                    SimpleNodeDTO parentNode = getNodeByIdOld(pid);
-                    if (parentNode != null){
-                        QueryNodeDTO unionQuery = new QueryNodeDTO();
-                        unionQuery.setId(StringUtils.left(parentNode.getId(), StringUtils.DEFAULT_ID_LENGTH));
-                        nodeUnion = storageDao.quickSelectStorageEntityUnion(BeanUtils.cleanProperties(unionQuery));
-                        if (!StringUtils.isEmpty(parentPath)){
-                            parentPath = parentNode.getPath();
-                        }
-                        if ((src != null) && !StringUtils.isEmpty(fullName)){
-                            fullName = StringUtils.getFileName(fullName);
-                        }
-                        pid = parentNode.getId();
-                        taskId = parentNode.getTaskId();
-                        parentTypeId = parentNode.getTypeId();
-                    }
-                }
-            }
-            request.setParentPath(parentPath);
-            request.setFullName(fullName);
-            request.setPid(StringUtils.left(pid,StringUtils.DEFAULT_ID_LENGTH));
-            request.setTaskId(taskId);
-            request.setParentTypeId(parentTypeId);
-        }
-        return nodeUnion;
-    }
-
     private SimpleNodeDTO getNodeByFuzzyPathOld(String fuzzyPath){
         SimpleNodeDTO node = null;
         QueryNodeDTO query = new QueryNodeDTO();
@@ -1006,38 +762,6 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return list;
     }
 
-    @Override
-    public List<FileNodeDTO> listFileNodeInfo(@NotNull QueryNodeDTO query, boolean withHistory, Current current) {
-        if (withHistory){
-            return storageDao.listFileNodeWithHistory(query);
-        } else {
-            return storageDao.listFileNode(query);
-        }
-    }
-
-    @Override
-    public FileNodeDTO getFileNodeInfo(@NotNull SimpleNodeDTO node, boolean withHistory, Current current) {
-        FileNodeDTO fileNode;
-        if (withHistory) {
-            fileNode = storageDao.getFileNodeExtraWithHistory(StringUtils.left(node.getId(), StringUtils.DEFAULT_ID_LENGTH));
-        } else {
-            fileNode = storageDao.getFileNodeExtra(StringUtils.left(node.getId(), StringUtils.DEFAULT_ID_LENGTH));
-        }
-        if (fileNode != null){
-            fileNode.setBasic(node);
-        }
-        return fileNode;
-    }
-
-    @Override
-    @Deprecated
-    public FullNodeDTO getFullNodeInfo(@NotNull SimpleNodeDTO node, Current current) {
-        FullNodeDTO fullNode = storageDao.getNodeExtra(node.getTaskId());
-        if (fullNode != null){
-            fullNode.setBasic(node);
-        }
-        return fullNode;
-    }
 
     private boolean isOwner(AccountDTO account, StorageTreeEntity nodeEntity){
         assert (nodeEntity != null);
@@ -1084,76 +808,20 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return node;
     }
 
-
-    @Deprecated
-    private SimpleNodeDTO createNode(@NotNull UpdateNodeDTO request, boolean force, Current current){
-
-        long t = System.currentTimeMillis();
-
-        request = BeanUtils.cleanProperties(request);
-
-        StorageEntityUnionDTO parentUnion = getParentUnion(null,request);
-        Short typeId = request.getTypeId();
-        if ((ConstService.STORAGE_NODE_TYPE_UNKNOWN.equals(typeId)) || (ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN.equals(typeId))) {
-            Short parentTypeId = (parentUnion != null) ? Short.parseShort(parentUnion.getTypeId()) : ConstService.STORAGE_NODE_TYPE_DIR_DESIGN;
-            if (ConstService.STORAGE_NODE_TYPE_UNKNOWN.equals(typeId)) {
-                typeId = Short.parseShort(ConstService.getFileType(parentTypeId.toString()));
-            } else {
-                typeId = Short.parseShort(ConstService.getPathType(parentTypeId.toString()));
-            }
-        }
-        Long fileLength = request.getFileLength();
-        String lastModifyUserId = request.getOwnerUserId();
-        String pid = StringUtils.left(request.getPid(),StringUtils.DEFAULT_ID_LENGTH);
-        String taskId = request.getTaskId();
-        if (parentUnion != null) {
-            pid = parentUnion.getId();
-            taskId = parentUnion.getTaskId();
-        }
-
-        String fullName = StringUtils.formatPath(request.getFullName());
-        if (!StringUtils.isEmpty(fullName) && fullName.contains(StringUtils.SPLIT_PATH)) {
-            //如果fullName包含路径则创建中间路径节点
-            pid = insertPathNodeList(parentUnion,request,fullName,pid,taskId,lastModifyUserId);
-        }
-        String storagePath = fullName;
-        if ((storagePath != null) && (parentUnion != null)){
-            storagePath = parentUnion.getPath() + StringUtils.SPLIT_PATH + fullName;
-        }
-        StorageEntityUnionDTO nodeUnion = BeanUtils.createCleanFrom(request,StorageEntityUnionDTO.class);
-        if (!ConstService.isDirectoryType(typeId.toString())){
-            StorageFileEntity fileEntity = BeanUtils.createCleanFrom(nodeUnion,StorageFileEntity.class);
-            nodeUnion.setFileEntity(fileEntity);
-            if (ConstService.isHistoryType(typeId.toString())){
-                StorageFileHisEntity hisEntity = BeanUtils.createCleanFrom(nodeUnion,StorageFileHisEntity.class);
-                nodeUnion.setHisEntity(hisEntity);
-            }
-        }
-        nodeUnion = updateStorageUnion(nodeUnion,request,pid,taskId,storagePath,lastModifyUserId,fileLength,typeId);
-        insertStorageUnion(nodeUnion);
-
-        String path = StringUtils.formatPath(request.getParentPath() + StringUtils.SPLIT_PATH + nodeUnion.getPath());
-        return convertToSimpleNodeDTO(nodeUnion,path);
-    }
-
     @Override
     public SimpleNodeDTO createNode(SimpleNodeDTO parent, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
 
         long t = System.currentTimeMillis();
 
         request = BeanUtils.cleanProperties(request);
-        if (parent != null){
-            request.setPid(parent.getId());
-        }
 
         //取父节点信息
-        StorageTreeEntity parentEntity = getParentEntity(request,current);
+        StorageTreeEntity parentEntity = getParentEntity(parent,request,current);
 
         //初始化新建节点参数
         StorageEntityUnionDTO nodeUnion = BeanUtils.createCleanFrom(request,StorageEntityUnionDTO.class);
         nodeUnion.reset();
         nodeUnion.setNodeName(StringUtils.getFileName(request.getPath()));
-        if (StringUtils.isEmpty(nodeUnion.getTaskId()) && (parent != null)) nodeUnion.setTaskId(parent.getTaskId());
         if (parentEntity != null) {
             nodeUnion.setPid(parentEntity.getId());
             String parentPath = parentEntity.getPath();
@@ -1164,6 +832,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             } else if (ConstService.isUnknownDirectoryType(nodeUnion.getTypeId())) {
                 nodeUnion.setTypeId(ConstService.getPathType(parentEntity.getTypeId()));
             }
+            nodeUnion.setTaskId(parentEntity.getTaskId());
         } else {
             nodeUnion.setPid(null);
             nodeUnion.setPath(nodeUnion.getNodeName());
@@ -1172,9 +841,8 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             } else if (ConstService.isUnknownDirectoryType(nodeUnion.getTypeId())) {
                 if (parent != null) nodeUnion.setTypeId(ConstService.getPathType((new Short(parent.getTypeId())).toString()));
             }
+            nodeUnion.setTaskId(request.getTaskId());
         }
-        nodeUnion.setLastModifyUserId(request.getAccountId());
-        nodeUnion.setLastModifyRoleId(request.getAccountRoleId());
 
         if (!ConstService.isDirectoryType(nodeUnion.getTypeId()) && isFileInfoValid(request)){
             StorageFileEntity fileEntity = BeanUtils.createCleanFrom(nodeUnion,StorageFileEntity.class);
@@ -1204,16 +872,53 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return createNode(null,request,current);
     }
 
-    private StorageTreeEntity getParentEntity(@NotNull UpdateNodeDTO request, Current current) throws CustomException {
-        SimpleNodeDTO parent = getParentNode(request,current);
+    private StorageTreeEntity getParentEntity(SimpleNodeDTO parent, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
+        if ((parent == null) && (StringUtils.isNotEmpty(request.getPath()))) {
+            String parentPath = StringUtils.getDirName(request.getPath());
+            if (StringUtils.isNotEmpty(parentPath)) {
+                if (!StringUtils.isStartWith(parentPath, StringUtils.SPLIT_PATH)) {
+                    parentPath = StringUtils.SPLIT_PATH + parentPath;
+                }
+            }
+            parent = getNodeByFuzzyPath(parentPath,current);
+            if (parent != null) {
+                QueryNodeInfoDTO query = new QueryNodeInfoDTO();
+                QueryNodeInfoTextDTO txtQuery = new QueryNodeInfoTextDTO();
+                query.setTextQuery(txtQuery);
+                FullNodeDTO parentFullInfo = getNodeInfo(parent, query, current);
+                CheckService.check((parentFullInfo != null) && (parentFullInfo.getTextInfo() != null));
+                String path = StringUtils.substring(parentPath, StringUtils.length(parentFullInfo.getTextInfo().getPath()) + StringUtils.SPLIT_PATH.length());
+                if (StringUtils.isNotEmpty(path)) {
+                    path += StringUtils.SPLIT_PATH + StringUtils.getFileName(request.getPath());
+                } else {
+                    path = StringUtils.getFileName(request.getPath());
+                }
+                request.setPath(path);
+            }
+        }
         String dirName = StringUtils.getDirName(request.getPath());
-        StorageTreeEntity parentEntity = insertPathNodeList(parent, dirName, request.getAccountId(), request.getAccountRoleId());
+        if ((parent != null) && StringUtils.isEmpty(parent.getTaskId())){
+            parent.setTaskId(request.getTaskId());
+        }
+        StorageTreeEntity parentEntity = insertPathNodeList(parent, dirName, request.getLastModifyUserId(), request.getLastModifyRoleId());
         if ((parentEntity != null) && StringUtils.isNotEmpty(request.getTaskId())){
             parentEntity.setTaskId(request.getTaskId());
         }
         return parentEntity;
     }
 
+    @Deprecated
+    private StorageTreeEntity getParentEntity(@NotNull UpdateNodeDTO request, Current current) throws CustomException {
+        SimpleNodeDTO parent = getParentNode(request,current);
+        String dirName = StringUtils.getDirName(request.getPath());
+        StorageTreeEntity parentEntity = insertPathNodeList(parent, dirName, request.getLastModifyUserId(), request.getLastModifyRoleId());
+        if ((parentEntity != null) && StringUtils.isNotEmpty(request.getTaskId())){
+            parentEntity.setTaskId(request.getTaskId());
+        }
+        return parentEntity;
+    }
+
+    @Deprecated
     private SimpleNodeDTO getParentNode(@NotNull UpdateNodeDTO request, Current current) throws CustomException {
         SimpleNodeDTO parent = null;
         if (StringUtils.isNotEmpty(request.getPid())) {
@@ -1266,6 +971,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Override
     public SimpleNodeDTO getNodeByFuzzyPath(String fuzzyPath, Current current) throws CustomException {
         if (StringUtils.isEmpty(fuzzyPath)) return null;
+        if (!StringUtils.isStartWith(fuzzyPath, StringUtils.SPLIT_PATH)) {
+            fuzzyPath = StringUtils.SPLIT_PATH + fuzzyPath;
+        }
         QueryNodeDTO query = new QueryNodeDTO();
         query.setFuzzyPath(StringUtils.formatPath(fuzzyPath));
         List<SimpleNodeDTO> list = listNode(query, current);

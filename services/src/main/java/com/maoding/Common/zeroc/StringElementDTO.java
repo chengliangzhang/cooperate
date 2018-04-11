@@ -47,28 +47,28 @@ public class StringElementDTO implements java.lang.Cloneable,
         this.projectName = projectName;
     }
 
-    public String classicId;
+    public String rangeId;
 
-    public String getClassicId()
+    public String getRangeId()
     {
-        return classicId;
+        return rangeId;
     }
 
-    public void setClassicId(String classicId)
+    public void setRangeId(String rangeId)
     {
-        this.classicId = classicId;
+        this.rangeId = rangeId;
     }
 
-    public String classicName;
+    public String rangeName;
 
-    public String getClassicName()
+    public String getRangeName()
     {
-        return classicName;
+        return rangeName;
     }
 
-    public void setClassicName(String classicName)
+    public void setRangeName(String rangeName)
     {
-        this.classicName = classicName;
+        this.rangeName = rangeName;
     }
 
     public String issueId;
@@ -191,6 +191,30 @@ public class StringElementDTO implements java.lang.Cloneable,
         this.userName = userName;
     }
 
+    public String ownerUserId;
+
+    public String getOwnerUserId()
+    {
+        return ownerUserId;
+    }
+
+    public void setOwnerUserId(String ownerUserId)
+    {
+        this.ownerUserId = ownerUserId;
+    }
+
+    public String ownerUserName;
+
+    public String getOwnerUserName()
+    {
+        return ownerUserName;
+    }
+
+    public void setOwnerUserName(String ownerUserName)
+    {
+        this.ownerUserName = ownerUserName;
+    }
+
     public String actionId;
 
     public String getActionId()
@@ -251,12 +275,24 @@ public class StringElementDTO implements java.lang.Cloneable,
         this.srcPath = srcPath;
     }
 
+    public String skyPid;
+
+    public String getSkyPid()
+    {
+        return skyPid;
+    }
+
+    public void setSkyPid(String skyPid)
+    {
+        this.skyPid = skyPid;
+    }
+
     public StringElementDTO()
     {
         this.projectId = "";
         this.projectName = "";
-        this.classicId = "";
-        this.classicName = "";
+        this.rangeId = "";
+        this.rangeName = "";
         this.issueId = "";
         this.issueName = "";
         this.issuePath = "";
@@ -267,19 +303,22 @@ public class StringElementDTO implements java.lang.Cloneable,
         this.companyName = "";
         this.userId = "";
         this.userName = "";
+        this.ownerUserId = "";
+        this.ownerUserName = "";
         this.actionId = "";
         this.actionName = "";
         this.majorName = "";
         this.fileVersion = "";
         this.srcPath = "";
+        this.skyPid = "";
     }
 
-    public StringElementDTO(String projectId, String projectName, String classicId, String classicName, String issueId, String issueName, String issuePath, String taskId, String taskName, String taskPath, String companyId, String companyName, String userId, String userName, String actionId, String actionName, String majorName, String fileVersion, String srcPath)
+    public StringElementDTO(String projectId, String projectName, String rangeId, String rangeName, String issueId, String issueName, String issuePath, String taskId, String taskName, String taskPath, String companyId, String companyName, String userId, String userName, String ownerUserId, String ownerUserName, String actionId, String actionName, String majorName, String fileVersion, String srcPath, String skyPid)
     {
         this.projectId = projectId;
         this.projectName = projectName;
-        this.classicId = classicId;
-        this.classicName = classicName;
+        this.rangeId = rangeId;
+        this.rangeName = rangeName;
         this.issueId = issueId;
         this.issueName = issueName;
         this.issuePath = issuePath;
@@ -290,11 +329,14 @@ public class StringElementDTO implements java.lang.Cloneable,
         this.companyName = companyName;
         this.userId = userId;
         this.userName = userName;
+        this.ownerUserId = ownerUserId;
+        this.ownerUserName = ownerUserName;
         this.actionId = actionId;
         this.actionName = actionName;
         this.majorName = majorName;
         this.fileVersion = fileVersion;
         this.srcPath = srcPath;
+        this.skyPid = skyPid;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -325,16 +367,16 @@ public class StringElementDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.classicId != r.classicId)
+            if(this.rangeId != r.rangeId)
             {
-                if(this.classicId == null || r.classicId == null || !this.classicId.equals(r.classicId))
+                if(this.rangeId == null || r.rangeId == null || !this.rangeId.equals(r.rangeId))
                 {
                     return false;
                 }
             }
-            if(this.classicName != r.classicName)
+            if(this.rangeName != r.rangeName)
             {
-                if(this.classicName == null || r.classicName == null || !this.classicName.equals(r.classicName))
+                if(this.rangeName == null || r.rangeName == null || !this.rangeName.equals(r.rangeName))
                 {
                     return false;
                 }
@@ -409,6 +451,20 @@ public class StringElementDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.ownerUserId != r.ownerUserId)
+            {
+                if(this.ownerUserId == null || r.ownerUserId == null || !this.ownerUserId.equals(r.ownerUserId))
+                {
+                    return false;
+                }
+            }
+            if(this.ownerUserName != r.ownerUserName)
+            {
+                if(this.ownerUserName == null || r.ownerUserName == null || !this.ownerUserName.equals(r.ownerUserName))
+                {
+                    return false;
+                }
+            }
             if(this.actionId != r.actionId)
             {
                 if(this.actionId == null || r.actionId == null || !this.actionId.equals(r.actionId))
@@ -444,6 +500,13 @@ public class StringElementDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.skyPid != r.skyPid)
+            {
+                if(this.skyPid == null || r.skyPid == null || !this.skyPid.equals(r.skyPid))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
@@ -457,8 +520,8 @@ public class StringElementDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::StringElementDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, classicId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, classicName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, rangeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, rangeName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issueId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issueName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issuePath);
@@ -469,11 +532,14 @@ public class StringElementDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileVersion);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, srcPath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, skyPid);
         return h_;
     }
 
@@ -495,8 +561,8 @@ public class StringElementDTO implements java.lang.Cloneable,
     {
         ostr.writeString(this.projectId);
         ostr.writeString(this.projectName);
-        ostr.writeString(this.classicId);
-        ostr.writeString(this.classicName);
+        ostr.writeString(this.rangeId);
+        ostr.writeString(this.rangeName);
         ostr.writeString(this.issueId);
         ostr.writeString(this.issueName);
         ostr.writeString(this.issuePath);
@@ -507,19 +573,22 @@ public class StringElementDTO implements java.lang.Cloneable,
         ostr.writeString(this.companyName);
         ostr.writeString(this.userId);
         ostr.writeString(this.userName);
+        ostr.writeString(this.ownerUserId);
+        ostr.writeString(this.ownerUserName);
         ostr.writeString(this.actionId);
         ostr.writeString(this.actionName);
         ostr.writeString(this.majorName);
         ostr.writeString(this.fileVersion);
         ostr.writeString(this.srcPath);
+        ostr.writeString(this.skyPid);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.projectId = istr.readString();
         this.projectName = istr.readString();
-        this.classicId = istr.readString();
-        this.classicName = istr.readString();
+        this.rangeId = istr.readString();
+        this.rangeName = istr.readString();
         this.issueId = istr.readString();
         this.issueName = istr.readString();
         this.issuePath = istr.readString();
@@ -530,11 +599,14 @@ public class StringElementDTO implements java.lang.Cloneable,
         this.companyName = istr.readString();
         this.userId = istr.readString();
         this.userName = istr.readString();
+        this.ownerUserId = istr.readString();
+        this.ownerUserName = istr.readString();
         this.actionId = istr.readString();
         this.actionName = istr.readString();
         this.majorName = istr.readString();
         this.fileVersion = istr.readString();
         this.srcPath = istr.readString();
+        this.skyPid = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, StringElementDTO v)
@@ -589,5 +661,5 @@ public class StringElementDTO implements java.lang.Cloneable,
 
     private static final StringElementDTO _nullMarshalValue = new StringElementDTO();
 
-    public static final long serialVersionUID = 2033303400L;
+    public static final long serialVersionUID = -1031526343L;
 }

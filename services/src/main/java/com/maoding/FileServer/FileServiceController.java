@@ -1,7 +1,6 @@
 package com.maoding.FileServer;
 
 import com.maoding.Base.BaseController;
-import com.maoding.CoreFileServer.MaodingWeb.WebFileServer;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,8 +40,6 @@ public class FileServiceController extends BaseController {
 
     @RequestMapping(value = "/testUpload", method = RequestMethod.GET)
     public void testUpload() {
-        WebFileServer f = new WebFileServer();
-        f.coreWriteFile(null);
     }
 
 //    @RequestMapping(value = "/download", method = RequestMethod.POST)

@@ -3,7 +3,7 @@
 <mapper namespace="com.maoding.Storage.Dao.StorageTreeDao">
     <select id="selectByTaskIdAndFuzzyPath" resultType="com.maoding.Storage.Entity.StorageTreeEntity" parameterType="java.util.Map">
         select storage_tree.*
-        from maoding_storage_tree storage_tree
+        from md_tree_storage storage_tree
         where (storage_tree.deleted = 0)
           <if test="taskId != null">
               and (storage_tree.task_id = #{taskId})
@@ -15,8 +15,8 @@
         limit 1
     </select>
     <update id="updateTaskIdByPid" parameterType="java.util.Map">
-        update maoding_storage_tree father
-        left join maoding_storage_tree children on (children.deleted = 0
+        update md_tree_storage father
+        left join md_tree_storage children on (children.deleted = 0
               and children.task_id = father.task_id
               and children.path like concat(father.path,'/%'))
         set children.task_id = #{taskId}

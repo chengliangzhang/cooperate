@@ -45,6 +45,11 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
+    public List<NodeFileDTO> listNodeFile(QueryNodeFileDTO query) throws CustomException {
+        return getStorageService().listNodeFile(query,null);
+    }
+
+    @Override
     public NodeFileDTO createNodeFile(UpdateNodeFileDTO request) throws CustomException {
         return getStorageService().createNodeFile(request,null);
     }
@@ -75,13 +80,13 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
-    public SimpleNodeDTO createNodeWithParent(SimpleNodeDTO parent, UpdateNodeDTO request) throws CustomException {
-        return getStorageService().createNodeWithParent(parent,request,null);
+    public NodeFileDTO updateNodeFile(NodeFileDTO src, UpdateNodeFileDTO request) throws CustomException {
+        return getStorageService().updateNodeFile(src,request,null);
     }
 
     @Override
-    public SimpleNodeDTO updateNodeWithParent(SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request) throws CustomException {
-        return getStorageService().updateNodeWithParent(src,parent,request,null);
+    public SimpleNodeDTO updateNode(SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request) throws CustomException {
+        return getStorageService().updateNode(src,parent,request,null);
     }
 
     @Override
@@ -90,23 +95,13 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
-    public SimpleNodeDTO updateNode(SimpleNodeDTO src, UpdateNodeDTO request) throws CustomException {
-        return getStorageService().updateNode(src,request,null);
+    public SimpleNodeDTO updateNodeSimple(SimpleNodeDTO src, UpdateNodeDTO request) throws CustomException {
+        return getStorageService().updateNodeSimple(src,request,null);
     }
 
     @Override
     public List<SimpleNodeDTO> listNode(QueryNodeDTO query) throws CustomException{
         return getStorageService().listNode(query,null);
-    }
-
-    @Override
-    public List<FileNodeDTO> listFileNodeInfo(QueryNodeDTO query, boolean withHistory) {
-        return getStorageService().listFileNodeInfo(query,withHistory,null);
-    }
-
-    @Override
-    public FileNodeDTO getFileNodeInfo(SimpleNodeDTO node, boolean withHistory) {
-        return getStorageService().getFileNodeInfo(node,withHistory,null);
     }
 
 
@@ -115,11 +110,6 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
         getStorageService().deleteNode(account,node,null);
     }
 
-
-    @Override
-    public FullNodeDTO getFullNodeInfo(SimpleNodeDTO node) {
-        return getStorageService().getFullNodeInfo(node,null);
-    }
 
     @Override
     public List<SimpleNodeDTO> listOldNode(QueryNodeDTO query) throws CustomException  {

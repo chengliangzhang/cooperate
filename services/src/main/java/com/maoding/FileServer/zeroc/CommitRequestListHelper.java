@@ -42,7 +42,7 @@ public final class CommitRequestListHelper
     {
         final java.util.List<CommitRequestDTO> v;
         v = new java.util.ArrayList<CommitRequestDTO>();
-        final int len0 = istr.readAndCheckSeqSize(11);
+        final int len0 = istr.readAndCheckSeqSize(12);
         for(int i0 = 0; i0 < len0; i0++)
         {
             CommitRequestDTO elem;

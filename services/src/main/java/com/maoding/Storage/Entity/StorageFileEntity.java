@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * 日    期 : 2017/11/16 22:12
  * 描    述 :
  */
-@Table(name = "maoding_storage_file")
+@Table(name = "md_list_storage_file")
 public class StorageFileEntity extends BaseEntity {
     /** 文件服务器类型 */
     @Column

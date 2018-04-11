@@ -4,6 +4,7 @@ import com.zeroc.Ice.Current;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -71,8 +72,13 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /** 判断目录是否根目录 */
-    public static Boolean isRootPath(String path){
+    public static boolean isRootPath(String path){
         return isSame(SPLIT_PATH,formatPath(path));
+    }
+
+    /** 判断目录是否绝对路径 */
+    public static boolean isAbsolutePath(String path){
+        return isSame(SPLIT_PATH,left(formatPath(path),SPLIT_PATH.length()));
     }
 
     /** 获取类似于-p 10000的参数值 */
@@ -187,7 +193,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     public static String right(String str,String split){
-        if ((str == null) || (split == null) || (!str.contains(split))) return str;
+        if ((str == null) || (split == null) || (!str.contains(split))) return "";
         return (str.substring(str.indexOf(split) + split.length()));
     }
 
@@ -263,5 +269,18 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         if (StringUtils.isEmpty(serverAddress)) return null;
         String[] s = StringUtils.split(serverAddress,"|");
         return s[0];
+    }
+
+    public static String addTimeStamp(@NotNull String str) {
+        if (str.contains(SPLIT_NAME_PART)) {
+            int timeStampLen = TIME_STAMP_FORMAT.length();
+            int len = str.length();
+            int n = str.lastIndexOf(SPLIT_NAME_PART);
+            if (timeStampLen == (len - n - SPLIT_NAME_PART.length())){
+                str = str.substring(0,n);
+            }
+        }
+        str += SPLIT_NAME_PART + StringUtils.getTimeStamp(TIME_STAMP_FORMAT);
+        return str;
     }
 }

@@ -42,7 +42,7 @@ public final class StringElementListHelper
     {
         final java.util.List<StringElementDTO> v;
         v = new java.util.ArrayList<StringElementDTO>();
-        final int len0 = istr.readAndCheckSeqSize(19);
+        final int len0 = istr.readAndCheckSeqSize(22);
         for(int i0 = 0; i0 < len0; i0++)
         {
             StringElementDTO elem;

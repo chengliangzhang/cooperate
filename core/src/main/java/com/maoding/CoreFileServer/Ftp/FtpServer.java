@@ -51,7 +51,6 @@ public class FtpServer implements CoreFileServer {
      * @param src
      * @param callbackSetting
      */
-    @Override
     @SuppressWarnings("deprecation")
     public BasicFileRequestDTO getUploadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
         //补全参数
@@ -78,7 +77,6 @@ public class FtpServer implements CoreFileServer {
      * @param src
      * @param callbackSetting
      */
-    @Override
     @SuppressWarnings("deprecation")
     public BasicFileRequestDTO getDownloadRequest(CoreFileDTO src, Integer mode, BasicCallbackDTO callbackSetting) {
         //检查参数
@@ -199,7 +197,6 @@ public class FtpServer implements CoreFileServer {
      *
      * @param src
      */
-    @Override
     public Boolean coreIsExist(CoreFileDTO src) {
         FTPFile[] files;
         boolean status = false;
@@ -227,7 +224,6 @@ public class FtpServer implements CoreFileServer {
      *
      * @param scope
      */
-    @Override
     public List listFile(String scope) {
         List fileList = new ArrayList();
         FTPFile[] files;
@@ -249,20 +245,12 @@ public class FtpServer implements CoreFileServer {
         return fileList;
     }
 
-    /**
-     * 获取文件服务器上的所有空间
-     */
-    @Override
-    public List<String> listScope() {
-        return null;
-    }
 
     /**
      * 在文件服务器上删除指定文件
      *
      * @param src
      */
-    @Override
     public void coreDeleteFile(CoreFileDTO src) {
         try {
             //切换目录
