@@ -215,7 +215,7 @@ public class FileServiceImplTest {
 
     private SimpleNodeDTO getLocalDir() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("DC503075EEEE4CABB8878ACB21D2C9D3-1");
+        query.setId("FACF367A52EE46EC9474137B00B8C50E-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
@@ -229,7 +229,7 @@ public class FileServiceImplTest {
 
     private SimpleNodeDTO getLocalNode() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("6CA3B98693D846FFB00D73311165E7FB-1");
+        query.setId("CDA36B2D65A64E959FC97555B1F2ACD2-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
@@ -409,7 +409,7 @@ public class FileServiceImplTest {
     @Test
     public void testCreateNode() throws Exception {
 //        createLocalDirectory();
-//        createLocalFile();
+        createLocalFile();
     }
 
     private SimpleNodeDTO createRemoteDirectory() throws Exception{
@@ -435,7 +435,7 @@ public class FileServiceImplTest {
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setIsDirectory(true);
         request.setFullName("father/child/child3");
-        return fileService.createNodeForAccount(getLocalAccount(), getLocalDir(),request,null);
+        return fileService.createNodeForAccount(getLocalAccount(), getLocalTask(),request,null);
     }
 
     /** action before each test */

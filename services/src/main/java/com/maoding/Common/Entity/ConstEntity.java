@@ -1,5 +1,7 @@
 package com.maoding.Common.Entity;
 
+import com.maoding.CoreUtils.StringUtils;
+
 import javax.persistence.Column;
 import javax.persistence.Table;
 
@@ -9,18 +11,18 @@ import javax.persistence.Table;
  * 日    期 : 2018/1/12 19:14
  * 描    述 :
  */
-@Table(name = "maoding_const")
+@Table(name = "md_const")
 public class ConstEntity {
     /** 分类id */
     @Column
     private Short classicId;
     /** 值id */
     @Column
-    private Short valueId;
-    /** 基本定义 */
-    private String content;
-    /** 扩展定义 */
-    private String contentExtra;
+    private Short codeId;
+    /** 显示信息 */
+    private String title;
+    /** 控制定义 */
+    private String extra;
 
     public Short getClassicId() {
         return classicId;
@@ -30,27 +32,35 @@ public class ConstEntity {
         this.classicId = classicId;
     }
 
-    public Short getValueId() {
-        return valueId;
+    public Short getCodeId() {
+        return codeId;
     }
 
-    public void setValueId(Short valueId) {
-        this.valueId = valueId;
+    public void setCodeId(Short codeId) {
+        this.codeId = codeId;
     }
 
-    public String getContent() {
-        return content;
+    public String getTitle() {
+        return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public String getTitle(int n) {
+        return StringUtils.getContent(title,n);
     }
 
-    public String getContentExtra() {
-        return contentExtra;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setContentExtra(String contentExtra) {
-        this.contentExtra = contentExtra;
+    public String getExtra() {
+        return extra;
+    }
+
+    public String getExtra(int n) {
+        return StringUtils.getContent(extra,n);
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
     }
 }

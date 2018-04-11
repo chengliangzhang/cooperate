@@ -63,7 +63,7 @@
 //        MessageDTO msg = new MessageDTO();
 //        msg.setUserId("user3");
 //        msg.setTitle("title");
-//        msg.setContent("message");
+//        msg.setContent_Notice("message");
 //
 //        NoticeClientPrx client1 = NoticeClientImpl.createNewClient("192.168.13.140","1");
 ////        NoticeClientPrx client2 = NoticeClientImpl.createNewClient("192.168.13.140","2");

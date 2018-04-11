@@ -41,6 +41,7 @@ druid:
     # 日志用的filter:log4j
     # 防御SQL注入的filter:wall
     filters: stat
+    useSSL: false
 
 # ===================================================================
 # Mybatis

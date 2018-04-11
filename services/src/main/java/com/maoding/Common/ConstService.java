@@ -147,7 +147,7 @@ public class ConstService {
             List<ConstEntity> constList = constDao.selectAll();
             for (ConstEntity e : constList){
                 Map<Short, ConstEntity> vMap = cMap.computeIfAbsent(e.getClassicId(), k -> new HashMap<>());
-                vMap.put(e.getValueId(),e);
+                vMap.put(e.getCodeId(),e);
             }
             constMap = cMap;
         }
@@ -165,7 +165,7 @@ public class ConstService {
             for(Map.Entry<Short,ConstEntity> entry : vMap.entrySet()){
                 IdNameDTO dto = new IdNameDTO();
                 dto.setId(entry.getKey().toString());
-                dto.setName(entry.getValue().getContent());
+                dto.setName(entry.getValue().getTitle());
                 list.add(dto);
             }
         }
@@ -177,7 +177,7 @@ public class ConstService {
         return (vMap == null) ? null : vMap.get((valueId != null) ? valueId : 0);
     }
 
-    public static Short getMaxValueId(Short classicId){
+    public static Short getMaxCodeId(Short classicId){
         Map<Short,ConstEntity> vMap = getConstMap(classicId);
         Short v = 0;
         if (vMap != null) {
@@ -188,14 +188,56 @@ public class ConstService {
         return v;
     }
 
-    public static String getContent(Short classicId, Short valueId){
-        ConstEntity e = getConstEntity(classicId,valueId);
-        return (e != null) ? e.getContent() : null;
+    public static String getTitle(Short classicId, Short codeId){
+        return getTitle(classicId,codeId,1);
     }
 
-    public static String getExtra(Short classicId, Short valueId){
-        ConstEntity e = getConstEntity(classicId,valueId);
-        return (e != null) ? e.getContentExtra() : null;
+    public static String getTitle(Short classicId, Short codeId, int n){
+        return getTitle(classicId,codeId,null,n);
+    }
+
+    public static String getTitle(Short classicId, Short codeId, StringElementDTO stringElement){
+        return getTitle(classicId,codeId,null,1);
+    }
+
+    public static String getTitle(Short classicId, Short codeId, StringElementDTO stringElement, int n){
+        String s = null;
+        ConstEntity e = getConstEntity(classicId,codeId);
+        if (e != null){
+            s = e.getTitle(n);
+            if (stringElement != null) {
+                s = convertString(s,stringElement);
+            }
+        }
+        return s;
+    }
+
+    public static String getExtra(Short classicId, Short codeId){
+        return getExtra(classicId,codeId,1);
+    }
+
+    public static String getExtra(Short classicId, Short codeId, int n){
+        return getExtra(classicId,codeId,null,n);
+    }
+
+    public static String getExtra(Short classicId, Short codeId, StringElementDTO stringElement){
+        return getExtra(classicId,codeId,stringElement,1);
+    }
+
+    public static String getExtra(Short classicId, Short codeId, StringElementDTO stringElement, int n){
+        String s = null;
+        ConstEntity e = getConstEntity(classicId,codeId);
+        if (e != null){
+            s = e.getExtra(n);
+            if (stringElement != null) {
+                s = convertString(s,stringElement);
+            }
+        }
+        return s;
+    }
+
+    public static boolean isSpecial(String attr, int index){
+        return (attr != null) && (attr.length() > index) && (attr.charAt(index) != '0');
     }
 
     public static List<IdNameDTO> listMajor(){
@@ -206,44 +248,28 @@ public class ConstService {
         return listName(CLASSIC_TYPE_ACTION);
     }
 
-    public static String getExtraField(Short classicId, Short valueId, Integer n){
-        String extra = getExtra(classicId,valueId);
-        String field = null;
-        if (!StringUtils.isEmpty(extra)){
-            assert (extra != null);
-            String[] extraElement = extra.split(ConstService.SPLIT_EXTRA);
-            if (n < extraElement.length){
-                field = extraElement[n];
-            }
-        }
-        return field;
-    }
-
     public static String getRangeName(Short rangeId){
-        return getContent(CLASSIC_TYPE_STORAGE_RANGE,rangeId);
+        return getTitle(CLASSIC_TYPE_STORAGE_RANGE,rangeId);
     }
 
     public static String getRangeId(@NotNull String typeId){
-        if (!isCustomType(typeId)) {
-            Short rangeId = null;
-            Map<Short, ConstEntity> rangeMap = getConstMap(CLASSIC_TYPE_STORAGE_RANGE);
-            for (Map.Entry<Short, ConstEntity> rangeEntry : rangeMap.entrySet()) {
-                ConstEntity range = rangeEntry.getValue();
-                if (range != null) {
-                    String extra = range.getContentExtra();
-                    if ((extra != null) && (extra.contains(":" + typeId + ":"))) {
-                        rangeId = range.getValueId();
-                    }
+        Short rangeId = null;
+        Map<Short, ConstEntity> rangeMap = getConstMap(CLASSIC_TYPE_STORAGE_RANGE);
+        for (Map.Entry<Short, ConstEntity> rangeEntry : rangeMap.entrySet()) {
+            ConstEntity range = rangeEntry.getValue();
+            if (range != null) {
+                String typeIds = range.getExtra(2);
+                if ((typeIds != null) && (typeIds.contains(typeId))) {
+                    rangeId = range.getCodeId();
+                    break;
                 }
             }
-            return (rangeId != null) ? rangeId.toString() : STORAGE_RANGE_TYPE_UNKNOWN.toString();
-        } else {
-            return STORAGE_RANGE_TYPE_UNKNOWN.toString();
         }
+        return (rangeId != null) ? rangeId.toString() : STORAGE_RANGE_TYPE_UNKNOWN.toString();
     }
 
     public static String getActionName(Short actionTypeId){
-        return getContent(CLASSIC_TYPE_ACTION,actionTypeId);
+        return getTitle(CLASSIC_TYPE_ACTION,actionTypeId);
     }
 
     public static String getTopicPrefix(Short noticeTypeId) {
@@ -251,51 +277,53 @@ public class ConstService {
         if (StringUtils.isEmpty(sField)) return "";
         return sField.contains("{") ? sField.substring(0,sField.indexOf("{")) : sField;
     }
+
     public static String getNoticeTopic(Short noticeTypeId) {
-        return getExtraField(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId,0);
+        return getNoticeTopic(noticeTypeId,null);
+    }
+
+    public static String getNoticeTopic(Short noticeTypeId, StringElementDTO stringElement) {
+        return getExtra(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId,stringElement,1);
     }
 
     public static String getNoticeTitle(Short noticeTypeId) {
-        return getExtraField(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId,1);
+        return getExtra(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId,2);
     }
 
     public static String getNoticeContent(Short noticeTypeId) {
-        return getExtraField(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId,2);
+        return getNoticeContent(noticeTypeId,null);
+    }
+
+    public static String getNoticeContent(Short noticeTypeId, StringElementDTO stringElement) {
+        return getExtra(CLASSIC_TYPE_NOTICE_TYPE,noticeTypeId, stringElement,3);
     }
 
     public static Short getActionNodeTypeId(@NotNull Short actionTypeId){
-        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,0);
-        if (StringUtils.isEmpty(sField)) return STORAGE_NODE_TYPE_UNKNOWN;
-        else return Short.parseShort(StringUtils.left(sField,":"));
+        return Short.parseShort(getExtra(CLASSIC_TYPE_ACTION,actionTypeId,1));
     }
 
     public static String getActionNodePath(@NotNull Short actionTypeId){
-        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,0);
-        return StringUtils.right(sField,":");
+        return getActionNodePath(actionTypeId,null);
     }
 
-    public static String getActionNodePath(@NotNull Short actionTypeId, @NotNull StringElementDTO stringElement){
-        return StringUtils.formatPath(convertString(getActionNodePath(actionTypeId),stringElement));
+    public static String getActionNodePath(@NotNull Short actionTypeId, StringElementDTO stringElement){
+        return getExtra(CLASSIC_TYPE_ACTION,actionTypeId,stringElement,2);
     }
 
     public static Short getActionFileServerTypeId(@NotNull Short actionTypeId){
-        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,1);
-        if (StringUtils.isEmpty(sField)) return FILE_SERVER_TYPE_UNKNOWN;
-        else return Short.parseShort(StringUtils.left(sField,":"));
+        return Short.parseShort(getExtra(CLASSIC_TYPE_ACTION,actionTypeId,3));
     }
 
     public static String getActionFileServerAddress(@NotNull Short actionTypeId){
-        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,1);
-        return StringUtils.right(sField,":");
+        return getActionFileServerAddress(actionTypeId,null);
     }
 
     public static String getActionFileServerAddress(@NotNull Short actionTypeId, @NotNull StringElementDTO stringElement){
-        return convertString(getActionFileServerAddress(actionTypeId),stringElement);
+        return getExtra(CLASSIC_TYPE_ACTION,actionTypeId,stringElement,4);
     }
 
     public static String getActionNoticeTypeIdString(Short actionTypeId){
-        String sField = getExtraField(CLASSIC_TYPE_ACTION,actionTypeId,2);
-        return (!StringUtils.isEmpty(sField)) ? sField : null;
+        return getExtra(CLASSIC_TYPE_ACTION,actionTypeId,5);
     }
 
 
@@ -386,43 +414,29 @@ public class ConstService {
         return typeId.length() >= CUSTOM_TYPE_LENGTH;
     }
 
-    public static boolean isSpecialType(@NotNull String typeId, int pos){
-        if (!isCustomType(typeId)) {
-            Short valueId = Short.parseShort(typeId);
-            String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE, valueId);
-            if (StringUtils.isEmpty(extra)) {
-                return false;
-            } else {
-                assert (extra != null);
-                Character t = extra.charAt(pos);
-                return (t != '0');
-            }
-        } else {
-            return false;
-        }
-    }
+
     public static boolean isDirectoryType(@NotNull String typeId) {
-        return isSpecialType(typeId,POS_IS_DIRECTORY);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_DIRECTORY);
     }
 
     public static boolean isProjectType(@NotNull String typeId) {
-        return isSpecialType(typeId,POS_IS_PROJECT);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_PROJECT);
     }
 
     public static boolean isTaskType(@NotNull String typeId) {
-        return isSpecialType(typeId,POS_IS_TASK);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_TASK);
     }
 
     public static boolean isDesignType(@NotNull String typeId) {
-        return isSpecialType(typeId,POS_IS_DESIGN);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_DESIGN);
     }
 
     public static boolean isCommitType(@NotNull String typeId){
-        return isSpecialType(typeId,POS_IS_COMMIT);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_COMMIT);
     }
 
     public static boolean isHistoryType(@NotNull String typeId){
-        return isSpecialType(typeId,POS_IS_HISTORY);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_HISTORY);
     }
 
     public static boolean isSystemType(@NotNull String typeId){
@@ -430,35 +444,14 @@ public class ConstService {
     }
 
     public static String getTypeName(@NotNull String typeId){
-        if (!isCustomType(typeId)) {
-            Short valueId = Short.parseShort(typeId);
-            return getContent(CLASSIC_TYPE_STORAGE_NODE,valueId);
-        } else {
-            return "";
-        }
+        return getTitle(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId));
     }
 
     public static String getPathType(@NotNull String typeId){
-        if (!isCustomType(typeId)) {
-            Short valueId = Short.parseShort(typeId);
-            String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE, valueId);
-            if (extra == null) return STORAGE_NODE_TYPE_DIR_UNKNOWN.toString();
-            String s = extra.substring(extra.indexOf("[") + 1, extra.lastIndexOf("]"));
-            return StringUtils.isEmpty(s) ? STORAGE_NODE_TYPE_DIR_UNKNOWN.toString() : s;
-        } else {
-            return STORAGE_NODE_TYPE_DIR_UNKNOWN.toString();
-        }
+        return getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId),2);
     }
 
     public static String getFileType(@NotNull String typeId){
-        if (!isCustomType(typeId)) {
-            Short valueId = Short.parseShort(typeId);
-            String extra = getExtra(CLASSIC_TYPE_STORAGE_NODE, valueId);
-            if (extra == null) return STORAGE_NODE_TYPE_UNKNOWN.toString();
-            String s = extra.substring(extra.indexOf("<") + 1, extra.lastIndexOf(">"));
-            return StringUtils.isEmpty(s) ? STORAGE_NODE_TYPE_UNKNOWN.toString() : s;
-        } else {
-            return STORAGE_NODE_TYPE_UNKNOWN.toString();
-        }
+        return getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId),3);
     }
 }

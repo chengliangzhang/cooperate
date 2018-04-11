@@ -33,6 +33,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static final String SPLIT_PATH_WINDOWS = "\\\\";
     public static final String SPLIT_EXT = ".";
     public static final String SPLIT_NAME_PART = "_";
+    public static final String SPLIT_CONTENT = ";";
 
     private static final int KILO_BYTE = 1024;
     private static final int KILO_MS = 1000;
@@ -195,6 +196,21 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static String right(String str,String split){
         if ((str == null) || (split == null) || (!str.contains(split))) return "";
         return (str.substring(str.indexOf(split) + split.length()));
+    }
+
+    public static String getContent(String str,int n,String split){
+        if (str == null) {
+            return "";
+        }
+        if (isEmpty(split)){
+            split = SPLIT_CONTENT;
+        }
+        String[] arr = str.split(split);
+        return (0 < n && n <= arr.length) ? arr[n-1] : "";
+    }
+
+    public static String getContent(String str,int n){
+        return getContent(str,n,SPLIT_CONTENT);
     }
 
     public static boolean isStartWith(String str,String s){
