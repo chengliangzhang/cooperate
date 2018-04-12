@@ -85,7 +85,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
                 updateRequest.setContent("<img href=\"" + element.getId() + "\">" + getNotNullString(element.getTitle()) + "</img>");
             }
         }
-        SuggestionDTO suggestion = getStorageService().createSuggestion(updateRequest);
+        SuggestionDTO suggestion = getStorageService().createSuggestionWithRequestOnly(updateRequest);
         if (ObjectUtils.isNotEmpty(request.getData())){
             suggestion.setFirstData(request.getData());
         }
@@ -111,7 +111,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
             storageRequest.setReadOnlyKey(key);
         }
         storageRequest.setLastModifyUserId(getAccountId(account));
-        NodeFileDTO file = getStorageService().createNodeFile(storageRequest);
+        NodeFileDTO file = getStorageService().createNodeFileWithRequestOnly(storageRequest);
         return file;
     }
 

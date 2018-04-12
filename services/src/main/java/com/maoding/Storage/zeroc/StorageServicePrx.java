@@ -73,18 +73,18 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
-    default AnnotateDTO createAnnotate(UpdateAnnotateDTO request)
+    default EmbedElementDTO updateEmbedElement(EmbedElementDTO src, UpdateElementDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
-        return createAnnotate(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return updateEmbedElement(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default AnnotateDTO createAnnotate(UpdateAnnotateDTO request, java.util.Map<String, String> context)
+    default EmbedElementDTO updateEmbedElement(EmbedElementDTO src, UpdateElementDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
         try
         {
-            return _iceI_createAnnotateAsync(request, context, true).waitForResponseOrUserEx();
+            return _iceI_updateEmbedElementAsync(src, request, context, true).waitForResponseOrUserEx();
         }
         catch(com.maoding.Common.zeroc.CustomException ex)
         {
@@ -96,20 +96,73 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
-    default java.util.concurrent.CompletableFuture<AnnotateDTO> createAnnotateAsync(UpdateAnnotateDTO request)
+    default java.util.concurrent.CompletableFuture<EmbedElementDTO> updateEmbedElementAsync(EmbedElementDTO src, UpdateElementDTO request)
     {
-        return _iceI_createAnnotateAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_updateEmbedElementAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<AnnotateDTO> createAnnotateAsync(UpdateAnnotateDTO request, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<EmbedElementDTO> updateEmbedElementAsync(EmbedElementDTO src, UpdateElementDTO request, java.util.Map<String, String> context)
     {
-        return _iceI_createAnnotateAsync(request, context, false);
+        return _iceI_updateEmbedElementAsync(src, request, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<AnnotateDTO> _iceI_createAnnotateAsync(UpdateAnnotateDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<EmbedElementDTO> _iceI_updateEmbedElementAsync(EmbedElementDTO iceP_src, UpdateElementDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<EmbedElementDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "updateEmbedElement", null, sync, _iceE_updateEmbedElement);
+        f.invoke(true, context, null, ostr -> {
+                     EmbedElementDTO.ice_write(ostr, iceP_src);
+                     UpdateElementDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     EmbedElementDTO ret;
+                     ret = EmbedElementDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_updateEmbedElement =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default AnnotateDTO createAnnotate(SuggestionDTO src, UpdateAnnotateDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return createAnnotate(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default AnnotateDTO createAnnotate(SuggestionDTO src, UpdateAnnotateDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_createAnnotateAsync(src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<AnnotateDTO> createAnnotateAsync(SuggestionDTO src, UpdateAnnotateDTO request)
+    {
+        return _iceI_createAnnotateAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<AnnotateDTO> createAnnotateAsync(SuggestionDTO src, UpdateAnnotateDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createAnnotateAsync(src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<AnnotateDTO> _iceI_createAnnotateAsync(SuggestionDTO iceP_src, UpdateAnnotateDTO iceP_request, java.util.Map<String, String> context, boolean sync)
     {
         com.zeroc.IceInternal.OutgoingAsync<AnnotateDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createAnnotate", null, sync, _iceE_createAnnotate);
         f.invoke(true, context, null, ostr -> {
+                     SuggestionDTO.ice_write(ostr, iceP_src);
                      UpdateAnnotateDTO.ice_write(ostr, iceP_request);
                  }, istr -> {
                      AnnotateDTO ret;
@@ -124,18 +177,18 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
-    default NodeFileDTO createNodeFile(UpdateNodeFileDTO request)
+    default AnnotateDTO createAnnotateWithRequestOnly(UpdateAnnotateDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
-        return createNodeFile(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return createAnnotateWithRequestOnly(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default NodeFileDTO createNodeFile(UpdateNodeFileDTO request, java.util.Map<String, String> context)
+    default AnnotateDTO createAnnotateWithRequestOnly(UpdateAnnotateDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
         try
         {
-            return _iceI_createNodeFileAsync(request, context, true).waitForResponseOrUserEx();
+            return _iceI_createAnnotateWithRequestOnlyAsync(request, context, true).waitForResponseOrUserEx();
         }
         catch(com.maoding.Common.zeroc.CustomException ex)
         {
@@ -147,20 +200,124 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
-    default java.util.concurrent.CompletableFuture<NodeFileDTO> createNodeFileAsync(UpdateNodeFileDTO request)
+    default java.util.concurrent.CompletableFuture<AnnotateDTO> createAnnotateWithRequestOnlyAsync(UpdateAnnotateDTO request)
     {
-        return _iceI_createNodeFileAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_createAnnotateWithRequestOnlyAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<NodeFileDTO> createNodeFileAsync(UpdateNodeFileDTO request, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<AnnotateDTO> createAnnotateWithRequestOnlyAsync(UpdateAnnotateDTO request, java.util.Map<String, String> context)
     {
-        return _iceI_createNodeFileAsync(request, context, false);
+        return _iceI_createAnnotateWithRequestOnlyAsync(request, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<NodeFileDTO> _iceI_createNodeFileAsync(UpdateNodeFileDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<AnnotateDTO> _iceI_createAnnotateWithRequestOnlyAsync(UpdateAnnotateDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<AnnotateDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createAnnotateWithRequestOnly", null, sync, _iceE_createAnnotateWithRequestOnly);
+        f.invoke(true, context, null, ostr -> {
+                     UpdateAnnotateDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     AnnotateDTO ret;
+                     ret = AnnotateDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_createAnnotateWithRequestOnly =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default AnnotateDTO updateAnnotate(AnnotateDTO src, UpdateAnnotateDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return updateAnnotate(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default AnnotateDTO updateAnnotate(AnnotateDTO src, UpdateAnnotateDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_updateAnnotateAsync(src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<AnnotateDTO> updateAnnotateAsync(AnnotateDTO src, UpdateAnnotateDTO request)
+    {
+        return _iceI_updateAnnotateAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<AnnotateDTO> updateAnnotateAsync(AnnotateDTO src, UpdateAnnotateDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_updateAnnotateAsync(src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<AnnotateDTO> _iceI_updateAnnotateAsync(AnnotateDTO iceP_src, UpdateAnnotateDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<AnnotateDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "updateAnnotate", null, sync, _iceE_updateAnnotate);
+        f.invoke(true, context, null, ostr -> {
+                     AnnotateDTO.ice_write(ostr, iceP_src);
+                     UpdateAnnotateDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     AnnotateDTO ret;
+                     ret = AnnotateDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_updateAnnotate =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default NodeFileDTO createNodeFile(NodeFileDTO src, UpdateNodeFileDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return createNodeFile(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default NodeFileDTO createNodeFile(NodeFileDTO src, UpdateNodeFileDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_createNodeFileAsync(src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<NodeFileDTO> createNodeFileAsync(NodeFileDTO src, UpdateNodeFileDTO request)
+    {
+        return _iceI_createNodeFileAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<NodeFileDTO> createNodeFileAsync(NodeFileDTO src, UpdateNodeFileDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createNodeFileAsync(src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<NodeFileDTO> _iceI_createNodeFileAsync(NodeFileDTO iceP_src, UpdateNodeFileDTO iceP_request, java.util.Map<String, String> context, boolean sync)
     {
         com.zeroc.IceInternal.OutgoingAsync<NodeFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createNodeFile", null, sync, _iceE_createNodeFile);
         f.invoke(true, context, null, ostr -> {
+                     NodeFileDTO.ice_write(ostr, iceP_src);
                      UpdateNodeFileDTO.ice_write(ostr, iceP_request);
                  }, istr -> {
                      NodeFileDTO ret;
@@ -175,18 +332,18 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
-    default SuggestionDTO createSuggestion(UpdateSuggestionDTO request)
+    default NodeFileDTO createNodeFileWithRequestOnly(UpdateNodeFileDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {
-        return createSuggestion(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        return createNodeFileWithRequestOnly(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default SuggestionDTO createSuggestion(UpdateSuggestionDTO request, java.util.Map<String, String> context)
+    default NodeFileDTO createNodeFileWithRequestOnly(UpdateNodeFileDTO request, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
         try
         {
-            return _iceI_createSuggestionAsync(request, context, true).waitForResponseOrUserEx();
+            return _iceI_createNodeFileWithRequestOnlyAsync(request, context, true).waitForResponseOrUserEx();
         }
         catch(com.maoding.Common.zeroc.CustomException ex)
         {
@@ -198,30 +355,30 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
-    default java.util.concurrent.CompletableFuture<SuggestionDTO> createSuggestionAsync(UpdateSuggestionDTO request)
+    default java.util.concurrent.CompletableFuture<NodeFileDTO> createNodeFileWithRequestOnlyAsync(UpdateNodeFileDTO request)
     {
-        return _iceI_createSuggestionAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+        return _iceI_createNodeFileWithRequestOnlyAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<SuggestionDTO> createSuggestionAsync(UpdateSuggestionDTO request, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<NodeFileDTO> createNodeFileWithRequestOnlyAsync(UpdateNodeFileDTO request, java.util.Map<String, String> context)
     {
-        return _iceI_createSuggestionAsync(request, context, false);
+        return _iceI_createNodeFileWithRequestOnlyAsync(request, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<SuggestionDTO> _iceI_createSuggestionAsync(UpdateSuggestionDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<NodeFileDTO> _iceI_createNodeFileWithRequestOnlyAsync(UpdateNodeFileDTO iceP_request, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<SuggestionDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createSuggestion", null, sync, _iceE_createSuggestion);
+        com.zeroc.IceInternal.OutgoingAsync<NodeFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createNodeFileWithRequestOnly", null, sync, _iceE_createNodeFileWithRequestOnly);
         f.invoke(true, context, null, ostr -> {
-                     UpdateSuggestionDTO.ice_write(ostr, iceP_request);
+                     UpdateNodeFileDTO.ice_write(ostr, iceP_request);
                  }, istr -> {
-                     SuggestionDTO ret;
-                     ret = SuggestionDTO.ice_read(istr);
+                     NodeFileDTO ret;
+                     ret = NodeFileDTO.ice_read(istr);
                      return ret;
                  });
         return f;
     }
 
-    static final Class<?>[] _iceE_createSuggestion =
+    static final Class<?>[] _iceE_createNodeFileWithRequestOnly =
     {
         com.maoding.Common.zeroc.CustomException.class
     };
@@ -278,6 +435,161 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.Common.zeroc.CustomException.class
     };
 
+    default SuggestionDTO createSuggestion(SimpleNodeDTO src, UpdateSuggestionDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return createSuggestion(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default SuggestionDTO createSuggestion(SimpleNodeDTO src, UpdateSuggestionDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_createSuggestionAsync(src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<SuggestionDTO> createSuggestionAsync(SimpleNodeDTO src, UpdateSuggestionDTO request)
+    {
+        return _iceI_createSuggestionAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<SuggestionDTO> createSuggestionAsync(SimpleNodeDTO src, UpdateSuggestionDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createSuggestionAsync(src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<SuggestionDTO> _iceI_createSuggestionAsync(SimpleNodeDTO iceP_src, UpdateSuggestionDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<SuggestionDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createSuggestion", null, sync, _iceE_createSuggestion);
+        f.invoke(true, context, null, ostr -> {
+                     SimpleNodeDTO.ice_write(ostr, iceP_src);
+                     UpdateSuggestionDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     SuggestionDTO ret;
+                     ret = SuggestionDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_createSuggestion =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default SuggestionDTO createSuggestionWithRequestOnly(UpdateSuggestionDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return createSuggestionWithRequestOnly(request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default SuggestionDTO createSuggestionWithRequestOnly(UpdateSuggestionDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_createSuggestionWithRequestOnlyAsync(request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<SuggestionDTO> createSuggestionWithRequestOnlyAsync(UpdateSuggestionDTO request)
+    {
+        return _iceI_createSuggestionWithRequestOnlyAsync(request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<SuggestionDTO> createSuggestionWithRequestOnlyAsync(UpdateSuggestionDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_createSuggestionWithRequestOnlyAsync(request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<SuggestionDTO> _iceI_createSuggestionWithRequestOnlyAsync(UpdateSuggestionDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<SuggestionDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createSuggestionWithRequestOnly", null, sync, _iceE_createSuggestionWithRequestOnly);
+        f.invoke(true, context, null, ostr -> {
+                     UpdateSuggestionDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     SuggestionDTO ret;
+                     ret = SuggestionDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_createSuggestionWithRequestOnly =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default SuggestionDTO updateSuggestion(SuggestionDTO src, UpdateSuggestionDTO request)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return updateSuggestion(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default SuggestionDTO updateSuggestion(SuggestionDTO src, UpdateSuggestionDTO request, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_updateSuggestionAsync(src, request, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<SuggestionDTO> updateSuggestionAsync(SuggestionDTO src, UpdateSuggestionDTO request)
+    {
+        return _iceI_updateSuggestionAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<SuggestionDTO> updateSuggestionAsync(SuggestionDTO src, UpdateSuggestionDTO request, java.util.Map<String, String> context)
+    {
+        return _iceI_updateSuggestionAsync(src, request, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<SuggestionDTO> _iceI_updateSuggestionAsync(SuggestionDTO iceP_src, UpdateSuggestionDTO iceP_request, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<SuggestionDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "updateSuggestion", null, sync, _iceE_updateSuggestion);
+        f.invoke(true, context, null, ostr -> {
+                     SuggestionDTO.ice_write(ostr, iceP_src);
+                     UpdateSuggestionDTO.ice_write(ostr, iceP_request);
+                 }, istr -> {
+                     SuggestionDTO ret;
+                     ret = SuggestionDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_updateSuggestion =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
     default java.util.List<NodeFileDTO> listNodeFile(QueryNodeFileDTO query)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -325,6 +637,57 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_listNodeFile =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default java.util.List<SuggestionDTO> listSuggestion(QuerySuggestionDTO query)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listSuggestion(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<SuggestionDTO> listSuggestion(QuerySuggestionDTO query, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listSuggestionAsync(query, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<SuggestionDTO>> listSuggestionAsync(QuerySuggestionDTO query)
+    {
+        return _iceI_listSuggestionAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<SuggestionDTO>> listSuggestionAsync(QuerySuggestionDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listSuggestionAsync(query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<SuggestionDTO>> _iceI_listSuggestionAsync(QuerySuggestionDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<SuggestionDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listSuggestion", null, sync, _iceE_listSuggestion);
+        f.invoke(true, context, null, ostr -> {
+                     QuerySuggestionDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     java.util.List<SuggestionDTO> ret;
+                     ret = SuggestionListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listSuggestion =
     {
         com.maoding.Common.zeroc.CustomException.class
     };
@@ -723,78 +1086,6 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_updateNodeSimple =
-    {
-        com.maoding.Common.zeroc.CustomException.class
-    };
-
-    /**
-     * @deprecated 使用createNodeFile代替
-     **/
-    @Deprecated
-    default FullNodeDTO createMirror(FullNodeDTO src, UpdateNodeDTO request)
-        throws com.maoding.Common.zeroc.CustomException
-    {
-        return createMirror(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext);
-    }
-
-    /**
-     * @param context The Context map to send with the invocation.
-     * @deprecated 使用createNodeFile代替
-     **/
-    @Deprecated
-    default FullNodeDTO createMirror(FullNodeDTO src, UpdateNodeDTO request, java.util.Map<String, String> context)
-        throws com.maoding.Common.zeroc.CustomException
-    {
-        try
-        {
-            return _iceI_createMirrorAsync(src, request, context, true).waitForResponseOrUserEx();
-        }
-        catch(com.maoding.Common.zeroc.CustomException ex)
-        {
-            throw ex;
-        }
-        catch(com.zeroc.Ice.UserException ex)
-        {
-            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
-        }
-    }
-
-    /**
-     * @return A future that will be completed with the result.
-     * @deprecated 使用createNodeFile代替
-     **/
-    @Deprecated
-    default java.util.concurrent.CompletableFuture<FullNodeDTO> createMirrorAsync(FullNodeDTO src, UpdateNodeDTO request)
-    {
-        return _iceI_createMirrorAsync(src, request, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
-    }
-
-    /**
-     * @param context The Context map to send with the invocation.
-     * @return A future that will be completed with the result.
-     * @deprecated 使用createNodeFile代替
-     **/
-    @Deprecated
-    default java.util.concurrent.CompletableFuture<FullNodeDTO> createMirrorAsync(FullNodeDTO src, UpdateNodeDTO request, java.util.Map<String, String> context)
-    {
-        return _iceI_createMirrorAsync(src, request, context, false);
-    }
-
-    default com.zeroc.IceInternal.OutgoingAsync<FullNodeDTO> _iceI_createMirrorAsync(FullNodeDTO iceP_src, UpdateNodeDTO iceP_request, java.util.Map<String, String> context, boolean sync)
-    {
-        com.zeroc.IceInternal.OutgoingAsync<FullNodeDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createMirror", null, sync, _iceE_createMirror);
-        f.invoke(true, context, null, ostr -> {
-                     FullNodeDTO.ice_write(ostr, iceP_src);
-                     UpdateNodeDTO.ice_write(ostr, iceP_request);
-                 }, istr -> {
-                     FullNodeDTO ret;
-                     ret = FullNodeDTO.ice_read(istr);
-                     return ret;
-                 });
-        return f;
-    }
-
-    static final Class<?>[] _iceE_createMirror =
     {
         com.maoding.Common.zeroc.CustomException.class
     };

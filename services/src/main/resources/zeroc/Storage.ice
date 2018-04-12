@@ -8,11 +8,18 @@
 module zeroc {
     interface StorageService {
         EmbedElementDTO createEmbedElement(UpdateElementDTO request) throws CustomException; //创建内嵌HTML元素
-        AnnotateDTO createAnnotate(UpdateAnnotateDTO request) throws CustomException; //创建注解
-        NodeFileDTO createNodeFile(UpdateNodeFileDTO request) throws CustomException; //创建文件或镜像
-        SuggestionDTO createSuggestion(UpdateSuggestionDTO request) throws CustomException; //提交校审意见
-        NodeFileDTO updateNodeFile(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //更新文件属性
-        NodeFileList listNodeFile(QueryNodeFileDTO query) throws CustomException; //更新文件属性
+        EmbedElementDTO updateEmbedElement(EmbedElementDTO src,UpdateElementDTO request) throws CustomException; //创建内嵌HTML元素
+        AnnotateDTO createAnnotate(SuggestionDTO src,UpdateAnnotateDTO request) throws CustomException; //创建注解
+        AnnotateDTO createAnnotateWithRequestOnly(UpdateAnnotateDTO request) throws CustomException; //创建注解
+        AnnotateDTO updateAnnotate(AnnotateDTO src,UpdateAnnotateDTO request) throws CustomException; //创建注解
+        NodeFileDTO createNodeFile(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //创建文件或镜像
+        NodeFileDTO createNodeFileWithRequestOnly(UpdateNodeFileDTO request) throws CustomException; //创建文件或镜像
+        NodeFileDTO updateNodeFile(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //更新文件或镜像
+        SuggestionDTO createSuggestion(SimpleNodeDTO src,UpdateSuggestionDTO request) throws CustomException; //提交校审意见
+        SuggestionDTO createSuggestionWithRequestOnly(UpdateSuggestionDTO request) throws CustomException; //提交校审意见
+        SuggestionDTO updateSuggestion(SuggestionDTO src,UpdateSuggestionDTO request) throws CustomException; //更新校审意见
+        NodeFileList listNodeFile(QueryNodeFileDTO query) throws CustomException; //查询文件或镜像
+        SuggestionList listSuggestion(QuerySuggestionDTO query) throws CustomException; //查询校审意见
 
         long summaryNodeLength(QuerySummaryDTO query) throws CustomException; //查询总使用空间
 
@@ -24,7 +31,6 @@ module zeroc {
         SimpleNodeDTO createNode(SimpleNodeDTO parent,UpdateNodeDTO request) throws CustomException; //创建节点
         SimpleNodeDTO createNodeWithRequestOnly(UpdateNodeDTO request) throws CustomException; //创建节点
         SimpleNodeDTO updateNodeSimple(SimpleNodeDTO src,UpdateNodeDTO request) throws CustomException; //更改节点属性
-        ["deprecate:使用createNodeFile代替"] FullNodeDTO createMirror(FullNodeDTO src,UpdateNodeDTO request) throws CustomException; //建立镜像
 
         SimpleNodeList listNode(QueryNodeDTO query) throws CustomException; //查询节点列表
         SimpleNodeList listChild(SimpleNodeDTO parent) throws CustomException; //查询直接子节点

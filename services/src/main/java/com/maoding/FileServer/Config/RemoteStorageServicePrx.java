@@ -50,13 +50,13 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
-    public NodeFileDTO createNodeFile(UpdateNodeFileDTO request) throws CustomException {
-        return getStorageService().createNodeFile(request,null);
+    public NodeFileDTO createNodeFileWithRequestOnly(UpdateNodeFileDTO request) throws CustomException {
+        return getStorageService().createNodeFileWithRequestOnly(request,null);
     }
 
     @Override
-    public SuggestionDTO createSuggestion(UpdateSuggestionDTO request) throws CustomException {
-        return getStorageService().createSuggestion(request,null);
+    public SuggestionDTO createSuggestionWithRequestOnly(UpdateSuggestionDTO request) throws CustomException {
+        return getStorageService().createSuggestionWithRequestOnly(request,null);
     }
 
     @Override

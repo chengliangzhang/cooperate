@@ -78,7 +78,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public AnnotateDTO createAnnotate(UpdateAnnotateDTO request, Current current) throws CustomException {
+    public AnnotateDTO createAnnotateWithRequestOnly(UpdateAnnotateDTO request, Current current) throws CustomException {
         long t = System.currentTimeMillis();
 
         AnnotateEntity entity = BeanUtils.createCleanFrom(request,AnnotateEntity.class);
@@ -141,7 +141,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public NodeFileDTO createNodeFile(UpdateNodeFileDTO request, Current current) throws CustomException {
+    public NodeFileDTO createNodeFileWithRequestOnly(UpdateNodeFileDTO request, Current current) throws CustomException {
         long t = System.currentTimeMillis();
 
         StorageFileEntity fileEntity = BeanUtils.createCleanFrom(request,StorageFileEntity.class);
@@ -161,7 +161,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public SuggestionDTO createSuggestion(UpdateSuggestionDTO request, Current current) throws CustomException {
+    public SuggestionDTO createSuggestionWithRequestOnly(UpdateSuggestionDTO request, Current current) throws CustomException {
         long t = System.currentTimeMillis();
 
         SuggestionEntity entity = BeanUtils.createCleanFrom(request,SuggestionEntity.class);
@@ -182,41 +182,72 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return summaryLength;
     }
 
-    /**
-     * @param src
-     * @param request
-     * @param current The Current object for the invocation.  @deprecated 尚未实现
-     **/
     @Override
-    public FullNodeDTO createMirror(@NotNull FullNodeDTO src, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
-        long t = System.currentTimeMillis();
-
-        CheckService.check((src.getBasic() != null)
-                        && (!ConstService.isDirectoryType((new Short(src.getBasic().getTypeId())).toString()))
-                        && isMirrorInfoValid(request));
-        String fileId = StringUtils.left(src.getBasic().getId(),StringUtils.DEFAULT_ID_LENGTH);
-        CheckService.check((StringUtils.isNotEmpty(fileId)));
-        StorageFileEntity mirrorEntity = selectMirrorFileEntity(fileId, request.getMirrorTypeId(), request.getMirrorAddress(), request.getMirrorBaseDir());
-        if (mirrorEntity == null) {
-            mirrorEntity = BeanUtils.createCleanFrom(src.getBasic(), StorageFileEntity.class);
-            updateMirrorEntity(request,fileId,mirrorEntity);
-            storageFileDao.insert(mirrorEntity);
-        } else {
-            updateMirrorEntity(request,fileId,mirrorEntity);
-            mirrorEntity.update();
-            storageFileDao.update(mirrorEntity);
-        }
-        if (mirrorEntity != null) {
-            NodeFileDTO file = src.getFileInfo();
-            if (file != null) {
-                file.setReadOnlyMirrorKey(StringUtils.formatPath(mirrorEntity.getReadOnlyKey()));
-                file.setWritableMirrorKey(StringUtils.formatPath(mirrorEntity.getWritableKey()));
-            }
-        }
-
-        log.info("\t----> createMirror花费时间:" + (System.currentTimeMillis()-t) + "ms");
-        return src;
+    public EmbedElementDTO updateEmbedElement(EmbedElementDTO src, UpdateElementDTO request, Current current) throws CustomException {
+        return null;
     }
+
+    @Override
+    public AnnotateDTO createAnnotate(SuggestionDTO src, UpdateAnnotateDTO request, Current current) throws CustomException {
+        return null;
+    }
+
+    @Override
+    public AnnotateDTO updateAnnotate(AnnotateDTO src, UpdateAnnotateDTO request, Current current) throws CustomException {
+        return null;
+    }
+
+    @Override
+    public NodeFileDTO createNodeFile(NodeFileDTO src, UpdateNodeFileDTO request, Current current) throws CustomException {
+        return null;
+    }
+
+
+    @Override
+    public SuggestionDTO createSuggestion(SimpleNodeDTO src, UpdateSuggestionDTO request, Current current) throws CustomException {
+        return null;
+    }
+
+    @Override
+    public SuggestionDTO updateSuggestion(SuggestionDTO src, UpdateSuggestionDTO request, Current current) throws CustomException {
+        return null;
+    }
+
+    @Override
+    public List<SuggestionDTO> listSuggestion(QuerySuggestionDTO query, Current current) throws CustomException {
+        return null;
+    }
+
+//    @Override
+//    public FullNodeDTO createMirror(@NotNull FullNodeDTO src, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
+//        long t = System.currentTimeMillis();
+//
+//        CheckService.check((src.getBasic() != null)
+//                        && (!ConstService.isDirectoryType((new Short(src.getBasic().getTypeId())).toString()))
+//                        && isMirrorInfoValid(request));
+//        String fileId = StringUtils.left(src.getBasic().getId(),StringUtils.DEFAULT_ID_LENGTH);
+//        CheckService.check((StringUtils.isNotEmpty(fileId)));
+//        StorageFileEntity mirrorEntity = selectMirrorFileEntity(fileId, request.getMirrorTypeId(), request.getMirrorAddress(), request.getMirrorBaseDir());
+//        if (mirrorEntity == null) {
+//            mirrorEntity = BeanUtils.createCleanFrom(src.getBasic(), StorageFileEntity.class);
+//            updateMirrorEntity(request,fileId,mirrorEntity);
+//            storageFileDao.insert(mirrorEntity);
+//        } else {
+//            updateMirrorEntity(request,fileId,mirrorEntity);
+//            mirrorEntity.update();
+//            storageFileDao.update(mirrorEntity);
+//        }
+//        if (mirrorEntity != null) {
+//            NodeFileDTO file = src.getFileInfo();
+//            if (file != null) {
+//                file.setReadOnlyMirrorKey(StringUtils.formatPath(mirrorEntity.getReadOnlyKey()));
+//                file.setWritableMirrorKey(StringUtils.formatPath(mirrorEntity.getWritableKey()));
+//            }
+//        }
+//
+//        log.info("\t----> createMirror花费时间:" + (System.currentTimeMillis()-t) + "ms");
+//        return src;
+//    }
 
     @Override
     public FullNodeDTO getNodeInfo(@NotNull SimpleNodeDTO node, @NotNull QueryNodeInfoDTO request, Current current) throws CustomException {

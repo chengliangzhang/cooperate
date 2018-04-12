@@ -25,19 +25,40 @@ public interface StorageService extends com.zeroc.Ice.Object
     EmbedElementDTO createEmbedElement(UpdateElementDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    AnnotateDTO createAnnotate(UpdateAnnotateDTO request, com.zeroc.Ice.Current current)
+    EmbedElementDTO updateEmbedElement(EmbedElementDTO src, UpdateElementDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    NodeFileDTO createNodeFile(UpdateNodeFileDTO request, com.zeroc.Ice.Current current)
+    AnnotateDTO createAnnotate(SuggestionDTO src, UpdateAnnotateDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
-    SuggestionDTO createSuggestion(UpdateSuggestionDTO request, com.zeroc.Ice.Current current)
+    AnnotateDTO createAnnotateWithRequestOnly(UpdateAnnotateDTO request, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    AnnotateDTO updateAnnotate(AnnotateDTO src, UpdateAnnotateDTO request, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    NodeFileDTO createNodeFile(NodeFileDTO src, UpdateNodeFileDTO request, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    NodeFileDTO createNodeFileWithRequestOnly(UpdateNodeFileDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     NodeFileDTO updateNodeFile(NodeFileDTO src, UpdateNodeFileDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
+    SuggestionDTO createSuggestion(SimpleNodeDTO src, UpdateSuggestionDTO request, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    SuggestionDTO createSuggestionWithRequestOnly(UpdateSuggestionDTO request, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    SuggestionDTO updateSuggestion(SuggestionDTO src, UpdateSuggestionDTO request, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
     java.util.List<NodeFileDTO> listNodeFile(QueryNodeFileDTO query, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    java.util.List<SuggestionDTO> listSuggestion(QuerySuggestionDTO query, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     long summaryNodeLength(QuerySummaryDTO query, com.zeroc.Ice.Current current)
@@ -62,14 +83,6 @@ public interface StorageService extends com.zeroc.Ice.Object
         throws com.maoding.Common.zeroc.CustomException;
 
     SimpleNodeDTO updateNodeSimple(SimpleNodeDTO src, UpdateNodeDTO request, com.zeroc.Ice.Current current)
-        throws com.maoding.Common.zeroc.CustomException;
-
-    /**
-     * @param current The Current object for the invocation.
-     * @deprecated 使用createNodeFile代替
-     **/
-    @Deprecated
-    FullNodeDTO createMirror(FullNodeDTO src, UpdateNodeDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     java.util.List<SimpleNodeDTO> listNode(QueryNodeDTO query, com.zeroc.Ice.Current current)
@@ -140,7 +153,41 @@ public interface StorageService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_updateEmbedElement(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        EmbedElementDTO iceP_src;
+        UpdateElementDTO iceP_request;
+        iceP_src = EmbedElementDTO.ice_read(istr);
+        iceP_request = UpdateElementDTO.ice_read(istr);
+        inS.endReadParams();
+        EmbedElementDTO ret = obj.updateEmbedElement(iceP_src, iceP_request, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        EmbedElementDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createAnnotate(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        SuggestionDTO iceP_src;
+        UpdateAnnotateDTO iceP_request;
+        iceP_src = SuggestionDTO.ice_read(istr);
+        iceP_request = UpdateAnnotateDTO.ice_read(istr);
+        inS.endReadParams();
+        AnnotateDTO ret = obj.createAnnotate(iceP_src, iceP_request, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        AnnotateDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createAnnotateWithRequestOnly(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
@@ -148,7 +195,24 @@ public interface StorageService extends com.zeroc.Ice.Object
         UpdateAnnotateDTO iceP_request;
         iceP_request = UpdateAnnotateDTO.ice_read(istr);
         inS.endReadParams();
-        AnnotateDTO ret = obj.createAnnotate(iceP_request, current);
+        AnnotateDTO ret = obj.createAnnotateWithRequestOnly(iceP_request, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        AnnotateDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_updateAnnotate(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        AnnotateDTO iceP_src;
+        UpdateAnnotateDTO iceP_request;
+        iceP_src = AnnotateDTO.ice_read(istr);
+        iceP_request = UpdateAnnotateDTO.ice_read(istr);
+        inS.endReadParams();
+        AnnotateDTO ret = obj.updateAnnotate(iceP_src, iceP_request, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         AnnotateDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
@@ -160,27 +224,29 @@ public interface StorageService extends com.zeroc.Ice.Object
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        NodeFileDTO iceP_src;
         UpdateNodeFileDTO iceP_request;
+        iceP_src = NodeFileDTO.ice_read(istr);
         iceP_request = UpdateNodeFileDTO.ice_read(istr);
         inS.endReadParams();
-        NodeFileDTO ret = obj.createNodeFile(iceP_request, current);
+        NodeFileDTO ret = obj.createNodeFile(iceP_src, iceP_request, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         NodeFileDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
 
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createSuggestion(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createNodeFileWithRequestOnly(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        UpdateSuggestionDTO iceP_request;
-        iceP_request = UpdateSuggestionDTO.ice_read(istr);
+        UpdateNodeFileDTO iceP_request;
+        iceP_request = UpdateNodeFileDTO.ice_read(istr);
         inS.endReadParams();
-        SuggestionDTO ret = obj.createSuggestion(iceP_request, current);
+        NodeFileDTO ret = obj.createNodeFileWithRequestOnly(iceP_request, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        SuggestionDTO.ice_write(ostr, ret);
+        NodeFileDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -202,6 +268,55 @@ public interface StorageService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createSuggestion(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        SimpleNodeDTO iceP_src;
+        UpdateSuggestionDTO iceP_request;
+        iceP_src = SimpleNodeDTO.ice_read(istr);
+        iceP_request = UpdateSuggestionDTO.ice_read(istr);
+        inS.endReadParams();
+        SuggestionDTO ret = obj.createSuggestion(iceP_src, iceP_request, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SuggestionDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createSuggestionWithRequestOnly(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        UpdateSuggestionDTO iceP_request;
+        iceP_request = UpdateSuggestionDTO.ice_read(istr);
+        inS.endReadParams();
+        SuggestionDTO ret = obj.createSuggestionWithRequestOnly(iceP_request, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SuggestionDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_updateSuggestion(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        SuggestionDTO iceP_src;
+        UpdateSuggestionDTO iceP_request;
+        iceP_src = SuggestionDTO.ice_read(istr);
+        iceP_request = UpdateSuggestionDTO.ice_read(istr);
+        inS.endReadParams();
+        SuggestionDTO ret = obj.updateSuggestion(iceP_src, iceP_request, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SuggestionDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listNodeFile(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
@@ -213,6 +328,21 @@ public interface StorageService extends com.zeroc.Ice.Object
         java.util.List<NodeFileDTO> ret = obj.listNodeFile(iceP_query, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         NodeFileListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listSuggestion(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        QuerySuggestionDTO iceP_query;
+        iceP_query = QuerySuggestionDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<SuggestionDTO> ret = obj.listSuggestion(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        SuggestionListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -333,24 +463,6 @@ public interface StorageService extends com.zeroc.Ice.Object
         SimpleNodeDTO ret = obj.updateNodeSimple(iceP_src, iceP_request, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         SimpleNodeDTO.ice_write(ostr, ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
-    }
-
-    @Deprecated
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createMirror(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
-        throws com.zeroc.Ice.UserException
-    {
-        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
-        com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        FullNodeDTO iceP_src;
-        UpdateNodeDTO iceP_request;
-        iceP_src = FullNodeDTO.ice_read(istr);
-        iceP_request = UpdateNodeDTO.ice_read(istr);
-        inS.endReadParams();
-        FullNodeDTO ret = obj.createMirror(iceP_src, iceP_request, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        FullNodeDTO.ice_write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -514,12 +626,14 @@ public interface StorageService extends com.zeroc.Ice.Object
     final static String[] _iceOps =
     {
         "createAnnotate",
+        "createAnnotateWithRequestOnly",
         "createEmbedElement",
-        "createMirror",
         "createNode",
         "createNodeFile",
+        "createNodeFileWithRequestOnly",
         "createNodeWithRequestOnly",
         "createSuggestion",
+        "createSuggestionWithRequestOnly",
         "deleteNode",
         "deleteNodeById",
         "deleteNodeByIdList",
@@ -538,13 +652,16 @@ public interface StorageService extends com.zeroc.Ice.Object
         "listNodeFile",
         "listOldNode",
         "listRoot",
+        "listSuggestion",
         "summaryNodeLength",
+        "updateAnnotate",
+        "updateEmbedElement",
         "updateNode",
         "updateNodeFile",
-        "updateNodeSimple"
+        "updateNodeSimple",
+        "updateSuggestion"
     };
 
-    @SuppressWarnings("deprecation")
     @Override
     default java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceDispatch(com.zeroc.IceInternal.Incoming in, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
@@ -563,11 +680,11 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 1:
             {
-                return _iceD_createEmbedElement(this, in, current);
+                return _iceD_createAnnotateWithRequestOnly(this, in, current);
             }
             case 2:
             {
-                return _iceD_createMirror(this, in, current);
+                return _iceD_createEmbedElement(this, in, current);
             }
             case 3:
             {
@@ -579,99 +696,123 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 5:
             {
-                return _iceD_createNodeWithRequestOnly(this, in, current);
+                return _iceD_createNodeFileWithRequestOnly(this, in, current);
             }
             case 6:
             {
-                return _iceD_createSuggestion(this, in, current);
+                return _iceD_createNodeWithRequestOnly(this, in, current);
             }
             case 7:
             {
-                return _iceD_deleteNode(this, in, current);
+                return _iceD_createSuggestion(this, in, current);
             }
             case 8:
             {
-                return _iceD_deleteNodeById(this, in, current);
+                return _iceD_createSuggestionWithRequestOnly(this, in, current);
             }
             case 9:
             {
-                return _iceD_deleteNodeByIdList(this, in, current);
+                return _iceD_deleteNode(this, in, current);
             }
             case 10:
             {
-                return _iceD_deleteNodeList(this, in, current);
+                return _iceD_deleteNodeById(this, in, current);
             }
             case 11:
             {
-                return _iceD_getNodeByFuzzyPath(this, in, current);
+                return _iceD_deleteNodeByIdList(this, in, current);
             }
             case 12:
             {
-                return _iceD_getNodeById(this, in, current);
+                return _iceD_deleteNodeList(this, in, current);
             }
             case 13:
             {
-                return _iceD_getNodeByPath(this, in, current);
+                return _iceD_getNodeByFuzzyPath(this, in, current);
             }
             case 14:
             {
-                return _iceD_getNodeInfo(this, in, current);
+                return _iceD_getNodeById(this, in, current);
             }
             case 15:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getNodeByPath(this, in, current);
             }
             case 16:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return _iceD_getNodeInfo(this, in, current);
             }
             case 17:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 18:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 19:
             {
-                return _iceD_listChild(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 20:
             {
-                return _iceD_listChildren(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 21:
             {
-                return _iceD_listNode(this, in, current);
+                return _iceD_listChild(this, in, current);
             }
             case 22:
             {
-                return _iceD_listNodeFile(this, in, current);
+                return _iceD_listChildren(this, in, current);
             }
             case 23:
             {
-                return _iceD_listOldNode(this, in, current);
+                return _iceD_listNode(this, in, current);
             }
             case 24:
             {
-                return _iceD_listRoot(this, in, current);
+                return _iceD_listNodeFile(this, in, current);
             }
             case 25:
             {
-                return _iceD_summaryNodeLength(this, in, current);
+                return _iceD_listOldNode(this, in, current);
             }
             case 26:
             {
-                return _iceD_updateNode(this, in, current);
+                return _iceD_listRoot(this, in, current);
             }
             case 27:
             {
-                return _iceD_updateNodeFile(this, in, current);
+                return _iceD_listSuggestion(this, in, current);
             }
             case 28:
             {
+                return _iceD_summaryNodeLength(this, in, current);
+            }
+            case 29:
+            {
+                return _iceD_updateAnnotate(this, in, current);
+            }
+            case 30:
+            {
+                return _iceD_updateEmbedElement(this, in, current);
+            }
+            case 31:
+            {
+                return _iceD_updateNode(this, in, current);
+            }
+            case 32:
+            {
+                return _iceD_updateNodeFile(this, in, current);
+            }
+            case 33:
+            {
                 return _iceD_updateNodeSimple(this, in, current);
+            }
+            case 34:
+            {
+                return _iceD_updateSuggestion(this, in, current);
             }
         }
 
