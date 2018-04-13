@@ -23,16 +23,16 @@ package com.maoding.Storage.zeroc;
 public class UpdateAnnotateDTO implements java.lang.Cloneable,
                                           java.io.Serializable
 {
-    public String relatedId;
+    public String statusId;
 
-    public String getRelatedId()
+    public String getStatusId()
     {
-        return relatedId;
+        return statusId;
     }
 
-    public void setRelatedId(String relatedId)
+    public void setStatusId(String statusId)
     {
-        this.relatedId = relatedId;
+        this.statusId = statusId;
     }
 
     public String content;
@@ -47,16 +47,100 @@ public class UpdateAnnotateDTO implements java.lang.Cloneable,
         this.content = content;
     }
 
-    public long lastModifyTimeStamp;
+    public String fileId;
 
-    public long getLastModifyTimeStamp()
+    public String getFileId()
     {
-        return lastModifyTimeStamp;
+        return fileId;
     }
 
-    public void setLastModifyTimeStamp(long lastModifyTimeStamp)
+    public void setFileId(String fileId)
     {
-        this.lastModifyTimeStamp = lastModifyTimeStamp;
+        this.fileId = fileId;
+    }
+
+    public String mainFileId;
+
+    public String getMainFileId()
+    {
+        return mainFileId;
+    }
+
+    public void setMainFileId(String mainFileId)
+    {
+        this.mainFileId = mainFileId;
+    }
+
+    public java.util.List<java.lang.String> addElementIdList;
+
+    public java.util.List<java.lang.String> getAddElementIdList()
+    {
+        return addElementIdList;
+    }
+
+    public void setAddElementIdList(java.util.List<java.lang.String> addElementIdList)
+    {
+        this.addElementIdList = addElementIdList;
+    }
+
+    public java.util.List<java.lang.String> addFileIdList;
+
+    public java.util.List<java.lang.String> getAddFileIdList()
+    {
+        return addFileIdList;
+    }
+
+    public void setAddFileIdList(java.util.List<java.lang.String> addFileIdList)
+    {
+        this.addFileIdList = addFileIdList;
+    }
+
+    public java.util.List<java.lang.String> delAttachmentIdList;
+
+    public java.util.List<java.lang.String> getDelAttachmentIdList()
+    {
+        return delAttachmentIdList;
+    }
+
+    public void setDelAttachmentIdList(java.util.List<java.lang.String> delAttachmentIdList)
+    {
+        this.delAttachmentIdList = delAttachmentIdList;
+    }
+
+    public String typeId;
+
+    public String getTypeId()
+    {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId)
+    {
+        this.typeId = typeId;
+    }
+
+    public String pid;
+
+    public String getPid()
+    {
+        return pid;
+    }
+
+    public void setPid(String pid)
+    {
+        this.pid = pid;
+    }
+
+    public String path;
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
     }
 
     public String lastModifyUserId;
@@ -85,17 +169,29 @@ public class UpdateAnnotateDTO implements java.lang.Cloneable,
 
     public UpdateAnnotateDTO()
     {
-        this.relatedId = "";
+        this.statusId = "";
         this.content = "";
+        this.fileId = "";
+        this.mainFileId = "";
+        this.typeId = "";
+        this.pid = "";
+        this.path = "";
         this.lastModifyUserId = "";
         this.lastModifyRoleId = "";
     }
 
-    public UpdateAnnotateDTO(String relatedId, String content, long lastModifyTimeStamp, String lastModifyUserId, String lastModifyRoleId)
+    public UpdateAnnotateDTO(String statusId, String content, String fileId, String mainFileId, java.util.List<java.lang.String> addElementIdList, java.util.List<java.lang.String> addFileIdList, java.util.List<java.lang.String> delAttachmentIdList, String typeId, String pid, String path, String lastModifyUserId, String lastModifyRoleId)
     {
-        this.relatedId = relatedId;
+        this.statusId = statusId;
         this.content = content;
-        this.lastModifyTimeStamp = lastModifyTimeStamp;
+        this.fileId = fileId;
+        this.mainFileId = mainFileId;
+        this.addElementIdList = addElementIdList;
+        this.addFileIdList = addFileIdList;
+        this.delAttachmentIdList = delAttachmentIdList;
+        this.typeId = typeId;
+        this.pid = pid;
+        this.path = path;
         this.lastModifyUserId = lastModifyUserId;
         this.lastModifyRoleId = lastModifyRoleId;
     }
@@ -114,9 +210,9 @@ public class UpdateAnnotateDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
-            if(this.relatedId != r.relatedId)
+            if(this.statusId != r.statusId)
             {
-                if(this.relatedId == null || r.relatedId == null || !this.relatedId.equals(r.relatedId))
+                if(this.statusId == null || r.statusId == null || !this.statusId.equals(r.statusId))
                 {
                     return false;
                 }
@@ -128,9 +224,61 @@ public class UpdateAnnotateDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.lastModifyTimeStamp != r.lastModifyTimeStamp)
+            if(this.fileId != r.fileId)
             {
-                return false;
+                if(this.fileId == null || r.fileId == null || !this.fileId.equals(r.fileId))
+                {
+                    return false;
+                }
+            }
+            if(this.mainFileId != r.mainFileId)
+            {
+                if(this.mainFileId == null || r.mainFileId == null || !this.mainFileId.equals(r.mainFileId))
+                {
+                    return false;
+                }
+            }
+            if(this.addElementIdList != r.addElementIdList)
+            {
+                if(this.addElementIdList == null || r.addElementIdList == null || !this.addElementIdList.equals(r.addElementIdList))
+                {
+                    return false;
+                }
+            }
+            if(this.addFileIdList != r.addFileIdList)
+            {
+                if(this.addFileIdList == null || r.addFileIdList == null || !this.addFileIdList.equals(r.addFileIdList))
+                {
+                    return false;
+                }
+            }
+            if(this.delAttachmentIdList != r.delAttachmentIdList)
+            {
+                if(this.delAttachmentIdList == null || r.delAttachmentIdList == null || !this.delAttachmentIdList.equals(r.delAttachmentIdList))
+                {
+                    return false;
+                }
+            }
+            if(this.typeId != r.typeId)
+            {
+                if(this.typeId == null || r.typeId == null || !this.typeId.equals(r.typeId))
+                {
+                    return false;
+                }
+            }
+            if(this.pid != r.pid)
+            {
+                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
+                {
+                    return false;
+                }
+            }
+            if(this.path != r.path)
+            {
+                if(this.path == null || r.path == null || !this.path.equals(r.path))
+                {
+                    return false;
+                }
             }
             if(this.lastModifyUserId != r.lastModifyUserId)
             {
@@ -157,9 +305,16 @@ public class UpdateAnnotateDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::UpdateAnnotateDTO");
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, relatedId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, statusId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, content);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainFileId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, addElementIdList);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, addFileIdList);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, delAttachmentIdList);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyUserId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyRoleId);
         return h_;
@@ -181,18 +336,32 @@ public class UpdateAnnotateDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        ostr.writeString(this.relatedId);
+        ostr.writeString(this.statusId);
         ostr.writeString(this.content);
-        ostr.writeLong(this.lastModifyTimeStamp);
+        ostr.writeString(this.fileId);
+        ostr.writeString(this.mainFileId);
+        com.maoding.Common.zeroc.StringListHelper.write(ostr, this.addElementIdList);
+        com.maoding.Common.zeroc.StringListHelper.write(ostr, this.addFileIdList);
+        com.maoding.Common.zeroc.StringListHelper.write(ostr, this.delAttachmentIdList);
+        ostr.writeString(this.typeId);
+        ostr.writeString(this.pid);
+        ostr.writeString(this.path);
         ostr.writeString(this.lastModifyUserId);
         ostr.writeString(this.lastModifyRoleId);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.relatedId = istr.readString();
+        this.statusId = istr.readString();
         this.content = istr.readString();
-        this.lastModifyTimeStamp = istr.readLong();
+        this.fileId = istr.readString();
+        this.mainFileId = istr.readString();
+        this.addElementIdList = com.maoding.Common.zeroc.StringListHelper.read(istr);
+        this.addFileIdList = com.maoding.Common.zeroc.StringListHelper.read(istr);
+        this.delAttachmentIdList = com.maoding.Common.zeroc.StringListHelper.read(istr);
+        this.typeId = istr.readString();
+        this.pid = istr.readString();
+        this.path = istr.readString();
         this.lastModifyUserId = istr.readString();
         this.lastModifyRoleId = istr.readString();
     }
@@ -249,5 +418,5 @@ public class UpdateAnnotateDTO implements java.lang.Cloneable,
 
     private static final UpdateAnnotateDTO _nullMarshalValue = new UpdateAnnotateDTO();
 
-    public static final long serialVersionUID = -1099611853L;
+    public static final long serialVersionUID = -782795018L;
 }

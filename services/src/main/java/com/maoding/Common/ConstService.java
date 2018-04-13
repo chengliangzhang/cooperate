@@ -45,7 +45,21 @@ public class ConstService {
     public static final Short CLASSIC_TYPE_ROLE = 25;
     public static final Short CLASSIC_TYPE_ROLE_TYPE = 26;
     public static final Short CLASSIC_TYPE_NOTICE_TYPE = 27;
+    public static final Short CLASSIC_TYPE_WEB_PERMISSION_GROUP = 28; //web权限组类型
+    public static final Short CLASSIC_TYPE_WEB_PERMISSION = 29; //web权限类型
+    public static final Short CLASSIC_TYPE_WEB_ROLE = 30; //web member角色类型
+    public static final Short CLASSIC_TYPE_ANNOTATE = 31; //校审意见类型
+    public static final Short CLASSIC_TYPE_ANNOTATE_STATUS = 32; //校审意见状态类型
 
+    //校审意见状态类型
+    public static final Short ANNOTATE_STATUS_TYPE_UNKNOWN = 0; //未知状态
+    public static final Short ANNOTATE_STATUS_TYPE_PASS = 1; //通过
+    public static final Short ANNOTATE_STATUS_TYPE_REFUSE = 2; //不通过
+
+    //校审意见类型
+    public static final Short ANNOTATE_TYPE_UNKNOWN = 0; //未知类型
+    public static final Short ANNOTATE_TYPE_CHECK = 1; //校验
+    public static final Short ANNOTATE_TYPE_AUDIT = 2; //审核
 
     //节点类型
     public static final Short STORAGE_NODE_TYPE_UNKNOWN = 0;

@@ -22,7 +22,7 @@ package com.maoding.Notice.zeroc;
 
 public interface NoticeService extends com.zeroc.Ice.Object
 {
-    void createTopic(java.lang.String topic, com.zeroc.Ice.Current current);
+    void createTopic(String topic, com.zeroc.Ice.Current current);
 
     java.util.List<java.lang.String> listTopic(com.zeroc.Ice.Current current);
 
@@ -50,7 +50,7 @@ public interface NoticeService extends com.zeroc.Ice.Object
 
     void subscribeTopicForTask(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
-    void subscribeTopicForProject(java.lang.String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+    void subscribeTopicForProject(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
     void subscribeTopicForCompany(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
@@ -60,11 +60,11 @@ public interface NoticeService extends com.zeroc.Ice.Object
 
     void subscribeTopicForCompanyList(java.util.List<java.lang.String> idList, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
-    void unSubscribeTopic(java.lang.String topic, NoticeClientPrx client, com.zeroc.Ice.Current current);
+    void unSubscribeTopic(String topic, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
-    void unSubscribeTopicForUser(java.lang.String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+    void unSubscribeTopicForUser(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
-    void unSubscribeTopicForTask(java.lang.String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
+    void unSubscribeTopicForTask(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
     void unSubscribeTopicForProject(String id, NoticeClientPrx client, com.zeroc.Ice.Current current);
 
@@ -107,8 +107,8 @@ public interface NoticeService extends com.zeroc.Ice.Object
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        java.lang.String iceP_topic;
-        iceP_topic = istr.readSerializable(java.lang.String.class);
+        String iceP_topic;
+        iceP_topic = istr.readString();
         inS.endReadParams();
         obj.createTopic(iceP_topic, current);
         return inS.setResult(inS.writeEmptyParams());
@@ -286,9 +286,9 @@ public interface NoticeService extends com.zeroc.Ice.Object
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        java.lang.String iceP_id;
+        String iceP_id;
         NoticeClientPrx iceP_client;
-        iceP_id = istr.readSerializable(java.lang.String.class);
+        iceP_id = istr.readString();
         iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
         inS.endReadParams();
         obj.subscribeTopicForProject(iceP_id, iceP_client, current);
@@ -351,9 +351,9 @@ public interface NoticeService extends com.zeroc.Ice.Object
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        java.lang.String iceP_topic;
+        String iceP_topic;
         NoticeClientPrx iceP_client;
-        iceP_topic = istr.readSerializable(java.lang.String.class);
+        iceP_topic = istr.readString();
         iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
         inS.endReadParams();
         obj.unSubscribeTopic(iceP_topic, iceP_client, current);
@@ -364,9 +364,9 @@ public interface NoticeService extends com.zeroc.Ice.Object
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        java.lang.String iceP_id;
+        String iceP_id;
         NoticeClientPrx iceP_client;
-        iceP_id = istr.readSerializable(java.lang.String.class);
+        iceP_id = istr.readString();
         iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
         inS.endReadParams();
         obj.unSubscribeTopicForUser(iceP_id, iceP_client, current);
@@ -377,9 +377,9 @@ public interface NoticeService extends com.zeroc.Ice.Object
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        java.lang.String iceP_id;
+        String iceP_id;
         NoticeClientPrx iceP_client;
-        iceP_id = istr.readSerializable(java.lang.String.class);
+        iceP_id = istr.readString();
         iceP_client = NoticeClientPrx.uncheckedCast(istr.readProxy());
         inS.endReadParams();
         obj.unSubscribeTopicForTask(iceP_id, iceP_client, current);

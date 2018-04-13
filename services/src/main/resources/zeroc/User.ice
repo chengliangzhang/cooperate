@@ -1,10 +1,13 @@
 #pragma once
 #include <Common.ice>
 #include <UserData.ice>
+#include <TaskData.ice>
 
 [["java:package:com.maoding.User"]]
 module zeroc {
     interface UserService {
+        WebRoleList listWebRoleTask(AccountDTO account); //列出用户在生产任务中担任的角色
+
         bool login(LoginDTO loginInfo); //登录
         AccountDTO getCurrent(); //获取当前账号信息
         ProjectRoleList listProjectRoleByProjectId(string projectId); //获取项目的参与角色列表

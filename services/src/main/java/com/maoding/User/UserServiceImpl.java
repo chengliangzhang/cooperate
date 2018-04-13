@@ -34,13 +34,12 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     @Autowired
     private RoleDao roleDao;
 
-    /** 同步方式获取业务接口代理对象 */
-    public static UserServicePrx getInstance(String adapterName) {
-        UserServiceImpl prx = new UserServiceImpl();
-        return prx.getServicePrx("UserService",adapterName, UserServicePrx.class,_UserServicePrxI.class);
-    }
-    public static UserServicePrx getInstance(){
-        return getInstance(null);
+    @Override
+    public List<WebRoleDTO> listWebRoleTask(AccountDTO account, Current current) {
+        final String ATTR_STR_TASK_ONLY = "01";
+        QueryWebRoleDTO query = new QueryWebRoleDTO();
+        query.setAttrStr(ATTR_STR_TASK_ONLY);
+        return roleDao.listWebRole(query);
     }
 
     @Override

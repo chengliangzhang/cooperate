@@ -7,6 +7,7 @@ import com.maoding.Storage.zeroc.*;
 import com.maoding.User.zeroc.AccountDTO;
 import com.maoding.User.zeroc.LoginDTO;
 import com.maoding.CoreUtils.ObjectUtils;
+import com.maoding.User.zeroc.WebRoleDTO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +54,18 @@ public class FileServiceImplTest {
             remote = RemoteFileServerPrx.getInstance("FileServer;192.168.13.140");
         }
         return remote;
+    }
+
+    @Test
+    public void testCreateAnnotate() throws Exception {
+        AnnotateRequestDTO request = new AnnotateRequestDTO();
+        request.setData(new byte[]{0x33,0x34,0x35});
+        fileService.createAnnotateCheck(getLocalAccount(),getLocalNode(),request,null);
+    }
+
+    @Test
+    public void testListWebRoleTask() throws Exception {
+        List<WebRoleDTO> list = fileService.listWebRoleTask(getLocalAccount(),null);
     }
 
     @Test
@@ -131,46 +144,26 @@ public class FileServiceImplTest {
     }
 
     @Test
-    public void testCreateAccessory() throws Exception{
-//        createAccessorySimple();
-        createAccessoryWithData();
+    public void testAddAccessory() throws Exception{
+        addAccessorySimple();
+        addAccessoryWithData();
     }
 
-    private NodeFileDTO createAccessoryWithData() throws Exception{
-        log.debug("\t>>>>>>>> createAccessoryWithData");
+    private NodeFileDTO addAccessoryWithData() throws Exception{
+        log.debug("\t>>>>>>>> addAccessoryWithData");
         AccessoryRequestDTO request = new AccessoryRequestDTO();
         request.setPath("a/b/c.txt");
         request.setData(new byte[]{1,2,3});
-        return fileService.createAccessory(getLocalAccount(),request,null);
+//        return fileService.createAccessory(getLocalAccount(),request,null);
+        return null;
     }
 
-    private NodeFileDTO createAccessorySimple() throws Exception{
-        log.debug("\t>>>>>>>> createAccessorySimple");
+    private NodeFileDTO addAccessorySimple() throws Exception{
+        log.debug("\t>>>>>>>> addAccessorySimple");
         AccessoryRequestDTO request = new AccessoryRequestDTO();
         request.setPath("a/b/c.txt");
-        return fileService.createAccessory(getLocalAccount(),request,null);
-    }
-
-    @Test
-    public void testCreateSuggestion() throws Exception {
-        createSuggestionSimple();
-        createSuggestionWithEmbed();
-    }
-
-    private SuggestionDTO createSuggestionSimple() throws Exception {
-        log.debug("\t>>>>>>>> createSuggestionSimple");
-        SuggestionRequestDTO request = new SuggestionRequestDTO();
-        request.setTypeId("1");
-        request.setContent("this is a test");
-        return fileService.createSuggestion(getLocalAccount(),getLocalNode(),request,null);
-    }
-
-    private SuggestionDTO createSuggestionWithEmbed() throws Exception {
-        log.debug("\t>>>>>>>> createSuggestionWithEmbed");
-        SuggestionRequestDTO request = new SuggestionRequestDTO();
-        request.setTypeId("1");
-        request.setData(new byte[]{1,2,3});
-        return fileService.createSuggestion(getLocalAccount(),getLocalNode(),request,null);
+//        return fileService.addAccessory(getLocalAccount(),request,null);
+        return null;
     }
 
     @Test
@@ -229,7 +222,7 @@ public class FileServiceImplTest {
 
     private SimpleNodeDTO getLocalNode() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("CDA36B2D65A64E959FC97555B1F2ACD2-1");
+        query.setId("02419B839D9546DEB07C03DBECAF10A8-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
@@ -256,8 +249,8 @@ public class FileServiceImplTest {
 
     @Test
     public void testLogin() throws Exception {
-        assert (loginLocal());
-//        loginRemote();
+//        assert (loginLocal());
+        loginRemote();
     }
     private boolean loginRemote() throws Exception {
         log.debug("\t>>>>>>>> login");

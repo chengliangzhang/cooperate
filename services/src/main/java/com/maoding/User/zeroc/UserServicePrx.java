@@ -22,6 +22,39 @@ package com.maoding.User.zeroc;
 
 public interface UserServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default java.util.List<WebRoleDTO> listWebRoleTask(AccountDTO account)
+    {
+        return listWebRoleTask(account, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<WebRoleDTO> listWebRoleTask(AccountDTO account, java.util.Map<String, String> context)
+    {
+        return _iceI_listWebRoleTaskAsync(account, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<WebRoleDTO>> listWebRoleTaskAsync(AccountDTO account)
+    {
+        return _iceI_listWebRoleTaskAsync(account, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<WebRoleDTO>> listWebRoleTaskAsync(AccountDTO account, java.util.Map<String, String> context)
+    {
+        return _iceI_listWebRoleTaskAsync(account, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<WebRoleDTO>> _iceI_listWebRoleTaskAsync(AccountDTO iceP_account, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<WebRoleDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listWebRoleTask", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     AccountDTO.ice_write(ostr, iceP_account);
+                 }, istr -> {
+                     java.util.List<WebRoleDTO> ret;
+                     ret = WebRoleListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default boolean login(LoginDTO loginInfo)
     {
         return login(loginInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);

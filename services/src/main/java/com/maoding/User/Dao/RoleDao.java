@@ -3,9 +3,12 @@ package com.maoding.User.Dao;
 import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.User.zeroc.ProjectRoleDTO;
 import com.maoding.User.zeroc.QueryMemberDTO;
+import com.maoding.User.zeroc.QueryWebRoleDTO;
+import com.maoding.User.zeroc.WebRoleDTO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -16,6 +19,8 @@ import java.util.List;
  */
 @Repository
 public interface RoleDao {
+    List<WebRoleDTO> listWebRole(@NotNull QueryWebRoleDTO query);
+
     List<ProjectRoleDTO> listProjectRoleByProjectId(@Param("projectId")  String projectId);
     List<IdNameDTO> listProject(@Param("userId") String userId);
     List<IdNameDTO> listTask(@Param("userId") String userId);

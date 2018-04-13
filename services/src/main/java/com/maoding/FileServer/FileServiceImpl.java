@@ -5,6 +5,7 @@ import com.maoding.Common.CheckService;
 import com.maoding.Common.Config.WebServiceConfig;
 import com.maoding.Common.ConstService;
 import com.maoding.Common.zeroc.CustomException;
+import com.maoding.Common.zeroc.DeleteAskDTO;
 import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.Common.zeroc.StringElementDTO;
 import com.maoding.CoreFileServer.CoreCreateFileRequest;
@@ -21,7 +22,6 @@ import com.maoding.FileServer.zeroc.*;
 import com.maoding.Notice.zeroc.NoticeClientPrx;
 import com.maoding.Notice.zeroc.NoticeRequestDTO;
 import com.maoding.Notice.zeroc.NoticeServicePrx;
-import com.maoding.Project.zeroc.ProjectDTO;
 import com.maoding.Storage.zeroc.*;
 import com.maoding.User.zeroc.*;
 import com.zeroc.Ice.Current;
@@ -30,7 +30,10 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -51,6 +54,17 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     private Map<String,NodeFileDTO> fileMap = new HashMap<>();
     private Map<String,String> pathMap = new HashMap<>();
+
+    @Override
+    public List<WebRoleDTO> listWebRoleTask(AccountDTO account, Current current) {
+        return getUserServicePrx().listWebRoleTask(account);
+    }
+
+    @Override
+    public boolean isExist(String path, Current current) throws CustomException {
+        SimpleNodeDTO node = getNodeByPathForAccount(null,path,current);
+        return (node != null);
+    }
 
     private String getNodeId(SimpleNodeDTO node) {
         return (node != null) ? node.getId() : null;
@@ -73,27 +87,118 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     }
 
     @Override
-    public SuggestionDTO createSuggestion(AccountDTO account, SimpleNodeDTO node, @NotNull SuggestionRequestDTO request, Current current) throws CustomException {
-        UpdateSuggestionDTO updateRequest = BeanUtils.createCleanFrom(request,UpdateSuggestionDTO.class);
-        updateRequest.setLastModifyUserId(getAccountId(account));
-        updateRequest.setMainFileId(StringUtils.left(getNodeId(node),StringUtils.DEFAULT_ID_LENGTH));
-        if (ObjectUtils.isNotEmpty(request.getData())){
-            UpdateElementDTO elementRequest = BeanUtils.createCleanFrom(request,UpdateElementDTO.class);
-            elementRequest.setDataArray(request.getData());
-            EmbedElementDTO element = getStorageService().createEmbedElement(elementRequest);
-            if (element != null) {
-                updateRequest.setContent("<img href=\"" + element.getId() + "\">" + getNotNullString(element.getTitle()) + "</img>");
-            }
-        }
-        SuggestionDTO suggestion = getStorageService().createSuggestionWithRequestOnly(updateRequest);
-        if (ObjectUtils.isNotEmpty(request.getData())){
-            suggestion.setFirstData(request.getData());
-        }
-        return suggestion;
+    public AnnotateDTO createAnnotateCheck(AccountDTO account, @NotNull SimpleNodeDTO node, @NotNull AnnotateRequestDTO request, Current current) throws CustomException {
+        request.setTypeId(ConstService.ANNOTATE_TYPE_CHECK.toString());
+        return createAnnotate(account,node,request,current);
     }
 
     @Override
-    public NodeFileDTO createAccessory(AccountDTO account, @NotNull AccessoryRequestDTO request, Current current) throws CustomException {
+    public AnnotateDTO createAnnotateAudit(AccountDTO account, @NotNull SimpleNodeDTO node, @NotNull AnnotateRequestDTO request, Current current) throws CustomException {
+        request.setTypeId(ConstService.ANNOTATE_TYPE_AUDIT.toString());
+        return createAnnotate(account,node,request,current);
+    }
+
+    @Override
+    public AnnotateDTO createAnnotate(AccountDTO account, @NotNull SimpleNodeDTO node, AnnotateRequestDTO request, Current current) throws CustomException {
+        //获取文件
+        CheckService.check(!node.getIsDirectory());
+        NodeFileDTO file = getFileInfoForAccount(account,node,current);
+        CheckService.check(file != null);
+
+        //建立创建申请
+        UpdateAnnotateDTO updateRequest = BeanUtils.createCleanFrom(request,UpdateAnnotateDTO.class);
+        updateRequest.setStatusId(request.getIsPassed() ? ConstService.ANNOTATE_STATUS_TYPE_PASS.toString() : ConstService.ANNOTATE_STATUS_TYPE_REFUSE.toString());
+        updateRequest.setLastModifyUserId(getAccountId(account));
+
+        EmbedElementDTO element = null;
+        if (ObjectUtils.isNotEmpty(request.getData())){
+            UpdateElementDTO elementRequest = BeanUtils.createCleanFrom(request,UpdateElementDTO.class);
+            elementRequest.setDataArray(request.getData());
+            element = getStorageService().createEmbedElement(elementRequest);
+            if (element != null) {
+                List<String> elementIdList = new ArrayList<>();
+                elementIdList.add(element.getId());
+                updateRequest.setAddElementIdList(elementIdList);
+            }
+        }
+        if (ObjectUtils.isNotEmpty(request.getAddAccessoryList())) {
+            List<String> fileIdList = new ArrayList<>();
+            for (NodeFileDTO accessory : request.getAddAccessoryList()){
+                fileIdList.add(accessory.getId());
+            }
+            updateRequest.setAddFileIdList(fileIdList);
+        }
+        AnnotateDTO annotate = getStorageService().createAnnotate(file,updateRequest);
+        annotate.setElement(element);
+        annotate.setAccessoryList(request.getAddAccessoryList());
+        return annotate;
+    }
+
+    @Override
+    public AnnotateDTO updateAnnotate(AccountDTO account, @NotNull AnnotateDTO annotate, @NotNull AnnotateRequestDTO request, Current current) throws CustomException {
+        //建立更新申请
+        UpdateAnnotateDTO updateRequest = BeanUtils.createCleanFrom(request,UpdateAnnotateDTO.class);
+        updateRequest.setStatusId(request.getIsPassed() ? ConstService.ANNOTATE_STATUS_TYPE_PASS.toString() : ConstService.ANNOTATE_STATUS_TYPE_REFUSE.toString());
+        updateRequest.setLastModifyUserId(getAccountId(account));
+
+        EmbedElementDTO element = annotate.getElement();
+        if (ObjectUtils.isNotEmpty(request.getData())){
+            UpdateElementDTO elementRequest = BeanUtils.createCleanFrom(updateRequest,UpdateElementDTO.class);
+            elementRequest.setDataArray(request.getData());
+
+            if ((element != null) && (StringUtils.isNotEmpty(element.getId()))) {
+                element = getStorageService().updateEmbedElement(element,elementRequest);
+            } else {
+                element = getStorageService().createEmbedElement(elementRequest);
+                if (element != null) {
+                    List<String> elementIdList = new ArrayList<>();
+                    elementIdList.add(element.getId());
+                    updateRequest.setAddElementIdList(elementIdList);
+                }
+            }
+        }
+
+        List<NodeFileDTO> fileList = annotate.getAccessoryList();
+        if (ObjectUtils.isNotEmpty(request.getDelAccessoryList())) {
+            List<String> fileIdList = new ArrayList<>();
+            for (NodeFileDTO accessory : request.getDelAccessoryList()){
+                fileIdList.add(accessory.getId());
+                if (fileList != null) {
+                    for (NodeFileDTO annotateAccessory : fileList) {
+                        if (StringUtils.isSame(annotateAccessory.getId(), accessory.getId())) {
+                            fileList.remove(annotateAccessory);
+                            break;
+                        }
+                    }
+                }
+            }
+            updateRequest.setDelAttachmentIdList(fileIdList);
+        }
+        if (ObjectUtils.isNotEmpty(request.getAddAccessoryList())) {
+            List<String> fileIdList = new ArrayList<>();
+            if (fileList == null) {
+                fileList = new ArrayList<>();
+            }
+            for (NodeFileDTO accessory : request.getAddAccessoryList()){
+                fileIdList.add(accessory.getId());
+                fileList.add(accessory);
+            }
+            updateRequest.setAddFileIdList(fileIdList);
+        }
+        annotate = getStorageService().updateAnnotate(annotate,updateRequest);
+        annotate.setElement(element);
+        annotate.setAccessoryList(fileList);
+        return annotate;
+    }
+
+    @Override
+    public List<AnnotateDTO> listAnnotate(AccountDTO account, @NotNull QueryAnnotateDTO query, Current current) throws CustomException {
+        return getStorageService().listAnnotate(query);
+    }
+
+    @Override
+    public NodeFileDTO addAccessory(AccountDTO account, @NotNull AnnotateDTO annotate, @NotNull AccessoryRequestDTO request, Current current) throws CustomException {
+        //创建文件
         UpdateNodeFileDTO storageRequest = new UpdateNodeFileDTO();
         storageRequest.setServerTypeId(setting.getServerTypeId());
         storageRequest.setServerAddress(setting.getServerAddress());
@@ -112,8 +217,36 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         }
         storageRequest.setLastModifyUserId(getAccountId(account));
         NodeFileDTO file = getStorageService().createNodeFileWithRequestOnly(storageRequest);
+
+        //添加附件
+        if ((file != null) && (StringUtils.isNotEmpty(file.getId()))) {
+            List<String> fileIdList = new ArrayList<>();
+            fileIdList.add(file.getId());
+            UpdateAnnotateDTO addRequest = new UpdateAnnotateDTO();
+            addRequest.setAddFileIdList(fileIdList);
+            getStorageService().updateAnnotate(annotate,addRequest);
+        }
         return file;
     }
+
+    @Override
+    public void deleteAccessory(AccountDTO account, @NotNull AnnotateDTO annotate, @NotNull NodeFileDTO accessory, Current current) throws CustomException {
+        List<NodeFileDTO> fileList = annotate.getAccessoryList();
+        if (fileList != null){
+            for (NodeFileDTO file : fileList) {
+                if (StringUtils.isSame(file.getId(),accessory.getId())){
+                    List<String> fileIdList = new ArrayList<>();
+                    fileIdList.add(file.getId());
+                    UpdateAnnotateDTO delRequest = new UpdateAnnotateDTO();
+                    delRequest.setDelAttachmentIdList(fileIdList);
+                    getStorageService().updateAnnotate(annotate,delRequest);
+                    fileList.remove(file);
+                    break;
+                }
+            }
+        }
+    }
+
 
     private int writeRWFile(AccountDTO account, @NotNull NodeFileDTO file, @NotNull FileDataDTO data, String path, boolean isReadOnly, Current current) throws CustomException {
         String key = getFileKey(file,isReadOnly);
@@ -227,10 +360,6 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         }
     }
 
-    @Override
-    public List<SuggestionDTO> listSuggestion(AccountDTO account, QuerySuggestionDTO query, Current current) throws CustomException {
-        return null;
-    }
 
     private boolean isLocalFile(@NotNull NodeFileDTO file){
         return setting.isLocalServer(file.getServerTypeId(),file.getServerAddress(),file.getBaseDir());
@@ -518,21 +647,6 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
                 || StringUtils.isSame(StringUtils.getFileServerAddress(srcAddress),StringUtils.getFileServerAddress(dstAddress));
     }
 
-    /**
-     * @param src
-     * @param current The Current object for the invocation.
-     * @deprecated 尚未实现
-     **/
-    @Override
-    public boolean createMirror(FileNodeDTO src, Current current) throws CustomException {
-        return false;
-    }
-
-    @Override
-    public boolean createMirrorForAccount(AccountDTO account, FileNodeDTO src, Current current) throws CustomException {
-        return false;
-    }
-
     @Override
     public CommitListResultDTO issueNodeList(@NotNull List<SimpleNodeDTO> srcList, @NotNull CommitRequestDTO request, Current current) throws CustomException {
         return issueNodeListForAccount(getCurrentAccount(current),
@@ -668,26 +782,6 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         return ConstService.listAction();
     }
 
-    /**
-     * @param path
-     * @param current The Current object for the invocation.
-     * @deprecated 尚未验证
-     **/
-    @Override
-    public ProjectDTO getProjectInfoByPath(String path, Current current) throws CustomException {
-        return null;
-    }
-
-    /**
-     * @param account
-     * @param path
-     * @param current The Current object for the invocation.  @deprecated 尚未验证
-     **/
-    @Override
-    public ProjectDTO getProjectInfoByPathForAccount(AccountDTO account, String path, Current current) throws CustomException {
-        return null;
-    }
-
     @Override
     public boolean deleteNode(SimpleNodeDTO src, Current current) throws CustomException {
         return deleteNodeForAccount(getCurrentAccount(current),
@@ -697,7 +791,9 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     @Override
     public boolean deleteNodeForAccount(AccountDTO account, SimpleNodeDTO src, Current current) throws CustomException {
         if ((src != null) && (StringUtils.isNotEmpty(src.getId()))) {
-            getStorageService().deleteNode(account, src);
+            DeleteAskDTO deleteAsk = new DeleteAskDTO();
+            deleteAsk.setLastModifyUserId(getAccountId(account));
+            getStorageService().deleteNode(src,deleteAsk);
         }
         return true;
     }

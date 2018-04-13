@@ -2,9 +2,9 @@ package com.maoding.FileServer.Config;
 
 import com.maoding.Base.BaseRemoteService;
 import com.maoding.Common.zeroc.CustomException;
-import com.maoding.Storage.zeroc.*;
-import com.maoding.User.zeroc.AccountDTO;
+import com.maoding.Common.zeroc.DeleteAskDTO;
 import com.maoding.CoreUtils.SpringUtils;
+import com.maoding.Storage.zeroc.*;
 
 import java.util.List;
 
@@ -40,6 +40,11 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
+    public AnnotateDTO createAnnotate(NodeFileDTO file, UpdateAnnotateDTO request) throws CustomException {
+        return getStorageService().createAnnotate(file,request,null);
+    }
+
+    @Override
     public EmbedElementDTO createEmbedElement(UpdateElementDTO request) throws CustomException {
         return getStorageService().createEmbedElement(request,null);
     }
@@ -52,11 +57,6 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     @Override
     public NodeFileDTO createNodeFileWithRequestOnly(UpdateNodeFileDTO request) throws CustomException {
         return getStorageService().createNodeFileWithRequestOnly(request,null);
-    }
-
-    @Override
-    public SuggestionDTO createSuggestionWithRequestOnly(UpdateSuggestionDTO request) throws CustomException {
-        return getStorageService().createSuggestionWithRequestOnly(request,null);
     }
 
     @Override
@@ -106,8 +106,8 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
 
 
     @Override
-    public void deleteNode(AccountDTO account, SimpleNodeDTO node) throws CustomException {
-        getStorageService().deleteNode(account,node,null);
+    public void deleteNode(SimpleNodeDTO node, DeleteAskDTO request) throws CustomException {
+        getStorageService().deleteNode(node,request,null);
     }
 
 

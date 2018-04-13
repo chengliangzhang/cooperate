@@ -10,7 +10,7 @@ module zeroc {
     };
 
     interface NoticeService {
-        void createTopic(String topic); //建立主题
+        void createTopic(string topic); //建立主题
         StringList listTopic(); //列出所有已建立的主题
         StringList listSubscribedTopic(string userId); //列出用户已订阅的主题
         void notice(MessageDTO message,string topic); //向指定主题发送消息
@@ -25,14 +25,14 @@ module zeroc {
         void subscribeTopicForWeb(string topic, NoticeClient* client); //订阅频道
         void subscribeTopicForUser(string id, NoticeClient* client); //订阅频道
         void subscribeTopicForTask(string id, NoticeClient* client); //订阅频道
-        void subscribeTopicForProject(String id, NoticeClient* client); //订阅频道
+        void subscribeTopicForProject(string id, NoticeClient* client); //订阅频道
         void subscribeTopicForCompany(string id, NoticeClient* client); //订阅频道
         void subscribeTopicForTaskList(StringList idList, NoticeClient* client); //订阅频道
         void subscribeTopicForProjectList(StringList idList, NoticeClient* client); //订阅频道
         void subscribeTopicForCompanyList(StringList idList, NoticeClient* client); //订阅频道
-        void unSubscribeTopic(String topic, NoticeClient* client); //取消订阅频道
-        void unSubscribeTopicForUser(String id, NoticeClient* client); //取消订阅频道
-        void unSubscribeTopicForTask(String id, NoticeClient* client); //取消订阅频道
+        void unSubscribeTopic(string topic, NoticeClient* client); //取消订阅频道
+        void unSubscribeTopicForUser(string id, NoticeClient* client); //取消订阅频道
+        void unSubscribeTopicForTask(string id, NoticeClient* client); //取消订阅频道
         void unSubscribeTopicForProject(string id, NoticeClient* client); //取消订阅频道
         void unSubscribeTopicForCompany(string id, NoticeClient* client); //取消订阅频道
         void unSubscribeTopicForTaskList(StringList idList, NoticeClient* client); //取消订阅频道

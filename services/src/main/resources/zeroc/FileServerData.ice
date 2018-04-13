@@ -72,12 +72,13 @@ module zeroc {
     };
 
     ["java:getset","clr:property"]
-    struct SuggestionRequestDTO { //校审意见提交申请
+    struct AnnotateRequestDTO { //校审意见提交申请
         string typeId; //校审意见类型
         bool isPassed; //是否通过
         string content; //校审意见正文
         ByteArray data; //意见截图数据
-        NodeFileList accessoryList; //附件文件列表
+        NodeFileList addAccessoryList; //要添加的附件文件列表
+        NodeFileList delAccessoryList; //要删除的附件文件列表
     };
 
     ["java:getset","clr:property"]

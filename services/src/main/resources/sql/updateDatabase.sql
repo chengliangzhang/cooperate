@@ -2,8 +2,8 @@
 DROP PROCEDURE IF EXISTS `updateTables`;
 CREATE PROCEDURE `updateTables`()
 BEGIN
-  -- -- 校审意见
-  CREATE TABLE IF NOT EXISTS `md_list_suggestion` (
+  -- -- 文件注解附件
+  CREATE TABLE IF NOT EXISTS `md_list_attachment` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
     `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
@@ -11,22 +11,14 @@ BEGIN
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
-    `type_id` varchar(40) DEFAULT NULL COMMENT '校审意见类别编号',
-    `content` text(2048) DEFAULT NULL COMMENT '校审意见详细内容',
-    `main_file_id` char(32) DEFAULT NULL COMMENT '校审文件编号',
-    `status_type_id` varchar(40) DEFAULT NULL COMMENT '校审意见状态编号',
-    `creator_user_id` char(32) DEFAULT NULL COMMENT '校审意见创建者用户编号',
+    `annotate_id` char(32) DEFAULT NULL COMMENT '文件注解编号',
+    `attachment_file_id` char(32) DEFAULT NULL COMMENT '文件类附件编号',
+    `attachment_element_id` char(32) DEFAULT NULL COMMENT '嵌入元素类附件编号',
     PRIMARY KEY (`id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_suggestion' and column_name='main_file_id') then
-    alter table md_list_suggestion add column `main_file_id` char(32) DEFAULT NULL COMMENT '校审文件编号';
-  elseif not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_suggestion' and column_name='main_file_id' and data_type='char') then
-    alter table md_list_suggestion modify column `main_file_id` char(32) DEFAULT NULL COMMENT '校审文件编号';
-  end if;
-
-  -- -- 批注评论
-  CREATE TABLE IF NOT EXISTS `md_list_annotate` (
+  -- -- 文件注解
+  CREATE TABLE IF NOT EXISTS `md_tree_annotate` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
     `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
@@ -34,17 +26,27 @@ BEGIN
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
-    `title` varchar(255) DEFAULT NULL COMMENT '批注标题',
-    `content` text(2048) DEFAULT NULL COMMENT '批注评论正文',
-    `related_id` char(32) DEFAULT NULL COMMENT '校审意见编号',
+    `pid` char(32) DEFAULT NULL COMMENT '父注解编号',
+    `node_name` varchar(255) DEFAULT NULL COMMENT '文件注解标题',
+    `path` varchar(255) DEFAULT NULL COMMENT '文件注解路径，以"/"作为分隔符',
+    `type_id` varchar(40) DEFAULT '0' COMMENT '文件注解类型',
+
+    `content` text(2048) DEFAULT NULL COMMENT '文件注解正文',
+    `file_id` char(32) DEFAULT NULL COMMENT '被注解的文件的编号',
+    `main_file_id` char(32) DEFAULT NULL COMMENT '原始文件的编号',
+    `status_id` varchar(40) DEFAULT '0' COMMENT '文件注解状态',
+    `creator_user_id` char(32) DEFAULT NULL COMMENT '注解创建者用户编号',
+    `creator_role_id` varchar(40) DEFAULT NULL COMMENT '注解创建者职责编号',
     PRIMARY KEY (`id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
-  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_annotate' and column_name='title') then
-    alter table md_list_annotate add column `title` varchar(255) DEFAULT NULL COMMENT '批注标题';
+
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_tree_annotate' and column_name='status_id') then
+    alter table md_tree_annotate add column `status_id` varchar(40) DEFAULT '0' COMMENT '文件注解状态';
   end if;
-  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_annotate' and column_name='related_id') then
-    alter table md_list_annotate add column `related_id` char(32) DEFAULT NULL COMMENT '校审意见编号';
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_tree_annotate' and column_name='creator_role_id') then
+    alter table md_tree_annotate add column `creator_role_id` varchar(40) DEFAULT NULL COMMENT '注解创建者职责编号';
+  elseif not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_tree_annotate' and column_name='creator_role_id' and data_type='varchar' and character_maximum_length>=40) then
+    alter table md_tree_annotate modify column `creator_role_id` varchar(40) DEFAULT NULL COMMENT '注解创建者职责编号';
   end if;
 
   -- -- 内嵌HTML元素
@@ -426,6 +428,7 @@ DROP PROCEDURE IF EXISTS `initConst`;
 CREATE PROCEDURE `initConst`()
   BEGIN
     -- 常量分类
+    delete from md_const where classic_id = 0;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,0,'常量分类',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,1,'操作权限',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,2,'合作类型',null);
@@ -454,9 +457,26 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,28,'web权限组类型',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,29,'web权限类型',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,30,'web member角色类型',null);
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,31,'校审意见类型',null);
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,32,'校审意见状态类型',null);
+
+    -- -- -- -- --
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,32,'校审意见状态类型','');
+    delete from md_const where classic_id = 32;
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (32,0,'未知状态','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (32,1,'通过','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (32,2,'不通过','');
+
+    -- -- -- -- --
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,31,'校审意见类型','');
+    delete from md_const where classic_id = 31;
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (31,0,'未知类型','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (31,1,'校验','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (31,2,'审核','');
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,30,'web member角色类型','1.类型布尔属性，1-项目角色,2-任务角色；2.对应的角色');
+    delete from md_const where classic_id = 30;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,0,'立项人','10;23');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,1,'经营负责人','10;20');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,2,'设计负责人','10;30');
@@ -464,9 +484,11 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,4,'设计','01;41');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,5,'校对','01;42');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,6,'审核','01;43');
+    delete from md_const where classic_id = 30 and code_id > 6;
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,29,'web权限类型','1.类型布尔属性，1-转换需加偏移量;2.权限标识;3.对应的基准角色;4.设置所需权限');
+    delete from md_const where classic_id = 29;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (29,100,'创建分支架构/事业合伙人','0;org_partner;100;21');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (29,8,'权限配置','1;sys_role_permission;60;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (29,58,'企业认证','0;sys_role_auth;101;22');
@@ -486,9 +508,10 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (29,10,'财务设置','0;sys_finance_type;122;26');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (29,49,'确认付款日期','0;project_charge_manage;123;27');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (29,402,'确认到账日期','0;finance_back_fee;124;28');
-
+    
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,28,'web权限组类型','1.包含的web权限类型');
+    delete from md_const where classic_id = 28;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (28,0,'未定义权限组','');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (28,1,'后台管理','100,8,58,103');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (28,2,'组织管理','12,14,19');
@@ -498,6 +521,7 @@ CREATE PROCEDURE `initConst`()
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,27,'通知类型','0.主题;1.标题;2.内容');
+    delete from md_const where classic_id = 27;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (27,0,'未定义类型',';;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (27,1,'用户通用消息','User{UserId};用户消息;普通用户消息');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (27,2,'任务通用消息','Task{TaskId};任务消息;普通任务消息');
@@ -507,6 +531,7 @@ CREATE PROCEDURE `initConst`()
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,26,'角色类型','1.可分配角色；2.权限');
+    delete from md_const where classic_id = 26;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (26,0,'-;未知角色',';');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (26,10,'company_manager;总公司企业负责人','11,12,13,20,30,40,41,42,43,50,60,100,101,102,110,111,112,120,121,122,123,124,130,131,140,141,142,143,144;10,11,12,13');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (26,11,'company_manager_1;1类公司企业负责人','20,30,40,41,42,43,51,61,100,111,112,120,121,123,124,130,131,140,141,142,143,144;11');
@@ -550,6 +575,7 @@ CREATE PROCEDURE `initConst`()
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,25,'保留',null);
+    delete from md_const where classic_id = 25;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (25,0,'未知分类',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (25,1,'项目角色',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (25,2,'任务角色',null);
@@ -558,6 +584,7 @@ CREATE PROCEDURE `initConst`()
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,24,'资料分类目录','1.目录节点类型;2.下属节点类型');
+    delete from md_const where classic_id = 24;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,0,'未知分类',';');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,1,'设计','20;0,1,18,21,22,23;!0!1!2!');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,2,'提资','30;2,3,31,32,33;!1!2!');
@@ -565,12 +592,14 @@ CREATE PROCEDURE `initConst`()
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,23,'web task任务类型定义','1.任务布尔属性,1-是经营任务,2-是生产任务;2.转换时节点类型生成偏移量,3.归属的资料分类目录');
+    delete from md_const where classic_id = 23;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,0,'生产任务','01;2;1');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,1,'签发任务','10;1;1,2,3');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,2,'签发生产任务','11;1;1,2,3');
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,22,'专业类型',null);
+    delete from md_const where classic_id = 22;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (22,0,'规划',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (22,1,'建筑',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (22,2,'室内',null);
@@ -583,6 +612,7 @@ CREATE PROCEDURE `initConst`()
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,21,'sky drive文档类型定义','1.转换成目录的节点类型,1.转换成文件的节点类型');
+    delete from md_const where classic_id = 21;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (21,0,'目录','41;4');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (21,1,'文件','41;4');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (21,2,'未知类型文件','41;4');
@@ -602,6 +632,7 @@ CREATE PROCEDURE `initConst`()
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,20,'文件操作类型','1.新建节点类型;2.新建节点路径;3.文件服务器类型;4.文件服务器地址;5.服务器空间;6.通知类型');
+    delete from md_const where classic_id = 20;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,0,'无效','1;;;;;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,1,'备份','3;历史版本/{SrcFileNoExt}_{Time:yyyyMMddHHmmss}{Ext};1;;;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,2,'校对','1;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};1;;;2');
@@ -611,27 +642,32 @@ CREATE PROCEDURE `initConst`()
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,19,'文件服务器类型','1.默认服务器地址(分号使用|代替);2.默认文件存储空间');
+    delete from md_const where classic_id = 19;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (19,0,'未知',';');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (19,1,'ICE管理磁盘','127.0.0.1|127.0.0.1;c:/work/file_server');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (19,2,'直连网站空间','http://172.16.6.73:8081/filecenter;group1');
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,17,'删除状态',null);
+    delete from md_const where classic_id = 17;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (17,0,'未删除',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (17,1,'已删除',null);
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,16,'同步模式',null);
+    delete from md_const where classic_id = 16;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (16,0,'手动同步',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (16,1,'自动同步',null);
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,15,'锁定状态',null);
+    delete from md_const where classic_id = 15;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (15,0,'不锁定',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (15,1,'锁定',null);
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,14,'存储节点类型','1.节点布尔属性，1-是否目录，2-是否项目，3-是否任务，4-是否设计文档，5-是否提资文档，6-是否历史版本;2.子目录类型;3-子文件类型');
+    delete from md_const where classic_id = 14;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,0,'未知类型','000100;0;1');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,1,'设计文件','000100;0;1');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,2,'提资资料','000010;0;2');
@@ -662,10 +698,12 @@ CREATE PROCEDURE `initConst`()
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,11,'共享类型',null);
+    delete from md_const where classic_id = 11;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (11,0,'全部共享',null);
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,5,'文件类型',null);
+    delete from md_const where classic_id = 5;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,0,'未知类型',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,1,'CAD设计文档',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,3,'合同附件',null);
@@ -680,6 +718,7 @@ CREATE PROCEDURE `initConst`()
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,1,'操作权限',null);
+    delete from md_const where classic_id = 1;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (1,0,'-;无权限',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (1,10,'sys_enterprise_logout;解散自己负责的组织',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (1,11,'invite_others;邀请事业合伙人/分公司',null);
@@ -1288,6 +1327,7 @@ BEGIN
           web_role_type.type_id,
           web_role_type.type_name,
           web_role_type.role_type,
+          web_role_type.attr_str,
           web_role_type.is_project_role,
           web_role_type.is_task_role,
           if(web_role_type.type_id is null,null,0) as is_company_role,
@@ -1323,6 +1363,7 @@ BEGIN
       (web_role_type.role_type +
        if(web_role_type.is_plus_offset and org_relation.type_id is not null,
           org_relation.type_id,0)) as role_type,
+      if(web_role_type.type_id is null,null,'00') as attr_str,
       if(web_role_type.type_id is null,null,0) as is_project_role,
       if(web_role_type.type_id is null,null,0) as is_task_role,
       if(web_role_type.type_id is null,null,1) as is_company_role,

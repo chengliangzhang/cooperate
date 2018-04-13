@@ -37,6 +37,11 @@ public class RemoteUserServicePrx extends BaseRemoteService<UserServicePrx> impl
     }
 
     @Override
+    public List<WebRoleDTO> listWebRoleTask(AccountDTO account) {
+        return getUserService().listWebRoleTask(account,null);
+    }
+
+    @Override
     public AccountDTO getCurrent() {
         AccountDTO account = new AccountDTO();
         account.setId("5ffee496fa814ea4b6d26a9208b00a0b");

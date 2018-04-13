@@ -152,10 +152,14 @@ module zeroc {
 
     ["java:getset","clr:property"]
     struct EmbedElementDTO { //嵌入的HTML元素，如小型位图等
+        //通用属性
         string id; //元素id
+
+        //嵌入元素属性
         string title; //元素占位文字
         ByteArray dataArray; //元素内容
 
+        //通用属性
         long createTimeStamp; //注解建立时间
         string createTimeText; //注解建立时间文字
         long lastModifyTimeStamp; //注解最后修改时间
@@ -171,16 +175,32 @@ module zeroc {
         ByteArray dataArray; //元素内容
 
         //通用更改申请
-        long lastModifyTimeStamp; //最后修改时间
+        ["deprecate"] long lastModifyTimeStamp; //最后修改时间
         string lastModifyUserId; //最后编辑用户id
         string lastModifyRoleId; //最后编辑角色id
     };
 
     ["java:getset","clr:property"]
-    struct AnnotateDTO { //校审意见注解
-        string id; //注解id
-        string relatedId; //校审意见id
-        string content; //注解详细内容
+    struct AnnotateDTO { //文件注解
+        //通用属性
+        string id; //文件注解编号
+        string name; //文件注解标题
+
+        //通用树节点属性
+        string pid; //文件注解父节点编号
+        string typeId; //文件注解类型
+
+        //文件注解属性
+        string statusId; //文件注解状态
+        string content; //文件注解正文内容
+        string fileId; //被批注的文件编号
+        string mainFileId; //原始文件编号
+
+        //文件注解附件信息
+        EmbedElementDTO element; //首个嵌入元素
+        NodeFileList accessoryList; //附件列表
+
+        //通用属性
         long createTimeStamp; //注解建立时间
         string createTimeText; //注解建立时间文字
         long lastModifyTimeStamp; //注解最后修改时间
@@ -192,50 +212,46 @@ module zeroc {
 
     ["java:getset","clr:property"]
     struct UpdateAnnotateDTO { //注解更新申请
-        string relatedId; //校审意见id
-        string content; //注解详细内容
+        //文件注解属性
+        string statusId; //文件注解状态
+        string content; //文件注解正文内容
+        string fileId; //被批注的文件编号
+        string mainFileId; //原始文件编号
+        StringList addElementIdList; //需要添加的嵌入元素类附件编号
+        StringList addFileIdList; //需要添加的文件类附件编号
+        StringList delAttachmentIdList; //需要删除的附件编号
 
         //通用更改申请
-        long lastModifyTimeStamp; //最后修改时间
-        string lastModifyUserId; //最后编辑用户id
-        string lastModifyRoleId; //最后编辑角色id
+        string typeId; //修改后的节点类型
+        string pid; //修改后的父节点编号
+        string path; //修改后的节点路径
+        string lastModifyUserId; //申请修改的用户编号
+        string lastModifyRoleId; //申请修改的角色编号
     };
 
-    ["java:getset","clr:property"]
-    struct SuggestionDTO { //校审意见
-        string id; //校审意见编号
-        string name; //意见名称
-        long createTimeStamp; //意见建立时间
-        string createTimeText; //意见建立时间文字
-        long lastModifyTimeStamp; //意见最后修改时间
-        string lastModifyTimeText; //意见最后修改时间文字
-        string lastModifyUserId; //意见最后编辑用户id
-        string lastModifyRoleId; //意见最后编辑角色id
-
-        string typeId; //校审意见类别编号
-        string content; //校审意见详细内容
-        string mainFileId; //校审文件编号
-        string statusTypeId; //校审意见状态编号
-        string creatorUserId; //校审意见创建者用户编号
-        AnnotateList annotateList; //意见注解列表
-        NodeFileList accessoryList; //附件文件列表
-
-        ByteArray firstData; //单图片校审意见快捷数据入口
-
-    };
-    ["java:type:java.util.ArrayList<SuggestionDTO>"] sequence<SuggestionDTO> SuggestionList;
 
     ["java:getset","clr:property"]
-    struct UpdateSuggestionDTO { //校审意见更新申请
-        string typeId; //校审意见类别编号
-        string content; //校审意见详细内容
-        string mainFileId; //校审文件编号
-        string statusTypeId; //校审意见状态编号
+    struct QueryAnnotateDTO { //文件注解查询申请，每个属性都可以是逗号分隔的多个数据
+        string statusId; //文件注解状态
+        string fileId; //被注解的文件编号
+        string mainFileId; //被注解的原始文件的编号
+        string anyFileId; //被注解的文件或原始文件编号
 
-        //通用更改申请
-        long lastModifyTimeStamp; //最后修改时间
-        string lastModifyUserId; //最后编辑用户id
-        string lastModifyRoleId; //最后编辑角色id
+        //通用查询属性
+        string id; //记录编号
+        string lastModifyUserId; //最后更改者用户编号
+        string lastModifyRoleId; //最后更改者职责编号
+        long startTimeStamp; //起始时间
+        long endTimeStamp; //终止时间
+        string accountId; //查询者用户编号
+
+        string nodeName; //记录节点名称
+        string pid; //记录父节点编号
+        string path; //记录路径
+        string parentPath; //记录父节点路径
+        string typeId; //记录节点类型
+
+        string fuzzyPath; //模糊匹配路径
     };
 
     ["java:getset","clr:property"]
@@ -264,25 +280,6 @@ module zeroc {
         //通用更改申请
         string lastModifyUserId; //最后编辑用户id
         string lastModifyRoleId; //最后编辑角色id
-    };
-
-    ["java:getset","clr:property"]
-    struct QuerySuggestionDTO { //校审意见查询申请，每个属性都可以是逗号分隔的多个数据
-        //通用查询申请
-        string id; //记录id
-        string name; //记录名称
-        string typeId; //记录类型
-        string projectId; //记录所属项目id
-        string issueId; //记录所属签发任务id
-        string taskId; //记录所属生产任务id
-        string companyId; //记录所属组织id
-        string lastModifyUserId; //最后更改者用户id
-        string lastModifyRoleId; //最后更改者职责id
-        string accountId; //查询者用户id
-        long startTimeStamp; //起始时间
-        long endTimeStamp; //终止时间
-
-        string fuzzyId; //模糊匹配id字符串
     };
 
     ["java:getset","clr:property"]

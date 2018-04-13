@@ -1,9 +1,7 @@
 package com.maoding.Storage.Dao;
 
-import com.maoding.Base.BaseDao;
 import com.maoding.Storage.Dto.StorageEntityUnionDTO;
 import com.maoding.Storage.Entity.StorageFileEntity;
-import com.maoding.Storage.Entity.StorageTreeEntity;
 import com.maoding.Storage.zeroc.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -18,7 +16,7 @@ import java.util.Map;
  * 描    述 :
  */
 @Repository
-public interface StorageDao extends BaseDao<StorageTreeEntity> {
+public interface StorageDao {
     List<SimpleNodeDTO> listWebArchiveDir(QueryNodeDTO query);
 
     List<SimpleNodeDTO> listNode(QueryNodeDTO query);

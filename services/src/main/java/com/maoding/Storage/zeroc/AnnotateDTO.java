@@ -35,16 +35,52 @@ public class AnnotateDTO implements java.lang.Cloneable,
         this.id = id;
     }
 
-    public String relatedId;
+    public String name;
 
-    public String getRelatedId()
+    public String getName()
     {
-        return relatedId;
+        return name;
     }
 
-    public void setRelatedId(String relatedId)
+    public void setName(String name)
     {
-        this.relatedId = relatedId;
+        this.name = name;
+    }
+
+    public String pid;
+
+    public String getPid()
+    {
+        return pid;
+    }
+
+    public void setPid(String pid)
+    {
+        this.pid = pid;
+    }
+
+    public String typeId;
+
+    public String getTypeId()
+    {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId)
+    {
+        this.typeId = typeId;
+    }
+
+    public String statusId;
+
+    public String getStatusId()
+    {
+        return statusId;
+    }
+
+    public void setStatusId(String statusId)
+    {
+        this.statusId = statusId;
     }
 
     public String content;
@@ -57,6 +93,54 @@ public class AnnotateDTO implements java.lang.Cloneable,
     public void setContent(String content)
     {
         this.content = content;
+    }
+
+    public String fileId;
+
+    public String getFileId()
+    {
+        return fileId;
+    }
+
+    public void setFileId(String fileId)
+    {
+        this.fileId = fileId;
+    }
+
+    public String mainFileId;
+
+    public String getMainFileId()
+    {
+        return mainFileId;
+    }
+
+    public void setMainFileId(String mainFileId)
+    {
+        this.mainFileId = mainFileId;
+    }
+
+    public EmbedElementDTO element;
+
+    public EmbedElementDTO getElement()
+    {
+        return element;
+    }
+
+    public void setElement(EmbedElementDTO element)
+    {
+        this.element = element;
+    }
+
+    public java.util.List<NodeFileDTO> accessoryList;
+
+    public java.util.List<NodeFileDTO> getAccessoryList()
+    {
+        return accessoryList;
+    }
+
+    public void setAccessoryList(java.util.List<NodeFileDTO> accessoryList)
+    {
+        this.accessoryList = accessoryList;
     }
 
     public long createTimeStamp;
@@ -134,19 +218,32 @@ public class AnnotateDTO implements java.lang.Cloneable,
     public AnnotateDTO()
     {
         this.id = "";
-        this.relatedId = "";
+        this.name = "";
+        this.pid = "";
+        this.typeId = "";
+        this.statusId = "";
         this.content = "";
+        this.fileId = "";
+        this.mainFileId = "";
+        this.element = new EmbedElementDTO();
         this.createTimeText = "";
         this.lastModifyTimeText = "";
         this.lastModifyUserId = "";
         this.lastModifyRoleId = "";
     }
 
-    public AnnotateDTO(String id, String relatedId, String content, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, String lastModifyUserId, String lastModifyRoleId)
+    public AnnotateDTO(String id, String name, String pid, String typeId, String statusId, String content, String fileId, String mainFileId, EmbedElementDTO element, java.util.List<NodeFileDTO> accessoryList, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText, String lastModifyUserId, String lastModifyRoleId)
     {
         this.id = id;
-        this.relatedId = relatedId;
+        this.name = name;
+        this.pid = pid;
+        this.typeId = typeId;
+        this.statusId = statusId;
         this.content = content;
+        this.fileId = fileId;
+        this.mainFileId = mainFileId;
+        this.element = element;
+        this.accessoryList = accessoryList;
         this.createTimeStamp = createTimeStamp;
         this.createTimeText = createTimeText;
         this.lastModifyTimeStamp = lastModifyTimeStamp;
@@ -176,9 +273,30 @@ public class AnnotateDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.relatedId != r.relatedId)
+            if(this.name != r.name)
             {
-                if(this.relatedId == null || r.relatedId == null || !this.relatedId.equals(r.relatedId))
+                if(this.name == null || r.name == null || !this.name.equals(r.name))
+                {
+                    return false;
+                }
+            }
+            if(this.pid != r.pid)
+            {
+                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
+                {
+                    return false;
+                }
+            }
+            if(this.typeId != r.typeId)
+            {
+                if(this.typeId == null || r.typeId == null || !this.typeId.equals(r.typeId))
+                {
+                    return false;
+                }
+            }
+            if(this.statusId != r.statusId)
+            {
+                if(this.statusId == null || r.statusId == null || !this.statusId.equals(r.statusId))
                 {
                     return false;
                 }
@@ -186,6 +304,34 @@ public class AnnotateDTO implements java.lang.Cloneable,
             if(this.content != r.content)
             {
                 if(this.content == null || r.content == null || !this.content.equals(r.content))
+                {
+                    return false;
+                }
+            }
+            if(this.fileId != r.fileId)
+            {
+                if(this.fileId == null || r.fileId == null || !this.fileId.equals(r.fileId))
+                {
+                    return false;
+                }
+            }
+            if(this.mainFileId != r.mainFileId)
+            {
+                if(this.mainFileId == null || r.mainFileId == null || !this.mainFileId.equals(r.mainFileId))
+                {
+                    return false;
+                }
+            }
+            if(this.element != r.element)
+            {
+                if(this.element == null || r.element == null || !this.element.equals(r.element))
+                {
+                    return false;
+                }
+            }
+            if(this.accessoryList != r.accessoryList)
+            {
+                if(this.accessoryList == null || r.accessoryList == null || !this.accessoryList.equals(r.accessoryList))
                 {
                     return false;
                 }
@@ -238,8 +384,15 @@ public class AnnotateDTO implements java.lang.Cloneable,
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::AnnotateDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, relatedId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, statusId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, content);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainFileId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, element);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, accessoryList);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
@@ -266,8 +419,15 @@ public class AnnotateDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         ostr.writeString(this.id);
-        ostr.writeString(this.relatedId);
+        ostr.writeString(this.name);
+        ostr.writeString(this.pid);
+        ostr.writeString(this.typeId);
+        ostr.writeString(this.statusId);
         ostr.writeString(this.content);
+        ostr.writeString(this.fileId);
+        ostr.writeString(this.mainFileId);
+        EmbedElementDTO.ice_write(ostr, this.element);
+        NodeFileListHelper.write(ostr, this.accessoryList);
         ostr.writeLong(this.createTimeStamp);
         ostr.writeString(this.createTimeText);
         ostr.writeLong(this.lastModifyTimeStamp);
@@ -279,8 +439,15 @@ public class AnnotateDTO implements java.lang.Cloneable,
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.id = istr.readString();
-        this.relatedId = istr.readString();
+        this.name = istr.readString();
+        this.pid = istr.readString();
+        this.typeId = istr.readString();
+        this.statusId = istr.readString();
         this.content = istr.readString();
+        this.fileId = istr.readString();
+        this.mainFileId = istr.readString();
+        this.element = EmbedElementDTO.ice_read(istr);
+        this.accessoryList = NodeFileListHelper.read(istr);
         this.createTimeStamp = istr.readLong();
         this.createTimeText = istr.readString();
         this.lastModifyTimeStamp = istr.readLong();
@@ -341,5 +508,5 @@ public class AnnotateDTO implements java.lang.Cloneable,
 
     private static final AnnotateDTO _nullMarshalValue = new AnnotateDTO();
 
-    public static final long serialVersionUID = 1415856955L;
+    public static final long serialVersionUID = 453183839L;
 }

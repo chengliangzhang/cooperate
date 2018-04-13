@@ -4,6 +4,8 @@ import com.maoding.Base.BaseLocalService;
 import com.maoding.Common.CheckService;
 import com.maoding.Common.ConstService;
 import com.maoding.Common.zeroc.CustomException;
+import com.maoding.Common.zeroc.DeleteAskDTO;
+import com.maoding.Common.zeroc.QueryAskDTO;
 import com.maoding.CoreUtils.BeanUtils;
 import com.maoding.CoreUtils.ObjectUtils;
 import com.maoding.CoreUtils.StringUtils;
@@ -46,13 +48,24 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     private StorageFileHisDao storageFileHisDao;
 
     @Autowired
-    private ElementDao elementDao;
+    private ElementListDao elementListDao;
+
+    @Autowired
+    private AnnotateTreeDao annotateTreeDao;
+
+    @Autowired
+    private AttachmentListDao attachmentListDao;
 
     @Autowired
     private AnnotateDao annotateDao;
 
     @Autowired
-    private SuggestionDao suggestionDao;
+    private ElementDao elementDao;
+
+    @Override
+    public List<EmbedElementDTO> listEmbedElement(@NotNull QueryAskDTO query, Current current) throws CustomException {
+        return elementDao.listElement(query);
+    }
 
     @Override
     public List<NodeFileDTO> listNodeFile(QueryNodeFileDTO query, Current current) throws CustomException {
@@ -70,7 +83,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
         ElementEntity entity = BeanUtils.createCleanFrom(request,ElementEntity.class);
         String id = entity.getId();
-        elementDao.insert(entity);
+        elementListDao.insert(entity);
         EmbedElementDTO result = BeanUtils.createCleanFrom(entity,EmbedElementDTO.class);
 
         log.info("\t----> createEmbedElement花费时间:" + (System.currentTimeMillis()-t) + "ms");
@@ -78,21 +91,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public AnnotateDTO createAnnotateWithRequestOnly(UpdateAnnotateDTO request, Current current) throws CustomException {
-        long t = System.currentTimeMillis();
-
-        AnnotateEntity entity = BeanUtils.createCleanFrom(request,AnnotateEntity.class);
-        entity.reset();
-        String id = entity.getId();
-        annotateDao.insert(entity);
-        AnnotateDTO result = BeanUtils.createCleanFrom(entity,AnnotateDTO.class);
-
-        log.info("\t----> createAnnotate花费时间:" + (System.currentTimeMillis()-t) + "ms");
-        return result;
-    }
-
-    @Override
-    public NodeFileDTO updateNodeFile(@NotNull NodeFileDTO file, UpdateNodeFileDTO request, Current current) throws CustomException {
+    public NodeFileDTO updateNodeFile(@NotNull NodeFileDTO file, @NotNull UpdateNodeFileDTO request, Current current) throws CustomException {
         final String QUERY_FIELD_ID = "id";
         final String QUERY_MAIN_FIELD_ID = "mainFileId";
         final String QUERY_MIRROR_SERVER_TYPE_ID = "mirrorServerTypeId";
@@ -161,18 +160,6 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public SuggestionDTO createSuggestionWithRequestOnly(UpdateSuggestionDTO request, Current current) throws CustomException {
-        long t = System.currentTimeMillis();
-
-        SuggestionEntity entity = BeanUtils.createCleanFrom(request,SuggestionEntity.class);
-        suggestionDao.insert(entity);
-        SuggestionDTO result = BeanUtils.createCleanFrom(entity,SuggestionDTO.class);
-
-        log.info("\t----> createSuggestion花费时间:" + (System.currentTimeMillis()-t) + "ms");
-        return result;
-    }
-
-    @Override
     public long summaryNodeLength(QuerySummaryDTO query, Current current) throws CustomException {
         long t = System.currentTimeMillis();
 
@@ -183,71 +170,147 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public EmbedElementDTO updateEmbedElement(EmbedElementDTO src, UpdateElementDTO request, Current current) throws CustomException {
-        return null;
+    public EmbedElementDTO updateEmbedElement(@NotNull EmbedElementDTO src, @NotNull UpdateElementDTO request, Current current) throws CustomException {
+        long t = System.currentTimeMillis();
+
+        ElementEntity entity = elementListDao.selectById(src.getId());
+        CheckService.check(entity != null);
+        BeanUtils.copyCleanProperties(request,entity);
+        entity.update();
+        int n = elementListDao.update(entity);
+        CheckService.check (n == 1);
+        BeanUtils.copyCleanProperties(entity,src);
+
+        log.info("\t----> updateEmbedElement:" + (System.currentTimeMillis()-t) + "ms");
+        return src;
+    }
+
+    private void addAttachmentList(@NotNull AnnotateEntity annotateEntity, List<String> elementIdList, List<String> fileIdList){
+        List<AttachmentEntity> attachmentList = new ArrayList<>();
+        if (ObjectUtils.isNotEmpty(elementIdList)) {
+            for (String id : elementIdList) {
+                AttachmentEntity attachmentEntity = BeanUtils.createCleanFrom(annotateEntity, AttachmentEntity.class);
+                attachmentEntity.resetId();
+                attachmentEntity.setAnnotateId(annotateEntity.getId());
+                attachmentEntity.setAttachmentElementId(id);
+                attachmentList.add(attachmentEntity);
+            }
+        }
+        if (ObjectUtils.isNotEmpty(fileIdList)) {
+            for (String id : fileIdList) {
+                AttachmentEntity attachmentEntity = BeanUtils.createCleanFrom(annotateEntity, AttachmentEntity.class);
+                attachmentEntity.resetId();
+                attachmentEntity.setAnnotateId(annotateEntity.getId());
+                attachmentEntity.setAttachmentFileId(id);
+                attachmentList.add(attachmentEntity);
+            }
+        }
+        if (ObjectUtils.isNotEmpty(attachmentList)){
+            int n = attachmentListDao.insertList(attachmentList);
+            assert (n == attachmentList.size());
+        }
+
     }
 
     @Override
-    public AnnotateDTO createAnnotate(SuggestionDTO src, UpdateAnnotateDTO request, Current current) throws CustomException {
-        return null;
+    public AnnotateDTO createAnnotate(NodeFileDTO file, @NotNull UpdateAnnotateDTO request, Current current) throws CustomException {
+        long t = System.currentTimeMillis();
+
+        //建立文件注解记录
+        AnnotateEntity annotateEntity = BeanUtils.createCleanFrom(request,AnnotateEntity.class);
+        if (file != null) {
+            annotateEntity.setFileId(file.getId());
+            if (StringUtils.isNotEmpty(file.getMainFileId())) {
+                annotateEntity.setMainFileId(file.getMainFileId());
+            } else {
+                annotateEntity.setMainFileId(file.getId());
+            }
+        }
+
+        //添加文件注解附件
+        addAttachmentList(annotateEntity,request.getAddElementIdList(),request.getAddFileIdList());
+
+        int n = annotateTreeDao.insert(annotateEntity);
+        assert (n == 1);
+        AnnotateDTO annotate = BeanUtils.createCleanFrom(annotateEntity,AnnotateDTO.class);
+
+        log.info("\t----> createAnnotate:" + (System.currentTimeMillis()-t) + "ms");
+        return annotate;
     }
 
     @Override
-    public AnnotateDTO updateAnnotate(AnnotateDTO src, UpdateAnnotateDTO request, Current current) throws CustomException {
-        return null;
+    public List<AnnotateDTO> listAnnotate(@NotNull QueryAnnotateDTO query, Current current) throws CustomException {
+        return annotateDao.listAnnotate(BeanUtils.cleanProperties(query));
     }
 
     @Override
-    public NodeFileDTO createNodeFile(NodeFileDTO src, UpdateNodeFileDTO request, Current current) throws CustomException {
-        return null;
-    }
+    public AnnotateDTO updateAnnotate(@NotNull AnnotateDTO src, @NotNull UpdateAnnotateDTO request, Current current) throws CustomException {
+        long t = System.currentTimeMillis();
 
+        //更新文件注解记录
+        AnnotateEntity annotateEntity = annotateTreeDao.selectById(StringUtils.left(src.getId(),StringUtils.DEFAULT_ID_LENGTH));
+        BeanUtils.copyCleanProperties(request,annotateEntity);
+        annotateEntity.update();
+
+        //添加附件
+        addAttachmentList(annotateEntity,request.getAddElementIdList(),request.getAddFileIdList());
+
+        //删除附件
+        if (ObjectUtils.isNotEmpty(request.getDelAttachmentIdList())) {
+            List<String> delElementIdList = new ArrayList<>();
+            delElementIdList.addAll(request.getDelAttachmentIdList());
+            attachmentListDao.deleteAttachment(annotateEntity.getId(),delElementIdList,request.getLastModifyUserId());
+        }
+
+        int n = annotateTreeDao.update(annotateEntity);
+        assert (n == 1);
+        BeanUtils.copyCleanProperties(annotateEntity,src);
+
+        log.info("\t----> updateAnnotate:" + (System.currentTimeMillis()-t) + "ms");
+        return src;
+    }
 
     @Override
-    public SuggestionDTO createSuggestion(SimpleNodeDTO src, UpdateSuggestionDTO request, Current current) throws CustomException {
-        return null;
-    }
+    public NodeFileDTO createNodeFile(NodeFileDTO src, @NotNull UpdateNodeFileDTO request, Current current) throws CustomException {
+        long t = System.currentTimeMillis();
 
-    @Override
-    public SuggestionDTO updateSuggestion(SuggestionDTO src, UpdateSuggestionDTO request, Current current) throws CustomException {
-        return null;
-    }
+        //创建文件或镜像
+        StorageFileEntity entity = BeanUtils.createCleanFrom(src, StorageFileEntity.class);
+        if (src != null) {
+            updateMirrorEntity(request, src.getId(), entity);
+        }
+        storageFileDao.insert(entity);
 
-    @Override
-    public List<SuggestionDTO> listSuggestion(QuerySuggestionDTO query, Current current) throws CustomException {
-        return null;
-    }
+        //创建返回对象
+        if (src != null) {
+            src.setReadOnlyMirrorKey(StringUtils.formatPath(entity.getReadOnlyKey()));
+            src.setWritableMirrorKey(StringUtils.formatPath(entity.getWritableKey()));
+        } else {
+            src = BeanUtils.createCleanFrom(entity,NodeFileDTO.class);
+        }
 
-//    @Override
-//    public FullNodeDTO createMirror(@NotNull FullNodeDTO src, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
-//        long t = System.currentTimeMillis();
-//
-//        CheckService.check((src.getBasic() != null)
-//                        && (!ConstService.isDirectoryType((new Short(src.getBasic().getTypeId())).toString()))
-//                        && isMirrorInfoValid(request));
-//        String fileId = StringUtils.left(src.getBasic().getId(),StringUtils.DEFAULT_ID_LENGTH);
-//        CheckService.check((StringUtils.isNotEmpty(fileId)));
-//        StorageFileEntity mirrorEntity = selectMirrorFileEntity(fileId, request.getMirrorTypeId(), request.getMirrorAddress(), request.getMirrorBaseDir());
-//        if (mirrorEntity == null) {
-//            mirrorEntity = BeanUtils.createCleanFrom(src.getBasic(), StorageFileEntity.class);
-//            updateMirrorEntity(request,fileId,mirrorEntity);
-//            storageFileDao.insert(mirrorEntity);
-//        } else {
-//            updateMirrorEntity(request,fileId,mirrorEntity);
-//            mirrorEntity.update();
-//            storageFileDao.update(mirrorEntity);
-//        }
-//        if (mirrorEntity != null) {
-//            NodeFileDTO file = src.getFileInfo();
-//            if (file != null) {
-//                file.setReadOnlyMirrorKey(StringUtils.formatPath(mirrorEntity.getReadOnlyKey()));
-//                file.setWritableMirrorKey(StringUtils.formatPath(mirrorEntity.getWritableKey()));
-//            }
-//        }
-//
-//        log.info("\t----> createMirror花费时间:" + (System.currentTimeMillis()-t) + "ms");
-//        return src;
-//    }
+        //如果request内有创建镜像内容，创建镜像
+        if (isMirrorInfoValid(request)){
+            String fileId = src.getId();
+            StorageFileEntity mirrorEntity = selectMirrorFileEntity(fileId, Short.parseShort(request.getMirrorTypeId()), request.getMirrorAddress(), request.getMirrorBaseDir());
+            if (mirrorEntity == null) {
+                mirrorEntity = new StorageFileEntity();
+                BeanUtils.copyCleanProperties(entity,mirrorEntity);
+                mirrorEntity.reset();
+                updateMirrorEntity(request,fileId,mirrorEntity);
+                storageFileDao.insert(mirrorEntity);
+            } else {
+                updateMirrorEntity(request,fileId,mirrorEntity);
+                mirrorEntity.update();
+                storageFileDao.update(mirrorEntity);
+            }
+            src.setReadOnlyMirrorKey(StringUtils.formatPath(mirrorEntity.getReadOnlyKey()));
+            src.setWritableMirrorKey(StringUtils.formatPath(mirrorEntity.getWritableKey()));
+        }
+
+        log.info("\t----> createNodeFile:" + (System.currentTimeMillis()-t) + "ms");
+        return src;
+    }
 
     @Override
     public FullNodeDTO getNodeInfo(@NotNull SimpleNodeDTO node, @NotNull QueryNodeInfoDTO request, Current current) throws CustomException {
@@ -544,35 +607,29 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     @Override
-    public void deleteNodeByIdList(AccountDTO account, List<String> idList, Current current) throws CustomException {
+    public void deleteNodeByIdList(@NotNull List<String> idList, DeleteAskDTO request, Current current) throws CustomException {
         if (ObjectUtils.isNotEmpty(idList)) {
-            String accountId = (account != null) ? account.getId() : null;
             int n = 0;
-            n += storageDao.fakeDeleteById(idList, accountId);
-            n += storageFileDao.fakeDeleteById(idList, accountId);
-            n += storageFileHisDao.fakeDeleteById(idList, accountId);
+            String userId = (request != null) ? request.getLastModifyUserId() : null;
+            n += storageTreeDao.fakeDeleteById(idList, userId);
+            n += storageFileDao.fakeDeleteById(idList, userId);
+            n += storageFileHisDao.fakeDeleteById(idList, userId);
             log.debug("\t----> deleteNodeByIdList：删除了" + n + "条记录");
         }
     }
 
     @Override
-    public void deleteNodeById(AccountDTO account, @NotNull String id, Current current) throws CustomException {
-        long t = System.currentTimeMillis();
-
+    public void deleteNodeById(@NotNull String id, DeleteAskDTO request, Current current) throws CustomException {
         List<String> idList = new ArrayList<>();
         id = StringUtils.left(id, StringUtils.DEFAULT_ID_LENGTH);
         if (StringUtils.isNotEmpty(id)) {
             idList.add(id);
         }
-        deleteNodeByIdList(account,idList,current);
-
-        log.info("===>deleteNodeById:" + (System.currentTimeMillis()-t) + "ms");
+        deleteNodeByIdList(idList,request,current);
     }
 
     @Override
-    public void deleteNodeList(AccountDTO account, @NotNull List<SimpleNodeDTO> nodeList, Current current) throws CustomException {
-        long t = System.currentTimeMillis();
-
+    public void deleteNodeList(@NotNull List<SimpleNodeDTO> nodeList, DeleteAskDTO request, Current current) throws CustomException {
         List<String> idList = new ArrayList<>();
         for (SimpleNodeDTO node : nodeList) {
             if (node.getIsDirectory()) {
@@ -585,17 +642,15 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             }
             idList.add(StringUtils.left(node.getId(),StringUtils.DEFAULT_ID_LENGTH));
         }
-        deleteNodeByIdList(account,idList,current);
-
-        log.info("\t----> deleteNodeList花费时间:" + (System.currentTimeMillis()-t) + "ms");
+        deleteNodeByIdList(idList,request,current);
     }
 
     @Override
-    public void deleteNode(AccountDTO account, @NotNull SimpleNodeDTO node, Current current) throws CustomException {
+    public void deleteNode(@NotNull SimpleNodeDTO node, DeleteAskDTO request, Current current) throws CustomException {
         if (StringUtils.isNotEmpty(node.getId())) {
             List<SimpleNodeDTO> list = new ArrayList<>();
             list.add(node);
-            deleteNodeList(account, list, current);
+            deleteNodeList(list, request, current);
         }
     }
 
@@ -661,7 +716,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             n += storageFileDao.updateById(fileEntity);
             assert (n > 0);
         }
-        n += storageDao.updateById(srcUnion);
+        n += storageTreeDao.updateById(srcUnion);
         assert (n > 0);
     }
 
@@ -715,7 +770,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             pid = pathNode.getId();
         }
         if (!nodeList.isEmpty()) {
-            int n = storageDao.insertList(nodeList);
+            int n = storageTreeDao.insertList(nodeList);
             assert (n > 0);
         }
         return pid;

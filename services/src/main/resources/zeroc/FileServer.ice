@@ -9,10 +9,15 @@
 [["java:package:com.maoding.FileServer"]]
 module zeroc {
     interface FileService {
-        SuggestionDTO createSuggestion(AccountDTO account,SimpleNodeDTO node,SuggestionRequestDTO request) throws CustomException; //创建校审意见
-        NodeFileDTO createAccessory(AccountDTO account,AccessoryRequestDTO request) throws CustomException; //提交附件申请
-        SuggestionList listSuggestion(AccountDTO account,QuerySuggestionDTO query) throws CustomException; //查询校审意见
+        WebRoleList listWebRoleTask(AccountDTO account); //列出用户在生产任务中担任的角色
 
+        AnnotateDTO createAnnotateCheck(AccountDTO account,SimpleNodeDTO node,AnnotateRequestDTO request) throws CustomException; //创建校验意见
+        AnnotateDTO createAnnotateAudit(AccountDTO account,SimpleNodeDTO node,AnnotateRequestDTO request) throws CustomException; //创建审核意见
+        AnnotateDTO createAnnotate(AccountDTO account,SimpleNodeDTO node,AnnotateRequestDTO request) throws CustomException; //创建校审意见
+        AnnotateDTO updateAnnotate(AccountDTO account,AnnotateDTO annotate,AnnotateRequestDTO query) throws CustomException; //更新校审意见
+        AnnotateList listAnnotate(AccountDTO account,QueryAnnotateDTO query) throws CustomException; //查询校审意见
+        NodeFileDTO addAccessory(AccountDTO account,AnnotateDTO annotate,AccessoryRequestDTO request) throws CustomException; //添加附件申请
+        void deleteAccessory(AccountDTO account,AnnotateDTO annotate,NodeFileDTO accessory) throws CustomException; //删除附件申请
 
         string getNodePath(SimpleNodeDTO node) throws CustomException; //查询节点路径
         string getNodePathForAccount(AccountDTO account,SimpleNodeDTO node) throws CustomException; //查询节点路径
@@ -39,14 +44,8 @@ module zeroc {
         SimpleNodeList listWebArchiveDir(string projectId) throws CustomException; // 获取网站空间的归档目录树
         SimpleNodeList listWebArchiveDirForAccount(AccountDTO account,string projectId) throws CustomException; // 获取网站空间的归档目录树
 
-        ["deprecate:尚未实现"] bool createMirror(FileNodeDTO src) throws CustomException; //在本地建立节点镜像文件
-        ["deprecate:尚未实现"] bool createMirrorForAccount(AccountDTO account,FileNodeDTO src) throws CustomException; //在本地建立节点镜像文件
-
         SimpleNodeDTO changeNodeOwner(SimpleNodeDTO src,UserDTO dstOwner) throws CustomException; //更改文件所有者
         SimpleNodeDTO changeNodeOwnerForAccount(AccountDTO account,SimpleNodeDTO src,UserDTO dstOwner) throws CustomException; //更改文件所有者
-
-        ["deprecate:尚未实现"] ProjectDTO getProjectInfoByPath(string path) throws CustomException;
-        ["deprecate:尚未实现"] ProjectDTO getProjectInfoByPathForAccount(AccountDTO account,string path) throws CustomException;
 
         bool login(LoginDTO loginInfo) throws CustomException; //登录
         StringList setNoticeClient(string userId,NoticeClient* client) throws CustomException; //登录
@@ -108,6 +107,7 @@ module zeroc {
         FileDataDTO readNodeForAccount(AccountDTO account,SimpleNodeDTO src,long pos,int size) throws CustomException; //读出文件节点
 
         bool isEmpty(SimpleNodeDTO node) throws CustomException; //判断节点是否存在子节点
+        bool isExist(string path) throws CustomException; //判断节点是否存在
 
         SimpleNodeDTO moveNode(SimpleNodeDTO src,SimpleNodeDTO dstParent,MoveNodeRequestDTO request) throws CustomException; //移动节点
         SimpleNodeDTO moveNodeForAccount(AccountDTO account,SimpleNodeDTO src,SimpleNodeDTO dstParent,MoveNodeRequestDTO request) throws CustomException; //移动节点

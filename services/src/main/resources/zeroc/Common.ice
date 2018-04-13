@@ -2,13 +2,6 @@
 
 [["java:package:com.maoding.Common"]]
 module zeroc {
-    ["java:serializable:java.lang.Integer","deprecate"] sequence<byte> Integer;
-    ["java:serializable:java.lang.Short","deprecate"] sequence<byte> Short;
-    ["java:serializable:java.lang.Long","deprecate"] sequence<byte> Long;
-    ["java:serializable:java.lang.String","deprecate"] sequence<byte> String;
-    ["java:serializable:java.lang.Boolean","deprecate"] sequence<byte> Boolean;
-    ["java:serializable:java.util.Date","deprecate"] sequence<byte> Date;
-
     sequence<byte> ByteArray;
     ["java:type:java.util.HashMap<String,String>"] dictionary<string,string> Map;
     ["java:type:java.util.ArrayList<String>"] sequence<string> StringList;
@@ -66,62 +59,53 @@ module zeroc {
     ["java:type:java.util.ArrayList<MemberDTO>"] sequence<MemberDTO> MemberList;
 
     ["java:getset","clr:property"]
-    struct CommonUpdateDTO { //通用的元素创建及更新信息
-        long lastModifyTimeStamp; //最后修改时间
-        string lastModifyUserId; //最后编辑用户id
-        string lastModifyRoleId; //最后编辑角色id
+    struct UpdateAskDTO { //记录更新申请
+        string lastModifyUserId; //最后编辑用户编号
+        string lastModifyRoleId; //最后编辑角色编号
     };
 
     ["java:getset","clr:property"]
-    struct CommonUpdateTreeDTO { //通用的树节点元素创建及更新信息
-        string pid; //修改后的父节点id
-        string name; //修改后的节点名称
-        string path; //修改后的节点路径
-        long lastModifyTimeStamp; //申请修改的时间
-        string lastModifyUserId; //申请修改的用户id
-        string lastModifyRoleId; //申请修改的角色id
+    struct UpdateAskTreeDTO { //记录更新申请-树节点记录
+        string typeId; //修改后的节点类型
+        string pid; //修改后的父节点编号
+        string path; //修改后的节点名称或路径
+        string lastModifyUserId; //申请修改的用户编号
+        string lastModifyRoleId; //申请修改的角色编号
     };
 
     ["java:getset","clr:property"]
-    struct CommonQueryDTO { //通用的查询条件
+    struct QueryAskDTO { //记录查询条件
         string id; //记录id
-        string name; //记录名称
-        string typeId; //记录类型
-        string projectId; //记录所属项目id
-        string issueId; //记录所属签发任务id
-        string taskId; //记录所属生产任务id
-        string companyId; //记录所属组织id
         string lastModifyUserId; //最后更改者用户id
         string lastModifyRoleId; //最后更改者职责id
-        string accountId; //查询者用户id
         long startTimeStamp; //起始时间
         long endTimeStamp; //终止时间
-
-        string fuzzyId; //模糊匹配id字符串
+        string accountId; //查询者用户id
     };
 
     ["java:getset","clr:property"]
-    struct CommonQueryTreeDTO { //通用的树节点查询条件
+    struct QueryAskTreeDTO { //记录查询条件-树节点记录
         string id; //记录编号
-        string name; //记录名称
-        string typeId; //记录类型
-        string projectId; //记录所属项目id
-        string issueId; //记录所属签发任务id
-        string taskId; //记录所属生产任务id
-        string companyId; //记录所属组织id
-        string lastModifyUserId; //最后更改者用户id
-        string lastModifyRoleId; //最后更改者职责id
+        string lastModifyUserId; //最后更改者用户编号
+        string lastModifyRoleId; //最后更改者职责编号
         long startTimeStamp; //起始时间
         long endTimeStamp; //终止时间
+        string accountId; //查询者用户编号
 
-        string fuzzyId; //模糊匹配id字符串
-
+        string nodeName; //记录节点名称
         string pid; //记录父节点编号
         string path; //记录路径
-        string parentPath; //父路径
-        string rangeId; //记录分类节点编号
+        string parentPath; //记录父节点路径
+        string typeId; //记录节点类型
 
         string fuzzyPath; //模糊匹配路径
+    };
+
+    ["java:getset","clr:property"]
+    struct DeleteAskDTO { //记录删除申请
+        bool isReal; //是否真正删除，真-完全删除，不可恢复，假-标记删除，可以恢复
+        string lastModifyUserId; //最后编辑用户id
+        string lastModifyRoleId; //最后编辑角色id
     };
 
     enum ErrorCode {

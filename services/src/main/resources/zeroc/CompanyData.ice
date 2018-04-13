@@ -29,7 +29,7 @@ module zeroc {
         string companyPhone; //联系电话
         string companyAddress; //企业地址
         string status; //企业状态（生效0，1不生效）
-        Integer groupIndex; //团队排序
+        int groupIndex; //团队排序
         string businessLicenseNumber; //工商营业执照号码
         string organizationCodeNumber; //组织机构代码证号码
         string microUrl; //微官网地址
@@ -46,8 +46,8 @@ module zeroc {
         string orgType; //组织类型app端
         string orgPid; //组织父ID
         string roleCodes; //角色权限
-        Integer companyStartFlag; //公司开始标识:1
-        Integer isInCompanyFlag; //是否在公司标识:1：在，0：不在
+        int companyStartFlag; //公司开始标识:1
+        int isInCompanyFlag; //是否在公司标识:1：在，0：不在
     };
     ["java:type:java.util.ArrayList<CompanyDTO>"] sequence<CompanyDTO> CompanyList;
 

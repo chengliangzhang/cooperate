@@ -311,14 +311,14 @@ public class CompanyDTO implements java.lang.Cloneable,
         this.status = status;
     }
 
-    public java.lang.Integer groupIndex;
+    public int groupIndex;
 
-    public java.lang.Integer getGroupIndex()
+    public int getGroupIndex()
     {
         return groupIndex;
     }
 
-    public void setGroupIndex(java.lang.Integer groupIndex)
+    public void setGroupIndex(int groupIndex)
     {
         this.groupIndex = groupIndex;
     }
@@ -515,26 +515,26 @@ public class CompanyDTO implements java.lang.Cloneable,
         this.roleCodes = roleCodes;
     }
 
-    public java.lang.Integer companyStartFlag;
+    public int companyStartFlag;
 
-    public java.lang.Integer getCompanyStartFlag()
+    public int getCompanyStartFlag()
     {
         return companyStartFlag;
     }
 
-    public void setCompanyStartFlag(java.lang.Integer companyStartFlag)
+    public void setCompanyStartFlag(int companyStartFlag)
     {
         this.companyStartFlag = companyStartFlag;
     }
 
-    public java.lang.Integer isInCompanyFlag;
+    public int isInCompanyFlag;
 
-    public java.lang.Integer getIsInCompanyFlag()
+    public int getIsInCompanyFlag()
     {
         return isInCompanyFlag;
     }
 
-    public void setIsInCompanyFlag(java.lang.Integer isInCompanyFlag)
+    public void setIsInCompanyFlag(int isInCompanyFlag)
     {
         this.isInCompanyFlag = isInCompanyFlag;
     }
@@ -583,7 +583,7 @@ public class CompanyDTO implements java.lang.Cloneable,
         this.roleCodes = "";
     }
 
-    public CompanyDTO(String id, String token, String appOrgId, String accountId, String currentCompanyId, String companyName, String majorType, String certificate, String mainField, String isAuthentication, String operatorName, String rejectReason, String companyType, String companyEmail, String companyShortName, String companyFax, String serverType, String province, String city, String county, String legalRepresentative, String companyPhone, String companyAddress, String status, java.lang.Integer groupIndex, String businessLicenseNumber, String organizationCodeNumber, String microUrl, String microTemplate, String groupId, String companyComment, String filePath, String fileGroup, String qrcodePath, String sysRole, String relationType, String attachId, String adminPassword, String orgType, String orgPid, String roleCodes, java.lang.Integer companyStartFlag, java.lang.Integer isInCompanyFlag)
+    public CompanyDTO(String id, String token, String appOrgId, String accountId, String currentCompanyId, String companyName, String majorType, String certificate, String mainField, String isAuthentication, String operatorName, String rejectReason, String companyType, String companyEmail, String companyShortName, String companyFax, String serverType, String province, String city, String county, String legalRepresentative, String companyPhone, String companyAddress, String status, int groupIndex, String businessLicenseNumber, String organizationCodeNumber, String microUrl, String microTemplate, String groupId, String companyComment, String filePath, String fileGroup, String qrcodePath, String sysRole, String relationType, String attachId, String adminPassword, String orgType, String orgPid, String roleCodes, int companyStartFlag, int isInCompanyFlag)
     {
         this.id = id;
         this.token = token;
@@ -814,10 +814,7 @@ public class CompanyDTO implements java.lang.Cloneable,
             }
             if(this.groupIndex != r.groupIndex)
             {
-                if(this.groupIndex == null || r.groupIndex == null || !this.groupIndex.equals(r.groupIndex))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.businessLicenseNumber != r.businessLicenseNumber)
             {
@@ -933,17 +930,11 @@ public class CompanyDTO implements java.lang.Cloneable,
             }
             if(this.companyStartFlag != r.companyStartFlag)
             {
-                if(this.companyStartFlag == null || r.companyStartFlag == null || !this.companyStartFlag.equals(r.companyStartFlag))
-                {
-                    return false;
-                }
+                return false;
             }
             if(this.isInCompanyFlag != r.isInCompanyFlag)
             {
-                if(this.isInCompanyFlag == null || r.isInCompanyFlag == null || !this.isInCompanyFlag.equals(r.isInCompanyFlag))
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
@@ -1042,7 +1033,7 @@ public class CompanyDTO implements java.lang.Cloneable,
         ostr.writeString(this.companyPhone);
         ostr.writeString(this.companyAddress);
         ostr.writeString(this.status);
-        ostr.writeSerializable(this.groupIndex);
+        ostr.writeInt(this.groupIndex);
         ostr.writeString(this.businessLicenseNumber);
         ostr.writeString(this.organizationCodeNumber);
         ostr.writeString(this.microUrl);
@@ -1059,8 +1050,8 @@ public class CompanyDTO implements java.lang.Cloneable,
         ostr.writeString(this.orgType);
         ostr.writeString(this.orgPid);
         ostr.writeString(this.roleCodes);
-        ostr.writeSerializable(this.companyStartFlag);
-        ostr.writeSerializable(this.isInCompanyFlag);
+        ostr.writeInt(this.companyStartFlag);
+        ostr.writeInt(this.isInCompanyFlag);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -1089,7 +1080,7 @@ public class CompanyDTO implements java.lang.Cloneable,
         this.companyPhone = istr.readString();
         this.companyAddress = istr.readString();
         this.status = istr.readString();
-        this.groupIndex = istr.readSerializable(java.lang.Integer.class);
+        this.groupIndex = istr.readInt();
         this.businessLicenseNumber = istr.readString();
         this.organizationCodeNumber = istr.readString();
         this.microUrl = istr.readString();
@@ -1106,8 +1097,8 @@ public class CompanyDTO implements java.lang.Cloneable,
         this.orgType = istr.readString();
         this.orgPid = istr.readString();
         this.roleCodes = istr.readString();
-        this.companyStartFlag = istr.readSerializable(java.lang.Integer.class);
-        this.isInCompanyFlag = istr.readSerializable(java.lang.Integer.class);
+        this.companyStartFlag = istr.readInt();
+        this.isInCompanyFlag = istr.readInt();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CompanyDTO v)

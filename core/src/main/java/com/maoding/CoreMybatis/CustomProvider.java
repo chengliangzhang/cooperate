@@ -61,10 +61,14 @@ public class CustomProvider extends MapperTemplate {
                 sqlSet.append("t.`").append(column.getColumn()).append("`").append("=#{entity.").append(column.getProperty()).append("}").append(",");
                 //如果存在path更改，同时更改子节点路径
                 if (PATH_FIELD_NAME.equals(column.getColumn())){
+                    //<if test="entity.path!=null">
                     //left join <table> c on (c.path like concat(t.path,'/%')
+                    //</if>
+                    sqlTable.append("<if test=\"entity.").append(column.getProperty()).append("!=null\">");
                     sqlTable.append(" left join ").append(SqlHelper.getDynamicTableName(entityClass,tableName(entityClass)))
                             .append(" c on (c.").append(PATH_FIELD_NAME).append(" like concat(t.")
                             .append(PATH_FIELD_NAME).append(",'/%'))");
+                    sqlTable.append("</if>");
                     //c.path=concat(#{entity.<p>},substring(c.path,char_length(t.path)+1)),
                     sqlSet.append("c.").append(PATH_FIELD_NAME)
                             .append("=concat(#{entity.").append(column.getProperty()).append("},substring(c.")

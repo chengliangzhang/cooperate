@@ -2,7 +2,8 @@ package com.maoding.Storage;
 
 import com.maoding.Base.BaseRemoteService;
 import com.maoding.Common.ConstService;
-import com.maoding.Common.zeroc.CustomException;
+import com.maoding.Common.zeroc.DeleteAskDTO;
+import com.maoding.Common.zeroc.QueryAskDTO;
 import com.maoding.CoreUtils.StringUtils;
 import com.maoding.Storage.zeroc.*;
 import org.junit.Rule;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,14 +78,6 @@ public class StorageServiceImplTest {
     }
 
     @Test
-    public void testCreateSuggestion() throws Exception{
-        UpdateSuggestionDTO request = new UpdateSuggestionDTO();
-        request.setContent("aaa");
-        request.setStatusTypeId("3");
-        storageService.createSuggestion(request,null);
-    }
-
-    @Test
     public void testCreateElement() throws Exception {
         UpdateElementDTO request = new UpdateElementDTO();
         request.setDataArray(new byte[]{1,2,3});
@@ -91,10 +85,108 @@ public class StorageServiceImplTest {
     }
 
     @Test
-    public void testCreateAnnonate() throws Exception {
+    public void testUpdateElement() throws Exception {
+        UpdateElementDTO request = new UpdateElementDTO();
+        request.setDataArray(new byte[]{0x37,0x35,0x36});
+        storageService.updateEmbedElement(getLocalElement(),request,null);
+    }
+
+    @Test
+    public void testUpdateAnnotate() throws Exception {
+//        updateAnnotateSimple();
+//        updateAnnotateWithDeleteElement();
+        updateAnnotateWithAddAndDeleteAttachment();
+    }
+
+    private AnnotateDTO updateAnnotateWithAddAndDeleteAttachment() throws Exception {
+        log.debug("\t>>>>>>>> updateAnnotateWithAddAndDeleteElement");
+        NodeFileDTO file = getLocalFile();
+        List<String> addFileIdList = new ArrayList<>();
+        addFileIdList.add(file.getId());
+        UpdateAnnotateDTO request = new UpdateAnnotateDTO();
+        request.setContent("添加删除元素变动");
+        request.setDelAttachmentIdList(getLocalDeleteAttachmentIdList());
+        request.setAddFileIdList(addFileIdList);
+        return storageService.updateAnnotate(getLocalAnnotate(),request,null);
+    }
+
+    private AnnotateDTO updateAnnotateWithDeleteElement() throws Exception {
+        log.debug("\t>>>>>>>> updateAnnotateWithDeleteElement");
+        UpdateAnnotateDTO request = new UpdateAnnotateDTO();
+        request.setContent("删除元素变动");
+        request.setDelAttachmentIdList(getLocalDeleteAttachmentIdList());
+        return storageService.updateAnnotate(getLocalAnnotate(),request,null);
+    }
+
+    private AnnotateDTO updateAnnotateSimple() throws Exception {
+        log.debug("\t>>>>>>>> updateAnnotateSimple");
+        UpdateAnnotateDTO request = new UpdateAnnotateDTO();
+        request.setContent("这是一个测试变动");
+        return storageService.updateAnnotate(getLocalAnnotate(),request,null);
+    }
+
+    private List<String> getLocalDeleteAttachmentIdList() throws Exception {
+        List<String> list = new ArrayList<>();
+        list.add("846CB27685A44194957B694814587495");
+        return list;
+    }
+
+    @Test
+    public void testListAnnotate() throws Exception {
+        listAnnotateByFileId();
+//        listAnnotateByAnyFileId();
+    }
+
+    private List<AnnotateDTO> listAnnotateByAnyFileId() throws Exception {
+        QueryAnnotateDTO query = new QueryAnnotateDTO();
+        query.setAnyFileId("51A4D4354EB34A96B7B078ECEBC9C6C7");
+        List<AnnotateDTO> list = storageService.listAnnotate(query,null);
+        return list;
+    }
+
+    private List<AnnotateDTO> listAnnotateByFileId() throws Exception {
+        QueryAnnotateDTO query = new QueryAnnotateDTO();
+        query.setFileId("02419B839D9546DEB07C03DBECAF10A8");
+        List<AnnotateDTO> list = storageService.listAnnotate(query,null);
+        return list;
+    }
+
+    private AnnotateDTO getLocalAnnotate() throws Exception {
+        QueryAnnotateDTO query = new QueryAnnotateDTO();
+        query.setId("6C117810B46C44D5A14F6C108C118DEA");
+        List<AnnotateDTO> list = storageService.listAnnotate(query,null);
+        return list.get(0);
+    }
+
+    @Test
+    public void testCreateAnnotate() throws Exception {
+//        createAnnotateSimple();
+        createAnnotateWithElement();
+    }
+
+    private AnnotateDTO createAnnotateWithElement() throws Exception {
+        log.debug("\t>>>>>>>> createAnnotateWithElement");
+        EmbedElementDTO element = getLocalElement();
+        List<String> addElementIdList = new ArrayList<>();
+        addElementIdList.add(element.getId());
+        UpdateAnnotateDTO createAnnotateRequest = new UpdateAnnotateDTO();
+        createAnnotateRequest.setContent("添加嵌入元素注解");
+        createAnnotateRequest.setAddElementIdList(addElementIdList);
+        return storageService.createAnnotate(getLocalFile(),createAnnotateRequest,null);
+    }
+
+    private AnnotateDTO createAnnotateSimple() throws Exception {
+        log.debug("\t>>>>>>>> createAnnotateSimple");
         UpdateAnnotateDTO request = new UpdateAnnotateDTO();
         request.setContent("这是一个测试");
-        storageService.createAnnotate(request,null);
+        return storageService.createAnnotate(getLocalNodeFile(),request,null);
+    }
+
+    private EmbedElementDTO getLocalElement() throws Exception {
+        QueryAskDTO query = new QueryAskDTO();
+        query.setId("19632ADACDF54D2AAA178F0D8DAB6359");
+        List<EmbedElementDTO> list = storageService.listEmbedElement(query,null);
+        return list.get(0);
     }
 
     @Test
@@ -115,7 +207,7 @@ public class StorageServiceImplTest {
         request.setMirrorBaseDir("c:/work/file_server/.mirror");
         request.setReadOnlyMirrorKey("c_3.txt");
         request.setWritableMirrorKey("c_4.txt");
-        return storageService.createNodeFile(request,null);
+        return storageService.createNodeFileWithRequestOnly(request,null);
     }
 
     private NodeFileDTO createNodeFileNoMirror() throws Exception {
@@ -126,7 +218,7 @@ public class StorageServiceImplTest {
         request.setReadOnlyKey("a/b/c.txt");
         request.setWritableKey("a/b/c_2.txt");
         request.setFileTypeId("2");
-        return storageService.createNodeFile(request,null);
+        return storageService.createNodeFileWithRequestOnly(request,null);
     }
 
     @Test
@@ -147,7 +239,7 @@ public class StorageServiceImplTest {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setPath("tttt");
         SimpleNodeDTO node = storageService.createNode(getLocalPath(),request,null);
-        storageService.deleteNodeById(null,node.getId(),null);
+        storageService.deleteNodeById(node.getId(),getLocalDeleteAsk(),null);
     }
 
     private void deleteByNode() throws Exception {
@@ -155,38 +247,13 @@ public class StorageServiceImplTest {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setPath("tttt");
         SimpleNodeDTO node = storageService.createNode(getLocalPath(),request,null);
-        storageService.deleteNode(null,node,null);
+        storageService.deleteNode(node,getLocalDeleteAsk(),null);
     }
 
-    @Test
-    public void testCreateMirror() throws Exception {
-        createMirror();
-        createMirrorError();
-    }
-
-    private void createMirror() throws Exception {
-        log.debug("\t>>>>>>>> createMirror");
-        UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setMirrorTypeId((short)2);
-        request.setMirrorAddress("127.0.0.1");
-        request.setMirrorBaseDir("c:\\work\\file_server");
-        request.setReadOnlyMirrorKey("/.mirror/xxx.txt");
-        FullNodeDTO src = getLocalFullNode();
-        FullNodeDTO dst = storageService.createMirror(src,request,null);
-    }
-
-    private void createMirrorError() throws Exception {
-        log.debug("\t>>>>>>>> createMirrorError");
-        UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setMirrorTypeId((short)1);
-        request.setMirrorAddress("127.0.0.1");
-        request.setMirrorBaseDir("c:\\work\\file_server");
-        request.setReadOnlyMirrorKey("/.mirror/xxx.txt");
-        FullNodeDTO src = getLocalFullNode();
-        src.setBasic(null);
-        thrown.expect(CustomException.class);
-        thrown.expectMessage("系统异常");
-        FullNodeDTO dst = storageService.createMirror(src,request,null);
+    private DeleteAskDTO getLocalDeleteAsk(){
+        DeleteAskDTO ask = new DeleteAskDTO();
+        ask.setLastModifyUserId("41d244733ec54f09a255836637f2b21d");
+        return ask;
     }
 
     @Test
@@ -227,6 +294,12 @@ public class StorageServiceImplTest {
         return storageService.getNodeInfo(node,query,null);
     }
 
+    private NodeFileDTO getLocalFile() throws Exception {
+        QueryNodeFileDTO query = new QueryNodeFileDTO();
+        query.setId("51A4D4354EB34A96B7B078ECEBC9C6C7");
+        List<NodeFileDTO> list = storageService.listNodeFile(query,null);
+        return list.get(0);
+    }
     private NodeFileDTO getLocalNodeFile() throws Exception {
         FullNodeDTO fileNode = getLocalFullNode();
         NodeFileDTO fileInfo = fileNode.getFileInfo();

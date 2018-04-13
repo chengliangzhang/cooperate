@@ -42,7 +42,7 @@ public final class AnnotateListHelper
     {
         final java.util.List<AnnotateDTO> v;
         v = new java.util.ArrayList<AnnotateDTO>();
-        final int len0 = istr.readAndCheckSeqSize(23);
+        final int len0 = istr.readAndCheckSeqSize(52);
         for(int i0 = 0; i0 < len0; i0++)
         {
             AnnotateDTO elem;
