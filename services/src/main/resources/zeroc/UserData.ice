@@ -102,6 +102,7 @@ module zeroc {
     struct QueryWebRoleDTO { //web角色查询条件
         string attrStr; //web角色类型布尔属性
         string typeId; //web角色类型编码
+        string userId; //要查询的用户编码
 
         //通用查询条件
         string id; //记录id

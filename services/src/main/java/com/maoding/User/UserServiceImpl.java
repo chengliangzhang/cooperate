@@ -35,11 +35,8 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     private RoleDao roleDao;
 
     @Override
-    public List<WebRoleDTO> listWebRoleTask(AccountDTO account, Current current) {
-        final String ATTR_STR_TASK_ONLY = "01";
-        QueryWebRoleDTO query = new QueryWebRoleDTO();
-        query.setAttrStr(ATTR_STR_TASK_ONLY);
-        return roleDao.listWebRole(query);
+    public List<WebRoleDTO> listWebRole(@NotNull QueryWebRoleDTO query, Current current) {
+        return roleDao.listWebRole(BeanUtils.cleanProperties(query));
     }
 
     @Override

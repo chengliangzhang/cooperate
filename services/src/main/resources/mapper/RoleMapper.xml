@@ -8,6 +8,9 @@
         <if test="typeId != null and typeId != ''.toString()">
             and find_in_set(web_role.type_id,#{typeId})
         </if>
+        <if test="userId != null and userId != ''.toString()">
+            and find_in_set(web_role.user_id,#{userId})
+        </if>
 
         <if test="id != null and id != ''.toString()">
             and find_in_set(web_role.id,#{id})

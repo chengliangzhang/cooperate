@@ -57,7 +57,11 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public List<WebRoleDTO> listWebRoleTask(AccountDTO account, Current current) {
-        return getUserServicePrx().listWebRoleTask(account);
+        final String ATTR_STR_TASK_ONLY = "01";
+        QueryWebRoleDTO query = new QueryWebRoleDTO();
+        query.setAttrStr(ATTR_STR_TASK_ONLY);
+        query.setUserId(getAccountId(account));
+        return getUserService().listWebRole(query);
     }
 
     @Override
@@ -710,7 +714,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public boolean login(LoginDTO loginInfo, Current current) throws CustomException {
-        return getUserServicePrx().login(loginInfo);
+        return getUserService().login(loginInfo);
     }
 
     @Override
@@ -719,13 +723,13 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         return getNoticeServicePrx().listSubscribedTopic(userId);
     }
 
-    private UserServicePrx getUserServicePrx() {
+    private UserServicePrx getUserService() {
         return setting.getUserService();
     }
 
 
     private AccountDTO getCurrentAccount(Current current){
-        return getUserServicePrx().getCurrent();
+        return getUserService().getCurrent();
     }
 
 
@@ -757,7 +761,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public List<ProjectRoleDTO> listProjectRoleByProjectIdForAccount(AccountDTO account, String projectId, Current current) throws CustomException {
-        return getUserServicePrx().listProjectRoleByProjectId(projectId);
+        return getUserService().listProjectRoleByProjectId(projectId);
     }
 
     @Override

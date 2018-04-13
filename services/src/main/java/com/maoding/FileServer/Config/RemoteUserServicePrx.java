@@ -37,8 +37,8 @@ public class RemoteUserServicePrx extends BaseRemoteService<UserServicePrx> impl
     }
 
     @Override
-    public List<WebRoleDTO> listWebRoleTask(AccountDTO account) {
-        return getUserService().listWebRoleTask(account,null);
+    public List<WebRoleDTO> listWebRole(QueryWebRoleDTO query) {
+        return getUserService().listWebRole(query,null);
     }
 
     @Override
