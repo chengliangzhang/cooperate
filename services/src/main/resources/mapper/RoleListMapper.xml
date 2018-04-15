@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maoding.User.Dao.RoleListDao">
+    <update id="setWebRoleStatus" parameterType="java.util.Map">
+        update
+            maoding_web_project_member task_role
+            inner join md_type_web_role_project web_role_type on (task_role.member_type = web_role_type.type_id)
+            inner join maoding_web_project_task task on (ifnull(task_role.node_id,task_role.target_id) = task.id)
+            inner join maoding_web_my_task my_task on (my_task.target_id = task.id
+                        and find_in_set(my_task.task_type,web_role_type.mytask_task_type))
+        <set>
+            <choose>
+                <when test="statusId != null and statusId == '0'.toString()">
+                    task.complete_date = if(web_role_type.is_task_leader_role,null,task.complete_date),
+                    my_task.complete_date = null,
+                </when>
+                <when test="statusId != null and statusId == '1'.toString()">
+                    task.complete_date = if(web_role_type.is_task_leader_role,date(now()),task.complete_date),
+                    my_task.complete_date = date(now()),
+                </when>
+                <otherwise>
+                    task.complete_date = task.complete_date,
+                    my_task.complete_date = my_task.complete_date,
+                </otherwise>
+            </choose>
+        </set>
+        <where>
+            <if test="webRoleId != null and webRoleId != ''.toString()">
+                find_in_set(task_role.id,#{webRoleId})
+            </if>
+        </where>
+    </update>
+</mapper>

@@ -22,6 +22,8 @@ package com.maoding.User.zeroc;
 
 public interface UserService extends com.zeroc.Ice.Object
 {
+    void setWebRoleStatus(WebRoleDTO webRole, String statusId, com.zeroc.Ice.Current current);
+
     java.util.List<WebRoleDTO> listWebRole(QueryWebRoleDTO query, com.zeroc.Ice.Current current);
 
     boolean login(LoginDTO loginInfo, com.zeroc.Ice.Current current);
@@ -57,6 +59,19 @@ public interface UserService extends com.zeroc.Ice.Object
     static String ice_staticId()
     {
         return "::zeroc::UserService";
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_setWebRoleStatus(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        WebRoleDTO iceP_webRole;
+        String iceP_statusId;
+        iceP_webRole = WebRoleDTO.ice_read(istr);
+        iceP_statusId = istr.readString();
+        inS.endReadParams();
+        obj.setWebRoleStatus(iceP_webRole, iceP_statusId, current);
+        return inS.setResult(inS.writeEmptyParams());
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listWebRole(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -163,7 +178,8 @@ public interface UserService extends com.zeroc.Ice.Object
         "listUserJoin",
         "listUserJoinForAccount",
         "listWebRole",
-        "login"
+        "login",
+        "setWebRoleStatus"
     };
 
     @Override
@@ -221,6 +237,10 @@ public interface UserService extends com.zeroc.Ice.Object
             case 10:
             {
                 return _iceD_login(this, in, current);
+            }
+            case 11:
+            {
+                return _iceD_setWebRoleStatus(this, in, current);
             }
         }
 

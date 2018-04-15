@@ -5,6 +5,7 @@
 [["java:package:com.maoding.User"]]
 module zeroc {
     interface UserService {
+        void setWebRoleStatus(WebRoleDTO webRole,string statusId); //设置角色的工作状态
         WebRoleList listWebRole(QueryWebRoleDTO query); //列出用户在生产任务中担任的角色
 
         bool login(LoginDTO loginInfo); //登录

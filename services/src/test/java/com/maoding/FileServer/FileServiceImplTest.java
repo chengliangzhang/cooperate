@@ -51,7 +51,7 @@ public class FileServiceImplTest {
     
     private FileServicePrx getRemote(){
         if (remote == null) {
-            remote = RemoteFileServerPrx.getInstance("FileServer;192.168.13.140");
+            remote = RemoteFileServerPrx.getInstance("FileServer;120.24.238.128");
         }
         return remote;
     }

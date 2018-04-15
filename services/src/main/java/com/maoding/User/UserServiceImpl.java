@@ -5,6 +5,7 @@ import com.maoding.Bean.CoreResponse;
 import com.maoding.Common.Config.WebServiceConfig;
 import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.User.Dao.RoleDao;
+import com.maoding.User.Dao.RoleListDao;
 import com.maoding.User.zeroc.*;
 import com.maoding.CoreUtils.*;
 import com.zeroc.Ice.Current;
@@ -33,6 +34,14 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
 
     @Autowired
     private RoleDao roleDao;
+
+    @Autowired
+    private RoleListDao roleListDao;
+
+    @Override
+    public void setWebRoleStatus(@NotNull WebRoleDTO webRole, @NotNull String statusId, Current current) {
+        roleListDao.setWebRoleStatus(webRole.getWebRoleId(),statusId);
+    }
 
     @Override
     public List<WebRoleDTO> listWebRole(@NotNull QueryWebRoleDTO query, Current current) {

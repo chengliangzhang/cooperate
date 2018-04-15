@@ -22,6 +22,36 @@ package com.maoding.User.zeroc;
 
 public interface UserServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default void setWebRoleStatus(WebRoleDTO webRole, String statusId)
+    {
+        setWebRoleStatus(webRole, statusId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void setWebRoleStatus(WebRoleDTO webRole, String statusId, java.util.Map<String, String> context)
+    {
+        _iceI_setWebRoleStatusAsync(webRole, statusId, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> setWebRoleStatusAsync(WebRoleDTO webRole, String statusId)
+    {
+        return _iceI_setWebRoleStatusAsync(webRole, statusId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> setWebRoleStatusAsync(WebRoleDTO webRole, String statusId, java.util.Map<String, String> context)
+    {
+        return _iceI_setWebRoleStatusAsync(webRole, statusId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_setWebRoleStatusAsync(WebRoleDTO iceP_webRole, String iceP_statusId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setWebRoleStatus", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     WebRoleDTO.ice_write(ostr, iceP_webRole);
+                     ostr.writeString(iceP_statusId);
+                 }, null);
+        return f;
+    }
+
     default java.util.List<WebRoleDTO> listWebRole(QueryWebRoleDTO query)
     {
         return listWebRole(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);

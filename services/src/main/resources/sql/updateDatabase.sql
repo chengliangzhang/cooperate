@@ -475,16 +475,15 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (31,2,'审核','');
 
     -- -- -- -- --
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,30,'web member角色类型','1.类型布尔属性，1-项目角色,2-任务角色；2.对应的角色');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,30,'web member角色类型','1.类型布尔属性，1-项目角色,2-任务角色,3-任务负责人角色；2.对应的角色;3.对应的mytask内task_type');
     delete from md_const where classic_id = 30;
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,0,'立项人','10;23');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,1,'经营负责人','10;20');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,2,'设计负责人','10;30');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,3,'任务负责人','01;40');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,4,'设计','01;41');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,5,'校对','01;42');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,6,'审核','01;43');
-    delete from md_const where classic_id = 30 and code_id > 6;
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,0,'立项人','100;23;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,1,'经营负责人','100;20;1');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,2,'设计负责人','100;30;2');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,3,'任务负责人','011;40;13');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,4,'设计','010;41;10,11,12');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,5,'校对','010;42;10,11,12');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,6,'审核','010;43;10,11,12');
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,29,'web权限类型','1.类型布尔属性，1-转换需加偏移量;2.权限标识;3.对应的基准角色;4.设置所需权限');
@@ -860,10 +859,15 @@ BEGIN
         as attr_str,
       substring(web_role_type.extra,1,1) as is_project_role,
       substring(web_role_type.extra,2,1) as is_task_role,
+      substring(web_role_type.extra,3,1) as is_task_leader_role,
       substring(web_role_type.extra,
                 char_length(substring_index(web_role_type.extra,';',1))+2,
                 char_length(substring_index(web_role_type.extra,';',2)) - char_length(substring_index(web_role_type.extra,';',1))-1)
-        as role_type
+        as role_type,
+      substring(web_role_type.extra,
+                char_length(substring_index(web_role_type.extra,';',2))+2,
+                char_length(substring_index(web_role_type.extra,';',3)) - char_length(substring_index(web_role_type.extra,';',2))-1)
+        as mytask_task_type
     from
       md_const web_role_type
     where
@@ -1330,7 +1334,11 @@ BEGIN
           web_role_type.attr_str,
           web_role_type.is_project_role,
           web_role_type.is_task_role,
+          web_role_type.is_task_leader_role,
           if(web_role_type.type_id is null,null,0) as is_company_role,
+          if(web_role_type.is_task_leader_role,
+             task.complete_date is not null or mytask.complete_date is not null,
+             mytask.complete_date is not null) as is_complete,
           task_role.account_id as user_id,
           task_role.project_id as project_id,
           ifnull(task_role.node_id,task_role.target_id) as task_id,
@@ -1348,8 +1356,10 @@ BEGIN
           inner join md_type_web_role_project web_role_type on (task_role.member_type = web_role_type.type_id)
           inner join maoding_web_account account on (task_role.account_id = account.id)
           inner join maoding_web_project project on (task_role.project_id = project.id)
-          left join maoding_web_project_task task on (ifnull(task_role.node_id,task_role.target_id) = task.id)
+          inner join maoding_web_project_task task on (ifnull(task_role.node_id,task_role.target_id) = task.id)
           inner join maoding_web_company company on (task_role.company_id = company.id)
+          inner join maoding_web_my_task mytask on (mytask.target_id = task.id
+                                                      and find_in_set(mytask.task_type,web_role_type.mytask_task_type))
       where
           task_role.deleted = 0;
 
@@ -1366,7 +1376,9 @@ BEGIN
       if(web_role_type.type_id is null,null,'00') as attr_str,
       if(web_role_type.type_id is null,null,0) as is_project_role,
       if(web_role_type.type_id is null,null,0) as is_task_role,
+      if(web_role_type.type_id is null,null,0) as is_task_leader_role,
       if(web_role_type.type_id is null,null,1) as is_company_role,
+      if(web_role_type.type_id is null,null,0) as is_complete,
       company_role.user_id,
       null as project_id,
       null as task_id,
