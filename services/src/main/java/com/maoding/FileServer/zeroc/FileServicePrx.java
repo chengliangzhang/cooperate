@@ -22,14 +22,221 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default void restartWebRole(com.maoding.User.zeroc.WebRoleDTO webRole)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        restartWebRole(webRole, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void restartWebRole(com.maoding.User.zeroc.WebRoleDTO webRole, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            _iceI_restartWebRoleAsync(webRole, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> restartWebRoleAsync(com.maoding.User.zeroc.WebRoleDTO webRole)
+    {
+        return _iceI_restartWebRoleAsync(webRole, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> restartWebRoleAsync(com.maoding.User.zeroc.WebRoleDTO webRole, java.util.Map<String, String> context)
+    {
+        return _iceI_restartWebRoleAsync(webRole, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_restartWebRoleAsync(com.maoding.User.zeroc.WebRoleDTO iceP_webRole, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "restartWebRole", null, sync, _iceE_restartWebRole);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.WebRoleDTO.ice_write(ostr, iceP_webRole);
+                 }, null);
+        return f;
+    }
+
+    static final Class<?>[] _iceE_restartWebRole =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default void finishWebRole(com.maoding.User.zeroc.WebRoleDTO webRole)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        finishWebRole(webRole, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void finishWebRole(com.maoding.User.zeroc.WebRoleDTO webRole, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            _iceI_finishWebRoleAsync(webRole, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> finishWebRoleAsync(com.maoding.User.zeroc.WebRoleDTO webRole)
+    {
+        return _iceI_finishWebRoleAsync(webRole, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> finishWebRoleAsync(com.maoding.User.zeroc.WebRoleDTO webRole, java.util.Map<String, String> context)
+    {
+        return _iceI_finishWebRoleAsync(webRole, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_finishWebRoleAsync(com.maoding.User.zeroc.WebRoleDTO iceP_webRole, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "finishWebRole", null, sync, _iceE_finishWebRole);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.WebRoleDTO.ice_write(ostr, iceP_webRole);
+                 }, null);
+        return f;
+    }
+
+    static final Class<?>[] _iceE_finishWebRole =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default void setWebRoleStatus(com.maoding.User.zeroc.WebRoleDTO webRole, String statusId)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        setWebRoleStatus(webRole, statusId, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void setWebRoleStatus(com.maoding.User.zeroc.WebRoleDTO webRole, String statusId, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            _iceI_setWebRoleStatusAsync(webRole, statusId, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> setWebRoleStatusAsync(com.maoding.User.zeroc.WebRoleDTO webRole, String statusId)
+    {
+        return _iceI_setWebRoleStatusAsync(webRole, statusId, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> setWebRoleStatusAsync(com.maoding.User.zeroc.WebRoleDTO webRole, String statusId, java.util.Map<String, String> context)
+    {
+        return _iceI_setWebRoleStatusAsync(webRole, statusId, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_setWebRoleStatusAsync(com.maoding.User.zeroc.WebRoleDTO iceP_webRole, String iceP_statusId, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setWebRoleStatus", null, sync, _iceE_setWebRoleStatus);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.WebRoleDTO.ice_write(ostr, iceP_webRole);
+                     ostr.writeString(iceP_statusId);
+                 }, null);
+        return f;
+    }
+
+    static final Class<?>[] _iceE_setWebRoleStatus =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default com.maoding.User.zeroc.WebRoleDTO getWebRole(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return getWebRole(account, node, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.User.zeroc.WebRoleDTO getWebRole(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_getWebRoleAsync(account, node, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.User.zeroc.WebRoleDTO> getWebRoleAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node)
+    {
+        return _iceI_getWebRoleAsync(account, node, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.User.zeroc.WebRoleDTO> getWebRoleAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, java.util.Map<String, String> context)
+    {
+        return _iceI_getWebRoleAsync(account, node, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.User.zeroc.WebRoleDTO> _iceI_getWebRoleAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.SimpleNodeDTO iceP_node, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.User.zeroc.WebRoleDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getWebRole", null, sync, _iceE_getWebRole);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.SimpleNodeDTO.ice_write(ostr, iceP_node);
+                 }, istr -> {
+                     com.maoding.User.zeroc.WebRoleDTO ret;
+                     ret = com.maoding.User.zeroc.WebRoleDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_getWebRole =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
     default java.util.List<com.maoding.User.zeroc.WebRoleDTO> listWebRoleTask(com.maoding.User.zeroc.AccountDTO account)
+        throws com.maoding.Common.zeroc.CustomException
     {
         return listWebRoleTask(account, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
     default java.util.List<com.maoding.User.zeroc.WebRoleDTO> listWebRoleTask(com.maoding.User.zeroc.AccountDTO account, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
     {
-        return _iceI_listWebRoleTaskAsync(account, context, true).waitForResponse();
+        try
+        {
+            return _iceI_listWebRoleTaskAsync(account, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
     }
 
     default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.User.zeroc.WebRoleDTO>> listWebRoleTaskAsync(com.maoding.User.zeroc.AccountDTO account)
@@ -44,7 +251,7 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 
     default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.User.zeroc.WebRoleDTO>> _iceI_listWebRoleTaskAsync(com.maoding.User.zeroc.AccountDTO iceP_account, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.User.zeroc.WebRoleDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listWebRoleTask", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.User.zeroc.WebRoleDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listWebRoleTask", null, sync, _iceE_listWebRoleTask);
         f.invoke(true, context, null, ostr -> {
                      com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
                  }, istr -> {
@@ -54,6 +261,11 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
                  });
         return f;
     }
+
+    static final Class<?>[] _iceE_listWebRoleTask =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
 
     default com.maoding.Storage.zeroc.AnnotateDTO createAnnotateCheck(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO node, AnnotateRequestDTO request)
         throws com.maoding.Common.zeroc.CustomException
@@ -3067,6 +3279,55 @@ public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
     }
 
     static final Class<?>[] _iceE_deleteNodeForAccount =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default void setFileLength(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, long fileLength)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        setFileLength(account, file, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void setFileLength(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, long fileLength, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            _iceI_setFileLengthAsync(account, file, fileLength, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> setFileLengthAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, long fileLength)
+    {
+        return _iceI_setFileLengthAsync(account, file, fileLength, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> setFileLengthAsync(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.NodeFileDTO file, long fileLength, java.util.Map<String, String> context)
+    {
+        return _iceI_setFileLengthAsync(account, file, fileLength, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_setFileLengthAsync(com.maoding.User.zeroc.AccountDTO iceP_account, com.maoding.Storage.zeroc.NodeFileDTO iceP_file, long iceP_fileLength, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "setFileLength", null, sync, _iceE_setFileLength);
+        f.invoke(true, context, null, ostr -> {
+                     com.maoding.User.zeroc.AccountDTO.ice_write(ostr, iceP_account);
+                     com.maoding.Storage.zeroc.NodeFileDTO.ice_write(ostr, iceP_file);
+                     ostr.writeLong(iceP_fileLength);
+                 }, null);
+        return f;
+    }
+
+    static final Class<?>[] _iceE_setFileLength =
     {
         com.maoding.Common.zeroc.CustomException.class
     };

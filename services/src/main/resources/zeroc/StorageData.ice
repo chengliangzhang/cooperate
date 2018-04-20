@@ -13,7 +13,10 @@ module zeroc {
         string createTimeText; //节点建立时间文字
         long lastModifyTimeStamp; //节点最后修改时间
         string lastModifyTimeText; //节点最后修改时间文字
-        long fileLength; //节点长度
+        long readOnlyFileLength; //只读节点长度
+        long writableFileLength; //可写节点长度
+        string readOnlyFileMd5; //只读节点MD5
+        string writableFileMd5; //可写节点MD5
 
         bool isDirectory; //节点是否目录
         bool isProject; //节点是否项目目录
@@ -28,10 +31,13 @@ module zeroc {
         string taskId; //节点所属生产任务id
         string companyId; //节点所属组织id
         string ownerUserId; //节点所有者用户id
+        string ownerRoleId; //节点所有者职责id
         string lastModifyRoleId; //最后操作者职责id
 
         //即时属性
         bool isReadOnly; //节点是否只读
+        string fileMd5; //MD5
+        long fileLength; //节点长度
 
         //兼容属性
         ["deprecate:移入FullNodeDTO"] string path; //节点全路径
@@ -41,7 +47,6 @@ module zeroc {
         ["deprecate:移入FullNodeDTO"] string companyName; //节点生产组织名称
         ["deprecate:移入FullNodeDTO"] string classicName; //节点所属分类名称
         ["deprecate:移入FullNodeDTO"] string storagePath; //节点相对路径
-        ["deprecate:改为lastModifyRoleId"] string ownerRoleId; //节点所有者职责id
         ["deprecate:移入FullNodeDTO"] string ownerName; //节点所有者名称
 		["deprecate:更换为rangeId"] string classicId; //节点所属分类id
     };
@@ -264,10 +269,14 @@ module zeroc {
         //文件节点信息
         string fileTypeId; //目标文件类型Id
         string fileVersion; //文件版本号
-        string fileChecksum; //文件校验和
+        ["deprecate"] string fileChecksum; //文件校验和
         string majorTypeId; //文件所属专业编号
         string readOnlyKey; //只读版本在文件服务器上的存储名称
+        long readOnlyFileLength; //只读版本文件长度
+        string readOnlyFileMd5; //只读版本校验和
         string writableKey; //可写版本在文件服务器上的存储名称
+        long writableFileLength; //可写版本文件长度
+        string writableFileMd5; //可写版本校验和
 
         //镜像信息
         string mainFileId; //源文件编号
@@ -364,12 +373,16 @@ module zeroc {
 
         //文件节点信息
         short fileTypeId; //目标文件类型Id
-        long fileLength; //目标文件大小
+        ["deprecate"] long fileLength; //目标文件大小
         string fileVersion; //文件版本号
-        string fileChecksum; //文件校验和
+        ["deprecate"] string fileChecksum; //文件校验和
         string majorTypeId; //文件所属专业编号
         string readOnlyKey; //只读版本在文件服务器上的存储名称
+        long readOnlyFileLength; //只读版本文件长度
+        string readOnlyFileMd5; //只读版本校验和
         string writableKey; //可写版本在文件服务器上的存储名称
+        long writableFileLength; //可写版本文件长度
+        string writableFileMd5; //可写版本校验和
 
         //镜像信息
         short mirrorTypeId; //镜像文件服务器类型

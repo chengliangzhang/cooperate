@@ -9,7 +9,11 @@
 [["java:package:com.maoding.FileServer"]]
 module zeroc {
     interface FileService {
-        WebRoleList listWebRoleTask(AccountDTO account); //列出用户在生产任务中担任的角色
+        void restartWebRole(WebRoleDTO webRole) throws CustomException; //设置角色工作状态为未完成
+        void finishWebRole(WebRoleDTO webRole) throws CustomException; //设置角色工作状态为完成
+        void setWebRoleStatus(WebRoleDTO webRole, string statusId) throws CustomException; //设置角色工作状态
+        WebRoleDTO getWebRole(AccountDTO account,SimpleNodeDTO node) throws CustomException; //根据node和账号获取角色
+        WebRoleList listWebRoleTask(AccountDTO account) throws CustomException; //列出用户在生产任务中担任的角色
 
         AnnotateDTO createAnnotateCheck(AccountDTO account,SimpleNodeDTO node,AnnotateRequestDTO request) throws CustomException; //创建校验意见
         AnnotateDTO createAnnotateAudit(AccountDTO account,SimpleNodeDTO node,AnnotateRequestDTO request) throws CustomException; //创建审核意见
@@ -83,6 +87,7 @@ module zeroc {
         bool deleteNode(SimpleNodeDTO src) throws CustomException; //删除节点
         bool deleteNodeForAccount(AccountDTO account,SimpleNodeDTO src) throws CustomException; //删除节点
 
+        void setFileLength(AccountDTO account,NodeFileDTO file,long fileLength) throws CustomException; //设置文件长度
         bool setNodeLength(SimpleNodeDTO src,long fileLength) throws CustomException; //设置文件长度
         bool setNodeLengthForAccount(AccountDTO account,SimpleNodeDTO src,long fileLength) throws CustomException; //设置文件长度
         bool setFullNodeLength(FullNodeDTO src,long fileLength) throws CustomException; //设置文件长度

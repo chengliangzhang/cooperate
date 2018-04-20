@@ -13,14 +13,15 @@ module zeroc {
         string typeId; //web数据库内角色类型编号
         string typeName; //角色类型名称
 
-        bool isProjectRole; //角色类型属于项目角色
-        bool isTaskRole; //角色类型属于任务角色
-        bool isCompanyRole; //角色类型属于公司角色
+        bool isTaskDesigner; //角色是设计人员
+        bool isComplete; //是否已完成
 
         string projectId; //项目编码
         string projectName; //项目名称
         string taskId; //任务编码
         string taskName; //任务名称
+        string companyId; //公司编码
+        string companyName; //公司名称
 
         //通用属性
         long createTimeStamp; //注解建立时间
@@ -103,6 +104,8 @@ module zeroc {
         string attrStr; //web角色类型布尔属性
         string typeId; //web角色类型编码
         string userId; //要查询的用户编码
+        string taskId; //要查询的生产任务编码
+        string roleId; //要查询的职责类型编码
 
         //通用查询条件
         string id; //记录id

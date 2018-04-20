@@ -71,55 +71,38 @@ public class WebRoleDTO implements java.lang.Cloneable,
         this.typeName = typeName;
     }
 
-    public boolean isProjectRole;
+    public boolean isTaskDesigner;
 
-    public boolean getIsProjectRole()
+    public boolean getIsTaskDesigner()
     {
-        return isProjectRole;
+        return isTaskDesigner;
     }
 
-    public void setIsProjectRole(boolean isProjectRole)
+    public void setIsTaskDesigner(boolean isTaskDesigner)
     {
-        this.isProjectRole = isProjectRole;
+        this.isTaskDesigner = isTaskDesigner;
     }
 
-    public boolean isIsProjectRole()
+    public boolean isIsTaskDesigner()
     {
-        return isProjectRole;
+        return isTaskDesigner;
     }
 
-    public boolean isTaskRole;
+    public boolean isComplete;
 
-    public boolean getIsTaskRole()
+    public boolean getIsComplete()
     {
-        return isTaskRole;
+        return isComplete;
     }
 
-    public void setIsTaskRole(boolean isTaskRole)
+    public void setIsComplete(boolean isComplete)
     {
-        this.isTaskRole = isTaskRole;
+        this.isComplete = isComplete;
     }
 
-    public boolean isIsTaskRole()
+    public boolean isIsComplete()
     {
-        return isTaskRole;
-    }
-
-    public boolean isCompanyRole;
-
-    public boolean getIsCompanyRole()
-    {
-        return isCompanyRole;
-    }
-
-    public void setIsCompanyRole(boolean isCompanyRole)
-    {
-        this.isCompanyRole = isCompanyRole;
-    }
-
-    public boolean isIsCompanyRole()
-    {
-        return isCompanyRole;
+        return isComplete;
     }
 
     public String projectId;
@@ -168,6 +151,30 @@ public class WebRoleDTO implements java.lang.Cloneable,
     public void setTaskName(String taskName)
     {
         this.taskName = taskName;
+    }
+
+    public String companyId;
+
+    public String getCompanyId()
+    {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId)
+    {
+        this.companyId = companyId;
+    }
+
+    public String companyName;
+
+    public String getCompanyName()
+    {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName)
+    {
+        this.companyName = companyName;
     }
 
     public long createTimeStamp;
@@ -228,23 +235,26 @@ public class WebRoleDTO implements java.lang.Cloneable,
         this.projectName = "";
         this.taskId = "";
         this.taskName = "";
+        this.companyId = "";
+        this.companyName = "";
         this.createTimeText = "";
         this.lastModifyTimeText = "";
     }
 
-    public WebRoleDTO(String id, String webRoleId, String typeId, String typeName, boolean isProjectRole, boolean isTaskRole, boolean isCompanyRole, String projectId, String projectName, String taskId, String taskName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText)
+    public WebRoleDTO(String id, String webRoleId, String typeId, String typeName, boolean isTaskDesigner, boolean isComplete, String projectId, String projectName, String taskId, String taskName, String companyId, String companyName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText)
     {
         this.id = id;
         this.webRoleId = webRoleId;
         this.typeId = typeId;
         this.typeName = typeName;
-        this.isProjectRole = isProjectRole;
-        this.isTaskRole = isTaskRole;
-        this.isCompanyRole = isCompanyRole;
+        this.isTaskDesigner = isTaskDesigner;
+        this.isComplete = isComplete;
         this.projectId = projectId;
         this.projectName = projectName;
         this.taskId = taskId;
         this.taskName = taskName;
+        this.companyId = companyId;
+        this.companyName = companyName;
         this.createTimeStamp = createTimeStamp;
         this.createTimeText = createTimeText;
         this.lastModifyTimeStamp = lastModifyTimeStamp;
@@ -293,15 +303,11 @@ public class WebRoleDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.isProjectRole != r.isProjectRole)
+            if(this.isTaskDesigner != r.isTaskDesigner)
             {
                 return false;
             }
-            if(this.isTaskRole != r.isTaskRole)
-            {
-                return false;
-            }
-            if(this.isCompanyRole != r.isCompanyRole)
+            if(this.isComplete != r.isComplete)
             {
                 return false;
             }
@@ -329,6 +335,20 @@ public class WebRoleDTO implements java.lang.Cloneable,
             if(this.taskName != r.taskName)
             {
                 if(this.taskName == null || r.taskName == null || !this.taskName.equals(r.taskName))
+                {
+                    return false;
+                }
+            }
+            if(this.companyId != r.companyId)
+            {
+                if(this.companyId == null || r.companyId == null || !this.companyId.equals(r.companyId))
+                {
+                    return false;
+                }
+            }
+            if(this.companyName != r.companyName)
+            {
+                if(this.companyName == null || r.companyName == null || !this.companyName.equals(r.companyName))
                 {
                     return false;
                 }
@@ -370,13 +390,14 @@ public class WebRoleDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, webRoleId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isProjectRole);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskRole);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isCompanyRole);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskDesigner);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isComplete);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
@@ -404,13 +425,14 @@ public class WebRoleDTO implements java.lang.Cloneable,
         ostr.writeString(this.webRoleId);
         ostr.writeString(this.typeId);
         ostr.writeString(this.typeName);
-        ostr.writeBool(this.isProjectRole);
-        ostr.writeBool(this.isTaskRole);
-        ostr.writeBool(this.isCompanyRole);
+        ostr.writeBool(this.isTaskDesigner);
+        ostr.writeBool(this.isComplete);
         ostr.writeString(this.projectId);
         ostr.writeString(this.projectName);
         ostr.writeString(this.taskId);
         ostr.writeString(this.taskName);
+        ostr.writeString(this.companyId);
+        ostr.writeString(this.companyName);
         ostr.writeLong(this.createTimeStamp);
         ostr.writeString(this.createTimeText);
         ostr.writeLong(this.lastModifyTimeStamp);
@@ -423,13 +445,14 @@ public class WebRoleDTO implements java.lang.Cloneable,
         this.webRoleId = istr.readString();
         this.typeId = istr.readString();
         this.typeName = istr.readString();
-        this.isProjectRole = istr.readBool();
-        this.isTaskRole = istr.readBool();
-        this.isCompanyRole = istr.readBool();
+        this.isTaskDesigner = istr.readBool();
+        this.isComplete = istr.readBool();
         this.projectId = istr.readString();
         this.projectName = istr.readString();
         this.taskId = istr.readString();
         this.taskName = istr.readString();
+        this.companyId = istr.readString();
+        this.companyName = istr.readString();
         this.createTimeStamp = istr.readLong();
         this.createTimeText = istr.readString();
         this.lastModifyTimeStamp = istr.readLong();
@@ -488,5 +511,5 @@ public class WebRoleDTO implements java.lang.Cloneable,
 
     private static final WebRoleDTO _nullMarshalValue = new WebRoleDTO();
 
-    public static final long serialVersionUID = -940591831L;
+    public static final long serialVersionUID = -824384428L;
 }

@@ -39,6 +39,7 @@ import java.util.List;
 public class FileServiceImplTest {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
     private static final String testLocalFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer\\upload_test.txt";
+    private static final String testLocalLargeFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\maoding\\FileServer\\卯丁协同设计用户操作手册.docx";
     private static final String testDir = "testForFileService";
 
     @Autowired
@@ -56,6 +57,14 @@ public class FileServiceImplTest {
         return remote;
     }
 
+    @Test
+    public void testSetWebRoleStatus() throws Exception {
+        fileService.setWebRoleStatus(getLocalWebRole(),"1",null);
+    }
+
+    private WebRoleDTO getLocalWebRole() throws Exception {
+        return fileService.getWebRole(getLocalAccount(),getLocalNode(),null);
+    }
     @Test
     public void testCreateAnnotate() throws Exception {
         AnnotateRequestDTO request = new AnnotateRequestDTO();
@@ -168,7 +177,7 @@ public class FileServiceImplTest {
 
     @Test
     public void testListNode() throws Exception{
-        listAllNode();
+        List<SimpleNodeDTO> list = listAllNode();
 //        listRootNode();
 //        listChildNode();
 //        listChildrenNode();
@@ -202,27 +211,27 @@ public class FileServiceImplTest {
 
     private AccountDTO getLocalAccount(){
         AccountDTO account = new AccountDTO();
-        account.setId("41d244733ec54f09a255836637f2b21d");
+        account.setId("d437448683314cad91dc30b68879901d");
         return account;
     }
 
     private SimpleNodeDTO getLocalDir() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("FACF367A52EE46EC9474137B00B8C50E-1");
+        query.setId("218720B4DB9944438FCDAC238563131D-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
 
     private SimpleNodeDTO getLocalTask() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("2a1c1afc5dcf449ab01d237b63182fd6-1");
+        query.setId("002ba6e2f16348c0ba740c2dd153be72-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
 
     private SimpleNodeDTO getLocalNode() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("02419B839D9546DEB07C03DBECAF10A8-1");
+        query.setId("A9CB6618422B4C1D896167356B71C454-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
@@ -319,12 +328,22 @@ public class FileServiceImplTest {
         return fileService.commitNodeForAccount(getLocalAccount(),getLocalNode(),request,null);
     }
 
+    @Test
+    public void testGetWebRole() throws Exception {
+        getWebRole();
+    }
+
+    private WebRoleDTO getWebRole() throws Exception {
+        log.debug("\t>>>>>>>> getWebRole");
+        return  fileService.getWebRole(getLocalAccount(),getLocalNode(),null);
+    }
+
 
     @Test
     public void testRelease() throws Exception {
 //        releaseFile();
-//        releaseNode();
-        releaseNodeWithLength();
+        releaseNode();
+//        releaseNodeWithLength();
     }
 
     private void releaseNodeWithLength() throws Exception {
@@ -360,7 +379,8 @@ public class FileServiceImplTest {
 
     @Test
     public void testWrite() throws Exception {
-        writeNode(testLocalFile,getLocalNode());
+//        writeNode(testLocalFile,getLocalNode());
+        writeNode(testLocalLargeFile,getLocalNode());
 //        writeFile();
     }
 
@@ -375,7 +395,7 @@ public class FileServiceImplTest {
         log.debug("\t>>>>>>>> writeNode");
         File f = new File(localFile);
         long length = f.length();
-        int size = 15;
+        int size = 8192000;
 
         long writeLength = 0;
         RandomAccessFile in = new RandomAccessFile(f, "r");
@@ -402,8 +422,18 @@ public class FileServiceImplTest {
     @Test
     public void testCreateNode() throws Exception {
 //        createLocalDirectory();
-        createLocalFile();
+//        createLocalFileWithSubDir();
+        createLocalLargeFile();
     }
+
+    private SimpleNodeDTO createLocalLargeFile() throws Exception{
+        log.debug("\t>>>>>>>> createLocalLargeFile");
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setIsDirectory(false);
+        request.setFullName("扩初jx-lm.dwg");
+        return fileService.createNodeForAccount(getLocalAccount(), getLocalTask(),request,null);
+    }
+
 
     private SimpleNodeDTO createRemoteDirectory() throws Exception{
         log.debug("\t>>>>>>>> createRemoteDirectory");
@@ -413,9 +443,8 @@ public class FileServiceImplTest {
         return fileService.createNodeForAccount(getLocalAccount(), getLocalDir(),request,null);
     }
 
-
-    private SimpleNodeDTO createLocalFile() throws Exception{
-        log.debug("\t>>>>>>>> createLocalNode");
+    private SimpleNodeDTO createLocalFileWithSubDir() throws Exception{
+        log.debug("\t>>>>>>>> createLocalFileWithSubDir");
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setIsDirectory(false);
         request.setFileLength(10);

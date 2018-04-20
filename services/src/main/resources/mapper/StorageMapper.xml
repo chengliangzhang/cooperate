@@ -242,10 +242,11 @@
 
 
     <select id="listNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select node.*
-        from md_node node
+        select distinct node.* from md_node_project node
         <if test="accountId != null">
-            inner join md_node_root root on (find_in_set(#{accountId},root.user_id_list) and node.root_id = root.id)
+            inner join maoding_web_project_member project_member on (find_in_set(#{accountId},project_member.account_id)
+                                                                        and node.project_id = project_member.project_id
+                                                                        and project_member.deleted = 0)
         </if>
         <where>
             <include refid="ConditionForQueryNode"/>
@@ -257,6 +258,72 @@
             order by (length(replace(path,'/','//')) - length(path)) desc
             limit 1
         </if>
+
+        union all
+
+        select distinct node.* from md_node_range node
+        <where>
+            node.range_id in (1,2)
+            <include refid="ConditionForQueryNode"/>
+            <if test="fuzzyId != null">
+                and find_in_set(substring(node.id,1,32),#{fuzzyId})
+            </if>
+        </where>
+        <if test="fuzzyPath != null">
+            order by (length(replace(path,'/','//')) - length(path)) desc
+            limit 1
+        </if>
+
+        union all
+
+        select distinct node.* from md_node_task node
+        <if test="accountId != null">
+            inner join md_type_range range_type on (node.range_id = range_type.type_id)
+            inner join maoding_web_project_member project_member on (node.task_id = project_member.target_id
+                                                                      and project_member.deleted = 0)
+            inner join maoding_web_company_user company_user on (company_user.company_id = project_member.company_id
+                                                                      and company_user.user_id = project_member.account_id)
+        </if>
+        <where>
+            node.range_id in (1,2)
+            <if test="accountId != null">
+                and (range_type.is_show_all_task = 1 or find_in_set(#{accountId},company_user.user_id))
+            </if>
+            <include refid="ConditionForQueryNode"/>
+            <if test="fuzzyId != null">
+                and find_in_set(substring(node.id,1,32),#{fuzzyId})
+            </if>
+        </where>
+        <if test="fuzzyPath != null">
+            order by (length(replace(path,'/','//')) - length(path)) desc
+            limit 1
+        </if>
+
+        union all
+
+        select distinct node.* from md_node_storage node
+        <if test="accountId != null">
+            inner join md_type_range range_type on (node.range_id = range_type.type_id)
+            inner join maoding_web_project_member project_member on (node.task_id = project_member.target_id
+                                                                      and project_member.deleted = 0)
+            inner join maoding_web_company_user company_user on (company_user.company_id = project_member.company_id
+                                                                      and company_user.user_id = project_member.account_id)
+        </if>
+        <where>
+            node.range_id in (1,2)
+            <if test="accountId != null">
+                and (range_type.is_show_all_task = 1 or find_in_set(#{accountId},company_user.user_id))
+            </if>
+            <include refid="ConditionForQueryNode"/>
+            <if test="fuzzyId != null">
+                and find_in_set(substring(node.id,1,32),#{fuzzyId})
+            </if>
+        </where>
+        <if test="fuzzyPath != null">
+            order by (length(replace(path,'/','//')) - length(path)) desc
+            limit 1
+        </if>
+
     </select>
 
 

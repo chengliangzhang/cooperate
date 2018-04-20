@@ -59,6 +59,30 @@ public class QueryWebRoleDTO implements java.lang.Cloneable,
         this.userId = userId;
     }
 
+    public String taskId;
+
+    public String getTaskId()
+    {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId)
+    {
+        this.taskId = taskId;
+    }
+
+    public String roleId;
+
+    public String getRoleId()
+    {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId)
+    {
+        this.roleId = roleId;
+    }
+
     public String id;
 
     public String getId()
@@ -136,17 +160,21 @@ public class QueryWebRoleDTO implements java.lang.Cloneable,
         this.attrStr = "";
         this.typeId = "";
         this.userId = "";
+        this.taskId = "";
+        this.roleId = "";
         this.id = "";
         this.lastModifyUserId = "";
         this.lastModifyRoleId = "";
         this.accountId = "";
     }
 
-    public QueryWebRoleDTO(String attrStr, String typeId, String userId, String id, String lastModifyUserId, String lastModifyRoleId, long startTimeStamp, long endTimeStamp, String accountId)
+    public QueryWebRoleDTO(String attrStr, String typeId, String userId, String taskId, String roleId, String id, String lastModifyUserId, String lastModifyRoleId, long startTimeStamp, long endTimeStamp, String accountId)
     {
         this.attrStr = attrStr;
         this.typeId = typeId;
         this.userId = userId;
+        this.taskId = taskId;
+        this.roleId = roleId;
         this.id = id;
         this.lastModifyUserId = lastModifyUserId;
         this.lastModifyRoleId = lastModifyRoleId;
@@ -186,6 +214,20 @@ public class QueryWebRoleDTO implements java.lang.Cloneable,
             if(this.userId != r.userId)
             {
                 if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
+                {
+                    return false;
+                }
+            }
+            if(this.taskId != r.taskId)
+            {
+                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
+                {
+                    return false;
+                }
+            }
+            if(this.roleId != r.roleId)
+            {
+                if(this.roleId == null || r.roleId == null || !this.roleId.equals(r.roleId))
                 {
                     return false;
                 }
@@ -240,6 +282,8 @@ public class QueryWebRoleDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, attrStr);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, roleId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyUserId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyRoleId);
@@ -268,6 +312,8 @@ public class QueryWebRoleDTO implements java.lang.Cloneable,
         ostr.writeString(this.attrStr);
         ostr.writeString(this.typeId);
         ostr.writeString(this.userId);
+        ostr.writeString(this.taskId);
+        ostr.writeString(this.roleId);
         ostr.writeString(this.id);
         ostr.writeString(this.lastModifyUserId);
         ostr.writeString(this.lastModifyRoleId);
@@ -281,6 +327,8 @@ public class QueryWebRoleDTO implements java.lang.Cloneable,
         this.attrStr = istr.readString();
         this.typeId = istr.readString();
         this.userId = istr.readString();
+        this.taskId = istr.readString();
+        this.roleId = istr.readString();
         this.id = istr.readString();
         this.lastModifyUserId = istr.readString();
         this.lastModifyRoleId = istr.readString();
@@ -341,5 +389,5 @@ public class QueryWebRoleDTO implements java.lang.Cloneable,
 
     private static final QueryWebRoleDTO _nullMarshalValue = new QueryWebRoleDTO();
 
-    public static final long serialVersionUID = -624362024L;
+    public static final long serialVersionUID = 1231225825L;
 }

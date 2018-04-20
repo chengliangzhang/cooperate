@@ -56,10 +56,35 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     private Map<String,String> pathMap = new HashMap<>();
 
     @Override
-    public List<WebRoleDTO> listWebRoleTask(AccountDTO account, Current current) {
-        final String ATTR_STR_TASK_ONLY = "01";
+    public void restartWebRole(WebRoleDTO webRole, Current current) throws CustomException {
+        setWebRoleStatus(webRole,"0");
+    }
+
+    @Override
+    public void finishWebRole(WebRoleDTO webRole, Current current) throws CustomException {
+        setWebRoleStatus(webRole,"1");
+    }
+
+    @Override
+    public void setWebRoleStatus(WebRoleDTO webRole, String statusId, Current current) throws CustomException {
+        getUserService().setWebRoleStatus(webRole,statusId);
+    }
+
+    @Override
+    public WebRoleDTO getWebRole(@NotNull AccountDTO account, @NotNull SimpleNodeDTO node, Current current) {
         QueryWebRoleDTO query = new QueryWebRoleDTO();
-        query.setAttrStr(ATTR_STR_TASK_ONLY);
+        query.setUserId(getAccountId(account));
+        query.setRoleId(node.getOwnerRoleId());
+        query.setTaskId(node.getTaskId());
+        List<WebRoleDTO> list = getUserService().listWebRole(query);
+        return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
+    }
+
+    @Override
+    public List<WebRoleDTO> listWebRoleTask(AccountDTO account, Current current) {
+        final String ROLE_TYPE_ID_FILETER = "40,41,42,43";
+        QueryWebRoleDTO query = new QueryWebRoleDTO();
+        query.setRoleId(ROLE_TYPE_ID_FILETER);
         query.setUserId(getAccountId(account));
         return getUserService().listWebRole(query);
     }
@@ -295,7 +320,8 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
             String md5 = localServer.coreCalcChecksum(key);
             UpdateNodeFileDTO updateRequest = new UpdateNodeFileDTO();
             updateRequest.setReadOnlyKey(readOnlyKey);
-            updateRequest.setFileChecksum(md5);
+            updateRequest.setReadOnlyFileLength(localFile.length());
+            updateRequest.setReadOnlyFileMd5(md5);
             file = getStorageService().updateNodeFile(file, updateRequest);
             String id = file.getId();
             fileMap.put(id, file);
@@ -532,7 +558,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
             QueryNodeInfoDTO infoQuery = new QueryNodeInfoDTO();
             infoQuery.setFileQuery(getFileQuery());
             FullNodeDTO file = getNodeInfoForAccount(account, node, infoQuery, current);
-            if ((file != null) && (file.getFileInfo() != null)) {
+            if ((file != null) && (file.getFileInfo() != null) && (StringUtils.isNotEmpty(file.getFileInfo().getId()))) {
                 fileInfo = file.getFileInfo();
                 fileMap.put(id, fileInfo);
             }
@@ -819,25 +845,56 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     }
 
     @Override
+    public void setFileLength(AccountDTO account, @NotNull NodeFileDTO file, long fileLength, Current current) throws CustomException {
+        String updatedKey = null;
+        String updatedMirrorKey = null;
+        String key = file.getWritableKey();
+        CoreFileServer coreServer = getCoreFileServer(file.getServerTypeId(), file.getServerAddress(), file.getBaseDir());
+        if (StringUtils.isNotEmpty(key)) {
+            if (fileLength <= 0) {
+                fileLength = coreServer.coreGetFileLength(key);
+            }
+            coreServer.coreSetFileLength(key, fileLength);
+        } else {
+            updatedKey = coreServer.coreCreateFile(fileLength);
+        }
+        if (!isLocalFile(file)) {
+            String mirrorKey = file.getWritableMirrorKey();
+            CoreFileServer localServer = getCoreFileServer();
+            if (StringUtils.isNotEmpty(mirrorKey)) {
+                localServer.coreSetFileLength(mirrorKey, fileLength);
+            } else {
+                updatedMirrorKey = localServer.coreCreateFile(fileLength);
+            }
+        }
+        UpdateNodeFileDTO request = new UpdateNodeFileDTO();
+        request.setReadOnlyFileLength(fileLength);
+        request.setWritableKey(updatedKey);
+        request.setWritableMirrorKey(updatedMirrorKey);
+        NodeFileDTO updatedFile = getStorageService().updateNodeFile(file,request);
+        updateFileMap(file.getId(),updatedFile);
+    }
+
+    private void updateFileMap(@NotNull String id, NodeFileDTO updatedFile) {
+        if (StringUtils.isNotEmpty(id)) {
+            if (updatedFile != null) {
+                fileMap.put(id, updatedFile);
+            } else {
+                fileMap.remove(id);
+            }
+        }
+    }
+
+    @Override
     public boolean setNodeLengthForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, long fileLength, Current current) throws CustomException {
         CheckService.check(!src.getIsDirectory());
         NodeFileDTO file = getFileInfoForAccount(account,src,current);
         if (file != null) {
-            String key = file.getReadOnlyKey();
-            if (StringUtils.isNotEmpty(key)) {
-                CoreFileServer coreServer = getCoreFileServer(file.getServerTypeId(), file.getServerAddress(), file.getBaseDir());
-                coreServer.coreSetFileLength(key, fileLength);
-            }
-            String mirrorKey = file.getReadOnlyMirrorKey();
-            if (StringUtils.isNotEmpty(mirrorKey)) {
-                CoreFileServer coreServer = getCoreFileServer();
-                coreServer.coreSetFileLength(mirrorKey, fileLength);
-            }
+            setFileLength(account,file,fileLength,current);
+            return true;
+        } else {
+            return false;
         }
-        UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setFileLength(fileLength);
-        getStorageService().updateNodeSimple(src,request);
-        return true;
     }
 
 
@@ -851,12 +908,14 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     public boolean releaseNodeForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, long fileLength, Current current) throws CustomException {
         CheckService.check(!src.getIsDirectory());
         NodeFileDTO file = getFileInfoForAccount(account,src,current);
-        String path = getNodePathForAccount(account,src,current);
-        releaseFile(account,file,path,current);
-        if (fileLength > 0){
-            setNodeLengthForAccount(account,src,fileLength,current);
+        if (file != null) {
+            String path = getNodePathForAccount(account, src, current);
+            releaseFile(account, file, path, current);
+            setFileLength(account, file, fileLength, current);
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
     @Override
@@ -868,9 +927,13 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     @Override
     public boolean reloadNodeForAccount(AccountDTO account, SimpleNodeDTO src, Current current) throws CustomException {
         NodeFileDTO file = getFileInfoForAccount(account,src,current);
-        String path = getNodePathForAccount(account,src,current);
-        reloadFile(account,file,path,current);
-        return true;
+        if (file != null) {
+            String path = getNodePathForAccount(account, src, current);
+            reloadFile(account, file, path, current);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -937,6 +1000,8 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         List<SimpleNodeDTO> list = getStorageService().listNode(query);
         for (SimpleNodeDTO node : list){
             node.setIsReadOnly(isReadOnly(node,getAccountId(account)));
+            node.setFileLength(node.getReadOnlyFileLength());
+            node.setFileMd5(node.getReadOnlyFileMd5());
         }
         return list;
     }
@@ -1367,31 +1432,44 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     @Override
     public SimpleNodeDTO createNodeForAccount(AccountDTO account, SimpleNodeDTO parent, @NotNull CreateNodeRequestDTO request, Current current) throws CustomException {
         UpdateNodeDTO createRequest = BeanUtils.createCleanFrom(request,UpdateNodeDTO.class);
-        createRequest.setPath(request.getFullName());
-        if ((parent != null) && (!StringUtils.isEmpty(parent.getId()))) {
-            if (request.getIsDirectory()) {
-                createRequest.setTypeId(Short.parseShort(ConstService.getPathType(Short.toString(parent.getTypeId()))));
-            } else {
-                createRequest.setTypeId(Short.parseShort(ConstService.getFileType(Short.toString(parent.getTypeId()))));
-            }
-            createRequest.setPid(parent.getId());
-            createRequest.setTaskId(parent.getTaskId());
-        } else if (request.getIsDirectory()) {
-            createRequest.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN);
-        } else {
-            createRequest.setTypeId(ConstService.STORAGE_NODE_TYPE_UNKNOWN);
-        }
         String accountId = getAccountId(account);
         createRequest.setLastModifyUserId(accountId);
         createRequest.setOwnerUserId(accountId);
-        if (createRequest.getFileLength() > 0) {
-            String path = getNodePathForAccount(account,parent,current);
-            path = StringUtils.formatPath(path + StringUtils.SPLIT_PATH + createRequest.getPath());
-            String key = getCoreFileServer().coreCreateFile(path,createRequest.getFileLength());
+        createRequest.setPath(request.getFullName());
+        if (request.getIsDirectory()) {
+            createRequest.setServerTypeId((short)0);
+            createRequest.setServerAddress(null);
+            createRequest.setBaseDir(null);
+            createRequest.setFileLength(0);
+            if ((parent != null) && (StringUtils.isNotEmpty(parent.getId()))) {
+                createRequest.setTypeId(Short.parseShort(ConstService.getPathType(Short.toString(parent.getTypeId()))));
+                createRequest.setPid(parent.getId());
+                createRequest.setTaskId(parent.getTaskId());
+            } else {
+                createRequest.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN);
+                createRequest.setPid(null);
+                createRequest.setTaskId(null);
+            }
+        } else {
             createRequest.setServerTypeId(Short.parseShort(setting.getServerTypeId()));
             createRequest.setServerAddress(setting.getServerAddress());
             createRequest.setBaseDir(setting.getBaseDir());
-            createRequest.setWritableKey(key);
+            if (request.getFileLength() > 0) {
+                String path = getNodePathForAccount(account,parent,current);
+                path = StringUtils.formatPath(path + StringUtils.SPLIT_PATH + createRequest.getPath());
+                String key = getCoreFileServer().coreCreateFile(path,createRequest.getFileLength());
+                createRequest.setWritableKey(key);
+                createRequest.setReadOnlyFileLength(request.getFileLength());
+            }
+            if ((parent != null) && (StringUtils.isNotEmpty(parent.getId()))) {
+                createRequest.setTypeId(Short.parseShort(ConstService.getFileType(Short.toString(parent.getTypeId()))));
+                createRequest.setPid(parent.getId());
+                createRequest.setTaskId(parent.getTaskId());
+            } else {
+                createRequest.setTypeId(ConstService.STORAGE_NODE_TYPE_UNKNOWN);
+                createRequest.setPid(null);
+                createRequest.setTaskId(null);
+            }
         }
         return getStorageService().createNode(parent,createRequest);
     }

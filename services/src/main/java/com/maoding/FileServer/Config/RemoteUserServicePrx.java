@@ -37,6 +37,11 @@ public class RemoteUserServicePrx extends BaseRemoteService<UserServicePrx> impl
     }
 
     @Override
+    public void setWebRoleStatus(WebRoleDTO webRole, String statusId) {
+        getUserService().setWebRoleStatus(webRole,statusId,null);
+    }
+
+    @Override
     public List<WebRoleDTO> listWebRole(QueryWebRoleDTO query) {
         return getUserService().listWebRole(query,null);
     }

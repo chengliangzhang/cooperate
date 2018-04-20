@@ -42,7 +42,7 @@ public final class WebRoleListHelper
     {
         final java.util.List<WebRoleDTO> v;
         v = new java.util.ArrayList<WebRoleDTO>();
-        final int len0 = istr.readAndCheckSeqSize(29);
+        final int len0 = istr.readAndCheckSeqSize(30);
         for(int i0 = 0; i0 < len0; i0++)
         {
             WebRoleDTO elem;

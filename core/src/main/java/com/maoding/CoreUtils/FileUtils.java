@@ -1,15 +1,13 @@
 package com.maoding.CoreUtils;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.io.*;
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -98,43 +96,13 @@ public class FileUtils {
 
     public static String calcChecksum(@NotNull File srcFile) {
         assert (srcFile.exists() && srcFile.isFile());
-
-        MessageDigest md5Calc = null;
-        long len = 0;
-
+        String md5 = null;
         try {
-            md5Calc = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            log.warn("初始化MD5计算器错误");
-        }
-
-        FileChannel in = null;
-        try {
-            in = (new FileInputStream(srcFile)).getChannel();
-            while (in.position() < in.size()){
-                int length = DEFAULT_BUFFER_SIZE;
-                if ((in.size() - in.position()) < length) {
-                    length = (int) (in.size() - in.position());
-                }
-                ByteBuffer buf = ByteBuffer.allocateDirect(length);
-                in.read(buf);
-                byte[] calcArray = new byte[length];
-                buf.flip();
-                buf.get(calcArray,0,calcArray.length);
-                assert (md5Calc != null);
-                md5Calc.update(calcArray);
-            }
-            len = in.size();
+            md5 = DigestUtils.md5Hex(new FileInputStream(srcFile)).toUpperCase();
         } catch (IOException e) {
             log.error("读取文件" + srcFile.getPath() + "时出错",e);
-        } finally {
-            close(in);
         }
-
-        assert (md5Calc != null);
-        byte[] md5Array = md5Calc.digest();
-        BigInteger md5Int = new BigInteger(1, md5Array);
-        return md5Int.toString();
+        return md5;
     }
 
 }

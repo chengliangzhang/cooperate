@@ -46,6 +46,7 @@ public interface CoreFileServer {
     /** 创建文件 */
     default String coreCreateFile(CoreCreateFileRequest createRequest) {return null;}
     default String coreCreateFile(String key, long fileLength) {return coreCreateFile(new CoreCreateFileRequest(key,fileLength));}
+    default String coreCreateFile(long fileLength) {return coreCreateFile(new CoreCreateFileRequest(fileLength));}
     default String coreCreateFile(String key, File srcFile) {return coreCreateFile(new CoreCreateFileRequest(key,srcFile));}
     default String coreCreateFile(String key) {return coreCreateFile(new CoreCreateFileRequest(key));}
     default String coreCreateFile(){return coreCreateFile((CoreCreateFileRequest)null);}

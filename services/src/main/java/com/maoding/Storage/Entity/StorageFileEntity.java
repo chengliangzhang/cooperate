@@ -40,12 +40,56 @@ public class StorageFileEntity extends BaseEntity {
     @Column
     private String readOnlyKey;
 
+    @Column /** 只读文件长度 */
+    private long readOnlyFileLength;
+
+    @Column /** 只读文件md5校验和 */
+    private String readOnlyFileMd5;
+
     @Column
     private String writableKey;
+
+    @Column /** 可写文件长度 */
+    private long writableFileLength;
+
+    @Column /** 可写文件md5校验和 */
+    private String writableFileMd5;
 
     /** 文件在文件服务器上的存储位置 */
     @Column
     private String baseDir;
+
+    public long getReadOnlyFileLength() {
+        return readOnlyFileLength;
+    }
+
+    public void setReadOnlyFileLength(long readOnlyFileLength) {
+        this.readOnlyFileLength = readOnlyFileLength;
+    }
+
+    public String getReadOnlyFileMd5() {
+        return readOnlyFileMd5;
+    }
+
+    public void setReadOnlyFileMd5(String readOnlyFileMd5) {
+        this.readOnlyFileMd5 = readOnlyFileMd5;
+    }
+
+    public long getWritableFileLength() {
+        return writableFileLength;
+    }
+
+    public void setWritableFileLength(long writableFileLength) {
+        this.writableFileLength = writableFileLength;
+    }
+
+    public String getWritableFileMd5() {
+        return writableFileMd5;
+    }
+
+    public void setWritableFileMd5(String writableFileMd5) {
+        this.writableFileMd5 = writableFileMd5;
+    }
 
     public String getBaseDir() {
         return baseDir;

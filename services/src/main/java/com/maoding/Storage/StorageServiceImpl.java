@@ -99,6 +99,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         final String QUERY_MIRROR_BASE_DIR = "mirrorBaseDir";
         long t = System.currentTimeMillis();
 
+        CheckService.check(StringUtils.isNotEmpty(file.getId()));
         //更新节点信息
         Map<String,Object> queryFile = new HashMap<>();
         queryFile.put(QUERY_FIELD_ID,file.getId());
@@ -274,20 +275,19 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     public NodeFileDTO createNodeFile(NodeFileDTO src, @NotNull UpdateNodeFileDTO request, Current current) throws CustomException {
         long t = System.currentTimeMillis();
 
-        //创建文件或镜像
-        StorageFileEntity entity = BeanUtils.createCleanFrom(src, StorageFileEntity.class);
-        if (src != null) {
+        //创建文件或镜像并更改返回对象
+        StorageFileEntity entity;
+        if ((src != null) && (StringUtils.isNotEmpty(src.getId()))) {
+            entity = storageFileDao.selectById(src.getId());
             updateMirrorEntity(request, src.getId(), entity);
-        }
-        storageFileDao.insert(entity);
-
-        //创建返回对象
-        if (src != null) {
             src.setReadOnlyMirrorKey(StringUtils.formatPath(entity.getReadOnlyKey()));
             src.setWritableMirrorKey(StringUtils.formatPath(entity.getWritableKey()));
         } else {
+            entity = BeanUtils.createCleanFrom(request,StorageFileEntity.class);
+            entity.reset();
             src = BeanUtils.createCleanFrom(entity,NodeFileDTO.class);
         }
+        storageFileDao.insert(entity);
 
         //如果request内有创建镜像内容，创建镜像
         if (isMirrorInfoValid(request)){
@@ -349,6 +349,18 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         mirrorEntity.setWritableKey(request.getWritableMirrorKey());
         assert (StringUtils.isNotEmpty(fileId));
         mirrorEntity.setMainFileId(fileId);
+        if (request.getReadOnlyFileLength() > 0) {
+            mirrorEntity.setReadOnlyFileLength(request.getReadOnlyFileLength());
+        }
+        if (StringUtils.isNotEmpty(request.getReadOnlyFileMd5())) {
+            mirrorEntity.setReadOnlyFileMd5(request.getReadOnlyFileMd5());
+        }
+        if (request.getWritableFileLength() > 0) {
+            mirrorEntity.setWritableFileLength(request.getWritableFileLength());
+        }
+        if (StringUtils.isNotEmpty(request.getWritableFileMd5())) {
+            mirrorEntity.setWritableFileMd5(request.getWritableFileMd5());
+        }
         if (StringUtils.isNotEmpty(request.getLastModifyUserId())){
             mirrorEntity.setLastModifyUserId(request.getLastModifyUserId());
         }
@@ -498,24 +510,11 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             srcUnion.setPath(StringUtils.formatPath(parentEntity.getPath() + StringUtils.SPLIT_PATH + srcUnion.getNodeName()));
             srcUnion.setTaskId(parentEntity.getTaskId());
         } else {
-            String dirName = StringUtils.getDirName(request.getPath());
-            if (StringUtils.isNotEmpty(request.getPid()) || StringUtils.isNotEmpty(dirName)){
-                srcUnion.setPid(null);
-                srcUnion.setPath(srcUnion.getNodeName());
-            } else {
-                String path = StringUtils.getDirName(srcUnion.getPath());
-                if (StringUtils.isNotEmpty(path)) {
-                    path += StringUtils.SPLIT_PATH;
-                }
-                path += srcUnion.getNodeName();
-                srcUnion.setPath(StringUtils.formatPath(path));
-            }
+            srcUnion.setPid(null);
+            srcUnion.setPath(srcUnion.getNodeName());
             if (StringUtils.isNotEmpty(request.getTaskId())) {
                 srcUnion.setTaskId(request.getTaskId());
             }
-        }
-        if (request.getFileLength() != 0) {
-            srcUnion.setFileLength(request.getFileLength());
         }
         if (StringUtils.isNotEmpty(request.getOwnerUserId())) {
             srcUnion.setOwnerUserId(request.getOwnerUserId());

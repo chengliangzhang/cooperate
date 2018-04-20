@@ -131,13 +131,22 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.fileTypeId = fileTypeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public long fileLength;
 
+    /**
+     **/
+    @Deprecated
     public long getFileLength()
     {
         return fileLength;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setFileLength(long fileLength)
     {
         this.fileLength = fileLength;
@@ -155,13 +164,22 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.fileVersion = fileVersion;
     }
 
+    /**
+     **/
+    @Deprecated
     public String fileChecksum;
 
+    /**
+     **/
+    @Deprecated
     public String getFileChecksum()
     {
         return fileChecksum;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setFileChecksum(String fileChecksum)
     {
         this.fileChecksum = fileChecksum;
@@ -191,6 +209,30 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.readOnlyKey = readOnlyKey;
     }
 
+    public long readOnlyFileLength;
+
+    public long getReadOnlyFileLength()
+    {
+        return readOnlyFileLength;
+    }
+
+    public void setReadOnlyFileLength(long readOnlyFileLength)
+    {
+        this.readOnlyFileLength = readOnlyFileLength;
+    }
+
+    public String readOnlyFileMd5;
+
+    public String getReadOnlyFileMd5()
+    {
+        return readOnlyFileMd5;
+    }
+
+    public void setReadOnlyFileMd5(String readOnlyFileMd5)
+    {
+        this.readOnlyFileMd5 = readOnlyFileMd5;
+    }
+
     public String writableKey;
 
     public String getWritableKey()
@@ -201,6 +243,30 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
     public void setWritableKey(String writableKey)
     {
         this.writableKey = writableKey;
+    }
+
+    public long writableFileLength;
+
+    public long getWritableFileLength()
+    {
+        return writableFileLength;
+    }
+
+    public void setWritableFileLength(long writableFileLength)
+    {
+        this.writableFileLength = writableFileLength;
+    }
+
+    public String writableFileMd5;
+
+    public String getWritableFileMd5()
+    {
+        return writableFileMd5;
+    }
+
+    public void setWritableFileMd5(String writableFileMd5)
+    {
+        this.writableFileMd5 = writableFileMd5;
     }
 
     public short mirrorTypeId;
@@ -524,7 +590,9 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.fileChecksum = "";
         this.majorTypeId = "";
         this.readOnlyKey = "";
+        this.readOnlyFileMd5 = "";
         this.writableKey = "";
+        this.writableFileMd5 = "";
         this.mirrorAddress = "";
         this.mirrorBaseDir = "";
         this.readOnlyMirrorKey = "";
@@ -542,7 +610,7 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.parentStoragePath = "";
     }
 
-    public UpdateNodeDTO(short typeId, String path, String ownerUserId, String taskId, String mainFileId, short serverTypeId, String serverAddress, String baseDir, short fileTypeId, long fileLength, String fileVersion, String fileChecksum, String majorTypeId, String readOnlyKey, String writableKey, short mirrorTypeId, String mirrorAddress, String mirrorBaseDir, String readOnlyMirrorKey, String writableMirrorKey, short actionTypeId, String remark, String lastModifyUserId, String lastModifyRoleId, String pid, String readFileScope, String readFileKey, String writeFileScope, String writeFileKey, String fullName, String parentPath, short parentTypeId, String parentStoragePath)
+    public UpdateNodeDTO(short typeId, String path, String ownerUserId, String taskId, String mainFileId, short serverTypeId, String serverAddress, String baseDir, short fileTypeId, long fileLength, String fileVersion, String fileChecksum, String majorTypeId, String readOnlyKey, long readOnlyFileLength, String readOnlyFileMd5, String writableKey, long writableFileLength, String writableFileMd5, short mirrorTypeId, String mirrorAddress, String mirrorBaseDir, String readOnlyMirrorKey, String writableMirrorKey, short actionTypeId, String remark, String lastModifyUserId, String lastModifyRoleId, String pid, String readFileScope, String readFileKey, String writeFileScope, String writeFileKey, String fullName, String parentPath, short parentTypeId, String parentStoragePath)
     {
         this.typeId = typeId;
         this.path = path;
@@ -558,7 +626,11 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.fileChecksum = fileChecksum;
         this.majorTypeId = majorTypeId;
         this.readOnlyKey = readOnlyKey;
+        this.readOnlyFileLength = readOnlyFileLength;
+        this.readOnlyFileMd5 = readOnlyFileMd5;
         this.writableKey = writableKey;
+        this.writableFileLength = writableFileLength;
+        this.writableFileMd5 = writableFileMd5;
         this.mirrorTypeId = mirrorTypeId;
         this.mirrorAddress = mirrorAddress;
         this.mirrorBaseDir = mirrorBaseDir;
@@ -679,9 +751,31 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.readOnlyFileLength != r.readOnlyFileLength)
+            {
+                return false;
+            }
+            if(this.readOnlyFileMd5 != r.readOnlyFileMd5)
+            {
+                if(this.readOnlyFileMd5 == null || r.readOnlyFileMd5 == null || !this.readOnlyFileMd5.equals(r.readOnlyFileMd5))
+                {
+                    return false;
+                }
+            }
             if(this.writableKey != r.writableKey)
             {
                 if(this.writableKey == null || r.writableKey == null || !this.writableKey.equals(r.writableKey))
+                {
+                    return false;
+                }
+            }
+            if(this.writableFileLength != r.writableFileLength)
+            {
+                return false;
+            }
+            if(this.writableFileMd5 != r.writableFileMd5)
+            {
+                if(this.writableFileMd5 == null || r.writableFileMd5 == null || !this.writableFileMd5.equals(r.writableFileMd5))
                 {
                     return false;
                 }
@@ -828,7 +922,11 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileChecksum);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readOnlyKey);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readOnlyFileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readOnlyFileMd5);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableKey);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableFileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableFileMd5);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mirrorTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mirrorAddress);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mirrorBaseDir);
@@ -880,7 +978,11 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.fileChecksum);
         ostr.writeString(this.majorTypeId);
         ostr.writeString(this.readOnlyKey);
+        ostr.writeLong(this.readOnlyFileLength);
+        ostr.writeString(this.readOnlyFileMd5);
         ostr.writeString(this.writableKey);
+        ostr.writeLong(this.writableFileLength);
+        ostr.writeString(this.writableFileMd5);
         ostr.writeShort(this.mirrorTypeId);
         ostr.writeString(this.mirrorAddress);
         ostr.writeString(this.mirrorBaseDir);
@@ -917,7 +1019,11 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.fileChecksum = istr.readString();
         this.majorTypeId = istr.readString();
         this.readOnlyKey = istr.readString();
+        this.readOnlyFileLength = istr.readLong();
+        this.readOnlyFileMd5 = istr.readString();
         this.writableKey = istr.readString();
+        this.writableFileLength = istr.readLong();
+        this.writableFileMd5 = istr.readString();
         this.mirrorTypeId = istr.readShort();
         this.mirrorAddress = istr.readString();
         this.mirrorBaseDir = istr.readString();
@@ -990,5 +1096,5 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
 
     private static final UpdateNodeDTO _nullMarshalValue = new UpdateNodeDTO();
 
-    public static final long serialVersionUID = -1309810214L;
+    public static final long serialVersionUID = -748084902L;
 }

@@ -1,12 +1,11 @@
 package com.maoding.User;
 
-import com.maoding.FileServer.Config.RemoteFileServerPrx;
 import com.maoding.FileServer.Config.RemoteUserServicePrx;
-import com.maoding.FileServer.zeroc.FileServicePrx;
-import com.maoding.User.zeroc.*;
-import com.sun.tools.classfile.Code_attribute;
+import com.maoding.User.zeroc.QueryWebRoleDTO;
+import com.maoding.User.zeroc.UserService;
+import com.maoding.User.zeroc.UserServicePrx;
+import com.maoding.User.zeroc.WebRoleDTO;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,12 +48,12 @@ public class UserServiceImplTest {
 
     @Test
     public void testSetRoleStatus() throws Exception {
-        userService.setWebRoleStatus(getLocalWebRole(),"0",null);
+        userService.setWebRoleStatus(getLocalWebRole(),"1",null);
     }
 
     private WebRoleDTO getLocalWebRole() throws Exception {
         QueryWebRoleDTO query = new QueryWebRoleDTO();
-        query.setId("5-287441b514ba4d08bcc7bdd91eada151-0fac3579212a4d598c162122770257f3");
+        query.setId("4-f56e157939754cd1aa2ea77e5f90de9a-d437448683314cad91dc30b68879901d");
         List<WebRoleDTO> list = userService.listWebRole(query,null);
         return list.get(0);
     }

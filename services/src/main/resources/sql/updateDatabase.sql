@@ -167,16 +167,23 @@ BEGIN
 		`base_dir` varchar(255) DEFAULT NULL COMMENT '文件在文件服务器上的存储位置',
 		`file_type_id` varchar(40) DEFAULT '0' COMMENT '文件类型',
 		`file_version` varchar(20) DEFAULT NULL COMMENT '文件版本',
-		`file_checksum` varchar(64) DEFAULT NULL COMMENT '文件校验和',
 		`major_type_id` varchar(40) DEFAULT '0' NULL COMMENT '文件所属专业id',
 		`main_file_id` char(32) DEFAULT NULL COMMENT '所对应的原始文件id',
 		`read_only_key` varchar(255) DEFAULT NULL COMMENT '只读文件在文件服务器上的存储名称',
-		`writable_key` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储名称',
     `read_only_file_length` bigint(16) unsigned DEFAULT '0' COMMENT '只读文件长度',
+		`read_only_file_md5` varchar(64) DEFAULT NULL COMMENT '只读文件md5校验和',
+		`writable_key` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储名称',
     `writable_file_length` bigint(16) unsigned DEFAULT '0' COMMENT '可写文件长度',
+    `writable_file_md5` varchar(64) DEFAULT NULL COMMENT '可写文件md5校验和',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_storage_file' and column_name='read_only_file_md5') then
+    alter table md_list_storage_file add column `read_only_file_md5` varchar(64) DEFAULT NULL COMMENT '只读文件校验和';
+  end if;
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_storage_file' and column_name='writable_file_md5') then
+    alter table md_list_storage_file add column `writable_file_md5` varchar(64) DEFAULT NULL COMMENT '可写文件校验和';
+  end if;
   if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_storage_file' and column_name='read_only_file_length') then
     alter table md_list_storage_file add column `read_only_file_length` bigint(16) unsigned DEFAULT '0' COMMENT '只读文件长度';
   end if;
@@ -422,6 +429,7 @@ BEGIN
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 END;
+call updateTables();
 
 -- 建立初始化常量存储过程
 DROP PROCEDURE IF EXISTS `initConst`;
@@ -475,15 +483,15 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (31,2,'审核','');
 
     -- -- -- -- --
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,30,'web member角色类型','1.类型布尔属性，1-项目角色,2-任务角色,3-任务负责人角色；2.对应的角色;3.对应的mytask内task_type');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,30,'web member角色类型','1.类型布尔属性，1-项目角色,2-任务角色,3-任务负责人,4-设计,5-校对,6-审核；2.对应的角色;3.对应的mytask内task_type;4.对应的process内的名称');
     delete from md_const where classic_id = 30;
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,0,'立项人','100;23;');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,1,'经营负责人','100;20;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,2,'设计负责人','100;30;2');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,3,'任务负责人','011;40;13');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,4,'设计','010;41;10,11,12');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,5,'校对','010;42;10,11,12');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,6,'审核','010;43;10,11,12');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,0,'立项人','100000;23;;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,1,'经营负责人','100000;20;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,2,'设计负责人','100000;30;2;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,3,'任务负责人','111000;40;12,13;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,4,'设计','110100;41;3;设计');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,5,'校对','110010;42;3;校对');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (30,6,'审核','110001;43;3;审核');
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,29,'web权限类型','1.类型布尔属性，1-转换需加偏移量;2.权限标识;3.对应的基准角色;4.设置所需权限');
@@ -573,7 +581,7 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (26,144,'project_info_viewer;项目信息/项目总览/项目文档查看者',';52');
 
     -- -- -- -- --
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,25,'保留',null);
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,25,'web my_task任务类型定义',null);
     delete from md_const where classic_id = 25;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (25,0,'未知分类',null);
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (25,1,'项目角色',null);
@@ -582,17 +590,18 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (25,4,'任务用户角色',null);
 
     -- -- -- -- --
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,24,'资料分类目录','1.目录节点类型;2.下属节点类型');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,24,'资料分类','1.分类布尔属性,1-是根目录,2-不过滤任务;2.目录节点类型;3.下属节点类型');
     delete from md_const where classic_id = 24;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,0,'未知分类',';');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,1,'设计','20;0,1,18,21,22,23;!0!1!2!');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,2,'提资','30;2,3,31,32,33;!1!2!');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,3,'发布','40;4,10,42,43;|0|1|2|3|4|5|6|7|8|9|10|20|21|30|40|50|');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,1,'设计','00;20;0,1,18,21,22,23');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,2,'提资','01;30;2,3,31,32,33');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,3,'发布','01;40;4,10,42,43');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,5,'网站','01;40;4,10,42,43');
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,23,'web task任务类型定义','1.任务布尔属性,1-是经营任务,2-是生产任务;2.转换时节点类型生成偏移量,3.归属的资料分类目录');
     delete from md_const where classic_id = 23;
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,0,'生产任务','01;2;1');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,0,'生产任务','01;2;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,1,'签发任务','10;1;1,2,3');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,2,'签发生产任务','11;1;1,2,3');
 
@@ -634,8 +643,8 @@ CREATE PROCEDURE `initConst`()
     delete from md_const where classic_id = 20;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,0,'无效','1;;;;;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,1,'备份','3;历史版本/{SrcFileNoExt}_{Time:yyyyMMddHHmmss}{Ext};1;;;');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,2,'校对','1;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};1;;;2');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,3,'审核','1;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};1;;;2');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,2,'校对','5;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};1;;;2');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,3,'审核','6;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};1;;;2');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,4,'提资','2;/{Project}/{Range2}/{IssuePath}/{Major}/{Version}/{TaskPath}/{SrcFile};1;;;3');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,5,'上传','4;/{Project}/{Range3}/{IssuePath}/{ProjectId}-{CompanyId}-{TaskId}-{SkyPid}-{OwnerUserId}/{SrcFile};2;;;5');
 
@@ -665,35 +674,37 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (15,1,'锁定',null);
 
     -- -- -- -- --
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,14,'存储节点类型','1.节点布尔属性，1-是否目录，2-是否项目，3-是否任务，4-是否设计文档，5-是否提资文档，6-是否历史版本;2.子目录类型;3-子文件类型');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,14,'存储节点类型','1.节点布尔属性，1-是否目录，2-是否项目，3-是否任务，4-是否设计文档，5-是否提资文档，6-是否历史版本;2.子目录类型;3.子文件类型;4.文件所属角色');
     delete from md_const where classic_id = 14;
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,0,'未知类型','000100;0;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,1,'设计文件','000100;0;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,2,'提资资料','000010;0;2');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,3,'历史版本','000001;0;3');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,4,'网站归档文件','000000;0;4');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,0,'未知类型','000100;;;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,1,'设计文件','000100;;;41');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,2,'提资资料','000010;;;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,3,'历史版本','000001;;;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,4,'网站归档文件','000000;;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,5,'提交校验文件','000100;;42');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,6,'提交审核文件','000100;;43');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,10,'未知类型目录','100000;10;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,11,'项目目录','110000;10;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,12,'任务目录','101000;10;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,13,'组织目录','100000;10;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,14,'通告目录','100000;10;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,15,'报销目录','100000;10;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,16,'备份目录','100001;10;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,17,'回收站目录','100000;10;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,18,'用户目录','100100;18;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,20,'设计目录','100100;23;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,21,'设计签发任务目录','101100;23;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,22,'设计生产任务目录','101100;23;1');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,11,'项目目录','110000;10;1;23');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,12,'任务目录','101000;10;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,13,'组织目录','100000;10;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,14,'通告目录','100000;10;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,15,'报销目录','100000;10;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,16,'备份目录','100001;10;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,17,'回收站目录','100000;10;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,18,'用户目录','100100;18;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,20,'设计目录','100100;23;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,21,'设计签发任务目录','101100;23;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,22,'设计生产任务目录','101100;23;1;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,23,'设计自定义目录','100100;23;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,30,'提资目录','100010;33;2');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,31,'提资任务目录','101010;33;2');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,32,'提资历史目录','100011;33;3');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,33,'提资自定义目录','100010;33;2');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,40,'档案目录','100000;10;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,41,'网站目录','100000;43;4');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,42,'网站归档目录','100000;43;4');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,50,'成果目录','100000;10;1');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,60,'设计依据目录','100000;10;1');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,30,'提资目录','100010;33;2;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,31,'提资任务目录','101010;33;2;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,32,'提资历史目录','100011;33;3;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,33,'提资自定义目录','100010;33;2;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,40,'档案目录','100000;10;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,41,'网站目录','100000;43;4;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,42,'网站归档目录','100000;43;4;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,50,'成果目录','100000;10;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,60,'设计依据目录','100000;10;1;');
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,11,'共享类型',null);
@@ -758,6 +769,7 @@ CREATE PROCEDURE `initConst`()
 
 
   END;
+call initConst();
 
 -- 建立创建视图的存储过程
 DROP PROCEDURE IF EXISTS updateViews;
@@ -859,7 +871,10 @@ BEGIN
         as attr_str,
       substring(web_role_type.extra,1,1) as is_project_role,
       substring(web_role_type.extra,2,1) as is_task_role,
-      substring(web_role_type.extra,3,1) as is_task_leader_role,
+      substring(web_role_type.extra,3,1) as is_task_leader,
+      substring(web_role_type.extra,4,1) as is_task_designer,
+      substring(web_role_type.extra,5,1) as is_task_checker,
+      substring(web_role_type.extra,6,1) as is_task_auditor,
       substring(web_role_type.extra,
                 char_length(substring_index(web_role_type.extra,';',1))+2,
                 char_length(substring_index(web_role_type.extra,';',2)) - char_length(substring_index(web_role_type.extra,';',1))-1)
@@ -867,7 +882,11 @@ BEGIN
       substring(web_role_type.extra,
                 char_length(substring_index(web_role_type.extra,';',2))+2,
                 char_length(substring_index(web_role_type.extra,';',3)) - char_length(substring_index(web_role_type.extra,';',2))-1)
-        as mytask_task_type
+        as mytask_task_type,
+      substring(web_role_type.extra,
+                char_length(substring_index(web_role_type.extra,';',3))+2,
+                char_length(substring_index(web_role_type.extra,';',4)) - char_length(substring_index(web_role_type.extra,';',3))-1)
+        as process_name
     from
       md_const web_role_type
     where
@@ -899,10 +918,16 @@ BEGIN
       substring(range_type.extra,
                 1,
                 char_length(substring_index(range_type.extra,';',1)))
-                         as node_type,
+                         as attr_str,
+      substring(range_type.extra,1,1) as is_root,
+      substring(range_type.extra,2,1) as is_show_all_task,
       substring(range_type.extra,
                 char_length(substring_index(range_type.extra,';',1))+2,
                 char_length(substring_index(range_type.extra,';',2)) - char_length(substring_index(range_type.extra,';',1))-1)
+                         as node_type,
+      substring(range_type.extra,
+                char_length(substring_index(range_type.extra,';',2))+2,
+                char_length(substring_index(range_type.extra,';',3)) - char_length(substring_index(range_type.extra,';',2))-1)
                          as sub_node_type
     from
       md_const range_type
@@ -931,7 +956,11 @@ BEGIN
       substring(node_type.extra,
                 char_length(substring_index(node_type.extra,';',2))+2,
                 char_length(substring_index(node_type.extra,';',3)) - char_length(substring_index(node_type.extra,';',2))-1)
-                         as sub_file_type
+                         as sub_file_type,
+      substring(node_type.extra,
+                char_length(substring_index(node_type.extra,';',3))+2,
+                char_length(substring_index(node_type.extra,';',4)) - char_length(substring_index(node_type.extra,';',3))-1)
+                         as owner_role_type
     from
       md_const node_type
     where
@@ -1087,18 +1116,6 @@ BEGIN
           and (task.task_type in (0,1,2))
       group by task.id;
 
-  -- -- 文件根节点额外属性
-  CREATE OR REPLACE VIEW `md_node_root` AS
-    select
-      project.id
-      ,group_concat(distinct member.account_id) as user_id_list
-    from
-      maoding_web_project project
-      inner join maoding_web_project_member member on (member.deleted = 0 and member.project_id = project.id)
-    where
-      (project.pstatus = '0')
-    group by project.id ;
-
   -- -- 文件节点视图与项目相关的部分
   CREATE OR REPLACE VIEW `md_node_project` AS
     select
@@ -1114,7 +1131,10 @@ BEGIN
       ifnull(project.update_by,project.create_by) as owner_user_id,
       project.update_by as last_modify_user_id,
       null as last_modify_role_id,
-      if(project.id is null,null,0) as file_length,
+      if(project.id is null,null,0) as read_only_file_length,
+      if(project.id is null,null,0) as writable_file_length,
+      null as read_only_file_md5,
+      null as writable_file_md5,
       null as range_id,
       node_type.is_directory,
       node_type.is_project,
@@ -1126,7 +1146,8 @@ BEGIN
       null as task_id,
       project.id as project_id,
       project.company_id as company_id,
-      project.id as root_id
+      project.id as root_id,
+      node_type.owner_role_type as owner_role_id
     from
       maoding_web_project project
       inner join md_type_node node_type on (node_type.type_id = 11)
@@ -1140,7 +1161,8 @@ BEGIN
       project.id AS pid,
       range_type.node_type as type_id,
       range_type.type_name as name,
-      concat('/',project.project_name,'/',range_type.type_name) as path,
+      concat('/',ifnull(project.project_name,'未知项目'),
+             '/',range_type.type_name) as path,
       unix_timestamp(ifnull(project.create_date,0)) as create_time_stamp,
       date_format(project.create_date,'%Y-%m-%d %T') as create_time_text,
       unix_timestamp(if(project.update_date is null,ifnull(project.create_date,0),project.update_date)) as last_modify_time_stamp,
@@ -1148,7 +1170,10 @@ BEGIN
       ifnull(project.update_by,project.create_by) as owner_user_id,
       project.update_by as last_modify_user_id,
       null as last_modify_role_id,
-      if(range_type.type_id is null,null,0) as file_length,
+      if(range_type.type_id is null,null,0) as read_only_file_length,
+      if(range_type.type_id is null,null,0) as writable_file_length,
+      null as read_only_file_md5,
+      null as writable_file_md5,
       range_type.type_id as range_id,
       node_type.is_directory,
       node_type.is_project,
@@ -1160,7 +1185,8 @@ BEGIN
       null as task_id,
       project.id as project_id,
       project.company_id as company_id,
-      project.id as root_id
+      project.id as root_id,
+      node_type.owner_role_type as owner_role_id
     from
       md_type_range range_type
       inner join maoding_web_project project on (project.pstatus = '0')
@@ -1175,7 +1201,9 @@ BEGIN
       concat(ifnull(task.pid,task.project_id),'-',range_type.type_id) AS pid,
       (range_type.node_type + web_task_type.node_type_offset) as type_id,
       task.task_name as name,
-      concat('/',project.project_name,'/',range_type.type_name,'/',task.path) as path,
+      concat('/',ifnull(project.project_name,'未知项目'),
+              '/',ifnull(range_type.type_name,'未知类别'),
+              '/',task.path) as path,
       unix_timestamp(ifnull(task.create_date,0)) as create_time_stamp,
       date_format(task.create_date,'%Y-%m-%d %T') as create_time_text,
       unix_timestamp(if(task.update_date is null,ifnull(task.create_date,0),task.update_date)) as last_modify_time_stamp,
@@ -1183,7 +1211,10 @@ BEGIN
       ifnull(task.update_by,task.create_by) as owner_user_id,
       task.update_by as last_modify_user_id,
       null as last_modify_role_id,
-      if(task.id is null,null,0) as file_length,
+      if(task.id is null,null,0) as read_only_file_length,
+      if(task.id is null,null,0) as writable_file_length,
+      null as read_only_file_md5,
+      null as writable_file_md5,
       range_type.type_id as range_id,
       node_type.is_directory,
       node_type.is_project,
@@ -1195,14 +1226,14 @@ BEGIN
       task.id as task_id,
       task.project_id,
       task.company_id,
-      task.project_id as root_id
+      task.project_id as root_id,
+      node_type.owner_role_type as owner_role_id
     from
       md_web_task task
       inner join maoding_web_project project on (task.project_id = project.id)
       inner join md_type_web_task web_task_type on (task.type_id = web_task_type.type_id)
       inner join md_type_range range_type on (find_in_set(range_type.type_id,web_task_type.in_range))
-      inner join md_type_node node_type on (node_type.type_id = (range_type.node_type + web_task_type.node_type_offset))
-    where (task.type_id in (0,1,2));
+      inner join md_type_node node_type on (node_type.type_id = (range_type.node_type + web_task_type.node_type_offset));
 
   -- -- 文件节点视图与文件树相关部分
   CREATE OR REPLACE VIEW `md_node_storage` AS
@@ -1215,7 +1246,10 @@ BEGIN
       storage_tree.node_name as name,
       if(storage_tree.task_id is null,
          concat(storage_tree.path),
-         concat('/',project.project_name,'/',range_type.type_name,'/',task.path,'/',storage_tree.path)) as path,
+         concat('/',ifnull(project.project_name,'未知项目'),
+              '/',ifnull(range_type.type_name,'未知类别'),
+              '/',ifnull(task.path,'未知任务'),
+              '/',storage_tree.path)) as path,
       unix_timestamp(ifnull(storage_tree.create_time,0)) as create_time_stamp,
       date_format(storage_tree.create_time,'%Y-%m-%d %T') as create_time_text,
       unix_timestamp(ifnull(storage_tree.last_modify_time,0)) as last_modify_time_stamp,
@@ -1223,7 +1257,10 @@ BEGIN
       storage_tree.owner_user_id,
       storage_tree.last_modify_user_id,
       storage_tree.last_modify_role_id,
-      storage_tree.file_length as file_length,
+      ifnull(file_list.read_only_file_length,0) as read_only_file_length,
+      ifnull(file_list.writable_file_length,0) as writable_file_length,
+      file_list.read_only_file_md5,
+      file_list.writable_file_md5,
       range_type.type_id as range_id,
       node_type.is_directory,
       node_type.is_project,
@@ -1235,11 +1272,13 @@ BEGIN
       task.id as task_id,
       task.project_id,
       task.company_id,
-      task.project_id as root_id
+      task.project_id as root_id,
+      node_type.owner_role_type as owner_role_id
     from
       md_tree_storage storage_tree
       inner join md_type_node node_type on (storage_tree.type_id = node_type.type_id)
       inner join md_type_range range_type on (find_in_set(node_type.type_id,range_type.sub_node_type))
+      left join md_list_storage_file file_list on (storage_tree.id = file_list.id)
       left join md_web_task task on (storage_tree.task_id = task.id)
       left join maoding_web_project project on (task.project_id = project.id)
     where
@@ -1280,7 +1319,8 @@ BEGIN
       old_node.task_id,
       old_node.project_id,
       old_node.company_id,
-      old_node.project_id as root_id
+      old_node.project_id as root_id,
+      node_type.owner_role_type as owner_role_id
     from
       maoding_web_project_sky_drive old_node
       inner join md_type_sky_drive old_node_type on (old_node.type = old_node_type.type_id)
@@ -1334,9 +1374,51 @@ BEGIN
           web_role_type.attr_str,
           web_role_type.is_project_role,
           web_role_type.is_task_role,
-          web_role_type.is_task_leader_role,
+          web_role_type.is_task_leader,
+          web_role_type.is_task_designer,
+          web_role_type.is_task_checker,
+          web_role_type.is_task_auditor,
           if(web_role_type.type_id is null,null,0) as is_company_role,
-          if(web_role_type.is_task_leader_role,
+          if(project.status = '0',0,1) as is_complete,
+          task_role.account_id as user_id,
+          task_role.project_id as project_id,
+          null as task_id,
+          task_role.company_id as company_id,
+          unix_timestamp(ifnull(task_role.create_date,0)) as create_time_stamp,
+          date_format(task_role.create_date,'%y-%m-%d %T') as create_time_text,
+          unix_timestamp(if(task_role.update_date is null,ifnull(task_role.create_date,0),task_role.update_date)) as last_modify_time_stamp,
+          date_format(ifnull(task_role.update_date,task_role.create_date),'%y-%m-%d %T') as last_modify_time_text,
+          account.user_name,
+          project.project_name,
+          null as task_name,
+          company.company_name
+      from
+          maoding_web_project_member task_role
+          inner join md_type_web_role_project web_role_type on (task_role.member_type = web_role_type.type_id and web_role_type.is_project_role = 1)
+          inner join maoding_web_account account on (account.status = '0' and task_role.account_id = account.id)
+          inner join maoding_web_project project on (project.pstatus = '0' and task_role.project_id = project.id)
+          inner join maoding_web_company company on (company.status = '0' and task_role.company_id = company.id)
+      where
+          task_role.deleted = 0;
+
+  -- -- web任务角色视图
+  CREATE OR REPLACE VIEW `md_web_role_task` AS
+      select
+          concat(web_role_type.type_id,'-',if(web_role_type.is_project_role,task_role.project_id,
+                                              ifnull(task_role.node_id,task_role.target_id)),'-',task_role.account_id) as id,
+          task_role.id as web_role_id,
+          web_role_type.type_id,
+          web_role_type.type_name,
+          web_role_type.role_type,
+          web_role_type.attr_str,
+          web_role_type.is_project_role,
+          web_role_type.is_task_role,
+          web_role_type.is_task_leader,
+          web_role_type.is_task_designer,
+          web_role_type.is_task_checker,
+          web_role_type.is_task_auditor,
+          if(web_role_type.type_id is null,null,0) as is_company_role,
+          if(web_role_type.is_task_leader,
              task.complete_date is not null or mytask.complete_date is not null,
              mytask.complete_date is not null) as is_complete,
           task_role.account_id as user_id,
@@ -1353,13 +1435,17 @@ BEGIN
           company.company_name
       from
           maoding_web_project_member task_role
-          inner join md_type_web_role_project web_role_type on (task_role.member_type = web_role_type.type_id)
-          inner join maoding_web_account account on (task_role.account_id = account.id)
-          inner join maoding_web_project project on (task_role.project_id = project.id)
-          inner join maoding_web_project_task task on (ifnull(task_role.node_id,task_role.target_id) = task.id)
-          inner join maoding_web_company company on (task_role.company_id = company.id)
-          inner join maoding_web_my_task mytask on (mytask.target_id = task.id
-                                                      and find_in_set(mytask.task_type,web_role_type.mytask_task_type))
+          inner join md_type_web_role_project web_role_type on (task_role.member_type = web_role_type.type_id and web_role_type.is_task_role = 1)
+          inner join maoding_web_account account on (account.status = '0' and task_role.account_id = account.id)
+          inner join maoding_web_project project on (project.pstatus = '0' and task_role.project_id = project.id)
+          inner join maoding_web_project_task task on (task.task_status = '0' and (task_role.node_id = task.id or task_role.target_id = task.id))
+          inner join maoding_web_company company on (company.status = '0' and task_role.company_id = company.id)
+          left join maoding_web_project_process_node process on (process.status = '0'
+                                                                  and process.process_id = task.id
+                                                                  and process.company_user_id = task_role.company_user_id
+                                                                  and process.node_name = web_role_type.process_name)
+          left join maoding_web_my_task mytask on (param4 = '0'
+                                                      and mytask.target_id = process.id)
       where
           task_role.deleted = 0;
 
@@ -1376,7 +1462,10 @@ BEGIN
       if(web_role_type.type_id is null,null,'00') as attr_str,
       if(web_role_type.type_id is null,null,0) as is_project_role,
       if(web_role_type.type_id is null,null,0) as is_task_role,
-      if(web_role_type.type_id is null,null,0) as is_task_leader_role,
+      if(web_role_type.type_id is null,null,0) as is_task_leader,
+      if(web_role_type.type_id is null,null,0) as is_task_designer,
+      if(web_role_type.type_id is null,null,0) as is_task_checker,
+      if(web_role_type.type_id is null,null,0) as is_task_auditor,
       if(web_role_type.type_id is null,null,1) as is_company_role,
       if(web_role_type.type_id is null,null,0) as is_complete,
       company_role.user_id,
@@ -1402,7 +1491,7 @@ BEGIN
       inner join maoding_web_account account on (company_role.user_id = account.id)
       inner join maoding_web_company company on (company_role.company_id = company.id);
 
-  -- -- web公司角色视图
+  -- -- web角色视图
   CREATE OR REPLACE VIEW `md_web_role` AS
     select * from md_web_role_project
     union all
@@ -1424,6 +1513,7 @@ BEGIN
     where web_permission_group.classic_id = 28
     order by web_permission_group.code_id,find_in_set(web_permission.type_id,web_permission_group.extra);
 END;
+call updateViews();
 
 -- 建立重置索引存储过程
 DROP PROCEDURE IF EXISTS `createIndex`;
@@ -1484,6 +1574,7 @@ BEGIN
 	end while;
 	close curTable;
 END;
+-- call createIndex();
 
 -- 建立备份数据存储过程
 DROP PROCEDURE IF EXISTS `backupData`;
@@ -1570,7 +1661,6 @@ BEGIN
 	close curTable;
 END;
 
-call updateTables();
-call updateViews();
-call initConst();
--- call createIndex();
+
+
+
