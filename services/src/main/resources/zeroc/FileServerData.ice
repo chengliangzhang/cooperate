@@ -12,7 +12,7 @@ module zeroc {
     struct CommitRequestDTO {
         string actionTypeId; //提交操作id
 
-        ["deprecate"] string pid; //提交到的父节点id
+        string pid; //提交到的skydrive上的父节点id
         ["deprecate"] string path; //要产生的文件路径
 
         ["deprecate"] string userId; //提交目标用户id
@@ -25,6 +25,11 @@ module zeroc {
         string serverTypeId; //提交到的文件服务器类型
         string serverAddress; //提交到的文件服务器地址
         string baseDir; //提交到的版本存放的服务器空间
+
+        //文件校审信息
+        bool isPassDesign; //已提交校审
+        bool isPassCheck; //通过校验
+        bool isPassAudit; //通过审核
     };
 
     ["java:getset","clr:property"]

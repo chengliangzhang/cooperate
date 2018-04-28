@@ -22,6 +22,9 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageService extends com.zeroc.Ice.Object
 {
+    java.util.List<CANodeDTO> listCANode(QueryCANodeDTO query, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
     EmbedElementDTO createEmbedElement(UpdateElementDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
@@ -127,6 +130,21 @@ public interface StorageService extends com.zeroc.Ice.Object
     static String ice_staticId()
     {
         return "::zeroc::StorageService";
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listCANode(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        QueryCANodeDTO iceP_query;
+        iceP_query = QueryCANodeDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<CANodeDTO> ret = obj.listCANode(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CANodeListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_createEmbedElement(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -586,6 +604,7 @@ public interface StorageService extends com.zeroc.Ice.Object
         "ice_isA",
         "ice_ping",
         "listAnnotate",
+        "listCANode",
         "listChild",
         "listChildren",
         "listEmbedElement",
@@ -691,53 +710,57 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 19:
             {
-                return _iceD_listChild(this, in, current);
+                return _iceD_listCANode(this, in, current);
             }
             case 20:
             {
-                return _iceD_listChildren(this, in, current);
+                return _iceD_listChild(this, in, current);
             }
             case 21:
             {
-                return _iceD_listEmbedElement(this, in, current);
+                return _iceD_listChildren(this, in, current);
             }
             case 22:
             {
-                return _iceD_listNode(this, in, current);
+                return _iceD_listEmbedElement(this, in, current);
             }
             case 23:
             {
-                return _iceD_listNodeFile(this, in, current);
+                return _iceD_listNode(this, in, current);
             }
             case 24:
             {
-                return _iceD_listOldNode(this, in, current);
+                return _iceD_listNodeFile(this, in, current);
             }
             case 25:
             {
-                return _iceD_listRoot(this, in, current);
+                return _iceD_listOldNode(this, in, current);
             }
             case 26:
             {
-                return _iceD_summaryNodeLength(this, in, current);
+                return _iceD_listRoot(this, in, current);
             }
             case 27:
             {
-                return _iceD_updateAnnotate(this, in, current);
+                return _iceD_summaryNodeLength(this, in, current);
             }
             case 28:
             {
-                return _iceD_updateEmbedElement(this, in, current);
+                return _iceD_updateAnnotate(this, in, current);
             }
             case 29:
             {
-                return _iceD_updateNode(this, in, current);
+                return _iceD_updateEmbedElement(this, in, current);
             }
             case 30:
             {
-                return _iceD_updateNodeFile(this, in, current);
+                return _iceD_updateNode(this, in, current);
             }
             case 31:
+            {
+                return _iceD_updateNodeFile(this, in, current);
+            }
+            case 32:
             {
                 return _iceD_updateNodeSimple(this, in, current);
             }

@@ -23,6 +23,11 @@ module zeroc {
         string companyId; //公司编码
         string companyName; //公司名称
 
+        long taskStartTimeStamp; //任务启动时间
+        string taskStartTimeText; //任务启动时间文字
+        long taskEndTimeStamp; //任务结束时间
+        string taskEndTimeText; //任务结束时间文字
+
         //通用属性
         long createTimeStamp; //注解建立时间
         string createTimeText; //注解建立时间文字
@@ -33,7 +38,7 @@ module zeroc {
 
     ["java:getset","clr:property"]
     struct LoginDTO { //登录信息
-        string accountId; //用户名
+        string accountId; //用户id
         string encryptPassword; //密码（已进行过加密算法）
         bool isRemember; //是否记住
 

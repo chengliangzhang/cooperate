@@ -95,6 +95,40 @@ public class NodeFileDTO implements java.lang.Cloneable,
         this.mainFileId = mainFileId;
     }
 
+    public boolean isPassCheck;
+
+    public boolean getIsPassCheck()
+    {
+        return isPassCheck;
+    }
+
+    public void setIsPassCheck(boolean isPassCheck)
+    {
+        this.isPassCheck = isPassCheck;
+    }
+
+    public boolean isIsPassCheck()
+    {
+        return isPassCheck;
+    }
+
+    public boolean isPassAudit;
+
+    public boolean getIsPassAudit()
+    {
+        return isPassAudit;
+    }
+
+    public void setIsPassAudit(boolean isPassAudit)
+    {
+        this.isPassAudit = isPassAudit;
+    }
+
+    public boolean isIsPassAudit()
+    {
+        return isPassAudit;
+    }
+
     public String serverTypeId;
 
     public String getServerTypeId()
@@ -196,7 +230,7 @@ public class NodeFileDTO implements java.lang.Cloneable,
         this.writableMirrorKey = "";
     }
 
-    public NodeFileDTO(String id, String fileTypeId, String fileVersion, String fileChecksum, String majorTypeId, String mainFileId, String serverTypeId, String serverAddress, String baseDir, String readOnlyKey, String writableKey, String readOnlyMirrorKey, String writableMirrorKey)
+    public NodeFileDTO(String id, String fileTypeId, String fileVersion, String fileChecksum, String majorTypeId, String mainFileId, boolean isPassCheck, boolean isPassAudit, String serverTypeId, String serverAddress, String baseDir, String readOnlyKey, String writableKey, String readOnlyMirrorKey, String writableMirrorKey)
     {
         this.id = id;
         this.fileTypeId = fileTypeId;
@@ -204,6 +238,8 @@ public class NodeFileDTO implements java.lang.Cloneable,
         this.fileChecksum = fileChecksum;
         this.majorTypeId = majorTypeId;
         this.mainFileId = mainFileId;
+        this.isPassCheck = isPassCheck;
+        this.isPassAudit = isPassAudit;
         this.serverTypeId = serverTypeId;
         this.serverAddress = serverAddress;
         this.baseDir = baseDir;
@@ -268,6 +304,14 @@ public class NodeFileDTO implements java.lang.Cloneable,
                 {
                     return false;
                 }
+            }
+            if(this.isPassCheck != r.isPassCheck)
+            {
+                return false;
+            }
+            if(this.isPassAudit != r.isPassAudit)
+            {
+                return false;
             }
             if(this.serverTypeId != r.serverTypeId)
             {
@@ -335,6 +379,8 @@ public class NodeFileDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileChecksum);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainFileId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassCheck);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassAudit);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverAddress);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, baseDir);
@@ -367,6 +413,8 @@ public class NodeFileDTO implements java.lang.Cloneable,
         ostr.writeString(this.fileChecksum);
         ostr.writeString(this.majorTypeId);
         ostr.writeString(this.mainFileId);
+        ostr.writeBool(this.isPassCheck);
+        ostr.writeBool(this.isPassAudit);
         ostr.writeString(this.serverTypeId);
         ostr.writeString(this.serverAddress);
         ostr.writeString(this.baseDir);
@@ -384,6 +432,8 @@ public class NodeFileDTO implements java.lang.Cloneable,
         this.fileChecksum = istr.readString();
         this.majorTypeId = istr.readString();
         this.mainFileId = istr.readString();
+        this.isPassCheck = istr.readBool();
+        this.isPassAudit = istr.readBool();
         this.serverTypeId = istr.readString();
         this.serverAddress = istr.readString();
         this.baseDir = istr.readString();
@@ -445,5 +495,5 @@ public class NodeFileDTO implements java.lang.Cloneable,
 
     private static final NodeFileDTO _nullMarshalValue = new NodeFileDTO();
 
-    public static final long serialVersionUID = -775581382L;
+    public static final long serialVersionUID = 537888817L;
 }

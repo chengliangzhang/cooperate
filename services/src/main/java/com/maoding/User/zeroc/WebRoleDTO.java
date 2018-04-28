@@ -177,6 +177,54 @@ public class WebRoleDTO implements java.lang.Cloneable,
         this.companyName = companyName;
     }
 
+    public long taskStartTimeStamp;
+
+    public long getTaskStartTimeStamp()
+    {
+        return taskStartTimeStamp;
+    }
+
+    public void setTaskStartTimeStamp(long taskStartTimeStamp)
+    {
+        this.taskStartTimeStamp = taskStartTimeStamp;
+    }
+
+    public String taskStartTimeText;
+
+    public String getTaskStartTimeText()
+    {
+        return taskStartTimeText;
+    }
+
+    public void setTaskStartTimeText(String taskStartTimeText)
+    {
+        this.taskStartTimeText = taskStartTimeText;
+    }
+
+    public long taskEndTimeStamp;
+
+    public long getTaskEndTimeStamp()
+    {
+        return taskEndTimeStamp;
+    }
+
+    public void setTaskEndTimeStamp(long taskEndTimeStamp)
+    {
+        this.taskEndTimeStamp = taskEndTimeStamp;
+    }
+
+    public String taskEndTimeText;
+
+    public String getTaskEndTimeText()
+    {
+        return taskEndTimeText;
+    }
+
+    public void setTaskEndTimeText(String taskEndTimeText)
+    {
+        this.taskEndTimeText = taskEndTimeText;
+    }
+
     public long createTimeStamp;
 
     public long getCreateTimeStamp()
@@ -237,11 +285,13 @@ public class WebRoleDTO implements java.lang.Cloneable,
         this.taskName = "";
         this.companyId = "";
         this.companyName = "";
+        this.taskStartTimeText = "";
+        this.taskEndTimeText = "";
         this.createTimeText = "";
         this.lastModifyTimeText = "";
     }
 
-    public WebRoleDTO(String id, String webRoleId, String typeId, String typeName, boolean isTaskDesigner, boolean isComplete, String projectId, String projectName, String taskId, String taskName, String companyId, String companyName, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText)
+    public WebRoleDTO(String id, String webRoleId, String typeId, String typeName, boolean isTaskDesigner, boolean isComplete, String projectId, String projectName, String taskId, String taskName, String companyId, String companyName, long taskStartTimeStamp, String taskStartTimeText, long taskEndTimeStamp, String taskEndTimeText, long createTimeStamp, String createTimeText, long lastModifyTimeStamp, String lastModifyTimeText)
     {
         this.id = id;
         this.webRoleId = webRoleId;
@@ -255,6 +305,10 @@ public class WebRoleDTO implements java.lang.Cloneable,
         this.taskName = taskName;
         this.companyId = companyId;
         this.companyName = companyName;
+        this.taskStartTimeStamp = taskStartTimeStamp;
+        this.taskStartTimeText = taskStartTimeText;
+        this.taskEndTimeStamp = taskEndTimeStamp;
+        this.taskEndTimeText = taskEndTimeText;
         this.createTimeStamp = createTimeStamp;
         this.createTimeText = createTimeText;
         this.lastModifyTimeStamp = lastModifyTimeStamp;
@@ -353,6 +407,28 @@ public class WebRoleDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.taskStartTimeStamp != r.taskStartTimeStamp)
+            {
+                return false;
+            }
+            if(this.taskStartTimeText != r.taskStartTimeText)
+            {
+                if(this.taskStartTimeText == null || r.taskStartTimeText == null || !this.taskStartTimeText.equals(r.taskStartTimeText))
+                {
+                    return false;
+                }
+            }
+            if(this.taskEndTimeStamp != r.taskEndTimeStamp)
+            {
+                return false;
+            }
+            if(this.taskEndTimeText != r.taskEndTimeText)
+            {
+                if(this.taskEndTimeText == null || r.taskEndTimeText == null || !this.taskEndTimeText.equals(r.taskEndTimeText))
+                {
+                    return false;
+                }
+            }
             if(this.createTimeStamp != r.createTimeStamp)
             {
                 return false;
@@ -398,6 +474,10 @@ public class WebRoleDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskStartTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskStartTimeText);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskEndTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskEndTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeText);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
@@ -433,6 +513,10 @@ public class WebRoleDTO implements java.lang.Cloneable,
         ostr.writeString(this.taskName);
         ostr.writeString(this.companyId);
         ostr.writeString(this.companyName);
+        ostr.writeLong(this.taskStartTimeStamp);
+        ostr.writeString(this.taskStartTimeText);
+        ostr.writeLong(this.taskEndTimeStamp);
+        ostr.writeString(this.taskEndTimeText);
         ostr.writeLong(this.createTimeStamp);
         ostr.writeString(this.createTimeText);
         ostr.writeLong(this.lastModifyTimeStamp);
@@ -453,6 +537,10 @@ public class WebRoleDTO implements java.lang.Cloneable,
         this.taskName = istr.readString();
         this.companyId = istr.readString();
         this.companyName = istr.readString();
+        this.taskStartTimeStamp = istr.readLong();
+        this.taskStartTimeText = istr.readString();
+        this.taskEndTimeStamp = istr.readLong();
+        this.taskEndTimeText = istr.readString();
         this.createTimeStamp = istr.readLong();
         this.createTimeText = istr.readString();
         this.lastModifyTimeStamp = istr.readLong();
@@ -511,5 +599,5 @@ public class WebRoleDTO implements java.lang.Cloneable,
 
     private static final WebRoleDTO _nullMarshalValue = new WebRoleDTO();
 
-    public static final long serialVersionUID = -824384428L;
+    public static final long serialVersionUID = -1277833836L;
 }

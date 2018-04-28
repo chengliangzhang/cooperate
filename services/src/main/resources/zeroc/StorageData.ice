@@ -4,51 +4,56 @@
 [["java:package:com.maoding.Storage"]]
 module zeroc {
     ["java:getset","clr:property"]
+    struct CANodeDTO { //节点信息（目录和文件通用信息）
+        string id; //节点编号（树节点编号）
+        string name; //节点名称（树节点名称或文件名称）
+        long createTimeStamp; //节点建立时间
+        long lastModifyTimeStamp; //节点最后修改时间
+
+        string roleName; //在此文档上担任的角色名称
+
+        string projectId; //节点所属项目id
+        string projectName; //项目名称
+        string taskId; //节点所属生产任务id
+        string taskName; //任务名称
+        string ownerUserId; //节点所有者用户id
+        string ownerName; //节点所有者名称
+        string path; //节点全路径
+        string fileMd5; //MD5
+        long fileLength; //节点长度
+        bool isPassDesign; //已经提交过校审
+        bool isPassCheck; //通过校验
+        bool isPassAudit; //通过审核
+    };
+    ["java:type:java.util.ArrayList<CANodeDTO>"] sequence<CANodeDTO> CANodeList;
+
+    ["java:getset","clr:property"]
     struct SimpleNodeDTO { //节点信息（目录和文件通用信息）
         string id; //节点编号（树节点编号）
         string pid; //父节点编号
-        short typeId; //节点类别编号
+        string typeId; //节点类别编号
         string name; //节点名称（树节点名称或文件名称）
         long createTimeStamp; //节点建立时间
-        string createTimeText; //节点建立时间文字
         long lastModifyTimeStamp; //节点最后修改时间
-        string lastModifyTimeText; //节点最后修改时间文字
-        long readOnlyFileLength; //只读节点长度
-        long writableFileLength; //可写节点长度
-        string readOnlyFileMd5; //只读节点MD5
-        string writableFileMd5; //可写节点MD5
 
         bool isDirectory; //节点是否目录
-        bool isProject; //节点是否项目目录
-        bool isTask; //节点是否任务目录
-        bool isDesign; //节点是否设计资料
-        bool isCommit; //节点是否提资资料
-        bool isHistory; //节点是否历史版本
 
         string projectId; //节点所属项目id
-        string rangeId; //节点所属分类id
-        string issueId; //节点所属签发任务id
         string taskId; //节点所属生产任务id
-        string companyId; //节点所属组织id
         string ownerUserId; //节点所有者用户id
-        string ownerRoleId; //节点所有者职责id
-        string lastModifyRoleId; //最后操作者职责id
+        string path; //节点全路径
+        string fileMd5; //MD5
+        long fileLength; //节点长度
+        string ownerName; //节点所有者名称
+        string projectName; //项目名称
+        string taskName; //任务名称
+        bool isPassDesign; //已经提交过校审
+        bool isPassCheck; //通过校验
+        bool isPassAudit; //通过审核
 
         //即时属性
         bool isReadOnly; //节点是否只读
-        string fileMd5; //MD5
-        long fileLength; //节点长度
-
-        //兼容属性
-        ["deprecate:移入FullNodeDTO"] string path; //节点全路径
-        ["deprecate:移入FullNodeDTO"] string projectName; //节点所属项目名称
-        ["deprecate:移入FullNodeDTO"] string issueName; //节点所属签发任务名称
-        ["deprecate:移入FullNodeDTO"] string taskName; //节点所属生产任务名称
-        ["deprecate:移入FullNodeDTO"] string companyName; //节点生产组织名称
-        ["deprecate:移入FullNodeDTO"] string classicName; //节点所属分类名称
-        ["deprecate:移入FullNodeDTO"] string storagePath; //节点相对路径
-        ["deprecate:移入FullNodeDTO"] string ownerName; //节点所有者名称
-		["deprecate:更换为rangeId"] string classicId; //节点所属分类id
+        bool canCreateChild; //节点可以创建子节点
     };
     ["java:type:java.util.ArrayList<SimpleNodeDTO>"] sequence<SimpleNodeDTO> SimpleNodeList;
 
@@ -127,6 +132,10 @@ module zeroc {
         string fileChecksum; //文件校验和
         string majorTypeId; //文件所属专业id
         string mainFileId; //主文件id
+
+        //文件类型布尔属性
+        bool isPassCheck; //通过校验
+        bool isPassAudit; //通过审核
 
         //实际文件存储位置
         string serverTypeId; //文件服务器类型id
@@ -269,14 +278,16 @@ module zeroc {
         //文件节点信息
         string fileTypeId; //目标文件类型Id
         string fileVersion; //文件版本号
-        ["deprecate"] string fileChecksum; //文件校验和
         string majorTypeId; //文件所属专业编号
         string readOnlyKey; //只读版本在文件服务器上的存储名称
         long readOnlyFileLength; //只读版本文件长度
         string readOnlyFileMd5; //只读版本校验和
         string writableKey; //可写版本在文件服务器上的存储名称
-        long writableFileLength; //可写版本文件长度
-        string writableFileMd5; //可写版本校验和
+
+        //文件校审信息
+        bool isPassDesign; //已提交过校审
+        bool isPassCheck; //通过校验
+        bool isPassAudit; //通过审核
 
         //镜像信息
         string mainFileId; //源文件编号
@@ -289,6 +300,11 @@ module zeroc {
         //通用更改申请
         string lastModifyUserId; //最后编辑用户id
         string lastModifyRoleId; //最后编辑角色id
+
+        //兼容属性
+        ["deprecate"] long writableFileLength; //可写版本文件长度
+        ["deprecate"] string writableFileMd5; //可写版本校验和
+        ["deprecate"] string fileChecksum; //文件校验和
     };
 
     ["java:getset","clr:property"]
@@ -307,17 +323,29 @@ module zeroc {
         string lastModifyRoleId; //最后更改者职责id
         string accountId; //查询者用户id
         string parentPath; //父路径
+        string notTypeId; //过滤的节点类型
+        string passDesign; //已提交校审标志
+        string passCheck; //已通过校验标志
+        string passAudit; //已通过审核标志
+        string directoryMode; //是否目录
 
         string fuzzyId; //模糊匹配id字符串
         string fuzzyPath; //模糊匹配路径
+    };
 
-        ["deprecate:使用rangeId代替"] string classicId; //节点所属分类类型
-        ["deprecate"] string storagePath; //相对路径
-        ["deprecate"] string parentStoragePath; //父路径，针对树节点存储的相对路径
-        ["deprecate"] string fuzzyStoragePath; //模糊匹配路径，针对树节点存储的相对路径
-        ["deprecate:使用lastModifyRoleId代替"] string ownerRoleId; //节点拥有者职责id
-
-        ["deprecate"] string userId; //查询者用户id
+    ["java:getset","clr:property"]
+    struct QueryCANodeDTO { //节点查询申请，每个属性都可以是逗号分隔的多个数据
+        string rangeId; //节点所属分类类型
+        string notTypeId; //过滤的节点类型
+        string passDesign; //已提交校审标志
+        string passCheck; //已通过校验标志
+        string passAudit; //已通过审核标志
+        string userId; //用户编号
+        string taskLeaderMode; //用户是否任务负责人
+        string designerMode; //用户是否设计
+        string checkerMode; //用户是否校对
+        string auditorMode; //用户是否审核
+        string webRoleTypeId; //用户是否审核
     };
 
     ["java:getset","clr:property"]
@@ -383,6 +411,11 @@ module zeroc {
         string writableKey; //可写版本在文件服务器上的存储名称
         long writableFileLength; //可写版本文件长度
         string writableFileMd5; //可写版本校验和
+
+        //文件校审信息
+        bool isPassDesign; //已提交过校审
+        bool isPassCheck; //通过校验
+        bool isPassAudit; //通过审核
 
         //镜像信息
         short mirrorTypeId; //镜像文件服务器类型

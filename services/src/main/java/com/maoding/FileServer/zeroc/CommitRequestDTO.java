@@ -35,22 +35,13 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         this.actionTypeId = actionTypeId;
     }
 
-    /**
-     **/
-    @Deprecated
     public String pid;
 
-    /**
-     **/
-    @Deprecated
     public String getPid()
     {
         return pid;
     }
 
-    /**
-     **/
-    @Deprecated
     public void setPid(String pid)
     {
         this.pid = pid;
@@ -194,6 +185,57 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         this.baseDir = baseDir;
     }
 
+    public boolean isPassDesign;
+
+    public boolean getIsPassDesign()
+    {
+        return isPassDesign;
+    }
+
+    public void setIsPassDesign(boolean isPassDesign)
+    {
+        this.isPassDesign = isPassDesign;
+    }
+
+    public boolean isIsPassDesign()
+    {
+        return isPassDesign;
+    }
+
+    public boolean isPassCheck;
+
+    public boolean getIsPassCheck()
+    {
+        return isPassCheck;
+    }
+
+    public void setIsPassCheck(boolean isPassCheck)
+    {
+        this.isPassCheck = isPassCheck;
+    }
+
+    public boolean isIsPassCheck()
+    {
+        return isPassCheck;
+    }
+
+    public boolean isPassAudit;
+
+    public boolean getIsPassAudit()
+    {
+        return isPassAudit;
+    }
+
+    public void setIsPassAudit(boolean isPassAudit)
+    {
+        this.isPassAudit = isPassAudit;
+    }
+
+    public boolean isIsPassAudit()
+    {
+        return isPassAudit;
+    }
+
     public CommitRequestDTO()
     {
         this.actionTypeId = "";
@@ -210,7 +252,7 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         this.baseDir = "";
     }
 
-    public CommitRequestDTO(String actionTypeId, String pid, String path, String userId, String ownerUserId, String fileVersion, String majorId, String majorName, String remark, String serverTypeId, String serverAddress, String baseDir)
+    public CommitRequestDTO(String actionTypeId, String pid, String path, String userId, String ownerUserId, String fileVersion, String majorId, String majorName, String remark, String serverTypeId, String serverAddress, String baseDir, boolean isPassDesign, boolean isPassCheck, boolean isPassAudit)
     {
         this.actionTypeId = actionTypeId;
         this.pid = pid;
@@ -224,6 +266,9 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         this.serverTypeId = serverTypeId;
         this.serverAddress = serverAddress;
         this.baseDir = baseDir;
+        this.isPassDesign = isPassDesign;
+        this.isPassCheck = isPassCheck;
+        this.isPassAudit = isPassAudit;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -324,6 +369,18 @@ public class CommitRequestDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.isPassDesign != r.isPassDesign)
+            {
+                return false;
+            }
+            if(this.isPassCheck != r.isPassCheck)
+            {
+                return false;
+            }
+            if(this.isPassAudit != r.isPassAudit)
+            {
+                return false;
+            }
 
             return true;
         }
@@ -347,6 +404,9 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverAddress);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, baseDir);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassDesign);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassCheck);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassAudit);
         return h_;
     }
 
@@ -378,6 +438,9 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         ostr.writeString(this.serverTypeId);
         ostr.writeString(this.serverAddress);
         ostr.writeString(this.baseDir);
+        ostr.writeBool(this.isPassDesign);
+        ostr.writeBool(this.isPassCheck);
+        ostr.writeBool(this.isPassAudit);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -394,6 +457,9 @@ public class CommitRequestDTO implements java.lang.Cloneable,
         this.serverTypeId = istr.readString();
         this.serverAddress = istr.readString();
         this.baseDir = istr.readString();
+        this.isPassDesign = istr.readBool();
+        this.isPassCheck = istr.readBool();
+        this.isPassAudit = istr.readBool();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CommitRequestDTO v)
@@ -448,5 +514,5 @@ public class CommitRequestDTO implements java.lang.Cloneable,
 
     private static final CommitRequestDTO _nullMarshalValue = new CommitRequestDTO();
 
-    public static final long serialVersionUID = -1842319950L;
+    public static final long serialVersionUID = 1638307431L;
 }

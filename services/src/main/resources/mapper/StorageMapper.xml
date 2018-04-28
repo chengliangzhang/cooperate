@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maoding.Storage.Dao.StorageDao">
-    <select id="summaryNodeLength" parameterType="com.maoding.Storage.zeroc.QuerySummaryDTO" resultType="java.lang.Long">
-        select sum(storage_tree.file_length)
-        from md_tree_storage storage_tree
-        inner join md_node_storage node on (storage_tree.id = substring(node.id,1,32))
-        <where>
-            storage_tree.deleted = 0
-            <if test="companyId != null">
-                and (node.company_id = #{companyId})
-            </if>
-            <if test="projectId != null">
-                and (node.project_id = #{projectId})
-            </if>
-            <if test="ownerUserId != null">
-                and (node.owner_user_id = #{ownerUserId})
-            </if>
-        </where>
-    </select>
-
     <sql id="ConditionForQueryNode">
         <if test="id != null">
             and find_in_set(node.id,#{id})
@@ -41,6 +23,9 @@
         </if>
         <if test="typeId != null">
             and find_in_set(node.type_id,#{typeId})
+        </if>
+        <if test="notTypeId != null">
+            and not find_in_set(node.type_id,#{notTypeId})
         </if>
         <if test="projectId != null">
             and find_in_set(node.project_id,#{projectId})
@@ -66,10 +51,138 @@
         <if test="parentPath != null">
             and (node.path like concat(#{parentPath},'/%'))
         </if>
+        <if test="passDesign != null">
+            and find_in_set(node.is_pass_design,#{passDesign})
+        </if>
+        <if test="passCheck != null">
+            and find_in_set(node.is_pass_check,#{passCheck})
+        </if>
+        <if test="passAudit != null">
+            and find_in_set(node.is_pass_audit,#{passAudit})
+        </if>
+        <if test="directoryMode != null">
+            and find_in_set(node.is_directory,#{directoryMode})
+        </if>
         <if test="fuzzyPath != null">
             and (node.path = #{fuzzyPath} or #{fuzzyPath} like concat(node.path,'/%'))
         </if>
     </sql>
+
+    <select id="listCANode" parameterType="com.maoding.Storage.zeroc.QueryCANodeDTO" resultType="com.maoding.Storage.zeroc.CANodeDTO">
+        select
+            concat(storage_tree.id,'-',range_type.type_id) as id,
+            concat(if(storage_tree.pid is null,
+            if(ifnull(storage_tree.task_id,storage_tree.project_id) is null,null,
+            concat(ifnull(storage_tree.task_id,storage_tree.project_id),'-',range_type.type_id)),
+            concat(storage_tree.pid,'-',range_type.type_id))) as pid,
+            storage_tree.type_id,
+            storage_tree.node_name as name,
+            if(ifnull(storage_tree.task_id,storage_tree.project_id) is null,
+            concat(storage_tree.path),
+            concat(if(project.project_name is null,'',concat('/',project.project_name)),
+            if(range_type.type_name is null,'',concat('/',range_type.type_name)),
+            if(task.path is null,'',concat('/',task.path)),
+            '/',storage_tree.path)) as path,
+            unix_timestamp(ifnull(storage_tree.create_time,0)) as create_time_stamp,
+            date_format(storage_tree.create_time,'%Y/%m/%d %T') as create_time_text,
+            unix_timestamp(ifnull(storage_tree.last_modify_time,0)) as last_modify_time_stamp,
+            date_format(storage_tree.last_modify_time,'%Y/%m/%d %T') as last_modify_time_text,
+            storage_tree.owner_user_id,
+            storage_tree.last_modify_user_id,
+            storage_tree.last_modify_role_id,
+            ifnull(file_list.read_only_file_length,0) as file_length,
+            file_list.read_only_file_md5 as file_md5,
+            range_type.type_id as range_id,
+            node_type.is_directory,
+            node_type.is_project,
+            node_type.is_task,
+            node_type.is_design,
+            node_type.is_commit,
+            node_type.is_history,
+            task.issue_id,
+            task.id as task_id,
+            project.id as project_id,
+            task.company_id,
+            project.id as root_id,
+            node_type.owner_role_type as owner_role_id,
+            owner_account.user_name as owner_user_name,
+            project.project_name as project_name,
+            task.task_name as task_name,
+            ifnull(file_list.is_pass_design,0) as is_pass_design,
+            ifnull(file_list.is_pass_check,0) as is_pass_check,
+            ifnull(file_list.is_pass_audit,0) as is_pass_audit,
+            group_concat(web_role_type.type_name) AS role_name
+        from
+            md_list_storage_file file_list
+            inner join md_tree_storage storage_tree on (storage_tree.id = file_list.id)
+            inner join md_type_node node_type on (storage_tree.type_id = node_type.type_id)
+            inner join md_type_range range_type on (range_type.is_display != 0 and find_in_set(node_type.type_id,range_type.sub_node_type))
+            inner join md_web_task task on (storage_tree.task_id = task.id)
+            inner join maoding_web_project project on (ifnull(storage_tree.project_id,task.project_id) = project.id)
+            left join maoding_web_account owner_account on (storage_tree.owner_user_id = owner_account.id)
+
+            inner join maoding_web_project_member task_role on ((task_role.node_id = storage_tree.task_id or task_role.target_id = storage_tree.task_id)
+                and task_role.project_id = storage_tree.project_id)
+            inner join md_type_web_role_project web_role_type on (task_role.member_type = web_role_type.type_id and web_role_type.is_task_role = 1)
+            inner join maoding_web_project_process_node process on (process.status = '0'
+                and process.process_id = task.id
+                and process.company_user_id = task_role.company_user_id
+                and process.node_name = web_role_type.process_name)
+        <where>
+            <if test="notTypeId != null">
+                and not find_in_set(storage_tree.type_id,#{notTypeId})
+            </if>
+            <if test="rangeId != null">
+                and find_in_set(range_type.type_id,#{rangeId})
+            </if>
+            <if test="passDesign != null">
+                and find_in_set(file_list.is_pass_design,#{passDesign})
+            </if>
+            <if test="passCheck != null">
+                and find_in_set(file_list.is_pass_check,#{passCheck})
+            </if>
+            <if test="passAudit != null">
+                and find_in_set(file_list.is_pass_audit,#{passAudit})
+            </if>
+            <if test="userId != null">
+                and find_in_set(task_role.account_id,#{userId})
+            </if>
+            <if test="taskLeaderMode != null">
+                and find_in_set(web_role_type.is_task_leader,#{taskLeaderMode})
+            </if>
+            <if test="designerMode != null">
+                and find_in_set(web_role_type.is_task_designer,#{designerMode})
+            </if>
+            <if test="checkerMode != null">
+                and find_in_set(web_role_type.is_task_designer,#{checkerMode})
+            </if>
+            <if test="auditorMode != null">
+                and find_in_set(web_role_type.is_task_auditor,#{auditorMode})
+            </if>
+            <if test="webRoleTypeId != null">
+                and find_in_set(web_role_type.type_id,#{webRoleTypeId})
+            </if>
+        </where>
+        group by file_list.id;
+    </select>
+
+    <select id="summaryNodeLength" parameterType="com.maoding.Storage.zeroc.QuerySummaryDTO" resultType="java.lang.Long">
+        select sum(storage_tree.file_length)
+        from md_tree_storage storage_tree
+        inner join md_node_storage node on (storage_tree.id = substring(node.id,1,32))
+        <where>
+            storage_tree.deleted = 0
+            <if test="companyId != null">
+                and (node.company_id = #{companyId})
+            </if>
+            <if test="projectId != null">
+                and (node.project_id = #{projectId})
+            </if>
+            <if test="ownerUserId != null">
+                and (node.owner_user_id = #{ownerUserId})
+            </if>
+        </where>
+    </select>
 
     <select id="listNodeFile" resultType="com.maoding.Storage.zeroc.NodeFileDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeFileDTO">
         select * from md_file file
@@ -142,6 +255,8 @@
                     ,file.base_dir
                     ,file.read_only_key
                     ,file.writable_key
+                    ,file.is_pass_check
+                    ,file.is_pass_audit
                     <if test="request.fileQuery.mirrorServerTypeId != null">
                         ,mirror.read_only_key as read_only_mirror_key
                         ,mirror.writable_key as writable_mirror_key
@@ -240,90 +355,84 @@
         </if>
     </select>
 
+    <sql id="FilterAccountTable">
+        <if test="accountId != null">
+            inner join maoding_web_project_member project_member on (find_in_set(project_member.account_id,#{accountId})
+                and node.project_id = project_member.project_id
+                and project_member.deleted = 0)
+        </if>
+    </sql>
+
+    <sql id="FilterAccountTableWithCompanyUser">
+        <if test="accountId != null">
+            inner join md_type_range range_type on (range_type.type_id = node.range_id)
+            inner join maoding_web_project_member project_member on (find_in_set(project_member.account_id,#{accountId})
+                and node.project_id = project_member.project_id
+                and project_member.deleted = 0)
+            inner join maoding_web_company_user company_user on (company_user.company_id = project_member.company_id
+                and company_user.user_id = project_member.account_id)
+        </if>
+    </sql>
+
+    <sql id="FilterAccountConditionWithRange">
+        <if test="accountId != null">
+            and (range_type.is_show_all_task = 1 or find_in_set(company_user.user_id,#{accountId}))
+        </if>
+    </sql>
+
 
     <select id="listNode" resultType="com.maoding.Storage.zeroc.SimpleNodeDTO" parameterType="com.maoding.Storage.zeroc.QueryNodeDTO">
-        select distinct node.* from md_node_project node
-        <if test="accountId != null">
-            inner join maoding_web_project_member project_member on (find_in_set(#{accountId},project_member.account_id)
-                                                                        and node.project_id = project_member.project_id
-                                                                        and project_member.deleted = 0)
-        </if>
-        <where>
-            <include refid="ConditionForQueryNode"/>
-            <if test="fuzzyId != null">
-                and find_in_set(substring(node.id,1,32),#{fuzzyId})
-            </if>
-        </where>
         <if test="fuzzyPath != null">
-            order by (length(replace(path,'/','//')) - length(path)) desc
+            select * from (
+        </if>
+            select distinct node.* from md_node_project node
+            <include
+                refid="FilterAccountTable"/>
+            <where>
+                <include refid="ConditionForQueryNode"/>
+                <if test="fuzzyId != null">
+                    and find_in_set(substring(node.id,1,32),#{fuzzyId})
+                </if>
+            </where>
+
+            union all
+
+            select distinct node.* from md_node_range node
+            <where>
+                <include refid="ConditionForQueryNode"/>
+                <if test="fuzzyId != null">
+                    and find_in_set(substring(node.id,1,32),#{fuzzyId})
+                </if>
+            </where>
+
+            union all
+
+            select distinct node.* from md_node_task node
+                <include refid="FilterAccountTableWithCompanyUser"/>
+            <where>
+                <include refid="FilterAccountConditionWithRange"/>
+                <include refid="ConditionForQueryNode"/>
+                <if test="fuzzyId != null">
+                    and find_in_set(substring(node.id,1,32),#{fuzzyId})
+                </if>
+            </where>
+
+            union all
+
+            select distinct node.* from md_node_storage node
+                <include refid="FilterAccountTableWithCompanyUser"/>
+            <where>
+                <include refid="FilterAccountConditionWithRange"/>
+                <include refid="ConditionForQueryNode"/>
+                <if test="fuzzyId != null">
+                    and find_in_set(substring(node.id,1,32),#{fuzzyId})
+                </if>
+            </where>
+        <if test="fuzzyPath != null">
+            ) x
+            order by (length(replace(x.path,'/','//')) - length(x.path)) desc
             limit 1
         </if>
-
-        union all
-
-        select distinct node.* from md_node_range node
-        <where>
-            node.range_id in (1,2)
-            <include refid="ConditionForQueryNode"/>
-            <if test="fuzzyId != null">
-                and find_in_set(substring(node.id,1,32),#{fuzzyId})
-            </if>
-        </where>
-        <if test="fuzzyPath != null">
-            order by (length(replace(path,'/','//')) - length(path)) desc
-            limit 1
-        </if>
-
-        union all
-
-        select distinct node.* from md_node_task node
-        <if test="accountId != null">
-            inner join md_type_range range_type on (node.range_id = range_type.type_id)
-            inner join maoding_web_project_member project_member on (node.task_id = project_member.target_id
-                                                                      and project_member.deleted = 0)
-            inner join maoding_web_company_user company_user on (company_user.company_id = project_member.company_id
-                                                                      and company_user.user_id = project_member.account_id)
-        </if>
-        <where>
-            node.range_id in (1,2)
-            <if test="accountId != null">
-                and (range_type.is_show_all_task = 1 or find_in_set(#{accountId},company_user.user_id))
-            </if>
-            <include refid="ConditionForQueryNode"/>
-            <if test="fuzzyId != null">
-                and find_in_set(substring(node.id,1,32),#{fuzzyId})
-            </if>
-        </where>
-        <if test="fuzzyPath != null">
-            order by (length(replace(path,'/','//')) - length(path)) desc
-            limit 1
-        </if>
-
-        union all
-
-        select distinct node.* from md_node_storage node
-        <if test="accountId != null">
-            inner join md_type_range range_type on (node.range_id = range_type.type_id)
-            inner join maoding_web_project_member project_member on (node.task_id = project_member.target_id
-                                                                      and project_member.deleted = 0)
-            inner join maoding_web_company_user company_user on (company_user.company_id = project_member.company_id
-                                                                      and company_user.user_id = project_member.account_id)
-        </if>
-        <where>
-            node.range_id in (1,2)
-            <if test="accountId != null">
-                and (range_type.is_show_all_task = 1 or find_in_set(#{accountId},company_user.user_id))
-            </if>
-            <include refid="ConditionForQueryNode"/>
-            <if test="fuzzyId != null">
-                and find_in_set(substring(node.id,1,32),#{fuzzyId})
-            </if>
-        </where>
-        <if test="fuzzyPath != null">
-            order by (length(replace(path,'/','//')) - length(path)) desc
-            limit 1
-        </if>
-
     </select>
 
 

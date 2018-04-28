@@ -42,7 +42,7 @@ public final class NodeFileListHelper
     {
         final java.util.List<NodeFileDTO> v;
         v = new java.util.ArrayList<NodeFileDTO>();
-        final int len0 = istr.readAndCheckSeqSize(13);
+        final int len0 = istr.readAndCheckSeqSize(15);
         for(int i0 = 0; i0 < len0; i0++)
         {
             NodeFileDTO elem;

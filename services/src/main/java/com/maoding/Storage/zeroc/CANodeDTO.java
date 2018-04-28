@@ -20,8 +20,8 @@
 
 package com.maoding.Storage.zeroc;
 
-public class SimpleNodeDTO implements java.lang.Cloneable,
-                                      java.io.Serializable
+public class CANodeDTO implements java.lang.Cloneable,
+                                  java.io.Serializable
 {
     public String id;
 
@@ -33,30 +33,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
     public void setId(String id)
     {
         this.id = id;
-    }
-
-    public String pid;
-
-    public String getPid()
-    {
-        return pid;
-    }
-
-    public void setPid(String pid)
-    {
-        this.pid = pid;
-    }
-
-    public String typeId;
-
-    public String getTypeId()
-    {
-        return typeId;
-    }
-
-    public void setTypeId(String typeId)
-    {
-        this.typeId = typeId;
     }
 
     public String name;
@@ -95,21 +71,16 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.lastModifyTimeStamp = lastModifyTimeStamp;
     }
 
-    public boolean isDirectory;
+    public String roleName;
 
-    public boolean getIsDirectory()
+    public String getRoleName()
     {
-        return isDirectory;
+        return roleName;
     }
 
-    public void setIsDirectory(boolean isDirectory)
+    public void setRoleName(String roleName)
     {
-        this.isDirectory = isDirectory;
-    }
-
-    public boolean isIsDirectory()
-    {
-        return isDirectory;
+        this.roleName = roleName;
     }
 
     public String projectId;
@@ -124,6 +95,18 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.projectId = projectId;
     }
 
+    public String projectName;
+
+    public String getProjectName()
+    {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName)
+    {
+        this.projectName = projectName;
+    }
+
     public String taskId;
 
     public String getTaskId()
@@ -136,6 +119,18 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.taskId = taskId;
     }
 
+    public String taskName;
+
+    public String getTaskName()
+    {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName)
+    {
+        this.taskName = taskName;
+    }
+
     public String ownerUserId;
 
     public String getOwnerUserId()
@@ -146,6 +141,18 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
     public void setOwnerUserId(String ownerUserId)
     {
         this.ownerUserId = ownerUserId;
+    }
+
+    public String ownerName;
+
+    public String getOwnerName()
+    {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName)
+    {
+        this.ownerName = ownerName;
     }
 
     public String path;
@@ -182,42 +189,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
     public void setFileLength(long fileLength)
     {
         this.fileLength = fileLength;
-    }
-
-    public String ownerName;
-
-    public String getOwnerName()
-    {
-        return ownerName;
-    }
-
-    public void setOwnerName(String ownerName)
-    {
-        this.ownerName = ownerName;
-    }
-
-    public String projectName;
-
-    public String getProjectName()
-    {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName)
-    {
-        this.projectName = projectName;
-    }
-
-    public String taskName;
-
-    public String getTaskName()
-    {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName)
-    {
-        this.taskName = taskName;
     }
 
     public boolean isPassDesign;
@@ -271,79 +242,40 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         return isPassAudit;
     }
 
-    public boolean isReadOnly;
-
-    public boolean getIsReadOnly()
-    {
-        return isReadOnly;
-    }
-
-    public void setIsReadOnly(boolean isReadOnly)
-    {
-        this.isReadOnly = isReadOnly;
-    }
-
-    public boolean isIsReadOnly()
-    {
-        return isReadOnly;
-    }
-
-    public boolean canCreateChild;
-
-    public boolean getCanCreateChild()
-    {
-        return canCreateChild;
-    }
-
-    public void setCanCreateChild(boolean canCreateChild)
-    {
-        this.canCreateChild = canCreateChild;
-    }
-
-    public boolean isCanCreateChild()
-    {
-        return canCreateChild;
-    }
-
-    public SimpleNodeDTO()
+    public CANodeDTO()
     {
         this.id = "";
-        this.pid = "";
-        this.typeId = "";
         this.name = "";
+        this.roleName = "";
         this.projectId = "";
+        this.projectName = "";
         this.taskId = "";
+        this.taskName = "";
         this.ownerUserId = "";
+        this.ownerName = "";
         this.path = "";
         this.fileMd5 = "";
-        this.ownerName = "";
-        this.projectName = "";
-        this.taskName = "";
     }
 
-    public SimpleNodeDTO(String id, String pid, String typeId, String name, long createTimeStamp, long lastModifyTimeStamp, boolean isDirectory, String projectId, String taskId, String ownerUserId, String path, String fileMd5, long fileLength, String ownerName, String projectName, String taskName, boolean isPassDesign, boolean isPassCheck, boolean isPassAudit, boolean isReadOnly, boolean canCreateChild)
+    public CANodeDTO(String id, String name, long createTimeStamp, long lastModifyTimeStamp, String roleName, String projectId, String projectName, String taskId, String taskName, String ownerUserId, String ownerName, String path, String fileMd5, long fileLength, boolean isPassDesign, boolean isPassCheck, boolean isPassAudit)
     {
         this.id = id;
-        this.pid = pid;
-        this.typeId = typeId;
         this.name = name;
         this.createTimeStamp = createTimeStamp;
         this.lastModifyTimeStamp = lastModifyTimeStamp;
-        this.isDirectory = isDirectory;
+        this.roleName = roleName;
         this.projectId = projectId;
+        this.projectName = projectName;
         this.taskId = taskId;
+        this.taskName = taskName;
         this.ownerUserId = ownerUserId;
+        this.ownerName = ownerName;
         this.path = path;
         this.fileMd5 = fileMd5;
         this.fileLength = fileLength;
-        this.ownerName = ownerName;
-        this.projectName = projectName;
-        this.taskName = taskName;
         this.isPassDesign = isPassDesign;
         this.isPassCheck = isPassCheck;
         this.isPassAudit = isPassAudit;
-        this.isReadOnly = isReadOnly;
-        this.canCreateChild = canCreateChild;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -352,10 +284,10 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         {
             return true;
         }
-        SimpleNodeDTO r = null;
-        if(rhs instanceof SimpleNodeDTO)
+        CANodeDTO r = null;
+        if(rhs instanceof CANodeDTO)
         {
-            r = (SimpleNodeDTO)rhs;
+            r = (CANodeDTO)rhs;
         }
 
         if(r != null)
@@ -363,20 +295,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
             if(this.id != r.id)
             {
                 if(this.id == null || r.id == null || !this.id.equals(r.id))
-                {
-                    return false;
-                }
-            }
-            if(this.pid != r.pid)
-            {
-                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
-                {
-                    return false;
-                }
-            }
-            if(this.typeId != r.typeId)
-            {
-                if(this.typeId == null || r.typeId == null || !this.typeId.equals(r.typeId))
                 {
                     return false;
                 }
@@ -396,13 +314,23 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
             {
                 return false;
             }
-            if(this.isDirectory != r.isDirectory)
+            if(this.roleName != r.roleName)
             {
-                return false;
+                if(this.roleName == null || r.roleName == null || !this.roleName.equals(r.roleName))
+                {
+                    return false;
+                }
             }
             if(this.projectId != r.projectId)
             {
                 if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
+                {
+                    return false;
+                }
+            }
+            if(this.projectName != r.projectName)
+            {
+                if(this.projectName == null || r.projectName == null || !this.projectName.equals(r.projectName))
                 {
                     return false;
                 }
@@ -414,9 +342,23 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.taskName != r.taskName)
+            {
+                if(this.taskName == null || r.taskName == null || !this.taskName.equals(r.taskName))
+                {
+                    return false;
+                }
+            }
             if(this.ownerUserId != r.ownerUserId)
             {
                 if(this.ownerUserId == null || r.ownerUserId == null || !this.ownerUserId.equals(r.ownerUserId))
+                {
+                    return false;
+                }
+            }
+            if(this.ownerName != r.ownerName)
+            {
+                if(this.ownerName == null || r.ownerName == null || !this.ownerName.equals(r.ownerName))
                 {
                     return false;
                 }
@@ -439,27 +381,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
             {
                 return false;
             }
-            if(this.ownerName != r.ownerName)
-            {
-                if(this.ownerName == null || r.ownerName == null || !this.ownerName.equals(r.ownerName))
-                {
-                    return false;
-                }
-            }
-            if(this.projectName != r.projectName)
-            {
-                if(this.projectName == null || r.projectName == null || !this.projectName.equals(r.projectName))
-                {
-                    return false;
-                }
-            }
-            if(this.taskName != r.taskName)
-            {
-                if(this.taskName == null || r.taskName == null || !this.taskName.equals(r.taskName))
-                {
-                    return false;
-                }
-            }
             if(this.isPassDesign != r.isPassDesign)
             {
                 return false;
@@ -469,14 +390,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
                 return false;
             }
             if(this.isPassAudit != r.isPassAudit)
-            {
-                return false;
-            }
-            if(this.isReadOnly != r.isReadOnly)
-            {
-                return false;
-            }
-            if(this.canCreateChild != r.canCreateChild)
             {
                 return false;
             }
@@ -490,37 +403,33 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
     public int hashCode()
     {
         int h_ = 5381;
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::SimpleNodeDTO");
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::CANodeDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isDirectory);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, roleName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileMd5);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassDesign);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassCheck);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassAudit);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isReadOnly);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, canCreateChild);
         return h_;
     }
 
-    public SimpleNodeDTO clone()
+    public CANodeDTO clone()
     {
-        SimpleNodeDTO c = null;
+        CANodeDTO c = null;
         try
         {
-            c = (SimpleNodeDTO)super.clone();
+            c = (CANodeDTO)super.clone();
         }
         catch(CloneNotSupportedException ex)
         {
@@ -532,54 +441,46 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         ostr.writeString(this.id);
-        ostr.writeString(this.pid);
-        ostr.writeString(this.typeId);
         ostr.writeString(this.name);
         ostr.writeLong(this.createTimeStamp);
         ostr.writeLong(this.lastModifyTimeStamp);
-        ostr.writeBool(this.isDirectory);
+        ostr.writeString(this.roleName);
         ostr.writeString(this.projectId);
+        ostr.writeString(this.projectName);
         ostr.writeString(this.taskId);
+        ostr.writeString(this.taskName);
         ostr.writeString(this.ownerUserId);
+        ostr.writeString(this.ownerName);
         ostr.writeString(this.path);
         ostr.writeString(this.fileMd5);
         ostr.writeLong(this.fileLength);
-        ostr.writeString(this.ownerName);
-        ostr.writeString(this.projectName);
-        ostr.writeString(this.taskName);
         ostr.writeBool(this.isPassDesign);
         ostr.writeBool(this.isPassCheck);
         ostr.writeBool(this.isPassAudit);
-        ostr.writeBool(this.isReadOnly);
-        ostr.writeBool(this.canCreateChild);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.id = istr.readString();
-        this.pid = istr.readString();
-        this.typeId = istr.readString();
         this.name = istr.readString();
         this.createTimeStamp = istr.readLong();
         this.lastModifyTimeStamp = istr.readLong();
-        this.isDirectory = istr.readBool();
+        this.roleName = istr.readString();
         this.projectId = istr.readString();
+        this.projectName = istr.readString();
         this.taskId = istr.readString();
+        this.taskName = istr.readString();
         this.ownerUserId = istr.readString();
+        this.ownerName = istr.readString();
         this.path = istr.readString();
         this.fileMd5 = istr.readString();
         this.fileLength = istr.readLong();
-        this.ownerName = istr.readString();
-        this.projectName = istr.readString();
-        this.taskName = istr.readString();
         this.isPassDesign = istr.readBool();
         this.isPassCheck = istr.readBool();
         this.isPassAudit = istr.readBool();
-        this.isReadOnly = istr.readBool();
-        this.canCreateChild = istr.readBool();
     }
 
-    static public void ice_write(com.zeroc.Ice.OutputStream ostr, SimpleNodeDTO v)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, CANodeDTO v)
     {
         if(v == null)
         {
@@ -591,14 +492,14 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         }
     }
 
-    static public SimpleNodeDTO ice_read(com.zeroc.Ice.InputStream istr)
+    static public CANodeDTO ice_read(com.zeroc.Ice.InputStream istr)
     {
-        SimpleNodeDTO v = new SimpleNodeDTO();
+        CANodeDTO v = new CANodeDTO();
         v.ice_readMembers(istr);
         return v;
     }
 
-    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<SimpleNodeDTO> v)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, java.util.Optional<CANodeDTO> v)
     {
         if(v != null && v.isPresent())
         {
@@ -606,7 +507,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         }
     }
 
-    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, SimpleNodeDTO v)
+    static public void ice_write(com.zeroc.Ice.OutputStream ostr, int tag, CANodeDTO v)
     {
         if(ostr.writeOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
@@ -616,12 +517,12 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         }
     }
 
-    static public java.util.Optional<SimpleNodeDTO> ice_read(com.zeroc.Ice.InputStream istr, int tag)
+    static public java.util.Optional<CANodeDTO> ice_read(com.zeroc.Ice.InputStream istr, int tag)
     {
         if(istr.readOptional(tag, com.zeroc.Ice.OptionalFormat.FSize))
         {
             istr.skip(4);
-            return java.util.Optional.of(SimpleNodeDTO.ice_read(istr));
+            return java.util.Optional.of(CANodeDTO.ice_read(istr));
         }
         else
         {
@@ -629,7 +530,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         }
     }
 
-    private static final SimpleNodeDTO _nullMarshalValue = new SimpleNodeDTO();
+    private static final CANodeDTO _nullMarshalValue = new CANodeDTO();
 
-    public static final long serialVersionUID = 490851273L;
+    public static final long serialVersionUID = -1518422445L;
 }

@@ -78,7 +78,9 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
     public boolean login(LoginDTO loginInfo, Current current) {
         assert (loginInfo != null);
 
-        if (StringUtils.isEmpty(loginInfo.getCellphone())) loginInfo.setCellphone(loginInfo.getAccountId());
+        if (StringUtils.isEmpty(loginInfo.getCellphone())) {
+            loginInfo.setCellphone(loginInfo.getAccountId());
+        }
         assert (!StringUtils.isEmpty(loginInfo.getCellphone()));
         assert (!StringUtils.isEmpty(loginInfo.getPassword()));
 

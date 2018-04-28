@@ -1,12 +1,13 @@
 package com.maoding.FileServer;
 
 import com.maoding.Base.IceConfig;
+import com.maoding.CoreUtils.BeanUtils;
+import com.maoding.CoreUtils.ObjectUtils;
 import com.maoding.FileServer.Config.RemoteFileServerPrx;
 import com.maoding.FileServer.zeroc.*;
 import com.maoding.Storage.zeroc.*;
 import com.maoding.User.zeroc.AccountDTO;
 import com.maoding.User.zeroc.LoginDTO;
-import com.maoding.CoreUtils.ObjectUtils;
 import com.maoding.User.zeroc.WebRoleDTO;
 import org.junit.After;
 import org.junit.Before;
@@ -52,7 +53,8 @@ public class FileServiceImplTest {
     
     private FileServicePrx getRemote(){
         if (remote == null) {
-            remote = RemoteFileServerPrx.getInstance("FileServer;120.24.238.128");
+//            remote = RemoteFileServerPrx.getInstance("FileServer;120.24.238.128");
+            remote = RemoteFileServerPrx.getInstance("FileServer;192.168.13.140");
         }
         return remote;
     }
@@ -176,12 +178,37 @@ public class FileServiceImplTest {
     }
 
     @Test
+    public void testListCANode() throws Exception {
+        List<CANodeDTO> list = listCANode();
+    }
+
+    private List<CANodeDTO> listCANode() throws Exception {
+        log.debug("\t>>>>>>>> listCANode");
+        return fileService.listCANode(getLocalAccount(), null);
+    }
+
+    @Test
     public void testListNode() throws Exception{
         List<SimpleNodeDTO> list = listAllNode();
 //        listRootNode();
-//        listChildNode();
+//        List<SimpleNodeDTO> list = listChildNode();
 //        listChildrenNode();
+//        List<SimpleNodeDTO> list = listRemoteChild("d1ba184a668d49789a224e8e8200fb17-1");
+//        List<SimpleNodeDTO> list = listRemoteAll();
     }
+
+
+    private List<SimpleNodeDTO> listRemoteAll() throws Exception {
+        log.debug("\t>>>>>>>> listRemoteAll");
+        return getRemote().listAllNodeForAccount(getAccount("07649b3d23094f28bfce78930bf4d4ac"));
+    }
+
+    private List<SimpleNodeDTO> listRemoteChild(String id) throws Exception {
+        log.debug("\t>>>>>>>> listRemoteChild");
+        SimpleNodeDTO parent = getRemote().getNodeByIdForAccount(getAccount("07649b3d23094f28bfce78930bf4d4ac"),id);
+        return getRemote().listChildNodeForAccount(getAccount("07649b3d23094f28bfce78930bf4d4ac"),parent);
+    }
+
 
     private List<SimpleNodeDTO> listChildrenNode() throws Exception {
         log.debug("\t>>>>>>>> listChildrenNode");
@@ -190,7 +217,7 @@ public class FileServiceImplTest {
 
     private List<SimpleNodeDTO> listChildNode() throws Exception {
         log.debug("\t>>>>>>>> listChild");
-        return fileService.listChildNodeForAccount(getLocalAccount(), getLocalDir(),null);
+        return fileService.listChildNodeForAccount(getLocalAccount(), getLocalTask(),null);
     }
 
     private List<SimpleNodeDTO> listRootNode() throws Exception {
@@ -210,28 +237,35 @@ public class FileServiceImplTest {
     }
 
     private AccountDTO getLocalAccount(){
+        return getAccount("d437448683314cad91dc30b68879901d");
+    }
+
+    private AccountDTO getAccount(String id){
         AccountDTO account = new AccountDTO();
-        account.setId("d437448683314cad91dc30b68879901d");
+        account.setId(id);
+        if ("d437448683314cad91dc30b68879901d".equals(id)){
+            account.setName("张成亮");
+        }
         return account;
     }
 
     private SimpleNodeDTO getLocalDir() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("218720B4DB9944438FCDAC238563131D-1");
+        query.setId("3B9E563015794AE5A38D2CAAFF9DC6BD-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
 
     private SimpleNodeDTO getLocalTask() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("002ba6e2f16348c0ba740c2dd153be72-1");
+        query.setId("8bc9dda2677c410c97f4e0f5a0347643-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
 
     private SimpleNodeDTO getLocalNode() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("A9CB6618422B4C1D896167356B71C454-1");
+        query.setId("91DF0F4018464CEFA64C401AE4E7D3D9-1");
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
@@ -295,7 +329,25 @@ public class FileServiceImplTest {
     public void testCommit() throws Exception {
 //        commitNode();
 //        checkNode();
-        issueNode();
+//        issueNode();
+        askCA();
+//        audit();
+    }
+
+//    private SimpleNodeDTO audit() throws Exception {
+//        CommitRequestDTO request = new CommitRequestDTO();
+//        request.setOwnerUserId("123");
+//        request.setMajorName("建筑");
+//        request.setFileVersion("v3.0");
+//        return fileService.auditNodeRequestForAccount(getLocalAccount(),getLocalNode(),null);
+//    }
+
+    private SimpleNodeDTO askCA() throws Exception {
+        return fileService.askCANodeRequestForAccount(getLocalAccount(),getCANode(),null);
+    }
+
+    private CANodeDTO getCANode() throws Exception {
+        return BeanUtils.createCleanFrom(getLocalNode(),CANodeDTO.class);
     }
 
     private SimpleNodeDTO issueNode() throws Exception {
@@ -312,13 +364,13 @@ public class FileServiceImplTest {
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
     }
 
-    private SimpleNodeDTO checkNode() throws Exception {
-        CommitRequestDTO request = new CommitRequestDTO();
-        request.setOwnerUserId("123");
-        request.setMajorName("建筑");
-        request.setFileVersion("v3.0");
-        return fileService.checkNodeRequestForAccount(getLocalAccount(),getLocalNode(),request,null);
-    }
+//    private SimpleNodeDTO checkNode() throws Exception {
+//        CommitRequestDTO request = new CommitRequestDTO();
+//        request.setOwnerUserId("123");
+//        request.setMajorName("建筑");
+//        request.setFileVersion("v3.0");
+//        return fileService.checkNodeRequestForAccount(getLocalAccount(),getLocalNode(),request,null);
+//    }
 
     private SimpleNodeDTO commitNode() throws Exception {
         CommitRequestDTO request = new CommitRequestDTO();
@@ -379,8 +431,8 @@ public class FileServiceImplTest {
 
     @Test
     public void testWrite() throws Exception {
-//        writeNode(testLocalFile,getLocalNode());
-        writeNode(testLocalLargeFile,getLocalNode());
+        writeNode(testLocalFile,getLocalNode());
+//        writeNode(testLocalLargeFile,getLocalNode());
 //        writeFile();
     }
 
@@ -422,8 +474,23 @@ public class FileServiceImplTest {
     @Test
     public void testCreateNode() throws Exception {
 //        createLocalDirectory();
-//        createLocalFileWithSubDir();
-        createLocalLargeFile();
+        createLocalFileWithSubDir();
+//        createLocalLargeFile();
+//        createRangeChild();
+    }
+
+    private SimpleNodeDTO createRangeChild() throws Exception {
+        SimpleNodeDTO parent = getLocalSimpleNode("d1ba184a668d49789a224e8e8200fb17-1");
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setIsDirectory(false);
+        request.setFileLength(10);
+        request.setFullName("aaaa.txt");
+        SimpleNodeDTO node = fileService.createNodeForAccount(getLocalAccount(), parent,request,null);
+        return node;
+    }
+
+    private SimpleNodeDTO getLocalSimpleNode(String id) throws Exception {
+        return fileService.getNodeByIdForAccount(getLocalAccount(),id,null);
     }
 
     private SimpleNodeDTO createLocalLargeFile() throws Exception{

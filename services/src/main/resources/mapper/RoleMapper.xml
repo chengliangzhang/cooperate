@@ -30,8 +30,16 @@
     </sql>
 
     <select id="listWebRole" resultType="com.maoding.User.zeroc.WebRoleDTO" parameterType="com.maoding.User.zeroc.QueryWebRoleDTO">
-        select web_role.*
-        from md_web_role web_role
+        select web_role.*,
+        unix_timestamp(ifnull(task.start_time,0)) as task_start_time_stamp,
+        date_format(task.start_time,'%Y/%m/%d') as task_start_time_text,
+        unix_timestamp(ifnull(task.end_time,0)) as task_end_time_stamp,
+        date_format(task.end_time,'%Y/%m/%d') as task_end_time_text
+        from md_web_role_task web_role
+        inner join maoding_web_project_task task on (task.id = web_role.task_id)
+        <if test="accountId != null and accountId != ''.toString()">
+            inner join md_web_role_task team_role on (web_role.project_id = team_role.project_id and team.user_id = #{accountId})
+        </if>
         <where>
             <include refid="ConditionForQueryWebRole"/>
         </where>

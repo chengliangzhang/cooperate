@@ -49,7 +49,8 @@ public class RemoteUserServicePrx extends BaseRemoteService<UserServicePrx> impl
     @Override
     public AccountDTO getCurrent() {
         AccountDTO account = new AccountDTO();
-        account.setId("5ffee496fa814ea4b6d26a9208b00a0b");
+        account.setId("07649b3d23094f28bfce78930bf4d4ac");
+        account.setName("卢沂");
         return account;
     }
 

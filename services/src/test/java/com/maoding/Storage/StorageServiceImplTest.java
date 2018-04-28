@@ -45,7 +45,7 @@ public class StorageServiceImplTest {
     private StorageServicePrx getRemote(){
         if (remote == null) {
             BaseRemoteService<StorageServicePrx> prx = new BaseRemoteService<>();
-            remote = prx.getServicePrx("StorageService","127.0.0.1",StorageServicePrx.class,_StorageServicePrxI.class);
+            remote = prx.getServicePrx("StorageService","192.168.13.140",StorageServicePrx.class,_StorageServicePrxI.class);
         }
         return remote;
     }
@@ -308,12 +308,21 @@ public class StorageServiceImplTest {
 
     @Test
     public void testListNode() throws Exception {
-        listNodeById();
-        listNodeByIdString();
-        listNodeByPath();
-        listOldNodeByFuzzyPath();
-        listOldNodeByFuzzyId();
-        listOldNodeByTypeId();
+//        listNodeById();
+//        listNodeByIdString();
+//        listNodeByPath();
+//        listOldNodeByFuzzyPath();
+//        listOldNodeByFuzzyId();
+//        listOldNodeByTypeId();
+        listChild("d1ba184a668d49789a224e8e8200fb17-1");
+    }
+
+    private List<SimpleNodeDTO> listChild(String pid) throws Exception {
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setPid(pid);
+        query.setAccountId("13221450717");
+        List<SimpleNodeDTO> list = storageService.listNode(query,null);
+        return list;
     }
 
     private void listOldNodeByTypeId() throws Exception{

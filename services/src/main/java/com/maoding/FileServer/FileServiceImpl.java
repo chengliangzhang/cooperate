@@ -30,10 +30,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -56,6 +53,31 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     private Map<String,String> pathMap = new HashMap<>();
 
     @Override
+    public List<CANodeDTO> listDesignNode(AccountDTO account, Current current) throws CustomException {
+        QueryCANodeDTO query = new QueryCANodeDTO();
+        query.setUserId(getAccountId(account));
+        query.setWebRoleTypeId(ConstService.WEB_ROLE_TASK_DESIGN.toString());
+        query.setRangeId(ConstService.STORAGE_RANGE_TYPE_DESIGN.toString());
+        query.setNotTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT_HIS.toString());
+        return getStorageService().listCANode(query);
+    }
+
+    @Override
+    public List<CANodeDTO> listCANode(AccountDTO account, Current current) throws CustomException {
+        QueryCANodeDTO query = new QueryCANodeDTO();
+        query.setUserId(getAccountId(account));
+        query.setRangeId(ConstService.STORAGE_RANGE_TYPE_CA.toString());
+        query.setWebRoleTypeId(ConstService.WEB_ROLE_TASK_CHECK.toString() + "," + ConstService.WEB_ROLE_TASK_AUDIT.toString());
+        query.setNotTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT_HIS.toString());
+        return getStorageService().listCANode(query);
+    }
+
+    @Override
+    public long getTime(Current current) throws CustomException {
+        return (new Date()).getTime();
+    }
+
+    @Override
     public void restartWebRole(WebRoleDTO webRole, Current current) throws CustomException {
         setWebRoleStatus(webRole,"0");
     }
@@ -74,7 +96,6 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     public WebRoleDTO getWebRole(@NotNull AccountDTO account, @NotNull SimpleNodeDTO node, Current current) {
         QueryWebRoleDTO query = new QueryWebRoleDTO();
         query.setUserId(getAccountId(account));
-        query.setRoleId(node.getOwnerRoleId());
         query.setTaskId(node.getTaskId());
         List<WebRoleDTO> list = getUserService().listWebRole(query);
         return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
@@ -90,8 +111,22 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     }
 
     @Override
+    public List<WebRoleDTO> listAllWebRole(AccountDTO account, Current current) throws CustomException {
+        final String ROLE_TYPE_ID_FILETER = "40,41,42,43";
+        QueryWebRoleDTO query = new QueryWebRoleDTO();
+        query.setRoleId(ROLE_TYPE_ID_FILETER);
+        query.setAccountId(getAccountId(account));
+        return getUserService().listWebRole(query);
+    }
+
+    @Override
     public boolean isExist(String path, Current current) throws CustomException {
-        SimpleNodeDTO node = getNodeByPathForAccount(null,path,current);
+        return isExistForAccount(null,path,current);
+    }
+
+    @Override
+    public boolean isExistForAccount(AccountDTO account, String path, Current current) throws CustomException {
+        SimpleNodeDTO node = getNodeByPathForAccount(account,path,current);
         return (node != null);
     }
 
@@ -729,13 +764,27 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         return (account != null) ? account.getId() : null;
     }
 
+    private boolean isReadOnlyType(@NotNull String nodeType) {
+        return ConstService.isProjectType(nodeType)
+            || ConstService.isTaskType(nodeType)
+            || ConstService.isCommitType(nodeType)
+            || ConstService.isHistoryType(nodeType);
+    }
     private boolean isReadOnly(@NotNull SimpleNodeDTO src,String accountId){
-        return src.getIsProject()
-                || src.getIsTask()
-                || src.getIsCommit()
-                || src.getIsHistory()
+        return isReadOnlyType(src.getTypeId())
                 || ((StringUtils.isNotEmpty(src.getOwnerUserId()))
                     && (StringUtils.isNotSame(accountId,src.getOwnerUserId())));
+    }
+
+    private boolean isCanCreateChildType(@NotNull String nodeType) {
+        return !ConstService.isProjectType(nodeType)
+                && !ConstService.isCommitType(nodeType)
+                && !ConstService.isHistoryType(nodeType);
+    }
+
+    private boolean canCreateChild(@NotNull SimpleNodeDTO src,String accountId){
+        return src.getIsDirectory()
+                && isCanCreateChildType(src.getTypeId());
     }
 
     @Override
@@ -966,11 +1015,15 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     public SimpleNodeDTO getNodeByPathForAccount(AccountDTO account, String path, Current current) throws CustomException {
         QueryNodeDTO query = new QueryNodeDTO();
         query.setPath(path);
+        if (StringUtils.isRootPath(StringUtils.getDirName(path))) {
+            query.setAccountId(getAccountId(account));
+        } else {
+            query.setOwnerUserId(getAccountId(account));
+        }
         List<SimpleNodeDTO> list = listNodeForAccount(account,query,current);
 
         SimpleNodeDTO node = null;
-        if ((list != null) && (!list.isEmpty())){
-//            assert (list.size() == 1);
+        if (ObjectUtils.isNotEmpty(list)){
             node = list.get(0);
         }
         return node;
@@ -1000,8 +1053,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         List<SimpleNodeDTO> list = getStorageService().listNode(query);
         for (SimpleNodeDTO node : list){
             node.setIsReadOnly(isReadOnly(node,getAccountId(account)));
-            node.setFileLength(node.getReadOnlyFileLength());
-            node.setFileMd5(node.getReadOnlyFileMd5());
+            node.setCanCreateChild(canCreateChild(node,getAccountId(account)));
         }
         return list;
     }
@@ -1115,52 +1167,123 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         return getStorageService().updateNode(src,dstParent,updateRequest);
     }
 
+
+
+
+
+
     @Override
-    public CommitListResultDTO checkNodeListRequest(@NotNull List<SimpleNodeDTO> srcList, @NotNull CommitRequestDTO request, Current current) throws CustomException {
+    public CommitListResultDTO checkNodeListRequest(List<CANodeDTO> srcList, Current current) throws CustomException {
         return checkNodeListRequestForAccount(getCurrentAccount(current),
-                srcList,request,current);
+                srcList,current);
     }
 
     @Override
-    public CommitListResultDTO checkNodeListRequestForAccount(AccountDTO account, @NotNull List<SimpleNodeDTO> srcList, @NotNull CommitRequestDTO request, Current current) throws CustomException {
-        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_CHECK.toString());
-        return commitNodeListForAccount(account,srcList,request,current);
+    public CommitListResultDTO checkNodeListRequestForAccount(AccountDTO account, List<CANodeDTO> srcList, Current current) throws CustomException {
+        List<SimpleNodeDTO> successList = new ArrayList<>();
+        List<CommitFailDTO> failList = new ArrayList<>();
+        for (CANodeDTO src : srcList){
+            SimpleNodeDTO result = checkNodeRequestForAccount(account,src,current);
+            if ((result != null) && (!StringUtils.isEmpty(result.getId()))) {
+                successList.add(result);
+            } else {
+                CommitFailDTO failDTO = new CommitFailDTO();
+                failDTO.setId(src.getId());
+            }
+        }
+        CommitListResultDTO result = new CommitListResultDTO();
+        result.setSuccessList(successList);
+        result.setFailList(failList);
+        return result;
     }
 
     @Override
-    public SimpleNodeDTO checkNodeRequest(@NotNull SimpleNodeDTO src, @NotNull CommitRequestDTO request, Current current) throws CustomException {
+    public SimpleNodeDTO checkNodeRequest(CANodeDTO src, Current current) throws CustomException {
         return checkNodeRequestForAccount(getCurrentAccount(current),
-                src,request,current);
+                src,current);
     }
 
     @Override
-    public SimpleNodeDTO checkNodeRequestForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, @NotNull CommitRequestDTO request, Current current) throws CustomException {
-        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_CHECK.toString());
-        return commitNodeForAccount(account,src,request,current);
+    public SimpleNodeDTO checkNodeRequestForAccount(AccountDTO account, CANodeDTO src, Current current) throws CustomException {
+        CommitRequestDTO commitRequest = new CommitRequestDTO();
+        commitRequest.setIsPassCheck(true);
+        SimpleNodeDTO srcNode = BeanUtils.createFrom(src,SimpleNodeDTO.class);
+        return updateVersion(account,srcNode,srcNode,commitRequest,current);
     }
 
     @Override
-    public CommitListResultDTO auditNodeListRequest(@NotNull List<SimpleNodeDTO> srcList, @NotNull CommitRequestDTO request, Current current) throws CustomException {
+    public CommitListResultDTO auditNodeListRequest(List<CANodeDTO> srcList, Current current) throws CustomException {
         return auditNodeListRequestForAccount(getCurrentAccount(current),
-                srcList,request,current);
+                srcList,current);
     }
 
     @Override
-    public CommitListResultDTO auditNodeListRequestForAccount(AccountDTO account, @NotNull List<SimpleNodeDTO> srcList, @NotNull CommitRequestDTO request, Current current) throws CustomException {
-        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_AUDIT.toString());
-        return commitNodeListForAccount(account,srcList,request,current);
+    public CommitListResultDTO auditNodeListRequestForAccount(AccountDTO account, List<CANodeDTO> srcList, Current current) throws CustomException {
+        List<SimpleNodeDTO> successList = new ArrayList<>();
+        List<CommitFailDTO> failList = new ArrayList<>();
+        for (CANodeDTO src : srcList){
+            SimpleNodeDTO result = auditNodeRequestForAccount(account,src,current);
+            if ((result != null) && (!StringUtils.isEmpty(result.getId()))) {
+                successList.add(result);
+            } else {
+                CommitFailDTO failDTO = new CommitFailDTO();
+                failDTO.setId(src.getId());
+            }
+        }
+        CommitListResultDTO result = new CommitListResultDTO();
+        result.setSuccessList(successList);
+        result.setFailList(failList);
+        return result;
     }
 
     @Override
-    public SimpleNodeDTO auditNodeRequest(@NotNull SimpleNodeDTO src, @NotNull CommitRequestDTO request, Current current) throws CustomException {
+    public SimpleNodeDTO auditNodeRequest(CANodeDTO src, Current current) throws CustomException {
         return auditNodeRequestForAccount(getCurrentAccount(current),
-                src,request,current);
+                src,current);
     }
 
     @Override
-    public SimpleNodeDTO auditNodeRequestForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, @NotNull CommitRequestDTO request, Current current) throws CustomException {
-        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_AUDIT.toString());
-        return commitNodeForAccount(account,src,request,current);
+    public SimpleNodeDTO auditNodeRequestForAccount(AccountDTO account, CANodeDTO src, Current current) throws CustomException {
+        CommitRequestDTO commitRequest = new CommitRequestDTO();
+        commitRequest.setIsPassAudit(true);
+        SimpleNodeDTO srcNode = BeanUtils.createFrom(src,SimpleNodeDTO.class);
+        return updateVersion(account,srcNode,srcNode,commitRequest,current);
+    }
+
+    @Override
+    public CommitListResultDTO askCANodeListRequest(List<CANodeDTO> srcList, Current current) throws CustomException {
+        return askCANodeListRequestForAccount(getCurrentAccount(current),srcList,current);
+    }
+
+    @Override
+    public CommitListResultDTO askCANodeListRequestForAccount(AccountDTO account, List<CANodeDTO> srcList, Current current) throws CustomException {
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_ASK_CA.toString());
+        request.setIsPassDesign(true);
+        CommitListResultDTO result = null;
+        if (ObjectUtils.isNotEmpty(srcList)) {
+            List<SimpleNodeDTO> srcNodeList = new ArrayList<>();
+            for (CANodeDTO src : srcList) {
+                SimpleNodeDTO srcNode = BeanUtils.createCleanFrom(src,SimpleNodeDTO.class);
+                srcNodeList.add(srcNode);
+            }
+            result = commitNodeListForAccount(account,srcNodeList,request,current);
+        }
+        return result;
+    }
+
+    @Override
+    public SimpleNodeDTO askCANodeRequest(CANodeDTO src, Current current) throws CustomException {
+        return askCANodeRequestForAccount(getCurrentAccount(current),src,current);
+    }
+
+    @Override
+    public SimpleNodeDTO askCANodeRequestForAccount(AccountDTO account, CANodeDTO src, Current current) throws CustomException {
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_ASK_CA.toString());
+        request.setIsPassDesign(true);
+        SimpleNodeDTO srcNode = BeanUtils.createCleanFrom(src,SimpleNodeDTO.class);
+        return commitNodeForAccount(account,srcNode,request,current);
     }
 
     @Override
@@ -1345,6 +1468,8 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         createRequest.setMainFileId(StringUtils.left(src.getId(),StringUtils.DEFAULT_ID_LENGTH));
         createRequest.setFileLength(src.getFileLength());
         createRequest.setTaskId(src.getTaskId());
+        createRequest.setReadOnlyFileLength(src.getFileLength());
+        createRequest.setReadOnlyFileMd5(src.getFileMd5());
         return getStorageService().createNode(parent,createRequest);
     }
 
@@ -1390,16 +1515,15 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         String srcKey = getFileKey(srcFile,true);
         File localFile = getCoreFileServer().coreGetFile(srcKey);
         String dstKey = getCoreFileServer().coreCreateFile(dstPath,localFile);
-        UpdateNodeDTO createRequest = BeanUtils.createCleanFrom(request,UpdateNodeDTO.class);
-        createRequest.setServerTypeId(Short.parseShort(setting.getServerTypeId()));
-        createRequest.setServerAddress(setting.getServerAddress());
-        createRequest.setBaseDir(setting.getBaseDir());
-        createRequest.setReadOnlyKey(dstKey);
-        createRequest.setLastModifyUserId(getAccountId(account));
-        createRequest.setPath(dstPath);
-        createRequest.setMainFileId(StringUtils.left(src.getId(),StringUtils.DEFAULT_ID_LENGTH));
-        createRequest.setFileLength(src.getFileLength());
-        return getStorageService().createNode(null,createRequest);
+        UpdateNodeDTO updateRequest = BeanUtils.createCleanFrom(request,UpdateNodeDTO.class);
+        updateRequest.setServerTypeId(Short.parseShort(setting.getServerTypeId()));
+        updateRequest.setServerAddress(setting.getServerAddress());
+        updateRequest.setBaseDir(setting.getBaseDir());
+        updateRequest.setReadOnlyKey(dstKey);
+        updateRequest.setLastModifyUserId(getAccountId(account));
+        updateRequest.setPath(dstPath);
+        updateRequest.setMainFileId(StringUtils.left(src.getId(),StringUtils.DEFAULT_ID_LENGTH));
+        return getStorageService().updateNode(dst,null,updateRequest);
     }
 
     @Override
@@ -1442,7 +1566,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
             createRequest.setBaseDir(null);
             createRequest.setFileLength(0);
             if ((parent != null) && (StringUtils.isNotEmpty(parent.getId()))) {
-                createRequest.setTypeId(Short.parseShort(ConstService.getPathType(Short.toString(parent.getTypeId()))));
+                createRequest.setTypeId(Short.parseShort(ConstService.getPathType(parent.getTypeId())));
                 createRequest.setPid(parent.getId());
                 createRequest.setTaskId(parent.getTaskId());
             } else {
@@ -1462,7 +1586,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
                 createRequest.setReadOnlyFileLength(request.getFileLength());
             }
             if ((parent != null) && (StringUtils.isNotEmpty(parent.getId()))) {
-                createRequest.setTypeId(Short.parseShort(ConstService.getFileType(Short.toString(parent.getTypeId()))));
+                createRequest.setTypeId(Short.parseShort(ConstService.getFileType(parent.getTypeId())));
                 createRequest.setPid(parent.getId());
                 createRequest.setTaskId(parent.getTaskId());
             } else {

@@ -7,6 +7,8 @@
 [["java:package:com.maoding.Storage"]]
 module zeroc {
     interface StorageService {
+        CANodeList listCANode(QueryCANodeDTO query) throws CustomException; //列出设计及校验审核文档
+
         EmbedElementDTO createEmbedElement(UpdateElementDTO request) throws CustomException; //创建内嵌HTML元素
         EmbedElementDTO updateEmbedElement(EmbedElementDTO src,UpdateElementDTO request) throws CustomException; //创建内嵌HTML元素
         EmbedElementList listEmbedElement(QueryAskDTO query) throws CustomException; //创建内嵌HTML元素

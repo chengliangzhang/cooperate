@@ -269,6 +269,57 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.writableFileMd5 = writableFileMd5;
     }
 
+    public boolean isPassDesign;
+
+    public boolean getIsPassDesign()
+    {
+        return isPassDesign;
+    }
+
+    public void setIsPassDesign(boolean isPassDesign)
+    {
+        this.isPassDesign = isPassDesign;
+    }
+
+    public boolean isIsPassDesign()
+    {
+        return isPassDesign;
+    }
+
+    public boolean isPassCheck;
+
+    public boolean getIsPassCheck()
+    {
+        return isPassCheck;
+    }
+
+    public void setIsPassCheck(boolean isPassCheck)
+    {
+        this.isPassCheck = isPassCheck;
+    }
+
+    public boolean isIsPassCheck()
+    {
+        return isPassCheck;
+    }
+
+    public boolean isPassAudit;
+
+    public boolean getIsPassAudit()
+    {
+        return isPassAudit;
+    }
+
+    public void setIsPassAudit(boolean isPassAudit)
+    {
+        this.isPassAudit = isPassAudit;
+    }
+
+    public boolean isIsPassAudit()
+    {
+        return isPassAudit;
+    }
+
     public short mirrorTypeId;
 
     public short getMirrorTypeId()
@@ -610,7 +661,7 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.parentStoragePath = "";
     }
 
-    public UpdateNodeDTO(short typeId, String path, String ownerUserId, String taskId, String mainFileId, short serverTypeId, String serverAddress, String baseDir, short fileTypeId, long fileLength, String fileVersion, String fileChecksum, String majorTypeId, String readOnlyKey, long readOnlyFileLength, String readOnlyFileMd5, String writableKey, long writableFileLength, String writableFileMd5, short mirrorTypeId, String mirrorAddress, String mirrorBaseDir, String readOnlyMirrorKey, String writableMirrorKey, short actionTypeId, String remark, String lastModifyUserId, String lastModifyRoleId, String pid, String readFileScope, String readFileKey, String writeFileScope, String writeFileKey, String fullName, String parentPath, short parentTypeId, String parentStoragePath)
+    public UpdateNodeDTO(short typeId, String path, String ownerUserId, String taskId, String mainFileId, short serverTypeId, String serverAddress, String baseDir, short fileTypeId, long fileLength, String fileVersion, String fileChecksum, String majorTypeId, String readOnlyKey, long readOnlyFileLength, String readOnlyFileMd5, String writableKey, long writableFileLength, String writableFileMd5, boolean isPassDesign, boolean isPassCheck, boolean isPassAudit, short mirrorTypeId, String mirrorAddress, String mirrorBaseDir, String readOnlyMirrorKey, String writableMirrorKey, short actionTypeId, String remark, String lastModifyUserId, String lastModifyRoleId, String pid, String readFileScope, String readFileKey, String writeFileScope, String writeFileKey, String fullName, String parentPath, short parentTypeId, String parentStoragePath)
     {
         this.typeId = typeId;
         this.path = path;
@@ -631,6 +682,9 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.writableKey = writableKey;
         this.writableFileLength = writableFileLength;
         this.writableFileMd5 = writableFileMd5;
+        this.isPassDesign = isPassDesign;
+        this.isPassCheck = isPassCheck;
+        this.isPassAudit = isPassAudit;
         this.mirrorTypeId = mirrorTypeId;
         this.mirrorAddress = mirrorAddress;
         this.mirrorBaseDir = mirrorBaseDir;
@@ -780,6 +834,18 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.isPassDesign != r.isPassDesign)
+            {
+                return false;
+            }
+            if(this.isPassCheck != r.isPassCheck)
+            {
+                return false;
+            }
+            if(this.isPassAudit != r.isPassAudit)
+            {
+                return false;
+            }
             if(this.mirrorTypeId != r.mirrorTypeId)
             {
                 return false;
@@ -927,6 +993,9 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableKey);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableFileLength);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableFileMd5);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassDesign);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassCheck);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassAudit);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mirrorTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mirrorAddress);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mirrorBaseDir);
@@ -983,6 +1052,9 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.writableKey);
         ostr.writeLong(this.writableFileLength);
         ostr.writeString(this.writableFileMd5);
+        ostr.writeBool(this.isPassDesign);
+        ostr.writeBool(this.isPassCheck);
+        ostr.writeBool(this.isPassAudit);
         ostr.writeShort(this.mirrorTypeId);
         ostr.writeString(this.mirrorAddress);
         ostr.writeString(this.mirrorBaseDir);
@@ -1024,6 +1096,9 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
         this.writableKey = istr.readString();
         this.writableFileLength = istr.readLong();
         this.writableFileMd5 = istr.readString();
+        this.isPassDesign = istr.readBool();
+        this.isPassCheck = istr.readBool();
+        this.isPassAudit = istr.readBool();
         this.mirrorTypeId = istr.readShort();
         this.mirrorAddress = istr.readString();
         this.mirrorBaseDir = istr.readString();
@@ -1096,5 +1171,5 @@ public class UpdateNodeDTO implements java.lang.Cloneable,
 
     private static final UpdateNodeDTO _nullMarshalValue = new UpdateNodeDTO();
 
-    public static final long serialVersionUID = -748084902L;
+    public static final long serialVersionUID = -1583623985L;
 }

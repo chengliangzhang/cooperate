@@ -2,6 +2,149 @@
 DROP PROCEDURE IF EXISTS `updateTables`;
 CREATE PROCEDURE `updateTables`()
 BEGIN
+  -- 报销主表
+  CREATE TABLE IF NOT EXISTS `maoding_web_exp_main` (
+    `id` varchar(32) NOT NULL COMMENT '主键id，uuid',
+    `user_id` varchar(32) DEFAULT NULL COMMENT '用户id',
+    `exp_date` date DEFAULT NULL COMMENT '报销日期',
+    `approve_status` varchar(1) DEFAULT NULL COMMENT '审批状态(0:待审核，1:同意，2，退回,3:撤回,4:删除,5.审批中）,6:财务已拨款',
+    `company_id` varchar(32) DEFAULT NULL COMMENT '企业id',
+    `depart_id` varchar(32) DEFAULT NULL COMMENT '部门id',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    `version_num` int(11) DEFAULT '0',
+    `exp_no` varchar(32) DEFAULT NULL COMMENT '报销单号',
+    `exp_flag` int(11) DEFAULT '0' COMMENT '0:没有任何操作，1:退回记录重新提交,2:新生成记录',
+    `type` int(1) DEFAULT '0' COMMENT '报销类别：1=报销申请，2=费用申请,3请假，4出差',
+    `allocation_date` date DEFAULT NULL COMMENT '拨款日期',
+    `allocation_user_id` varchar(32) DEFAULT NULL COMMENT '拨款人id',
+    `enterprise_id` varchar(36) DEFAULT NULL COMMENT '收款方公司id',
+    PRIMARY KEY (`id`),
+    KEY `user_id` (`user_id`),
+    KEY `company_id` (`company_id`),
+    KEY `depart_id` (`depart_id`),
+    KEY `allocation_user_id` (`allocation_user_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='报销主表';
+
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_web_exp_main' and column_name='enterprise_id') then
+    alter table maoding_web_exp_main add column `enterprise_id` varchar(36) DEFAULT NULL COMMENT '收款方公司id';
+  end if;
+
+
+  -- 外部公司表
+  CREATE TABLE IF NOT EXISTS  `maoding_web_enterprise` (
+    `id` varchar(36) NOT NULL COMMENT '在工商局方的id(此处的id为36位）',
+    `corpname` varchar(100) NOT NULL,
+    `address` varchar(300) DEFAULT NULL,
+    `creditcode` varchar(50) DEFAULT NULL,
+    `gongsh` varchar(30) DEFAULT NULL,
+    `orgcode` varchar(50) DEFAULT NULL,
+    `state` varchar(100) DEFAULT NULL,
+    `type` varchar(50) DEFAULT NULL,
+    `regtime` date DEFAULT NULL,
+    `proxyer` varchar(20) DEFAULT NULL,
+    `money` varchar(500) DEFAULT NULL,
+    `regpart` varchar(100) DEFAULT NULL,
+    `fieldrange` text,
+    `shortcut` varchar(50) DEFAULT NULL,
+    `industry` varchar(200) DEFAULT NULL,
+    `tax_number` varchar(100) DEFAULT NULL,
+    `has_unify` varchar(10) DEFAULT NULL,
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    `enterprise_type` int(1) DEFAULT NULL COMMENT '1=工商数据,2=手工输入',
+    PRIMARY KEY (`id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+  -- 外部公司关联表
+  CREATE TABLE IF NOT EXISTS  `maoding_web_enterprise_org` (
+    `id` varchar(32) NOT NULL,
+    `company_id` varchar(32) NOT NULL,
+    `enterprise_id` varchar(36) NOT NULL,
+    `deleted` int(1) DEFAULT NULL,
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    PRIMARY KEY (`id`),
+    KEY `company_id` (`company_id`),
+    KEY `enterprise_id` (`enterprise_id`),
+    KEY `deleted` (`deleted`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+  -- maoding_web_role -- 权限组表
+  CREATE TABLE IF NOT EXISTS `maoding_web_role` (
+    `id` varchar(32) NOT NULL COMMENT 'ID',
+    `company_id` varchar(32) DEFAULT NULL COMMENT '公司ID（此字段为空则表示当前角色是公用角色）',
+    `code` varchar(32) DEFAULT NULL COMMENT '角色编码',
+    `name` varchar(32) DEFAULT NULL COMMENT '角色名称',
+    `status` char(1) DEFAULT NULL COMMENT '0=生效，1＝不生效',
+    `order_index` int(11) DEFAULT NULL COMMENT '角色排序',
+    `create_date` datetime DEFAULT NULL,
+    `create_by` varchar(50) DEFAULT NULL,
+    `update_date` datetime DEFAULT NULL,
+    `update_by` varchar(50) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `company_id` (`company_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='前台角色表';
+
+  -- maoding_web_role_permission -- 权限树表
+  CREATE TABLE IF NOT EXISTS `maoding_web_role_permission` (
+    `id` varchar(32) NOT NULL COMMENT 'ID',
+    `role_id` varchar(32) DEFAULT NULL COMMENT '角色ID',
+    `permission_id` varchar(32) DEFAULT NULL COMMENT '权限ID',
+    `company_id` varchar(32) DEFAULT NULL COMMENT '公司ID',
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    PRIMARY KEY (`id`),
+    KEY `role_id` (`role_id`),
+    KEY `permission_id` (`permission_id`),
+    KEY `company_id` (`company_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色视图表';
+
+  -- maoding_web_permission -- 权限表
+  CREATE TABLE IF NOT EXISTS `maoding_web_permission` (
+    `id` varchar(32) NOT NULL COMMENT '视图ID',
+    `code` varchar(96) DEFAULT NULL COMMENT 'code值',
+    `name` varchar(32) DEFAULT NULL COMMENT '权限名称',
+    `pid` varchar(32) DEFAULT NULL COMMENT '父权限ID',
+    `root_id` varchar(32) DEFAULT NULL COMMENT '根权限ID',
+    `seq` int(11) DEFAULT NULL COMMENT '排序',
+    `status` char(1) DEFAULT NULL COMMENT '0=生效，1＝不生效',
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    `description` varchar(100) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `pid` (`pid`),
+    KEY `root_id` (`root_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限表';
+
+  -- maoding_web_user_permission -- 组织角色表
+  CREATE TABLE IF NOT EXISTS `maoding_web_user_permission` (
+    `id` varchar(32) NOT NULL COMMENT 'ID',
+    `company_id` varchar(32) DEFAULT NULL COMMENT '公司ID',
+    `user_id` varchar(32) DEFAULT NULL COMMENT '用户id',
+    `permission_id` varchar(32) DEFAULT NULL COMMENT '权限ID',
+    `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+    `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+    `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+    `update_by` varchar(32) DEFAULT NULL COMMENT '更新人',
+    `seq` int(4) DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `company_id` (`company_id`),
+    KEY `user_id` (`user_id`),
+    KEY `permission_id` (`permission_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='前台角色权限表';
+
   -- -- 文件注解附件
   CREATE TABLE IF NOT EXISTS `md_list_attachment` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
@@ -130,12 +273,16 @@ BEGIN
 		`type_id` varchar(40) DEFAULT '0' COMMENT '节点类型',
 
 		`task_id` char(32) DEFAULT NULL COMMENT '节点所属生产任务id',
+		`project_id` char(32) DEFAULT NULL COMMENT '节点所属项目id',
     `owner_user_id` char(32) DEFAULT NULL COMMENT '节点所属用户id',
 
     `file_length` bigint(16) unsigned DEFAULT '0' COMMENT '节点文件长度',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_tree_storage' and column_name='project_id') then
+    alter table md_tree_storage add column `project_id` char(32) DEFAULT NULL COMMENT '节点所属项目id';
+  end if;
   if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_tree_storage' and column_name='file_length') then
     alter table md_tree_storage add column `file_length` bigint(16) unsigned DEFAULT '0' COMMENT '节点文件长度';
   end if;
@@ -175,9 +322,21 @@ BEGIN
 		`writable_key` varchar(255) DEFAULT NULL COMMENT '可写文件在文件服务器上的存储名称',
     `writable_file_length` bigint(16) unsigned DEFAULT '0' COMMENT '可写文件长度',
     `writable_file_md5` varchar(64) DEFAULT NULL COMMENT '可写文件md5校验和',
+    `is_pass_design` tinyint(1) DEFAULT '0' COMMENT '已提交过校审',
+    `is_pass_check` tinyint(1) DEFAULT '0' COMMENT '通过校验',
+    `is_pass_audit` tinyint(1) DEFAULT '0' COMMENT '通过审核',
 		PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_storage_file' and column_name='is_pass_design') then
+    alter table md_list_storage_file add column `is_pass_design` tinyint(1) DEFAULT '0' COMMENT '已提交过校审';
+  end if;
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_storage_file' and column_name='is_pass_check') then
+    alter table md_list_storage_file add column `is_pass_check` tinyint(1) DEFAULT '0' COMMENT '通过校验';
+  end if;
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_storage_file' and column_name='is_pass_audit') then
+    alter table md_list_storage_file add column `is_pass_audit` tinyint(1) DEFAULT '0' COMMENT '通过审核';
+  end if;
   if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_list_storage_file' and column_name='read_only_file_md5') then
     alter table md_list_storage_file add column `read_only_file_md5` varchar(64) DEFAULT NULL COMMENT '只读文件校验和';
   end if;
@@ -431,6 +590,217 @@ BEGIN
 END;
 call updateTables();
 
+-- 建立初始化权限数据过程
+DROP PROCEDURE IF EXISTS `initPermission`;
+CREATE PROCEDURE `initPermission`()
+BEGIN
+    -- 企业负责人
+    REPLACE INTO `maoding_web_role` VALUES ('23297de920f34785b7ad7f9f6f5fe9d1', null, 'OrgManager', '企业负责人', '0', '1', null, null, null, null);
+    REPLACE INTO `maoding_web_permission` VALUES ('11', 'sys_enterprise_logout', '组织解散', '1', '1', '1000', '0', null, null, null, null, '描述');
+    REPLACE INTO `maoding_web_permission` VALUES ('102', 'org_permission,sys_role_permission', '权限分配', '1', '1', '2000', '0', null, null, null, null, '描述');
+    REPLACE INTO `maoding_web_permission` VALUES ('54', 'project_delete', '删除项目', '5', '5', '3000', '0', null, null, null, null, '描述');
+    REPLACE INTO `maoding_web_permission` VALUES ('100', 'org_partner', '事业合伙人/分公司(创建/邀请)', '1', '1', '4000', '0', null, null, null, null, '描述');
+    REPLACE INTO `maoding_web_permission` VALUES ('101', 'org_auth,sys_role_auth', '企业认证', '1', '1', '5000', '0', null, null, null, null, '描述');
+    REPLACE INTO `maoding_web_permission` VALUES ('103', 'org_data_import,data_import', '历史数据导入', '5', '5', '6000', '0', null, null, null, null, '描述');
+
+    delete from maoding_web_role_permission where role_id = '23297de920f34785b7ad7f9f6f5fe9d1';
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+      select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5fe9d1',id,null,now() from maoding_web_permission
+      where id in (11,102,54,100,101,103);
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5fe9d1',11,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5fe9d1',102,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5fe9d1',54,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5fe9d1',100,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5fe9d1',101,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5fe9d1',103,id,now() from maoding_web_company;
+
+    -- 系统管理员
+    REPLACE INTO `maoding_web_role` VALUES ('2f84f20610314637a8d5113440c69bde', null, 'SystemManager', '系统管理员', '0', '2', '2015-12-01 16:14:03', null, null, null);
+    REPLACE INTO `maoding_web_permission` VALUES ('8', 'sys_role_permission', '权限分配', '1', '1', '2000', '0', null, null, null, null, '企业中，分配每个人所拥有的权限');
+    REPLACE INTO `maoding_web_permission` VALUES ('58', 'sys_role_auth', '企业认证', '1', '1', '5000', '0', null, null, null, null, '企业认证的权限');
+    REPLACE INTO `maoding_web_permission` VALUES ('55', 'data_import', '历史数据导入', '5', '5', '6000', '0', null, null, null, null, '企业中历史数据打入权限');
+
+    delete from maoding_web_role_permission where role_id = '2f84f20610314637a8d5113440c69bde';
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+      select replace(uuid(),'-',''),'2f84f20610314637a8d5113440c69bde',id,null,now() from maoding_web_permission
+      where id in (8,58,55);
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'2f84f20610314637a8d5113440c69bde',8,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'2f84f20610314637a8d5113440c69bde',58,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'2f84f20610314637a8d5113440c69bde',55,id,now() from maoding_web_company;
+
+    -- 组织管理
+    REPLACE INTO `maoding_web_role` VALUES ('23297de920f34785b7ad7f9f6f5fe9d0', null, 'GeneralManager', '组织管理', '0', '3', '2015-12-01 16:14:04', null, '2015-12-18 13:29:45', null);
+    REPLACE INTO `maoding_web_permission` VALUES ('12', 'com_enterprise_edit', '组织信息管理', '2', '2', '2200', '0', null, null, null, null, '企业信息编辑 修改 如企业名称 企业简介等');
+    REPLACE INTO `maoding_web_permission` VALUES ('14', 'hr_org_set,hr_employee', '组织架构设置', '2', '2', '2300', '0', null, null, null, null, '企业中相关人员，人员的添加 修改 删除');
+
+    delete from maoding_web_role_permission where role_id = '23297de920f34785b7ad7f9f6f5fe9d0';
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+      select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5fe9d0',id,null,now() from maoding_web_permission
+      where id in (12,14);
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5fe9d0',12,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5fe9d0',14,id,now() from maoding_web_company;
+
+    -- 行政管理
+    REPLACE INTO `maoding_web_role` VALUES ('0726c6aba7fa40918bb6e795bbe51059', null, 'AdminManager', '行政管理', '0', '4', '2015-12-10 15:59:24', null, '2015-12-18 13:29:55', null);
+    REPLACE INTO `maoding_web_permission` VALUES ('110', 'summary_leave', '请假/出差汇总', '2', '2', '2500', '0', null, null, null, null, '企业中相关人员，请假/出差审批完成后的汇总记录');
+    REPLACE INTO `maoding_web_permission` VALUES ('19', 'admin_notice', '通知公告发布', '4', '4', '2600', '0', null, null, null, null, '企业中相关公告信息 通知等');
+
+    delete from maoding_web_role_permission where role_id = '0726c6aba7fa40918bb6e795bbe51059';
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+      select replace(uuid(),'-',''),'0726c6aba7fa40918bb6e795bbe51059',id,null,now() from maoding_web_permission
+      where id in (110,19);
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'0726c6aba7fa40918bb6e795bbe51059',110,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'0726c6aba7fa40918bb6e795bbe51059',19,id,now() from maoding_web_company;
+
+
+    -- 项目管理
+    REPLACE INTO `maoding_web_role` VALUES ('23297de920f34785b7ad7f9f6f5f1112', null, 'OperateManager', '项目管理', '0', '5', '2016-07-25 19:18:26', null, '2016-07-25 19:18:31', null);
+    REPLACE INTO `maoding_web_permission` VALUES ('51', 'project_manager', '任务签发', '5', '5', '2650', '0', null, null, null, null, '企业中从事经营活动的相关人员进行任务的经营签发活动<br>注:系统默认新项目的经营负责人为排在任务签发第一位的人员');
+    REPLACE INTO `maoding_web_permission` VALUES ('52', 'design_manager', '生产安排', '5', '5', '2660', '0', null, null, null, null, '企业中的设计负责人可对经营负责人发布过来的任务进行具体安排<br>注:系统默认新项目的设计负责人为排在生产安排第一位的人员');
+    REPLACE INTO `maoding_web_permission` VALUES ('56', 'project_overview', '项目总览', '5', '5', '2670', '0', null, null, null, null, '企业中所有项目信息的查看权限');
+    REPLACE INTO `maoding_web_permission` VALUES ('57', 'project_archive', '查看项目文档', '5', '5', '2680', '0', null, null, null, null, '企业中所有项目文档（设计依据/归档文件/交付文件)的查看下载');
+    REPLACE INTO `maoding_web_permission` VALUES ('20', 'project_eidt,project_edit', '项目基本信息编辑', '5', '5', '2700', '0', null, null, null, null, '企业中所有项目中基本信息的编辑录入');
+
+    delete from maoding_web_role_permission where role_id = '23297de920f34785b7ad7f9f6f5f1112';
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+      select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5f1112',id,null,now() from maoding_web_permission
+      where id in (51,52,56,57,20);
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5f1112',51,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5f1112',52,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5f1112',56,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5f1112',57,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'23297de920f34785b7ad7f9f6f5f1112',20,id,now() from maoding_web_company;
+
+    -- 财务管理
+    REPLACE INTO `maoding_web_role` VALUES ('0fb8c188097a4d01a0ff6bb9cacb308e', null, 'FinancialManager', '财务管理', '0', '6', '2015-12-01 16:15:46', null, '2015-12-18 13:29:43', null);
+    REPLACE INTO `maoding_web_permission` VALUES ('46', 'report_exp_static', '查看/费用汇总', '2', '2', '5800', '0', null, null, null, null, '查看企业所有人员的报销/费用汇总情况');
+    REPLACE INTO `maoding_web_permission` VALUES ('10', 'sys_finance_type', '财务费用类别设置', '6', '6', '5810', '0', null, null, null, null, '设置企业报销/费用可申请或报销的类型进行设置');
+    REPLACE INTO `maoding_web_permission` VALUES ('49', 'project_charge_manage', '项目收支管理', '6', '6', '5820', '0', null, null, null, null, '项目费用（合同回款/技术审查费/合作设计费/其他收支)的到账/付款确认，报销/费用的拨款处理');
+
+    delete from maoding_web_role_permission where role_id = '0fb8c188097a4d01a0ff6bb9cacb308e';
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+      select replace(uuid(),'-',''),'0fb8c188097a4d01a0ff6bb9cacb308e',id,null,now() from maoding_web_permission
+      where id in (46,10,49);
+
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'0fb8c188097a4d01a0ff6bb9cacb308e',46,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'0fb8c188097a4d01a0ff6bb9cacb308e',10,id,now() from maoding_web_company;
+    insert into maoding_web_role_permission (id,role_id,permission_id,company_id,create_date)
+        select replace(uuid(),'-',''),'0fb8c188097a4d01a0ff6bb9cacb308e',49,id,now() from maoding_web_company;
+
+    -- 添加默认权限
+    -- 企业负责人
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+        select replace(uuid(),'-',''),company.id,role.user_id,102,now(),1
+				from maoding_web_company company
+						inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 11)
+  					left join maoding_web_user_permission role_have on (role_have.permission_id = 102 and company.id = role_have.company_id)
+				where role_have.permission_id is null;
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+        select replace(uuid(),'-',''),company.id,role.user_id,54,now(),1
+				from maoding_web_company company
+						inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 11)
+  					left join maoding_web_user_permission role_have on (role_have.permission_id = 54 and company.id = role_have.company_id)
+				where role_have.permission_id is null;
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+        select replace(uuid(),'-',''),company.id,role.user_id,100,now(),1
+				from maoding_web_company company
+						inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 11)
+  					left join maoding_web_user_permission role_have on (role_have.permission_id = 100 and company.id = role_have.company_id)
+				where role_have.permission_id is null;
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+        select replace(uuid(),'-',''),company.id,role.user_id,101,now(),1
+				from maoding_web_company company
+						inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 11)
+  					left join maoding_web_user_permission role_have on (role_have.permission_id = 101 and company.id = role_have.company_id)
+				where role_have.permission_id is null;
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+        select replace(uuid(),'-',''),company.id,role.user_id,103,now(),1
+				from maoding_web_company company
+						inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 11)
+  					left join maoding_web_user_permission role_have on (role_have.permission_id = 103 and company.id = role_have.company_id)
+				where role_have.permission_id is null;
+
+		-- 系统管理员
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+        select replace(uuid(),'-',''),company.id,role.user_id,8,now(),1
+				from maoding_web_company company
+						inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 11)
+  					left join maoding_web_user_permission role_have on (role_have.permission_id = 8 and company.id = role_have.company_id)
+				where role_have.permission_id is null;
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+        select replace(uuid(),'-',''),company.id,role.user_id,58,now(),1
+				from maoding_web_company company
+						inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 8)
+  					left join maoding_web_user_permission role_have on (role_have.permission_id = 58 and company.id = role_have.company_id)
+				where role_have.permission_id is null;
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+        select replace(uuid(),'-',''),company.id,role.user_id,55,now(),1
+				from maoding_web_company company
+						inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 8)
+  					left join maoding_web_user_permission role_have on (role_have.permission_id = 55 and company.id = role_have.company_id)
+				where role_have.permission_id is null;
+
+		-- 项目管理
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+        select replace(uuid(),'-',''),company.id,role.user_id,56,now(),1
+				from maoding_web_company company
+						inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 11)
+  					left join maoding_web_user_permission role_have on (role_have.permission_id = 56 and company.id = role_have.company_id)
+				where role_have.permission_id is null;
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+        select replace(uuid(),'-',''),company.id,role.user_id,57,now(),1
+				from maoding_web_company company
+						inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 11)
+  					left join maoding_web_user_permission role_have on (role_have.permission_id = 57 and company.id = role_have.company_id)
+				where role_have.permission_id is null;
+
+    -- 行政管理
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+      select replace(uuid(),'-',''),company.id,role.user_id,110,now(),1
+      from maoding_web_company company
+        inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 11)
+        left join maoding_web_user_permission role_have on (role_have.permission_id = 110 and company.id = role_have.company_id)
+      where role_have.permission_id is null;
+    insert into maoding_web_user_permission (id,company_id,user_id,permission_id,create_date,seq)
+      select replace(uuid(),'-',''),company.id,role.user_id,19,now(),1
+      from maoding_web_company company
+        inner join maoding_web_user_permission role on (company.id = role.company_id and role.permission_id = 11)
+        left join maoding_web_user_permission role_have on (role_have.permission_id = 19 and company.id = role_have.company_id)
+      where role_have.permission_id is null;
+END;
+-- call initPermission();
+
 -- 建立初始化常量存储过程
 DROP PROCEDURE IF EXISTS `initConst`;
 CREATE PROCEDURE `initConst`()
@@ -590,18 +960,19 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (25,4,'任务用户角色',null);
 
     -- -- -- -- --
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,24,'资料分类','1.分类布尔属性,1-是根目录,2-不过滤任务;2.目录节点类型;3.下属节点类型');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,24,'资料分类','1.分类布尔属性,1-是根目录,2-不过滤任务,3-显示;2.目录节点类型;3.下属节点类型');
     delete from md_const where classic_id = 24;
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,0,'未知分类',';');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,1,'设计','00;20;0,1,18,21,22,23');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,2,'提资','01;30;2,3,31,32,33');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,3,'发布','01;40;4,10,42,43');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,5,'网站','01;40;4,10,42,43');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,0,'未知分类','000;;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,1,'设计','011;20;0,1,18,21,22,23');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,2,'校审','011;70;71,7,18');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,3,'提资','011;30;2,3,31,32,33');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,4,'发布','010;40;4,10,42,43');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (24,5,'网站','010;40;4,10,42,43');
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,23,'web task任务类型定义','1.任务布尔属性,1-是经营任务,2-是生产任务;2.转换时节点类型生成偏移量,3.归属的资料分类目录');
     delete from md_const where classic_id = 23;
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,0,'生产任务','01;2;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,0,'生产任务','01;2;1');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,1,'签发任务','10;1;1,2,3');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (23,2,'签发生产任务','11;1;1,2,3');
 
@@ -645,8 +1016,9 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,1,'备份','3;历史版本/{SrcFileNoExt}_{Time:yyyyMMddHHmmss}{Ext};1;;;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,2,'校对','5;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};1;;;2');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,3,'审核','6;{SrcFileNoExt}_{Action}_{Time:yyyyMMddHHmmss}{Ext};1;;;2');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,4,'提资','2;/{Project}/{Range2}/{IssuePath}/{Major}/{Version}/{TaskPath}/{SrcFile};1;;;3');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,5,'上传','4;/{Project}/{Range3}/{IssuePath}/{ProjectId}-{CompanyId}-{TaskId}-{SkyPid}-{OwnerUserId}/{SrcFile};2;;;5');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,4,'提资','2;/{Project}/{Range3}/{IssuePath}/{Major}/{Version}/{TaskPath}/{SrcFile};1;;;3');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,5,'上传','4;/{Project}/{Range4}/{IssuePath}/{ProjectId}-{CompanyId}-{TaskId}-{SkyPid}-{OwnerUserId}/{SrcFile};2;;;5');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (20,6,'提交校审','7;/{Project}/{Range2}/{IssuePath}/{SrcFile};1;;;2');
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,19,'文件服务器类型','1.默认服务器地址(分号使用|代替);2.默认文件存储空间');
@@ -674,16 +1046,17 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (15,1,'锁定',null);
 
     -- -- -- -- --
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,14,'存储节点类型','1.节点布尔属性，1-是否目录，2-是否项目，3-是否任务，4-是否设计文档，5-是否提资文档，6-是否历史版本;2.子目录类型;3.子文件类型;4.文件所属角色');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,14,'存储节点类型','1.节点布尔属性，1-是否目录，2-是否项目，3-是否任务，4-是否设计文档，5-是否提资文档，6-是否历史版本;2.默认子目录类型;3.默认子文件类型;4.文件所属角色');
     delete from md_const where classic_id = 14;
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,0,'未知类型','000100;;;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,1,'设计文件','000100;;;41');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,2,'提资资料','000010;;;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,3,'历史版本','000001;;;');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,4,'网站归档文件','000000;;');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,5,'提交校验文件','000100;;42');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,6,'提交审核文件','000100;;43');
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,10,'未知类型目录','100000;10;1');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,4,'网站归档文件','000000;;;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,5,'提交校验文件','000100;;;42');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,6,'提交审核文件','000100;;;43');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,7,'提交校审文件','000000;;;41');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,10,'未知类型目录','100000;10;1;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,11,'项目目录','110000;10;1;23');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,12,'任务目录','101000;10;1;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,13,'组织目录','100000;10;1;');
@@ -705,6 +1078,8 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,42,'网站归档目录','100000;43;4;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,50,'成果目录','100000;10;1;');
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,60,'设计依据目录','100000;10;1;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,70,'校审目录','100000;71;7;');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (14,71,'校审任务目录','100000;71;7;');
 
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,11,'共享类型',null);
@@ -712,20 +1087,19 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (11,0,'全部共享',null);
 
     -- -- -- -- --
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,5,'文件类型',null);
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,5,'文件类型','');
     delete from md_const where classic_id = 5;
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,0,'未知类型',null);
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,1,'CAD设计文档',null);
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,3,'合同附件',null);
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,4,'公司logo',null);
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,5,'认证授权书',null);
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,6,'移动端上传轮播图片',null);
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,7,'公司邀请二维码',null);
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,8,'营业执照',null);
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,9,'法人身份证信息',null);
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,20,'报销附件',null);
-    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,21,'通知公告附件',null);
-
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,0,'未知类型','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,1,'CAD设计文档','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,3,'合同附件','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,4,'公司logo','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,5,'认证授权书','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,6,'移动端上传轮播图片','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,7,'公司邀请二维码','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,8,'营业执照','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,9,'法人身份证信息','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,20,'报销附件','');
+    REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (5,21,'通知公告附件','');
     -- -- -- -- --
     REPLACE INTO md_const (classic_id,code_id,title,extra) VALUES (0,1,'操作权限',null);
     delete from md_const where classic_id = 1;
@@ -921,6 +1295,7 @@ BEGIN
                          as attr_str,
       substring(range_type.extra,1,1) as is_root,
       substring(range_type.extra,2,1) as is_show_all_task,
+      substring(range_type.extra,3,1) as is_display,
       substring(range_type.extra,
                 char_length(substring_index(range_type.extra,';',1))+2,
                 char_length(substring_index(range_type.extra,';',2)) - char_length(substring_index(range_type.extra,';',1))-1)
@@ -1125,16 +1500,14 @@ BEGIN
       project.project_name as name,
       concat('/',project.project_name) as path,
       unix_timestamp(ifnull(project.create_date,0)) as create_time_stamp,
-      date_format(project.create_date,'%Y-%m-%d %T') as create_time_text,
+      date_format(project.create_date,'%Y/%m/%d %T') as create_time_text,
       unix_timestamp(if(project.update_date is null,ifnull(project.create_date,0),project.update_date)) as last_modify_time_stamp,
-      date_format(ifnull(project.update_date,project.create_date),'%Y-%m-%d %T') as last_modify_time_text,
+      date_format(ifnull(project.update_date,project.create_date),'%Y/%m/%d %T') as last_modify_time_text,
       ifnull(project.update_by,project.create_by) as owner_user_id,
       project.update_by as last_modify_user_id,
       null as last_modify_role_id,
-      if(project.id is null,null,0) as read_only_file_length,
-      if(project.id is null,null,0) as writable_file_length,
-      null as read_only_file_md5,
-      null as writable_file_md5,
+      if(project.id is null,null,0) as file_length,
+      null as file_md5,
       null as range_id,
       node_type.is_directory,
       node_type.is_project,
@@ -1147,10 +1520,17 @@ BEGIN
       project.id as project_id,
       project.company_id as company_id,
       project.id as root_id,
-      node_type.owner_role_type as owner_role_id
+      node_type.owner_role_type as owner_role_id,
+      account.user_name as owner_user_name,
+      project.project_name as project_name,
+      null as task_name,
+      if(project.id is null,null,0) as is_pass_design,
+      if(project.id is null,null,0) as is_pass_check,
+      if(project.id is null,null,0) as is_pass_audit
     from
       maoding_web_project project
       inner join md_type_node node_type on (node_type.type_id = 11)
+      left join maoding_web_account account on (ifnull(project.update_by,project.create_by) = account.id)
     where
       (project.pstatus = '0');
 
@@ -1164,16 +1544,14 @@ BEGIN
       concat('/',ifnull(project.project_name,'未知项目'),
              '/',range_type.type_name) as path,
       unix_timestamp(ifnull(project.create_date,0)) as create_time_stamp,
-      date_format(project.create_date,'%Y-%m-%d %T') as create_time_text,
+      date_format(project.create_date,'%Y/%m/%d %T') as create_time_text,
       unix_timestamp(if(project.update_date is null,ifnull(project.create_date,0),project.update_date)) as last_modify_time_stamp,
-      date_format(ifnull(project.update_date,project.create_date),'%Y-%m-%d %T') as last_modify_time_text,
+      date_format(ifnull(project.update_date,project.create_date),'%Y/%m/%d %T') as last_modify_time_text,
       ifnull(project.update_by,project.create_by) as owner_user_id,
       project.update_by as last_modify_user_id,
       null as last_modify_role_id,
-      if(range_type.type_id is null,null,0) as read_only_file_length,
-      if(range_type.type_id is null,null,0) as writable_file_length,
-      null as read_only_file_md5,
-      null as writable_file_md5,
+      if(range_type.type_id is null,null,0) as file_length,
+      null as file_md5,
       range_type.type_id as range_id,
       node_type.is_directory,
       node_type.is_project,
@@ -1186,13 +1564,20 @@ BEGIN
       project.id as project_id,
       project.company_id as company_id,
       project.id as root_id,
-      node_type.owner_role_type as owner_role_id
+      node_type.owner_role_type as owner_role_id,
+      account.user_name as owner_user_name,
+      project.project_name as project_name,
+      null as task_name,
+      if(project.id is null,null,0) as is_pass_design,
+      if(project.id is null,null,0) as is_pass_check,
+      if(project.id is null,null,0) as is_pass_audit
     from
       md_type_range range_type
       inner join maoding_web_project project on (project.pstatus = '0')
       inner join md_type_node node_type on (node_type.type_id = range_type.node_type)
+      left join maoding_web_account account on (ifnull(project.update_by,project.create_by) = account.id)
     where
-      (range_type.type_id != 0);
+      (range_type.is_display != 0);
 
   -- -- 文件节点视图与任务相关的部分
   CREATE OR REPLACE VIEW `md_node_task` AS
@@ -1205,16 +1590,14 @@ BEGIN
               '/',ifnull(range_type.type_name,'未知类别'),
               '/',task.path) as path,
       unix_timestamp(ifnull(task.create_date,0)) as create_time_stamp,
-      date_format(task.create_date,'%Y-%m-%d %T') as create_time_text,
+      date_format(task.create_date,'%Y/%m/%d %T') as create_time_text,
       unix_timestamp(if(task.update_date is null,ifnull(task.create_date,0),task.update_date)) as last_modify_time_stamp,
-      date_format(ifnull(task.update_date,task.create_date),'%Y-%m-%d %T') as last_modify_time_text,
+      date_format(ifnull(task.update_date,task.create_date),'%Y/%m/%d %T') as last_modify_time_text,
       ifnull(task.update_by,task.create_by) as owner_user_id,
       task.update_by as last_modify_user_id,
       null as last_modify_role_id,
-      if(task.id is null,null,0) as read_only_file_length,
-      if(task.id is null,null,0) as writable_file_length,
-      null as read_only_file_md5,
-      null as writable_file_md5,
+      if(task.id is null,null,0) as file_length,
+      null as file_md5,
       range_type.type_id as range_id,
       node_type.is_directory,
       node_type.is_project,
@@ -1227,40 +1610,46 @@ BEGIN
       task.project_id,
       task.company_id,
       task.project_id as root_id,
-      node_type.owner_role_type as owner_role_id
+      node_type.owner_role_type as owner_role_id,
+      account.user_name as owner_user_name,
+      project.project_name as project_name,
+      task.task_name as task_name,
+      if(task.id is null,null,0) as is_pass_design,
+      if(task.id is null,null,0) as is_pass_check,
+      if(task.id is null,null,0) as is_pass_audit
     from
       md_web_task task
       inner join maoding_web_project project on (task.project_id = project.id)
       inner join md_type_web_task web_task_type on (task.type_id = web_task_type.type_id)
-      inner join md_type_range range_type on (find_in_set(range_type.type_id,web_task_type.in_range))
-      inner join md_type_node node_type on (node_type.type_id = (range_type.node_type + web_task_type.node_type_offset));
+      inner join md_type_range range_type on (range_type.is_display != 0 and find_in_set(range_type.type_id,web_task_type.in_range))
+      inner join md_type_node node_type on (node_type.type_id = (range_type.node_type + web_task_type.node_type_offset))
+      left join maoding_web_account account on (ifnull(task.update_by,task.create_by) = account.id);
 
   -- -- 文件节点视图与文件树相关部分
   CREATE OR REPLACE VIEW `md_node_storage` AS
     select
       concat(storage_tree.id,'-',range_type.type_id) as id,
       concat(if(storage_tree.pid is null,
-                if(storage_tree.task_id is null,null,concat(storage_tree.task_id,'-',range_type.type_id)),
+                if(ifnull(storage_tree.task_id,storage_tree.project_id) is null,null,
+                   concat(ifnull(storage_tree.task_id,storage_tree.project_id),'-',range_type.type_id)),
                 concat(storage_tree.pid,'-',range_type.type_id))) as pid,
       storage_tree.type_id,
       storage_tree.node_name as name,
-      if(storage_tree.task_id is null,
+      if(ifnull(storage_tree.task_id,storage_tree.project_id) is null,
          concat(storage_tree.path),
-         concat('/',ifnull(project.project_name,'未知项目'),
-              '/',ifnull(range_type.type_name,'未知类别'),
-              '/',ifnull(task.path,'未知任务'),
-              '/',storage_tree.path)) as path,
+         concat(if(project.project_name is null,'',concat('/',project.project_name)),
+                if(range_type.type_name is null,'',concat('/',range_type.type_name)),
+                if(task.path is null,'',concat('/',task.path)),
+                '/',storage_tree.path)) as path,
       unix_timestamp(ifnull(storage_tree.create_time,0)) as create_time_stamp,
-      date_format(storage_tree.create_time,'%Y-%m-%d %T') as create_time_text,
+      date_format(storage_tree.create_time,'%Y/%m/%d %T') as create_time_text,
       unix_timestamp(ifnull(storage_tree.last_modify_time,0)) as last_modify_time_stamp,
-      date_format(storage_tree.last_modify_time,'%Y-%m-%d %T') as last_modify_time_text,
+      date_format(storage_tree.last_modify_time,'%Y/%m/%d %T') as last_modify_time_text,
       storage_tree.owner_user_id,
       storage_tree.last_modify_user_id,
       storage_tree.last_modify_role_id,
-      ifnull(file_list.read_only_file_length,0) as read_only_file_length,
-      ifnull(file_list.writable_file_length,0) as writable_file_length,
-      file_list.read_only_file_md5,
-      file_list.writable_file_md5,
+      ifnull(file_list.read_only_file_length,0) as file_length,
+      file_list.read_only_file_md5 as file_md5,
       range_type.type_id as range_id,
       node_type.is_directory,
       node_type.is_project,
@@ -1270,17 +1659,24 @@ BEGIN
       node_type.is_history,
       task.issue_id,
       task.id as task_id,
-      task.project_id,
+      project.id as project_id,
       task.company_id,
-      task.project_id as root_id,
-      node_type.owner_role_type as owner_role_id
+      project.id as root_id,
+      node_type.owner_role_type as owner_role_id,
+      account.user_name as owner_user_name,
+      project.project_name as project_name,
+      task.task_name as task_name,
+      ifnull(file_list.is_pass_design,0) as is_pass_design,
+      ifnull(file_list.is_pass_check,0) as is_pass_check,
+      ifnull(file_list.is_pass_audit,0) as is_pass_audit
     from
       md_tree_storage storage_tree
       inner join md_type_node node_type on (storage_tree.type_id = node_type.type_id)
-      inner join md_type_range range_type on (find_in_set(node_type.type_id,range_type.sub_node_type))
+      inner join md_type_range range_type on (range_type.is_display != 0 && find_in_set(node_type.type_id,range_type.sub_node_type))
       left join md_list_storage_file file_list on (storage_tree.id = file_list.id)
       left join md_web_task task on (storage_tree.task_id = task.id)
-      left join maoding_web_project project on (task.project_id = project.id)
+      left join maoding_web_project project on (ifnull(storage_tree.project_id,task.project_id) = project.id)
+      left join maoding_web_account account on (storage_tree.owner_user_id = account.id)
     where
       (storage_tree.deleted = 0);
 
@@ -1301,9 +1697,9 @@ BEGIN
         if(old_node_parent1.file_name is null,'',concat(old_node_parent1.file_name,'/')),
         old_node.file_name) as path,
       unix_timestamp(ifnull(old_node.create_date,0)) as create_time_stamp,
-      date_format(old_node.create_date,'%Y-%m-%d %T') as create_time_text,
+      date_format(old_node.create_date,'%Y/%m/%d %T') as create_time_text,
       unix_timestamp(ifnull(old_node.update_date,ifnull(old_node.create_date,0))) as last_modify_time_stamp,
-      date_format(ifnull(old_node.update_date,old_node.create_date),'%Y-%m-%d %T') as last_modify_time_text,
+      date_format(ifnull(old_node.update_date,old_node.create_date),'%Y/%m/%d %T') as last_modify_time_text,
       ifnull(old_node.update_by,old_node.create_by) as owner_user_id,
       old_node.update_by as last_modify_user_id,
       null as last_modify_role_id,
@@ -1382,15 +1778,15 @@ BEGIN
           if(project.status = '0',0,1) as is_complete,
           task_role.account_id as user_id,
           task_role.project_id as project_id,
-          null as task_id,
+          task.id as task_id,
           task_role.company_id as company_id,
           unix_timestamp(ifnull(task_role.create_date,0)) as create_time_stamp,
-          date_format(task_role.create_date,'%y-%m-%d %T') as create_time_text,
+          date_format(task_role.create_date,'%Y/%m/%d %T') as create_time_text,
           unix_timestamp(if(task_role.update_date is null,ifnull(task_role.create_date,0),task_role.update_date)) as last_modify_time_stamp,
-          date_format(ifnull(task_role.update_date,task_role.create_date),'%y-%m-%d %T') as last_modify_time_text,
+          date_format(ifnull(task_role.update_date,task_role.create_date),'%Y/%m/%d %T') as last_modify_time_text,
           account.user_name,
           project.project_name,
-          null as task_name,
+          task.task_name as task_name,
           company.company_name
       from
           maoding_web_project_member task_role
@@ -1398,6 +1794,7 @@ BEGIN
           inner join maoding_web_account account on (account.status = '0' and task_role.account_id = account.id)
           inner join maoding_web_project project on (project.pstatus = '0' and task_role.project_id = project.id)
           inner join maoding_web_company company on (company.status = '0' and task_role.company_id = company.id)
+          left join maoding_web_project_task task on (task.task_status = '0' and (task_role.node_id = task.id or task_role.target_id = task.id))
       where
           task_role.deleted = 0;
 
@@ -1426,9 +1823,9 @@ BEGIN
           ifnull(task_role.node_id,task_role.target_id) as task_id,
           task_role.company_id as company_id,
           unix_timestamp(ifnull(task_role.create_date,0)) as create_time_stamp,
-          date_format(task_role.create_date,'%y-%m-%d %T') as create_time_text,
+          date_format(task_role.create_date,'%Y/%m/%d %T') as create_time_text,
           unix_timestamp(if(task_role.update_date is null,ifnull(task_role.create_date,0),task_role.update_date)) as last_modify_time_stamp,
-          date_format(ifnull(task_role.update_date,task_role.create_date),'%y-%m-%d %T') as last_modify_time_text,
+          date_format(ifnull(task_role.update_date,task_role.create_date),'%Y/%m/%d %T') as last_modify_time_text,
           account.user_name,
           project.project_name,
           task.task_name,
@@ -1473,9 +1870,9 @@ BEGIN
       null as task_id,
       company_role.company_id as company_id,
       unix_timestamp(ifnull(company_role.create_date,0)) as create_time_stamp,
-      date_format(company_role.create_date,'%y-%m-%d %T') as create_time_text,
+      date_format(company_role.create_date,'%Y/%m/%d %T') as create_time_text,
       unix_timestamp(if(company_role.update_date is null,ifnull(company_role.create_date,0),company_role.update_date)) as last_modify_time_stamp,
-      date_format(ifnull(company_role.update_date,company_role.create_date),'%y-%m-%d %T') as last_modify_time_text,
+      date_format(ifnull(company_role.update_date,company_role.create_date),'%Y/%m/%d %T') as last_modify_time_text,
       account.user_name,
       null as project_name,
       null as task_name,

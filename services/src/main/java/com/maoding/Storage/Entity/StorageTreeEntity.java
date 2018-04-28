@@ -13,15 +13,22 @@ import javax.persistence.Table;
  */
 @Table(name = "md_tree_storage")
 public class StorageTreeEntity extends BaseTreeEntity {
-    /** 文件长度，如果节点是目录则固定为0 */
-    @Column
-    private Long fileLength;
-    /** 相关联的任务id */
-    @Column
+    @Column /** 相关联的任务id */
     private String taskId;
-    /** 文件所属用户id */
-    @Column
+
+    @Column /** 相关联的项目id */
+    private String projectId;
+
+    @Column /** 文件所属用户id */
     private String ownerUserId;
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
     public String getOwnerUserId() {
         return ownerUserId;
@@ -37,14 +44,6 @@ public class StorageTreeEntity extends BaseTreeEntity {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
-    }
-
-    public Long getFileLength() {
-        return fileLength;
-    }
-
-    public void setFileLength(Long fileLength) {
-        this.fileLength = fileLength;
     }
 
 }

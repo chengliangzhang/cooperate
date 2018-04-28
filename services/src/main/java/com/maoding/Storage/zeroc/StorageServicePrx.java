@@ -22,6 +22,57 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default java.util.List<CANodeDTO> listCANode(QueryCANodeDTO query)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listCANode(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<CANodeDTO> listCANode(QueryCANodeDTO query, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listCANodeAsync(query, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<CANodeDTO>> listCANodeAsync(QueryCANodeDTO query)
+    {
+        return _iceI_listCANodeAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<CANodeDTO>> listCANodeAsync(QueryCANodeDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listCANodeAsync(query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<CANodeDTO>> _iceI_listCANodeAsync(QueryCANodeDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<CANodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listCANode", null, sync, _iceE_listCANode);
+        f.invoke(true, context, null, ostr -> {
+                     QueryCANodeDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     java.util.List<CANodeDTO> ret;
+                     ret = CANodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listCANode =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
     default EmbedElementDTO createEmbedElement(UpdateElementDTO request)
         throws com.maoding.Common.zeroc.CustomException
     {

@@ -9,11 +9,32 @@
 [["java:package:com.maoding.FileServer"]]
 module zeroc {
     interface FileService {
+        CANodeList listDesignNode(AccountDTO account) throws CustomException; //查询可提交的设计文档
+        CANodeList listCANode(AccountDTO account) throws CustomException; //查询可校审的文档
+
+        CommitListResultDTO checkNodeListRequest(CANodeList srcList) throws CustomException; //提交文件
+        CommitListResultDTO checkNodeListRequestForAccount(AccountDTO account,CANodeList srcList) throws CustomException; //提交文件
+        SimpleNodeDTO checkNodeRequest(CANodeDTO src) throws CustomException; //提交文件
+        SimpleNodeDTO checkNodeRequestForAccount(AccountDTO account,CANodeDTO src) throws CustomException; //提交文件
+
+        CommitListResultDTO auditNodeListRequest(CANodeList srcList) throws CustomException; //提交文件
+        CommitListResultDTO auditNodeListRequestForAccount(AccountDTO account,CANodeList srcList) throws CustomException; //提交文件
+        SimpleNodeDTO auditNodeRequest(CANodeDTO src) throws CustomException; //提交文件
+        SimpleNodeDTO auditNodeRequestForAccount(AccountDTO account,CANodeDTO src) throws CustomException; //提交文件
+
+        CommitListResultDTO askCANodeListRequest(CANodeList srcList) throws CustomException; //提交文件
+        CommitListResultDTO askCANodeListRequestForAccount(AccountDTO account,CANodeList srcList) throws CustomException; //提交文件
+        SimpleNodeDTO askCANodeRequest(CANodeDTO src) throws CustomException; //提交文件
+        SimpleNodeDTO askCANodeRequestForAccount(AccountDTO account,CANodeDTO src) throws CustomException; //提交文件
+
+        long getTime() throws CustomException; //获取服务器时间
+
         void restartWebRole(WebRoleDTO webRole) throws CustomException; //设置角色工作状态为未完成
         void finishWebRole(WebRoleDTO webRole) throws CustomException; //设置角色工作状态为完成
         void setWebRoleStatus(WebRoleDTO webRole, string statusId) throws CustomException; //设置角色工作状态
         WebRoleDTO getWebRole(AccountDTO account,SimpleNodeDTO node) throws CustomException; //根据node和账号获取角色
         WebRoleList listWebRoleTask(AccountDTO account) throws CustomException; //列出用户在生产任务中担任的角色
+        WebRoleList listAllWebRole(AccountDTO account) throws CustomException; //列出用户在生产任务中担任的角色
 
         AnnotateDTO createAnnotateCheck(AccountDTO account,SimpleNodeDTO node,AnnotateRequestDTO request) throws CustomException; //创建校验意见
         AnnotateDTO createAnnotateAudit(AccountDTO account,SimpleNodeDTO node,AnnotateRequestDTO request) throws CustomException; //创建审核意见
@@ -66,16 +87,6 @@ module zeroc {
         SimpleNodeDTO issueNode(SimpleNodeDTO src,CommitRequestDTO request) throws CustomException; //提交文件到web
         SimpleNodeDTO issueNodeForAccount(AccountDTO account,SimpleNodeDTO src,CommitRequestDTO request) throws CustomException; //提交文件到web
 
-        CommitListResultDTO checkNodeListRequest(SimpleNodeList srcList,CommitRequestDTO request) throws CustomException; //提交文件
-        CommitListResultDTO checkNodeListRequestForAccount(AccountDTO account,SimpleNodeList srcList,CommitRequestDTO request) throws CustomException; //提交文件
-        SimpleNodeDTO checkNodeRequest(SimpleNodeDTO src,CommitRequestDTO request) throws CustomException; //提交文件
-        SimpleNodeDTO checkNodeRequestForAccount(AccountDTO account,SimpleNodeDTO src,CommitRequestDTO request) throws CustomException; //提交文件
-
-        CommitListResultDTO auditNodeListRequest(SimpleNodeList srcList,CommitRequestDTO request) throws CustomException; //提交文件
-        CommitListResultDTO auditNodeListRequestForAccount(AccountDTO account,SimpleNodeList srcList,CommitRequestDTO request) throws CustomException; //提交文件
-        SimpleNodeDTO auditNodeRequest(SimpleNodeDTO src,CommitRequestDTO request) throws CustomException; //提交文件
-        SimpleNodeDTO auditNodeRequestForAccount(AccountDTO account,SimpleNodeDTO src,CommitRequestDTO request) throws CustomException; //提交文件
-
         CommitListResultDTO commitNodeList(SimpleNodeList srcList,CommitRequestDTO request) throws CustomException; //提交文件
         CommitListResultDTO commitNodeListForAccount(AccountDTO account,SimpleNodeList srcList,CommitRequestDTO request) throws CustomException; //提交文件
         SimpleNodeDTO commitNode(SimpleNodeDTO src,CommitRequestDTO request) throws CustomException; //提交文件
@@ -113,6 +124,7 @@ module zeroc {
 
         bool isEmpty(SimpleNodeDTO node) throws CustomException; //判断节点是否存在子节点
         bool isExist(string path) throws CustomException; //判断节点是否存在
+        bool isExistForAccount(AccountDTO account,string path) throws CustomException; //判断节点是否存在
 
         SimpleNodeDTO moveNode(SimpleNodeDTO src,SimpleNodeDTO dstParent,MoveNodeRequestDTO request) throws CustomException; //移动节点
         SimpleNodeDTO moveNodeForAccount(AccountDTO account,SimpleNodeDTO src,SimpleNodeDTO dstParent,MoveNodeRequestDTO request) throws CustomException; //移动节点

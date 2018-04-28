@@ -70,6 +70,11 @@ public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx
     }
 
     @Override
+    public List<CANodeDTO> listCANode(QueryCANodeDTO query) throws CustomException {
+        return getStorageService().listCANode(query,null);
+    }
+
+    @Override
     public List<SimpleNodeDTO> listChildren(SimpleNodeDTO parent) throws CustomException {
         return getStorageService().listChildren(parent,null);
     }

@@ -55,9 +55,41 @@ public class StorageFileEntity extends BaseEntity {
     @Column /** 可写文件md5校验和 */
     private String writableFileMd5;
 
-    /** 文件在文件服务器上的存储位置 */
-    @Column
+    @Column /** 文件在文件服务器上的存储位置 */
     private String baseDir;
+
+    @Column /** 是否已提交过校审 */
+    private Short isPassDesign;
+
+    @Column /** 是否通过校验 */
+    private Short isPassCheck;
+
+    @Column /** 是否通过审核 */
+    private Short isPassAudit;
+
+    public Short getIsPassDesign() {
+        return isPassDesign;
+    }
+
+    public void setIsPassDesign(Short isPassDesign) {
+        this.isPassDesign = isPassDesign;
+    }
+
+    public Short getIsPassCheck() {
+        return isPassCheck;
+    }
+
+    public void setIsPassCheck(Short isPassCheck) {
+        this.isPassCheck = isPassCheck;
+    }
+
+    public Short getIsPassAudit() {
+        return isPassAudit;
+    }
+
+    public void setIsPassAudit(Short isPassAudit) {
+        this.isPassAudit = isPassAudit;
+    }
 
     public long getReadOnlyFileLength() {
         return readOnlyFileLength;

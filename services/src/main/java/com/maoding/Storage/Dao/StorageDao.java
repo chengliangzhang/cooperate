@@ -17,6 +17,7 @@ import java.util.Map;
  */
 @Repository
 public interface StorageDao {
+    List<CANodeDTO> listCANode(QueryCANodeDTO query);
     List<SimpleNodeDTO> listWebArchiveDir(QueryNodeDTO query);
 
     List<SimpleNodeDTO> listNode(QueryNodeDTO query);

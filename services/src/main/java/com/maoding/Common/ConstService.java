@@ -6,6 +6,8 @@ import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.Common.zeroc.StringElementDTO;
 import com.maoding.CoreUtils.SpringUtils;
 import com.maoding.CoreUtils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -20,6 +22,9 @@ import java.util.Map;
  * 描    述 :
  */
 public class ConstService {
+    /** 日志对象 */
+    private static final Logger log = LoggerFactory.getLogger(ConstService.class);
+
     public static final Short CLASSIC_TYPE_CONST = 0;
     public static final Short CLASSIC_TYPE_RIGHT = 1;
     public static final Short CLASSIC_TYPE_COOPERATOR = 2;
@@ -111,7 +116,8 @@ public class ConstService {
     //分类常量
     public static final Short STORAGE_RANGE_TYPE_UNKNOWN = 0;
     public static final Short STORAGE_RANGE_TYPE_DESIGN = 1;
-    public static final Short STORAGE_RANGE_TYPE_COMMIT = 2;
+    public static final Short STORAGE_RANGE_TYPE_CA = 2;
+    public static final Short STORAGE_RANGE_TYPE_COMMIT = 3;
 
     /** 历史动作类型 */
     public static final Short STORAGE_ACTION_TYPE_UNKOWN = 0;
@@ -120,6 +126,7 @@ public class ConstService {
     public static final Short STORAGE_ACTION_TYPE_AUDIT = 3;
     public static final Short STORAGE_ACTION_TYPE_COMMIT = 4;
     public static final Short STORAGE_ACTION_TYPE_ISSUE = 5;
+    public static final Short STORAGE_ACTION_TYPE_ASK_CA = 6;
 
     /** 通知类型 */
     public static final Short NOTICE_TYPE_UNDEFINE = 0;
@@ -138,6 +145,16 @@ public class ConstService {
     public static final Short FILE_SERVER_TYPE_CIFS = 5;
     public static final Short FILE_SERVER_TYPE_FTP = 6;
     public static final Short FILE_SERVER_TYPE_ICE = 7;
+
+    /** web角色类型 */
+    public static final Short WEB_ROLE_PROJECT_CREATOR = 0;
+    public static final Short WEB_ROLE_PROJECT_ISSUE = 1;
+    public static final Short WEB_ROLE_PROJECT_DESIGN = 2;
+    public static final Short WEB_ROLE_TASK_RESPONSE = 3;
+    public static final Short WEB_ROLE_TASK_DESIGN = 4;
+    public static final Short WEB_ROLE_TASK_CHECK = 5;
+    public static final Short WEB_ROLE_TASK_AUDIT = 6;
+
 
     public static final Integer POS_IS_DIRECTORY = 0;
     public static final Integer POS_IS_PROJECT = 1;
@@ -272,7 +289,7 @@ public class ConstService {
         for (Map.Entry<Short, ConstEntity> rangeEntry : rangeMap.entrySet()) {
             ConstEntity range = rangeEntry.getValue();
             if (range != null) {
-                String typeIds = range.getExtra(2);
+                String typeIds = range.getExtra(3);
                 if ((typeIds != null) && (typeIds.contains(typeId))) {
                     rangeId = range.getCodeId();
                     break;
@@ -458,14 +475,29 @@ public class ConstService {
     }
 
     public static String getTypeName(@NotNull String typeId){
-        return getTitle(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId));
+        try {
+            return getTitle(CLASSIC_TYPE_STORAGE_NODE, Short.parseShort(typeId));
+        } catch (NumberFormatException e) {
+            log.warn("节点类型存在问题");
+            return getTitle(CLASSIC_TYPE_STORAGE_NODE, STORAGE_NODE_TYPE_UNKNOWN);
+        }
     }
 
     public static String getPathType(@NotNull String typeId){
-        return getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId),2);
+        try {
+            return getExtra(CLASSIC_TYPE_STORAGE_NODE, Short.parseShort(typeId), 2);
+        } catch (NumberFormatException e) {
+            log.warn("父目录节点类型存在问题");
+            return STORAGE_NODE_TYPE_DIR_UNKNOWN.toString();
+        }
     }
 
     public static String getFileType(@NotNull String typeId){
-        return getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId),3);
+        try {
+            return getExtra(CLASSIC_TYPE_STORAGE_NODE, Short.parseShort(typeId), 3);
+        } catch (NumberFormatException e) {
+            log.warn("父目录节点类型存在问题");
+            return STORAGE_NODE_TYPE_UNKNOWN.toString();
+        }
     }
 }
