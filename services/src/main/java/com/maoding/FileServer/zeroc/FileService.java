@@ -22,7 +22,7 @@ package com.maoding.FileServer.zeroc;
 
 public interface FileService extends com.zeroc.Ice.Object
 {
-    java.util.List<com.maoding.Storage.zeroc.CANodeDTO> listDesignNode(com.maoding.User.zeroc.AccountDTO account, com.zeroc.Ice.Current current)
+    java.util.List<com.maoding.Storage.zeroc.CANodeDTO> listDesignNode(com.maoding.User.zeroc.AccountDTO account, boolean isForCommit, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
     java.util.List<com.maoding.Storage.zeroc.CANodeDTO> listCANode(com.maoding.User.zeroc.AccountDTO account, com.zeroc.Ice.Current current)
@@ -229,6 +229,9 @@ public interface FileService extends com.zeroc.Ice.Object
     com.maoding.Storage.zeroc.SimpleNodeDTO updateVersion(com.maoding.User.zeroc.AccountDTO account, com.maoding.Storage.zeroc.SimpleNodeDTO src, com.maoding.Storage.zeroc.SimpleNodeDTO dst, CommitRequestDTO request, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
+    CommitListResultDTO updateNodeList(com.maoding.User.zeroc.AccountDTO account, java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> srcList, CommitRequestDTO request, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
     boolean deleteNode(com.maoding.Storage.zeroc.SimpleNodeDTO src, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
@@ -390,9 +393,11 @@ public interface FileService extends com.zeroc.Ice.Object
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
         com.maoding.User.zeroc.AccountDTO iceP_account;
+        boolean iceP_isForCommit;
         iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_isForCommit = istr.readBool();
         inS.endReadParams();
-        java.util.List<com.maoding.Storage.zeroc.CANodeDTO> ret = obj.listDesignNode(iceP_account, current);
+        java.util.List<com.maoding.Storage.zeroc.CANodeDTO> ret = obj.listDesignNode(iceP_account, iceP_isForCommit, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         com.maoding.Storage.zeroc.CANodeListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
@@ -1520,6 +1525,25 @@ public interface FileService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_updateNodeList(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        com.maoding.User.zeroc.AccountDTO iceP_account;
+        java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> iceP_srcList;
+        CommitRequestDTO iceP_request;
+        iceP_account = com.maoding.User.zeroc.AccountDTO.ice_read(istr);
+        iceP_srcList = com.maoding.Storage.zeroc.SimpleNodeListHelper.read(istr);
+        iceP_request = CommitRequestDTO.ice_read(istr);
+        inS.endReadParams();
+        CommitListResultDTO ret = obj.updateNodeList(iceP_account, iceP_srcList, iceP_request, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        CommitListResultDTO.ice_write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_deleteNode(FileService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
@@ -2390,6 +2414,7 @@ public interface FileService extends com.zeroc.Ice.Object
         "setNoticeClient",
         "setWebRoleStatus",
         "updateAnnotate",
+        "updateNodeList",
         "updateVersion",
         "writeAccessory",
         "writeFile",
@@ -2856,25 +2881,29 @@ public interface FileService extends com.zeroc.Ice.Object
             }
             case 111:
             {
-                return _iceD_updateVersion(this, in, current);
+                return _iceD_updateNodeList(this, in, current);
             }
             case 112:
             {
-                return _iceD_writeAccessory(this, in, current);
+                return _iceD_updateVersion(this, in, current);
             }
             case 113:
             {
-                return _iceD_writeFile(this, in, current);
+                return _iceD_writeAccessory(this, in, current);
             }
             case 114:
             {
-                return _iceD_writeFileAndRelease(this, in, current);
+                return _iceD_writeFile(this, in, current);
             }
             case 115:
             {
-                return _iceD_writeNode(this, in, current);
+                return _iceD_writeFileAndRelease(this, in, current);
             }
             case 116:
+            {
+                return _iceD_writeNode(this, in, current);
+            }
+            case 117:
             {
                 return _iceD_writeNodeForAccount(this, in, current);
             }

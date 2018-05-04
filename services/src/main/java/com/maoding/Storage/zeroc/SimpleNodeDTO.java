@@ -220,57 +220,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.taskName = taskName;
     }
 
-    public boolean isPassDesign;
-
-    public boolean getIsPassDesign()
-    {
-        return isPassDesign;
-    }
-
-    public void setIsPassDesign(boolean isPassDesign)
-    {
-        this.isPassDesign = isPassDesign;
-    }
-
-    public boolean isIsPassDesign()
-    {
-        return isPassDesign;
-    }
-
-    public boolean isPassCheck;
-
-    public boolean getIsPassCheck()
-    {
-        return isPassCheck;
-    }
-
-    public void setIsPassCheck(boolean isPassCheck)
-    {
-        this.isPassCheck = isPassCheck;
-    }
-
-    public boolean isIsPassCheck()
-    {
-        return isPassCheck;
-    }
-
-    public boolean isPassAudit;
-
-    public boolean getIsPassAudit()
-    {
-        return isPassAudit;
-    }
-
-    public void setIsPassAudit(boolean isPassAudit)
-    {
-        this.isPassAudit = isPassAudit;
-    }
-
-    public boolean isIsPassAudit()
-    {
-        return isPassAudit;
-    }
-
     public boolean isReadOnly;
 
     public boolean getIsReadOnly()
@@ -321,7 +270,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.taskName = "";
     }
 
-    public SimpleNodeDTO(String id, String pid, String typeId, String name, long createTimeStamp, long lastModifyTimeStamp, boolean isDirectory, String projectId, String taskId, String ownerUserId, String path, String fileMd5, long fileLength, String ownerName, String projectName, String taskName, boolean isPassDesign, boolean isPassCheck, boolean isPassAudit, boolean isReadOnly, boolean canCreateChild)
+    public SimpleNodeDTO(String id, String pid, String typeId, String name, long createTimeStamp, long lastModifyTimeStamp, boolean isDirectory, String projectId, String taskId, String ownerUserId, String path, String fileMd5, long fileLength, String ownerName, String projectName, String taskName, boolean isReadOnly, boolean canCreateChild)
     {
         this.id = id;
         this.pid = pid;
@@ -339,9 +288,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.ownerName = ownerName;
         this.projectName = projectName;
         this.taskName = taskName;
-        this.isPassDesign = isPassDesign;
-        this.isPassCheck = isPassCheck;
-        this.isPassAudit = isPassAudit;
         this.isReadOnly = isReadOnly;
         this.canCreateChild = canCreateChild;
     }
@@ -460,18 +406,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.isPassDesign != r.isPassDesign)
-            {
-                return false;
-            }
-            if(this.isPassCheck != r.isPassCheck)
-            {
-                return false;
-            }
-            if(this.isPassAudit != r.isPassAudit)
-            {
-                return false;
-            }
             if(this.isReadOnly != r.isReadOnly)
             {
                 return false;
@@ -507,9 +441,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassDesign);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassCheck);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassAudit);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isReadOnly);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, canCreateChild);
         return h_;
@@ -547,9 +478,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.ownerName);
         ostr.writeString(this.projectName);
         ostr.writeString(this.taskName);
-        ostr.writeBool(this.isPassDesign);
-        ostr.writeBool(this.isPassCheck);
-        ostr.writeBool(this.isPassAudit);
         ostr.writeBool(this.isReadOnly);
         ostr.writeBool(this.canCreateChild);
     }
@@ -572,9 +500,6 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.ownerName = istr.readString();
         this.projectName = istr.readString();
         this.taskName = istr.readString();
-        this.isPassDesign = istr.readBool();
-        this.isPassCheck = istr.readBool();
-        this.isPassAudit = istr.readBool();
         this.isReadOnly = istr.readBool();
         this.canCreateChild = istr.readBool();
     }
@@ -631,5 +556,5 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     private static final SimpleNodeDTO _nullMarshalValue = new SimpleNodeDTO();
 
-    public static final long serialVersionUID = 490851273L;
+    public static final long serialVersionUID = 813566748L;
 }

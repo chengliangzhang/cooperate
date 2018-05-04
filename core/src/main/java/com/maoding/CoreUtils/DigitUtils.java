@@ -1,5 +1,8 @@
 package com.maoding.CoreUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 深圳市卯丁技术有限公司
  * 作    者 : 张成亮
@@ -7,6 +10,8 @@ package com.maoding.CoreUtils;
  * 描    述 :
  */
 public class DigitUtils {
+    private static final Logger log = LoggerFactory.getLogger(DigitUtils.class);
+
     private static final double LIMIT_0 = 0.0000001; //归零值
 
     public static Boolean isSame(final Object num1, final Object num2){
@@ -30,30 +35,61 @@ public class DigitUtils {
         );
     }
 
-    public static int parseInt(final Object value){
+    public static long parseLong(final Object value){
         if (value == null) {
-            return 0;
+            return 0L;
         } else if (value.getClass().isPrimitive()) {
-            return (int) value;
+            return (long) value;
         } else if (value instanceof Boolean) {
-            return ((Boolean)value) ? 1 : 0;
-        } else if (value instanceof Character) {
-            return (int)value.toString().charAt(0);
-        } else if (value instanceof Byte) {
-            return (int)Byte.parseByte(value.toString());
-        } else if (value instanceof Short) {
-            return (int)Short.parseShort(value.toString());
-        } else if (value instanceof Integer) {
-            return Integer.parseInt(value.toString());
-        } else if (value instanceof Long) {
-            return (int)Long.parseLong(value.toString());
-        } else if (value instanceof Float) {
-            return (int)Float.parseFloat(value.toString());
-        } else if (value instanceof Double) {
-            return (int)Double.parseDouble(value.toString());
+            return ((Boolean)value) ? 1L : 0L;
         } else {
-            return 0;
+            try {
+                return Long.parseLong(value.toString());
+            } catch (NumberFormatException e) {
+                log.warn("无法转换" + value.toString());
+                return 0L;
+            }
         }
     }
-    
+
+    public static boolean parseBoolean(final Object value){
+        return (parseLong(value) != 0L);
+    }
+
+    public static char parseChar(final Object value){
+        return (char)parseLong(value);
+    }
+
+    public static byte parseByte(final Object value){
+        return (byte)parseLong(value);
+    }
+
+    public static short parseShort(final Object value){
+        return (short)parseLong(value);
+    }
+
+    public static int parseInt(final Object value){
+        return (int)parseLong(value);
+    }
+
+    public static double parseDouble(final Object value){
+        if (value == null) {
+            return (double)0;
+        } else if (value.getClass().isPrimitive()) {
+            return (double)value;
+        } else if (value instanceof Boolean) {
+            return ((Boolean)value) ? (double)1 : (double)0;
+        } else {
+            try {
+                return Double.parseDouble(value.toString());
+            } catch (NumberFormatException e) {
+                log.warn("无法转换" + value.toString());
+                return (double)0;
+            }
+        }
+    }
+
+    public static float parseFloat(final Object value) {
+        return (float)parseDouble(value);
+    }
 }

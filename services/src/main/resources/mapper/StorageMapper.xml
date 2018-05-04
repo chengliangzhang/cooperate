@@ -69,101 +69,82 @@
     </sql>
 
     <select id="listCANode" parameterType="com.maoding.Storage.zeroc.QueryCANodeDTO" resultType="com.maoding.Storage.zeroc.CANodeDTO">
-        select
-            concat(storage_tree.id,'-',range_type.type_id) as id,
-            concat(if(storage_tree.pid is null,
-            if(ifnull(storage_tree.task_id,storage_tree.project_id) is null,null,
-            concat(ifnull(storage_tree.task_id,storage_tree.project_id),'-',range_type.type_id)),
-            concat(storage_tree.pid,'-',range_type.type_id))) as pid,
-            storage_tree.type_id,
-            storage_tree.node_name as name,
-            if(ifnull(storage_tree.task_id,storage_tree.project_id) is null,
-            concat(storage_tree.path),
-            concat(if(project.project_name is null,'',concat('/',project.project_name)),
-            if(range_type.type_name is null,'',concat('/',range_type.type_name)),
-            if(task.path is null,'',concat('/',task.path)),
-            '/',storage_tree.path)) as path,
-            unix_timestamp(ifnull(storage_tree.create_time,0)) as create_time_stamp,
-            date_format(storage_tree.create_time,'%Y/%m/%d %T') as create_time_text,
-            unix_timestamp(ifnull(storage_tree.last_modify_time,0)) as last_modify_time_stamp,
-            date_format(storage_tree.last_modify_time,'%Y/%m/%d %T') as last_modify_time_text,
-            storage_tree.owner_user_id,
-            storage_tree.last_modify_user_id,
-            storage_tree.last_modify_role_id,
-            ifnull(file_list.read_only_file_length,0) as file_length,
-            file_list.read_only_file_md5 as file_md5,
-            range_type.type_id as range_id,
-            node_type.is_directory,
-            node_type.is_project,
-            node_type.is_task,
-            node_type.is_design,
-            node_type.is_commit,
-            node_type.is_history,
-            task.issue_id,
-            task.id as task_id,
-            project.id as project_id,
-            task.company_id,
-            project.id as root_id,
-            node_type.owner_role_type as owner_role_id,
-            owner_account.user_name as owner_user_name,
-            project.project_name as project_name,
-            task.task_name as task_name,
-            ifnull(file_list.is_pass_design,0) as is_pass_design,
-            ifnull(file_list.is_pass_check,0) as is_pass_check,
-            ifnull(file_list.is_pass_audit,0) as is_pass_audit,
-            group_concat(web_role_type.type_name) AS role_name
-        from
-            md_list_storage_file file_list
-            inner join md_tree_storage storage_tree on (storage_tree.id = file_list.id)
-            inner join md_type_node node_type on (storage_tree.type_id = node_type.type_id)
-            inner join md_type_range range_type on (range_type.is_display != 0 and find_in_set(node_type.type_id,range_type.sub_node_type))
-            inner join md_web_task task on (storage_tree.task_id = task.id)
-            inner join maoding_web_project project on (ifnull(storage_tree.project_id,task.project_id) = project.id)
-            left join maoding_web_account owner_account on (storage_tree.owner_user_id = owner_account.id)
-
-            inner join maoding_web_project_member task_role on ((task_role.node_id = storage_tree.task_id or task_role.target_id = storage_tree.task_id)
-                and task_role.project_id = storage_tree.project_id)
-            inner join md_type_web_role_project web_role_type on (task_role.member_type = web_role_type.type_id and web_role_type.is_task_role = 1)
-            inner join maoding_web_project_process_node process on (process.status = '0'
-                and process.process_id = task.id
-                and process.company_user_id = task_role.company_user_id
-                and process.node_name = web_role_type.process_name)
-        <where>
-            <if test="notTypeId != null">
-                and not find_in_set(storage_tree.type_id,#{notTypeId})
-            </if>
-            <if test="rangeId != null">
-                and find_in_set(range_type.type_id,#{rangeId})
-            </if>
-            <if test="passDesign != null">
-                and find_in_set(file_list.is_pass_design,#{passDesign})
-            </if>
-            <if test="passCheck != null">
-                and find_in_set(file_list.is_pass_check,#{passCheck})
-            </if>
-            <if test="passAudit != null">
-                and find_in_set(file_list.is_pass_audit,#{passAudit})
-            </if>
-            <if test="userId != null">
-                and find_in_set(task_role.account_id,#{userId})
-            </if>
-            <if test="taskLeaderMode != null">
-                and find_in_set(web_role_type.is_task_leader,#{taskLeaderMode})
-            </if>
-            <if test="designerMode != null">
-                and find_in_set(web_role_type.is_task_designer,#{designerMode})
-            </if>
-            <if test="checkerMode != null">
-                and find_in_set(web_role_type.is_task_designer,#{checkerMode})
-            </if>
-            <if test="auditorMode != null">
-                and find_in_set(web_role_type.is_task_auditor,#{auditorMode})
-            </if>
-            <if test="webRoleTypeId != null">
-                and find_in_set(web_role_type.type_id,#{webRoleTypeId})
-            </if>
-        </where>
-        group by file_list.id;
+        select ca_node_with_his_list.*
+        from (
+            select distinct ca_node_with_role_list.*,
+                history_list.file_length as last_commit_file_length,
+                history_list.file_md5 as last_commit_file_md5
+            from (
+                select ca_node_list.*,
+                group_concat(ca_node_list.single_role_type_id) as role_type_id,
+                group_concat(ca_node_list.single_role_name) as role_name
+                from md_file_node ca_node_list
+                <where>
+                    <!--&lt;!&ndash;<if test="rangeId != null">&ndash;&gt;-->
+                        <!--&lt;!&ndash;and find_in_set(ca_node_list.range_id,#{rangeId})&ndash;&gt;-->
+                    <!--&lt;!&ndash;</if>&ndash;&gt;-->
+                    <!--<if test="notTypeId != null">-->
+                        <!--and not find_in_set(ca_node_list.type_id,#{notTypeId})-->
+                    <!--</if>-->
+                    <if test="passDesign != null">
+                        and find_in_set(ca_node_list.is_pass_design,#{passDesign})
+                    </if>
+                    <if test="passCheck != null">
+                        and find_in_set(ca_node_list.is_pass_check,#{passCheck})
+                    </if>
+                    <if test="passAudit != null">
+                        and find_in_set(ca_node_list.is_pass_audit,#{passAudit})
+                    </if>
+                    <if test="isDesign != null">
+                        and find_in_set(ca_node_list.is_design,#{isDesign})
+                    </if>
+                    <if test="isCA != null">
+                        and find_in_set(ca_node_list.is_ca,#{isCA})
+                    </if>
+                    <if test="isCommit != null">
+                        and find_in_set(ca_node_list.is_commit,#{isCommit})
+                    </if>
+                    <if test="isHistory != null">
+                        and find_in_set(ca_node_list.is_history,#{isHistory})
+                    </if>
+                    <if test="userId != null">
+                        and find_in_set(ca_node_list.role_user_id,#{userId})
+                    </if>
+                    <if test="isTaskLeader != null">
+                        and find_in_set(ca_node_list.is_task_leader,#{isTaskLeader})
+                    </if>
+                    <if test="isTaskDesigner != null">
+                        and find_in_set(ca_node_list.is_task_designer,#{isTaskDesigner})
+                    </if>
+                    <if test="isTaskChecker != null">
+                        and find_in_set(ca_node_list.is_task_checker,#{isTaskChecker})
+                    </if>
+                    <if test="isTaskAuditor != null">
+                        and find_in_set(ca_node_list.is_task_auditor,#{isTaskAuditor})
+                    </if>
+                    <!--<if test="webRoleTypeId != null">-->
+                        <!--and find_in_set(ca_node_list.single_role_type_id,#{webRoleTypeId})-->
+                    <!--</if>-->
+                </where>
+                group by ca_node_list.id
+            ) ca_node_with_role_list
+                left join md_list_storage_file_his history_list on (history_list.main_file_id =
+                    substring(ifnull(ca_node_with_role_list.main_file_id,ca_node_with_role_list.id),1,32))
+                left join md_type_action action_type on (action_type.type_id = history_list.action_type_id)
+            <where>
+                <!--<if test="actionTypeId != null">-->
+                    <!--and find_in_set(history_list.action_type_id,#{actionTypeId})-->
+                <!--</if>-->
+                <if test="askCA != null">
+                    and find_in_set(action_type.is_ca,#{askCA})
+                </if>
+                <if test="askCommit != null">
+                    and find_in_set(action_type.is_commit,#{askCommit})
+                </if>
+            </where>
+            order by ca_node_with_role_list.id,history_list.create_time desc
+        ) ca_node_with_his_list
+        group by ca_node_with_his_list.id
     </select>
 
     <select id="summaryNodeLength" parameterType="com.maoding.Storage.zeroc.QuerySummaryDTO" resultType="java.lang.Long">
@@ -315,7 +296,7 @@
                             </if>
                             )
                     left join maoding_web_account his_account on (his.last_modify_user_id = his_account.id)
-                    left join md_type_commit his_action_type on (his.action_type_id = his_action_type.type_id)
+                    left join md_type_action his_action_type on (his.action_type_id = his_action_type.type_id)
                 </if>
             </when>
             <otherwise>

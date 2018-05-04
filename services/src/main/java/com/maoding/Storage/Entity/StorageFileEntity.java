@@ -41,19 +41,13 @@ public class StorageFileEntity extends BaseEntity {
     private String readOnlyKey;
 
     @Column /** 只读文件长度 */
-    private long readOnlyFileLength;
+    private Long fileLength;
 
-    @Column /** 只读文件md5校验和 */
-    private String readOnlyFileMd5;
+    @Column /** 只读文件md5校验值 */
+    private String fileMd5;
 
-    @Column
+    @Column /** 可写文件在文件服务器上的存储名称 */
     private String writableKey;
-
-    @Column /** 可写文件长度 */
-    private long writableFileLength;
-
-    @Column /** 可写文件md5校验和 */
-    private String writableFileMd5;
 
     @Column /** 文件在文件服务器上的存储位置 */
     private String baseDir;
@@ -66,6 +60,22 @@ public class StorageFileEntity extends BaseEntity {
 
     @Column /** 是否通过审核 */
     private Short isPassAudit;
+
+    public Long getFileLength() {
+        return fileLength;
+    }
+
+    public void setFileLength(Long fileLength) {
+        this.fileLength = fileLength;
+    }
+
+    public String getFileMd5() {
+        return fileMd5;
+    }
+
+    public void setFileMd5(String fileMd5) {
+        this.fileMd5 = fileMd5;
+    }
 
     public Short getIsPassDesign() {
         return isPassDesign;
@@ -89,38 +99,6 @@ public class StorageFileEntity extends BaseEntity {
 
     public void setIsPassAudit(Short isPassAudit) {
         this.isPassAudit = isPassAudit;
-    }
-
-    public long getReadOnlyFileLength() {
-        return readOnlyFileLength;
-    }
-
-    public void setReadOnlyFileLength(long readOnlyFileLength) {
-        this.readOnlyFileLength = readOnlyFileLength;
-    }
-
-    public String getReadOnlyFileMd5() {
-        return readOnlyFileMd5;
-    }
-
-    public void setReadOnlyFileMd5(String readOnlyFileMd5) {
-        this.readOnlyFileMd5 = readOnlyFileMd5;
-    }
-
-    public long getWritableFileLength() {
-        return writableFileLength;
-    }
-
-    public void setWritableFileLength(long writableFileLength) {
-        this.writableFileLength = writableFileLength;
-    }
-
-    public String getWritableFileMd5() {
-        return writableFileMd5;
-    }
-
-    public void setWritableFileMd5(String writableFileMd5) {
-        this.writableFileMd5 = writableFileMd5;
     }
 
     public String getBaseDir() {

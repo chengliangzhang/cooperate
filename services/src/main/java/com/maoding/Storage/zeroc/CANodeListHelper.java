@@ -42,7 +42,7 @@ public final class CANodeListHelper
     {
         final java.util.List<CANodeDTO> v;
         v = new java.util.ArrayList<CANodeDTO>();
-        final int len0 = istr.readAndCheckSeqSize(38);
+        final int len0 = istr.readAndCheckSeqSize(40);
         for(int i0 = 0; i0 < len0; i0++)
         {
             CANodeDTO elem;

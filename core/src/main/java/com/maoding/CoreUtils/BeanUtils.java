@@ -227,23 +227,23 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 if ((!isClean) || ObjectUtils.isNotEmpty(inputValue)) { //如果isClean为真，仅设置非空值
                     outputMethodAccess.invoke(output, setIndex, inputValue);
                 }
-            } else if (outputFieldClass == boolean.class)
-                outputMethodAccess.invoke(output,setIndex,parseBoolean(inputValue));
-            else if (outputFieldClass == char.class)
-                outputMethodAccess.invoke(output,setIndex,parseChar(inputValue));
-            else if (outputFieldClass == byte.class)
-                outputMethodAccess.invoke(output,setIndex,parseByte(inputValue));
-            else if (outputFieldClass == short.class)
-                outputMethodAccess.invoke(output,setIndex,parseShort(inputValue));
-            else if (outputFieldClass == int.class)
+            } else if (outputFieldClass == boolean.class) {
+                outputMethodAccess.invoke(output, setIndex, DigitUtils.parseBoolean(inputValue));
+            } else if (outputFieldClass == char.class) {
+                outputMethodAccess.invoke(output,setIndex,DigitUtils.parseChar(inputValue));
+            } else if (outputFieldClass == byte.class) {
+                outputMethodAccess.invoke(output,setIndex,DigitUtils.parseByte(inputValue));
+            } else if (outputFieldClass == short.class) {
+                outputMethodAccess.invoke(output,setIndex,DigitUtils.parseShort(inputValue));
+            } else if (outputFieldClass == int.class) {
                 outputMethodAccess.invoke(output,setIndex,DigitUtils.parseInt(inputValue));
-            else if (outputFieldClass == long.class)
-                outputMethodAccess.invoke(output,setIndex,parseLong(inputValue));
-            else if (outputFieldClass == float.class)
-                outputMethodAccess.invoke(output,setIndex,parseFloat(inputValue));
-            else if (outputFieldClass == double.class)
-                outputMethodAccess.invoke(output,setIndex,parseDouble(inputValue));
-            else {
+            } else if (outputFieldClass == long.class) {
+                outputMethodAccess.invoke(output,setIndex,DigitUtils.parseLong(inputValue));
+            } else if (outputFieldClass == float.class) {
+                outputMethodAccess.invoke(output,setIndex,DigitUtils.parseFloat(inputValue));
+            } else if (outputFieldClass == double.class) {
+                outputMethodAccess.invoke(output,setIndex,DigitUtils.parseDouble(inputValue));
+            } else {
                 outputMethodAccess.invoke(output,setIndex,createFrom(inputValue,outputFieldClass,isClean));
             }
         }
@@ -477,14 +477,25 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
 
         //如果outputClass是基本数字类型，使用基本数字类型调用构造函数
         if ((output == null) && (DigitUtils.isDigitalClass(outputClass))) {
-            if (outputClass.isAssignableFrom(Boolean.class)) output = outputClass.cast(parseBoolean(input));
-            else if (outputClass.isAssignableFrom(Character.class)) output = outputClass.cast(parseChar(input));
-            else if (outputClass.isAssignableFrom(Byte.class)) output = outputClass.cast(parseByte(input));
-            else if (outputClass.isAssignableFrom(Short.class)) output = outputClass.cast(parseShort(input));
-            else if (outputClass.isAssignableFrom(Integer.class)) output = outputClass.cast(DigitUtils.parseInt(input));
-            else if (outputClass.isAssignableFrom(Long.class)) output = outputClass.cast(parseLong(input));
-            else if (outputClass.isAssignableFrom(Float.class)) output = outputClass.cast(parseFloat(input));
-            else if (outputClass.isAssignableFrom(Double.class)) output = outputClass.cast(parseDouble(input));
+            if (outputClass.isAssignableFrom(Boolean.class)) {
+                output = outputClass.cast(DigitUtils.parseBoolean(input));
+            } else if (outputClass.isAssignableFrom(Character.class)) {
+                output = outputClass.cast(DigitUtils.parseChar(input));
+            } else if (outputClass.isAssignableFrom(Byte.class)) {
+                output = outputClass.cast(DigitUtils.parseByte(input));
+            } else if (outputClass.isAssignableFrom(Short.class)) {
+                output = outputClass.cast(DigitUtils.parseShort(input));
+            } else if (outputClass.isAssignableFrom(Integer.class)) {
+                output = outputClass.cast(DigitUtils.parseInt(input));
+            } else if (outputClass.isAssignableFrom(Long.class)) {
+                output = outputClass.cast(DigitUtils.parseLong(input));
+            } else if (outputClass.isAssignableFrom(Float.class)) {
+                output = outputClass.cast(DigitUtils.parseFloat(input));
+            } else if (outputClass.isAssignableFrom(Double.class)) {
+                output = outputClass.cast(DigitUtils.parseDouble(input));
+            } else {
+                output = outputClass.cast(0);
+            }
         }
 
         //如果outputClass有以String为参数的构造函数，使用字符串调用构造函数
@@ -527,13 +538,17 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
      * 清理Bean内为空字符串的属性，将其替换为null
      */
     public static <T> T cleanProperties(T obj){
-        if (obj == null) return null;
-        if (obj.getClass().isPrimitive()) return obj;
-        if (obj.getClass().isArray()){
+        if (obj == null) {
+            return null;
+        } else if (obj.getClass().isPrimitive()) {
+            return obj;
+        } else if (obj.getClass().isArray()){
             return (Array.getLength(obj) > 0) ? obj : null;
+        } else if (ObjectUtils.isEmpty(obj)) {
+            return null;
+        } else if (DigitUtils.isDigitalClass(obj.getClass())) {
+            return obj;
         }
-        if (isEmpty(obj)) return null;
-        if (DigitUtils.isDigitalClass(obj.getClass())) return obj;
 
         MethodAccess objMethodAccess = methodMap.get(obj.getClass());
         if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
@@ -547,7 +562,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 String setKey = obj.getClass().getName() + DOT + SET + field;
                 Integer getIndex = methodIndexMap.get(getKey);
                 Integer setIndex = methodIndexMap.get(setKey);
-                if ((setIndex != null) && (getIndex != null) && (isEmpty(objMethodAccess.invoke(obj,getIndex)))) {
+                if ((setIndex != null) && (getIndex != null) && (ObjectUtils.isEmpty(objMethodAccess.invoke(obj,getIndex)))) {
                     Class<?> fieldClass = objParameterTypes[setIndex][0];
                     if (!fieldClass.isPrimitive())
                         objMethodAccess.invoke(obj,setIndex,fieldClass.cast(null));
@@ -560,522 +575,10 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     public static <K,V> Map<K,V> cleanProperties(Map<K,V> obj){
         for (K k : obj.keySet()) {
             V v = obj.get(k);
-            if (isEmpty(v)) obj.remove(k);
-        }
-        return obj;
-    }
-
-    public static <T> boolean isEmpty(T obj) {
-        return (obj == null)
-                || ((obj.getClass().isAssignableFrom(String.class)) && (StringUtils.isEmpty(String.class.cast(obj))))
-                || ((DigitUtils.isDigitalClass(obj.getClass())) && (DigitUtils.isSame(obj,0)));
-    }
-
-
-    /**
-     * 读取Bean属性
-     */
-    @Deprecated
-    public static Object getProperty(final Object obj, final String ptyName) {
-        assert (obj != null) && (!obj.getClass().isPrimitive()) && (!obj.getClass().isArray());
-        assert (!StringUtils.isEmpty(ptyName));
-
-        MethodAccess objMethodAccess = methodMap.get(obj.getClass());
-        if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
-
-        List<String> fieldList = fieldMap.get(obj.getClass());
-        if (fieldList != null) {
-            assert (objMethodAccess != null);
-            String getKey = obj.getClass().getName() + DOT + GET + StringUtils.capitalize(ptyName);
-            Integer getIndex = methodIndexMap.get(getKey);
-            if (getIndex != null) {
-                //获取参数类型
-                return objMethodAccess.invoke(obj,getIndex);
+            if (ObjectUtils.isEmpty(v)){
+                obj.remove(k);
             }
         }
-        return null;
-    }
-
-    /** 获得数组对象的长度 */
-    @Deprecated
-    public static int getArrayLength(final Object value){
-        if (value == null) return 0;
-
-        assert (value.getClass().isArray());
-        Class<?> eleClass = value.getClass().getComponentType();
-        if (eleClass == boolean.class) return ((boolean[]) value).length;
-        else if (eleClass == char.class) return ((char[]) value).length;
-        else if (eleClass == byte.class) return ((byte[]) value).length;
-        else if (eleClass == short.class) return ((short[]) value).length;
-        else if (eleClass == int.class) return ((int[]) value).length;
-        else if (eleClass == long.class) return ((long[]) value).length;
-        else if (eleClass == float.class) return ((float[]) value).length;
-        else if (eleClass == double.class) return ((double[]) value).length;
-        else return ((Object[]) value).length;
-    }
-
-    /** 转换为boolean类型 */
-    public static <T> boolean parseBoolean(final T value){
-        if (value == null) return false;
-
-        if (value instanceof Boolean) return (Boolean)value;
-        else if (value instanceof Character
-                || value instanceof Byte
-                || value instanceof Short
-                || value instanceof Integer
-                || value instanceof Long
-                ) return (!"0".equals(value.toString().trim()));
-        else
-            return !(value instanceof Float)
-                    && !(value instanceof Double) || (!DigitUtils.isSame(value, 0));
-    }
-
-    @Deprecated
-    public static <T> boolean parseBoolean(final T[] value, final int n){
-        assert (value != null);
-        assert (n < value.length);
-        return parseBoolean(value[n]);
-    }
-
-    @Deprecated
-    public static boolean parseBoolean(final Object value, final int n){
-        assert (value != null);
-        assert (value.getClass().isArray());
-        assert (n < getArrayLength(value));
-        Class<?> eleClass = value.getClass().getComponentType();
-        if (eleClass == boolean.class) return parseBoolean (((boolean[]) value)[n]);
-        else if (eleClass == char.class) return parseBoolean(((char[]) value)[n]);
-        else if (eleClass == byte.class) return parseBoolean (((byte[]) value)[n]);
-        else if (eleClass == short.class) return parseBoolean (((short[]) value)[n]);
-        else if (eleClass == int.class) return parseBoolean (((int[]) value)[n]);
-        else if (eleClass == long.class) return parseBoolean (((long[]) value)[n]);
-        else if (eleClass == float.class) return parseBoolean (((float[]) value)[n]);
-        else if (eleClass == double.class) return parseBoolean (((double[]) value)[n]);
-        else return parseBoolean (((Object[]) value)[n]);
-    }
-
-    @Deprecated
-    public static <T> boolean[] parseBooleanArray(final T[] value){
-        if (value == null) return null;
-
-        boolean[] output = new boolean[value.length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseBoolean(value,n);
-        }
-        return output;
-    }
-
-    @Deprecated
-    public static boolean[] parseBooleanArray(final Object value){
-        if (value == null) return null;
-
-        assert (value.getClass().isArray());
-        int length = getArrayLength(value);
-
-        boolean[] output = new boolean[length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseBoolean(value,n);
-        }
-        return output;
-    }
-
-    /** 转换为char类型 */
-    public static <T> char parseChar(final T value){
-        if (value == null) return (char)0;
-
-        if (value instanceof Boolean) return ((Boolean)value) ? (char)1 : (char)0;
-        else if (value instanceof Character) return (char)value.toString().charAt(0);
-        else if (value instanceof Byte) return (char)Byte.parseByte(value.toString());
-        else if (value instanceof Short) return (char)Short.parseShort(value.toString());
-        else if (value instanceof Integer) return (char)Integer.parseInt(value.toString());
-        else if (value instanceof Long) return (char)Long.parseLong(value.toString());
-        else if (value instanceof Float) return (char)Float.parseFloat(value.toString());
-        else if (value instanceof Double) return (char)Double.parseDouble(value.toString());
-        else return (char)0;
-    }
-
-    @Deprecated
-    public static <T> char parseChar(final T[] value, final int n){
-        assert (value != null);
-        assert (n < value.length);
-        return parseChar(value[n]);
-    }
-
-    @Deprecated
-    public static char parseChar(final Object value, final int n){
-        assert (value != null);
-        assert (value.getClass().isArray());
-        assert (n < getArrayLength(value));
-        Class<?> eleClass = value.getClass().getComponentType();
-        if (eleClass == boolean.class) return parseChar (((boolean[]) value)[n]);
-        else if (eleClass == char.class) return parseChar(((char[]) value)[n]);
-        else if (eleClass == byte.class) return parseChar (((byte[]) value)[n]);
-        else if (eleClass == short.class) return parseChar (((short[]) value)[n]);
-        else if (eleClass == int.class) return parseChar (((int[]) value)[n]);
-        else if (eleClass == long.class) return parseChar (((long[]) value)[n]);
-        else if (eleClass == float.class) return parseChar (((float[]) value)[n]);
-        else if (eleClass == double.class) return parseChar (((double[]) value)[n]);
-        else return parseChar (((Object[]) value)[n]);
-    }
-
-    @Deprecated
-    public static <T> char[] parseCharArray(final T[] value){
-        if (value == null) return null;
-
-        char[] output = new char[value.length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseChar(value,n);
-        }
-        return output;
-    }
-
-    @Deprecated
-    public static char[] parseCharArray(final Object value){
-        if (value == null) return null;
-
-        assert (value.getClass().isArray());
-        int length = getArrayLength(value);
-
-        char[] output = new char[length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseChar(value,n);
-        }
-        return output;
-    }
-
-    /** 转换为byte类型 */
-    public static <T> byte parseByte(final T value){
-        if (value == null) return (byte)0;
-
-        if (value instanceof Boolean) return ((Boolean)value) ? (byte)1 : (byte)0;
-        else if (value instanceof Character) return (byte)value.toString().charAt(0);
-        else if (value instanceof Byte) return (byte)Byte.parseByte(value.toString());
-        else if (value instanceof Short) return (byte)Short.parseShort(value.toString());
-        else if (value instanceof Integer) return (byte)Integer.parseInt(value.toString());
-        else if (value instanceof Long) return (byte)Long.parseLong(value.toString());
-        else if (value instanceof Float) return (byte)Float.parseFloat(value.toString());
-        else if (value instanceof Double) return (byte)Double.parseDouble(value.toString());
-        else return (byte)0;
-    }
-
-    @Deprecated
-    public static <T> byte parseByte(final T[] value, final int n){
-        assert (value != null);
-        assert (n < value.length);
-        return parseByte(value[n]);
-    }
-
-    @Deprecated
-    public static byte parseByte(final Object value, final int n){
-        assert (value != null);
-        assert (value.getClass().isArray());
-        assert (n < getArrayLength(value));
-        Class<?> eleClass = value.getClass().getComponentType();
-        if (eleClass == boolean.class) return parseByte(((boolean[]) value)[n]);
-        else if (eleClass == char.class) return parseByte(((char[]) value)[n]);
-        else if (eleClass == byte.class) return parseByte(((byte[]) value)[n]);
-        else if (eleClass == short.class) return parseByte(((short[]) value)[n]);
-        else if (eleClass == int.class) return parseByte(((int[]) value)[n]);
-        else if (eleClass == long.class) return parseByte(((long[]) value)[n]);
-        else if (eleClass == float.class) return parseByte(((float[]) value)[n]);
-        else if (eleClass == double.class) return parseByte(((double[]) value)[n]);
-        else return parseByte (((Object[]) value)[n]);
-    }
-
-    @Deprecated
-    public static <T> byte[] parseByteArray(final T[] value){
-        if (value == null) return null;
-
-        byte[] output = new byte[value.length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseByte(value,n);
-        }
-        return output;
-    }
-
-    @Deprecated
-    public static byte[] parseByteArray(final Object value){
-        if (value == null) return null;
-
-        assert (value.getClass().isArray());
-        int length = getArrayLength(value);
-
-        byte[] output = new byte[length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseByte(value,n);
-        }
-        return output;
-    }
-
-    /** 转换为short类型 */
-    public static <T> short parseShort(final T value){
-        if (value == null) return (short)0;
-
-        if (value instanceof Boolean) return ((Boolean)value) ? (short)1 : (short)0;
-        else if (value instanceof Character) return (short)value.toString().charAt(0);
-        else if (value instanceof Byte) return (short)Byte.parseByte(value.toString());
-        else if (value instanceof Short) return (short)Short.parseShort(value.toString());
-        else if (value instanceof Integer) return (short)Integer.parseInt(value.toString());
-        else if (value instanceof Long) return (short)Long.parseLong(value.toString());
-        else if (value instanceof Float) return (short)Float.parseFloat(value.toString());
-        else if (value instanceof Double) return (short)Double.parseDouble(value.toString());
-        else return (short)0;
-    }
-
-    @Deprecated
-    public static <T> short parseShort(final T[] value, final int n){
-        assert (value != null);
-        assert (n < value.length);
-        return parseShort(value[n]);
-    }
-
-    @Deprecated
-    public static short parseShort(final Object value, final int n){
-        assert (value != null);
-        assert (value.getClass().isArray());
-        assert (n < getArrayLength(value));
-        Class<?> eleClass = value.getClass().getComponentType();
-        if (eleClass == boolean.class) return parseShort(((boolean[]) value)[n]);
-        else if (eleClass == char.class) return parseShort(((char[]) value)[n]);
-        else if (eleClass == byte.class) return parseShort(((byte[]) value)[n]);
-        else if (eleClass == short.class) return parseShort(((short[]) value)[n]);
-        else if (eleClass == int.class) return parseShort(((int[]) value)[n]);
-        else if (eleClass == long.class) return parseShort(((long[]) value)[n]);
-        else if (eleClass == float.class) return parseShort(((float[]) value)[n]);
-        else if (eleClass == double.class) return parseShort(((double[]) value)[n]);
-        else return parseShort (((Object[]) value)[n]);
-    }
-
-    @Deprecated
-    public static <T> short[] parseShortArray(final T[] value){
-        if (value == null) return null;
-
-        short[] output = new short[value.length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseShort(value,n);
-        }
-        return output;
-    }
-
-    @Deprecated
-    public static short[] parseShortArray(final Object value){
-        if (value == null) return null;
-
-        assert (value.getClass().isArray());
-        int length = getArrayLength(value);
-
-        short[] output = new short[length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseShort(value,n);
-        }
-        return output;
-    }
-
-    /** 转换为int类型 */
-    public static <T> int parseInt(final T value){
-        if (value == null) return (int)0;
-
-        if (value instanceof Boolean) return ((Boolean)value) ? (int)1 : (int)0;
-        else if (value instanceof Character) return (int)value.toString().charAt(0);
-        else if (value instanceof Byte) return (int)Byte.parseByte(value.toString());
-        else if (value instanceof Short) return (int)Short.parseShort(value.toString());
-        else if (value instanceof Integer) return (int)Integer.parseInt(value.toString());
-        else if (value instanceof Long) return (int)Long.parseLong(value.toString());
-        else if (value instanceof Float) return (int)Float.parseFloat(value.toString());
-        else if (value instanceof Double) return (int)Double.parseDouble(value.toString());
-        else return (int)0;
-    }
-
-
-    /** 转换为long类型 */
-    public static <T> long parseLong(final T value){
-        if (value == null) return (long)0;
-
-        if (value instanceof Boolean) return ((Boolean)value) ? (long)1 : (long)0;
-        else if (value instanceof Character) return (long)value.toString().charAt(0);
-        else if (value instanceof Byte) return (long)Byte.parseByte(value.toString());
-        else if (value instanceof Short) return (long)Short.parseShort(value.toString());
-        else if (value instanceof Integer) return (long)Integer.parseInt(value.toString());
-        else if (value instanceof Long) return (long)Long.parseLong(value.toString());
-        else if (value instanceof Float) return (long)Float.parseFloat(value.toString());
-        else if (value instanceof Double) return (long)Double.parseDouble(value.toString());
-        else return (long)0;
-    }
-
-    @Deprecated
-    public static <T> long parseLong(final T[] value, final int n){
-        assert (value != null);
-        assert (n < value.length);
-        return parseLong(value[n]);
-    }
-
-    @Deprecated
-    public static long parseLong(final Object value, final int n){
-        assert (value != null);
-        assert (value.getClass().isArray());
-        assert (n < getArrayLength(value));
-        Class<?> eleClass = value.getClass().getComponentType();
-        if (eleClass == boolean.class) return parseLong(((boolean[]) value)[n]);
-        else if (eleClass == char.class) return parseLong(((char[]) value)[n]);
-        else if (eleClass == byte.class) return parseLong(((byte[]) value)[n]);
-        else if (eleClass == short.class) return parseLong(((short[]) value)[n]);
-        else if (eleClass == int.class) return parseLong(((int[]) value)[n]);
-        else if (eleClass == long.class) return parseLong(((long[]) value)[n]);
-        else if (eleClass == float.class) return parseLong(((float[]) value)[n]);
-        else if (eleClass == double.class) return parseLong(((double[]) value)[n]);
-        else return parseLong(((Object[]) value)[n]);
-    }
-
-    @Deprecated
-    public static <T> long[] parseLongArray(final T[] value){
-        if (value == null) return null;
-
-        long[] output = new long[value.length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseLong(value,n);
-        }
-        return output;
-    }
-
-    @Deprecated
-    public static long[] parseLongArray(final Object value){
-        if (value == null) return null;
-
-        assert (value.getClass().isArray());
-        int length = getArrayLength(value);
-
-        long[] output = new long[length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseLong(value,n);
-        }
-        return output;
-    }    
-    
-    /** 转换为float类型 */
-    public static <T> float parseFloat(final T value){
-        if (value == null) return (float)0;
-
-        if (value instanceof Boolean) return ((Boolean)value) ? (float)1 : (float)0;
-        else if (value instanceof Character) return (float)value.toString().charAt(0);
-        else if (value instanceof Byte) return (float)Byte.parseByte(value.toString());
-        else if (value instanceof Short) return (float)Short.parseShort(value.toString());
-        else if (value instanceof Integer) return (float)Integer.parseInt(value.toString());
-        else if (value instanceof Long) return (float)Long.parseLong(value.toString());
-        else if (value instanceof Float) return (float)Float.parseFloat(value.toString());
-        else if (value instanceof Double) return (float)Double.parseDouble(value.toString());
-        else return (float)0;
-    }
-
-    @Deprecated
-    public static <T> float parseFloat(final T[] value, final int n){
-        assert (value != null);
-        assert (n < value.length);
-        return parseFloat(value[n]);
-    }
-
-    @Deprecated
-    public static float parseFloat(final Object value, final int n){
-        assert (value != null);
-        assert (value.getClass().isArray());
-        assert (n < getArrayLength(value));
-        Class<?> eleClass = value.getClass().getComponentType();
-        if (eleClass == boolean.class) return parseFloat(((boolean[]) value)[n]);
-        else if (eleClass == char.class) return parseFloat(((char[]) value)[n]);
-        else if (eleClass == byte.class) return parseFloat(((byte[]) value)[n]);
-        else if (eleClass == short.class) return parseFloat(((short[]) value)[n]);
-        else if (eleClass == int.class) return parseFloat(((int[]) value)[n]);
-        else if (eleClass == long.class) return parseFloat(((long[]) value)[n]);
-        else if (eleClass == float.class) return parseFloat(((float[]) value)[n]);
-        else if (eleClass == double.class) return parseFloat(((double[]) value)[n]);
-        else return parseFloat(((Object[]) value)[n]);
-    }
-
-    @Deprecated
-    public static <T> float[] parseFloatArray(final T[] value){
-        if (value == null) return null;
-
-        float[] output = new float[value.length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseFloat(value,n);
-        }
-        return output;
-    }
-
-    @Deprecated
-    public static float[] parseFloatArray(final Object value){
-        if (value == null) return null;
-
-        assert (value.getClass().isArray());
-        int length = getArrayLength(value);
-
-        float[] output = new float[length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseFloat(value,n);
-        }
-        return output;
-    }
-    
-    /** 转换为double类型 */
-    public static <T> double parseDouble(final T value){
-        if (value == null) return (double)0;
-
-        if (value instanceof Boolean) return ((Boolean)value) ? (double)1 : (double)0;
-        else if (value instanceof Character) return (double)value.toString().charAt(0);
-        else if (value instanceof Byte) return (double)Byte.parseByte(value.toString());
-        else if (value instanceof Short) return (double)Short.parseShort(value.toString());
-        else if (value instanceof Integer) return (double)Integer.parseInt(value.toString());
-        else if (value instanceof Long) return (double)Long.parseLong(value.toString());
-        else if (value instanceof Float) return (double)Float.parseFloat(value.toString());
-        else if (value instanceof Double) return (double)Double.parseDouble(value.toString());
-        else return (double)0;
-    }
-
-    @Deprecated
-    public static <T> double parseDouble(final T[] value, final int n){
-        assert (value != null);
-        assert (n < value.length);
-        return parseDouble(value[n]);
-    }
-
-    @Deprecated
-    public static double parseDouble(final Object value, final int n){
-        assert (value != null);
-        assert (value.getClass().isArray());
-        assert (n < getArrayLength(value));
-        Class<?> eleClass = value.getClass().getComponentType();
-        if (eleClass == boolean.class) return parseDouble(((boolean[]) value)[n]);
-        else if (eleClass == char.class) return parseDouble(((char[]) value)[n]);
-        else if (eleClass == byte.class) return parseDouble(((byte[]) value)[n]);
-        else if (eleClass == short.class) return parseDouble(((short[]) value)[n]);
-        else if (eleClass == int.class) return parseDouble(((int[]) value)[n]);
-        else if (eleClass == long.class) return parseDouble(((long[]) value)[n]);
-        else if (eleClass == float.class) return parseDouble(((float[]) value)[n]);
-        else if (eleClass == double.class) return parseDouble(((double[]) value)[n]);
-        else return parseDouble(((Object[]) value)[n]);
-    }
-
-    @Deprecated
-    public static <T> double[] parseDoubleArray(final T[] value){
-        if (value == null) return null;
-
-        double[] output = new double[value.length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseDouble(value,n);
-        }
-        return output;
-    }
-
-    @Deprecated
-    public static double[] parseDoubleArray(final Object value){
-        if (value == null) return null;
-
-        assert (value.getClass().isArray());
-        int length = getArrayLength(value);
-
-        double[] output = new double[length];
-        for (int n=0;n<output.length;n++){
-            output[n] = parseDouble(value,n);
-        }
-        return output;
+        return obj;
     }
 }

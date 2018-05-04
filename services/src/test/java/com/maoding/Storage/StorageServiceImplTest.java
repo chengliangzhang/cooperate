@@ -400,7 +400,7 @@ public class StorageServiceImplTest {
         request.setBaseDir("/work/file_server");
         request.setReadOnlyKey("/x/y/abcde.txt");
         request.setWritableKey("/x/y/aaaa.txt");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT);
+        request.setTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT.toString());
         request.setFileLength(50L);
         request.setRemark("这是a 历史记录");
         SimpleNodeDTO dto = storageService.createNode(getLocalPath(),request,null);
@@ -417,7 +417,7 @@ public class StorageServiceImplTest {
         request.setBaseDir("/work/file_server");
         request.setReadOnlyKey("/x/y/abcde.txt");
         request.setWritableKey("/x/y/aaaa.txt");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT);
+        request.setTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT.toString());
         request.setFileLength(50L);
         request.setMirrorBaseDir("c:/work/file_server");
         request.setReadOnlyMirrorKey("mirror.txt");
@@ -429,14 +429,14 @@ public class StorageServiceImplTest {
         request.setOwnerUserId("12345");
         request.setLastModifyUserId("11111");
         request.setLastModifyRoleId("11111");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_UNKNOWN);
+        request.setTypeId(ConstService.STORAGE_NODE_TYPE_UNKNOWN.toString());
         request.setPath("abcde.txt");
         request.setServerTypeId((short)1);
         request.setServerAddress("c:");
         request.setBaseDir("/work/file_server");
         request.setReadOnlyKey("/x/y/abcde.txt");
         request.setWritableKey("/x/y/aaaa.txt");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT);
+        request.setTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT.toString());
         request.setMainFileId("xxx");
         request.setFileLength(10L);
         request.setMajorTypeId("1222");
@@ -447,7 +447,7 @@ public class StorageServiceImplTest {
     private void createAbsoluteDir() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setOwnerUserId("12345");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN);
+        request.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN.toString());
         request.setPath("/1/2/3/abcde");
         SimpleNodeDTO dto = storageService.createNode(null,request,null);
     }
@@ -456,7 +456,7 @@ public class StorageServiceImplTest {
         SimpleNodeDTO parent = getLocalPath();
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setOwnerUserId("12345");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN);
+        request.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN.toString());
         request.setPath("/1/2/3/abcde");
         request.setLastModifyUserId("111");
         request.setLastModifyRoleId("111");
@@ -469,7 +469,7 @@ public class StorageServiceImplTest {
         SimpleNodeDTO parent = getLocalPath();
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setOwnerUserId("12345");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN);
+        request.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN.toString());
         request.setPath("abcde");
         SimpleNodeDTO dto = storageService.createNode(parent,request,null);
     }
@@ -561,7 +561,7 @@ public class StorageServiceImplTest {
         request.setMainFileId("mainFieldId");
         request.setFileVersion("fileVersion");
         request.setMajorTypeId("majorTypeId");
-        request.setFileChecksum("fileChecksum");
+        request.setFileMd5("fileMd5");
         SimpleNodeDTO file = storageService.updateNodeSimple(getLocalNode(),request,null);
         request.setLastModifyUserId("41d244733ec54f09a255836637f2b21d");
         request.setLastModifyRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
@@ -573,7 +573,7 @@ public class StorageServiceImplTest {
         request.setMainFileId("2653ACA178AD49C29C2C81AB02006F69");
         request.setFileVersion("v1.0");
         request.setMajorTypeId("1");
-        request.setFileChecksum("1111111111111111111111111111");
+        request.setFileMd5("1111111111111111111111111111");
         storageService.updateNode(file,null,request,null);
     }
 

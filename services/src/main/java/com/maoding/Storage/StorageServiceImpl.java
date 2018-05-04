@@ -63,6 +63,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     @Autowired
     private ElementDao elementDao;
 
+    private Map<String,List<SimpleNodeDTO>> simpleNodeMap = new HashMap<>();
+    private Map<String,Integer> queryTimesMap = new HashMap<>();
+
     @Override
     public List<CANodeDTO> listCANode(@NotNull QueryCANodeDTO query, Current current) throws CustomException {
         return storageDao.listCANode(BeanUtils.cleanProperties(query));
@@ -105,12 +108,12 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         final String QUERY_MIRROR_BASE_DIR = "mirrorBaseDir";
         long t = System.currentTimeMillis();
 
-        CheckService.check(StringUtils.isNotEmpty(file.getId()), ErrorCode.DataIsInvalid);
+        CheckService.check(StringUtils.isNotEmpty(file.getId()), ErrorCode.InvalidParameter,"updateNodeFile");
         //更新节点信息
         Map<String,Object> queryFile = new HashMap<>();
         queryFile.put(QUERY_FIELD_ID,file.getId());
         StorageFileEntity fileEntity = storageDao.selectFileEntity(queryFile);
-        CheckService.check(fileEntity != null,ErrorCode.DataNotFound);
+        CheckService.check(fileEntity != null,ErrorCode.DataNotFound,"updateNodeFile");
         BeanUtils.copyCleanProperties(request, fileEntity);
         fileEntity.update();
         storageFileDao.update(fileEntity);
@@ -141,6 +144,16 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             }
         }
         BeanUtils.copyCleanProperties(request,file);
+
+        //更新节点长度和md5
+        if ((request.getFileLength() > 0) || (StringUtils.isNotEmpty(request.getFileMd5()))) {
+            StorageTreeEntity nodeEntity = storageTreeDao.selectById(StringUtils.left(file.getId(), StringUtils.DEFAULT_ID_LENGTH));
+            CheckService.check(nodeEntity != null, ErrorCode.DataNotFound);
+            nodeEntity.setFileLength(fileEntity.getFileLength());
+            nodeEntity.setFileMd5(fileEntity.getFileMd5());
+            nodeEntity.update();
+            storageTreeDao.update(nodeEntity);
+        }
 
         log.info("\t----> updateNodeFile花费时间:" + (System.currentTimeMillis()-t) + "ms");
         return file;
@@ -181,11 +194,11 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         long t = System.currentTimeMillis();
 
         ElementEntity entity = elementListDao.selectById(src.getId());
-        CheckService.check(entity != null,ErrorCode.DataNotFound);
+        CheckService.check(entity != null,ErrorCode.DataNotFound,"updateEmbedElement");
         BeanUtils.copyCleanProperties(request,entity);
         entity.update();
         int n = elementListDao.update(entity);
-        CheckService.check (n == 1);
+        CheckService.check (n == 1,ErrorCode.DataIsInvalid,"updateEmbedElement");
         BeanUtils.copyCleanProperties(entity,src);
 
         log.info("\t----> updateEmbedElement:" + (System.currentTimeMillis()-t) + "ms");
@@ -285,7 +298,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         StorageFileEntity entity;
         if ((src != null) && (StringUtils.isNotEmpty(src.getId()))) {
             entity = storageFileDao.selectById(src.getId());
-            CheckService.check(entity != null,ErrorCode.DataNotFound);
+            CheckService.check(entity != null,ErrorCode.DataNotFound,"createNodeFile");
             updateMirrorEntity(request, src.getId(), entity);
             src.setReadOnlyMirrorKey(StringUtils.formatPath(entity.getReadOnlyKey()));
             src.setWritableMirrorKey(StringUtils.formatPath(entity.getWritableKey()));
@@ -356,29 +369,17 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         mirrorEntity.setWritableKey(request.getWritableMirrorKey());
         assert (StringUtils.isNotEmpty(fileId));
         mirrorEntity.setMainFileId(fileId);
-        if (request.getReadOnlyFileLength() > 0) {
-            mirrorEntity.setReadOnlyFileLength(request.getReadOnlyFileLength());
+        if (request.getFileLength() > 0) {
+            mirrorEntity.setFileLength(request.getFileLength());
         }
-        if (StringUtils.isNotEmpty(request.getReadOnlyFileMd5())) {
-            mirrorEntity.setReadOnlyFileMd5(request.getReadOnlyFileMd5());
-        }
-        if (request.getWritableFileLength() > 0) {
-            mirrorEntity.setWritableFileLength(request.getWritableFileLength());
-        }
-        if (StringUtils.isNotEmpty(request.getWritableFileMd5())) {
-            mirrorEntity.setWritableFileMd5(request.getWritableFileMd5());
+        if (StringUtils.isNotEmpty(request.getFileMd5())) {
+            mirrorEntity.setFileMd5(request.getFileMd5());
         }
         if (StringUtils.isNotEmpty(request.getLastModifyUserId())){
             mirrorEntity.setLastModifyUserId(request.getLastModifyUserId());
         }
         if (StringUtils.isNotEmpty(request.getLastModifyRoleId())){
             mirrorEntity.setLastModifyRoleId(request.getLastModifyRoleId());
-        }
-        if (request.getReadOnlyFileLength() > 0) {
-            mirrorEntity.setReadOnlyFileLength(request.getReadOnlyFileLength());
-        }
-        if (StringUtils.isNotEmpty(request.getReadOnlyFileMd5())){
-            mirrorEntity.setReadOnlyFileMd5(request.getReadOnlyFileMd5());
         }
         return mirrorEntity;
     }
@@ -411,6 +412,11 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                 || (ObjectUtils.isNotEmpty(request.getServerAddress()))
                 || (ObjectUtils.isNotEmpty(request.getReadOnlyKey()))
                 || (ObjectUtils.isNotEmpty(request.getWritableKey()))
+                || (request.getFileLength() > 0)
+                || (StringUtils.isNotEmpty(request.getFileMd5()))
+                || (request.getIsPassDesign())
+                || (request.getIsPassCheck())
+                || (request.getIsPassAudit())
                 || isHisInfoValid(request)
                 || isMirrorInfoValid(request);
     }
@@ -474,13 +480,15 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                     entity.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_USER.toString());
                 }
                 entity.setTaskId(lastEntity.getTaskId());
-            } else if (parent != null){
+                entity.setProjectId(lastEntity.getProjectId());
+            } else if (isValid(parent)){
                 if (StringUtils.isNotEmpty(parent.getTypeId())) {
                     entity.setTypeId(ConstService.getPathType((new Short(parent.getTypeId())).toString()));
                 } else {
                     entity.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_USER.toString());
                 }
                 entity.setTaskId(parent.getTaskId());
+                entity.setProjectId(parent.getProjectId());
             } else { //添加根节点
                 lastEntity = new StorageTreeEntity();
                 lastEntity.reset();
@@ -506,7 +514,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         }
         if (!nodeList.isEmpty()) {
             int n = storageTreeDao.insertList(nodeList);
-            assert (n > 0);
+//            assert (n > 0);
         }
 
         return lastEntity;
@@ -517,79 +525,41 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     public SimpleNodeDTO updateNode(@NotNull SimpleNodeDTO src, SimpleNodeDTO parent, UpdateNodeDTO request, Current current) throws CustomException {
         long t = System.currentTimeMillis();
 
+        request = BeanUtils.cleanProperties(request);
+
         QueryNodeDTO query = new QueryNodeDTO();
         query.setId(StringUtils.left(src.getId(),StringUtils.DEFAULT_ID_LENGTH));
         StorageEntityUnionDTO srcUnion = storageDao.selectStorageEntityUnion(BeanUtils.cleanProperties(query));
-        CheckService.check(srcUnion != null,ErrorCode.DataNotFound);
+        CheckService.check(srcUnion != null,ErrorCode.DataNotFound,"updateNode");
+        BeanUtils.copyCleanProperties(request,srcUnion);
 
         //更改属性
-        if (!ConstService.STORAGE_NODE_TYPE_UNKNOWN.equals(request.getTypeId())) {
-            srcUnion.setTypeId((Short.toString(request.getTypeId())));
-        }
-        if (StringUtils.isNotEmpty(request.getPath())) {
-            srcUnion.setNodeName(StringUtils.getFileName(request.getPath()));
-        }
-        if (parent != null) {
+        srcUnion.setNodeName(StringUtils.getFileName(request.getPath()));
+        if (isValid(parent)) {
             StorageTreeEntity parentEntity = getParentEntity(parent, request, current);
-            if (parentEntity != null) {
-                srcUnion.setPid(parentEntity.getId());
-                srcUnion.setPath(StringUtils.formatPath(parentEntity.getPath() + StringUtils.SPLIT_PATH + srcUnion.getNodeName()));
-                srcUnion.setTaskId(parentEntity.getTaskId());
+            CheckService.check(parent != null,ErrorCode.DataNotFound);
+            srcUnion.setPid(parentEntity.getId());
+            String parentPath = parentEntity.getPath();
+            if (StringUtils.isNotEmpty(parentPath)) {
+                parentPath += StringUtils.SPLIT_PATH;
+            }
+            srcUnion.setPath(StringUtils.formatPath(parentPath + srcUnion.getNodeName()));
+            srcUnion.setTaskId(parentEntity.getTaskId());
+            srcUnion.setProjectId(parentEntity.getProjectId());
+        }
+
+        if (!ConstService.isDirectoryType(srcUnion.getTypeId()) && isFileInfoValid(request)){
+            StorageFileEntity fileEntity = srcUnion.getFileEntity();
+            if (fileEntity != null) {
+                BeanUtils.copyCleanProperties(request, fileEntity);
+                BeanUtils.copyCleanProperties(srcUnion, fileEntity);
+                fileEntity.update();
+                storageFileDao.update(fileEntity);
             } else {
-                srcUnion.setPid(null);
-                srcUnion.setPath(srcUnion.getNodeName());
-                if (StringUtils.isNotEmpty(request.getTaskId())) {
-                    srcUnion.setTaskId(request.getTaskId());
-                }
-            }
-        } else {
-            if (StringUtils.isNotEmpty(request.getTaskId())) {
-                srcUnion.setTaskId(request.getTaskId());
-            }
-        }
-        if (StringUtils.isNotEmpty(request.getOwnerUserId())) {
-            srcUnion.setOwnerUserId(request.getOwnerUserId());
-        }
-        if (StringUtils.isNotEmpty(request.getLastModifyUserId())) {
-            srcUnion.setLastModifyUserId(request.getLastModifyUserId());
-        }
-        if (StringUtils.isNotEmpty(request.getLastModifyRoleId())) {
-            srcUnion.setLastModifyRoleId(request.getLastModifyRoleId());
-        }
-        if (!ConstService.isDirectoryType(srcUnion.getTypeId())){
-            if  (isFileInfoValid(request)) {
-                StorageFileEntity fileEntity = srcUnion.getFileEntity();
-                if (fileEntity != null) {
-                    BeanUtils.copyCleanProperties(request, fileEntity);
-                    BeanUtils.copyCleanProperties(srcUnion, fileEntity);
-                    fileEntity.update();
-                    storageFileDao.update(fileEntity);
-                } else {
-                    fileEntity = BeanUtils.createCleanFrom(request, StorageFileEntity.class);
-                    BeanUtils.copyCleanProperties(srcUnion, fileEntity);
-                    fileEntity.update();
-                    storageFileDao.insert(fileEntity);
-                }
-            }
-            if (isHisInfoValid(request)){
-                StorageFileHisEntity hisEntity = srcUnion.getHisEntity();
-                if (hisEntity != null) {
-                    BeanUtils.copyCleanProperties(request, hisEntity);
-                    BeanUtils.copyCleanProperties(srcUnion, hisEntity);
-                    if (StringUtils.isEmpty(hisEntity.getMainFileId())) {
-                        hisEntity.setMainFileId(srcUnion.getId());
-                    }
-                    hisEntity.update();
-                    storageFileHisDao.update(hisEntity);
-                } else {
-                    hisEntity = BeanUtils.createCleanFrom(request,StorageFileHisEntity.class);
-                    BeanUtils.copyCleanProperties(srcUnion, hisEntity);
-                    hisEntity.update();
-                    if (StringUtils.isEmpty(hisEntity.getMainFileId())) {
-                        hisEntity.setMainFileId(srcUnion.getId());
-                    }
-                    storageFileHisDao.insert(hisEntity);
-                }
+                fileEntity = BeanUtils.createCleanFrom(request, StorageFileEntity.class);
+                BeanUtils.copyCleanProperties(srcUnion, fileEntity);
+                fileEntity.update();
+                storageFileDao.insert(fileEntity);
             }
             if (isMirrorInfoValid(request)){
                 StorageFileEntity mirrorEntity = selectMirrorFileEntity(srcUnion.getId(),
@@ -607,13 +577,18 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             }
         }
         srcUnion.update();
-        if (StringUtils.isNotSame(srcUnion.getTaskId(),src.getTaskId())) {
-            CheckService.check(StringUtils.isNotEmpty(srcUnion.getId()),ErrorCode.DataIsInvalid);
-            int n = storageTreeDao.updateTaskIdByPid(srcUnion.getId(),srcUnion.getTaskId());
-            assert (n >= 0);
+        storageTreeDao.update(srcUnion);
+
+        //获取新节点全路径
+        StringBuilder pathBuilder = new StringBuilder();
+        if (isValid(parent)) {
+            pathBuilder.append(parent.getPath());
+            if (pathBuilder.length() > 0) {
+                pathBuilder.append(StringUtils.SPLIT_PATH);
+            }
         }
-        storageTreeDao.updateExact(srcUnion);
-        SimpleNodeDTO node = convertToSimpleNodeDTO(srcUnion,null);
+        pathBuilder.append(srcUnion.getPath());
+        SimpleNodeDTO node = convertToSimpleNodeDTO(srcUnion,pathBuilder.toString());
 
         log.info("\t----> updateNode:" + (System.currentTimeMillis()-t) + "ms");
         return node;
@@ -626,8 +601,8 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         } else {
             pathBuilder.append(StringUtils.getDirName(src.getPath()));
         }
-        if ((request != null) && (!StringUtils.isEmpty(request.getFullName()))){
-            String dirName = StringUtils.getDirName(request.getFullName());
+        if ((request != null) && (!StringUtils.isEmpty(request.getPath()))){
+            String dirName = StringUtils.getDirName(request.getPath());
             if (StringUtils.isNotEmpty(dirName)) {
                 if (pathBuilder.length() > 0) pathBuilder.append(StringUtils.SPLIT_PATH);
                 pathBuilder.append(dirName);
@@ -692,7 +667,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     public List<SimpleNodeDTO> listChild(@NotNull SimpleNodeDTO parent, Current current) throws CustomException {
         if (isRoot(parent)) return listRoot(null,current);
 
-        CheckService.check(parent.getIsDirectory(),ErrorCode.InvalidParameter);
+        CheckService.check(parent.getIsDirectory(),ErrorCode.InvalidParameter,"listChild");
         QueryNodeDTO query = new QueryNodeDTO();
         query.setPid(parent.getId());
         return listNode(query,current);
@@ -703,12 +678,12 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     public List<SimpleNodeDTO> listChildren(@NotNull SimpleNodeDTO parent, Current current) throws CustomException {
         QueryNodeDTO nodeQuery = new QueryNodeDTO();
         if (!isRoot(parent)) {
-            CheckService.check(parent.getIsDirectory(),ErrorCode.InvalidParameter);
+            CheckService.check(parent.getIsDirectory(),ErrorCode.InvalidParameter,"listChildren");
             QueryNodeInfoDTO infoQuery = new QueryNodeInfoDTO();
             QueryNodeInfoTextDTO txtQuery = new QueryNodeInfoTextDTO();
             infoQuery.setTextQuery(txtQuery);
             FullNodeDTO parentInfo = getNodeInfo(parent, infoQuery, current);
-            CheckService.check((parentInfo != null) && (parentInfo.getTextInfo() != null) && (StringUtils.isNotEmpty(parentInfo.getTextInfo().getPath())));
+            CheckService.check((parentInfo != null) && (parentInfo.getTextInfo() != null) && (StringUtils.isNotEmpty(parentInfo.getTextInfo().getPath())),ErrorCode.DataIsInvalid,"listChildren");
             nodeQuery.setParentPath(parentInfo.getTextInfo().getPath());
         }
         return listNode(nodeQuery,current);
@@ -725,18 +700,13 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
 
     @Override
     public SimpleNodeDTO updateNodeSimple(@NotNull SimpleNodeDTO src, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
-        SimpleNodeDTO parent = null;
-        if (StringUtils.isNotEmpty(request.getPid())){
-            parent = getNodeById(request.getPid(),current);
-        }
-        return updateNode(src,parent,request,current);
+        return updateNode(src,null,request,current);
     }
 
     private void updateStorageUnion(@NotNull StorageEntityUnionDTO srcUnion){
         int n = 0;
         if (srcUnion.getHisEntity() != null) {
             StorageFileHisEntity hisEntity = srcUnion.getHisEntity();
-            hisEntity.setFileId(StringUtils.left(hisEntity.getFileId(),StringUtils.DEFAULT_ID_LENGTH));
             n += storageFileHisDao.updateById(hisEntity);
             assert (n > 0);
         }
@@ -754,91 +724,17 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         int n = 0;
         if (srcUnion.getHisEntity() != null) {
             StorageFileHisEntity hisEntity = srcUnion.getHisEntity();
-            hisEntity.setFileId(StringUtils.left(hisEntity.getFileId(),StringUtils.DEFAULT_ID_LENGTH));
             n += storageFileHisDao.insert(BeanUtils.cleanProperties(hisEntity));
-            assert (n > 0);
+//            assert (n > 0);
         }
         if (srcUnion.getFileEntity() != null) {
             StorageFileEntity fileEntity = srcUnion.getFileEntity();
             fileEntity.setMainFileId(StringUtils.left(fileEntity.getMainFileId(),StringUtils.DEFAULT_ID_LENGTH));
             n += storageFileDao.insert(BeanUtils.cleanProperties(fileEntity));
-            assert (n > 0);
+//            assert (n > 0);
         }
         n += storageTreeDao.insert(BeanUtils.cleanProperties(srcUnion));
-        assert (n > 0);
-    }
-
-    @Deprecated
-    private String insertPathNodeList(StorageEntityUnionDTO parentUnion,
-                                    @NotNull UpdateNodeDTO request,
-                                    @NotNull String fullName,
-                                    String pid,
-                                    String taskId,
-                                    String lastModifyUserId){
-        List<StorageTreeEntity> nodeList = new ArrayList<>();
-        StringBuilder pathBuilder = new StringBuilder();
-        String parentPath = "";
-        if (parentUnion != null) {
-            parentPath = parentUnion.getPath();
-            pathBuilder.append(parentPath);
-        }
-        String fullPath = StringUtils.getDirName(fullName);
-        String[] nodeNameArray = fullPath.split(StringUtils.SPLIT_PATH);
-        for (String nodeName : nodeNameArray) {
-            if (StringUtils.isEmpty(nodeName)) continue;
-            StorageTreeEntity pathNode = BeanUtils.createCleanFrom(request, StorageTreeEntity.class);
-            pathNode.setPid(pid);
-            pathNode.setNodeName(nodeName);
-            if (pathBuilder.length() > 0) pathBuilder.append(StringUtils.SPLIT_PATH);
-            pathBuilder.append(nodeName);
-            pathNode.setPath(pathBuilder.toString());
-            pathNode.setTypeId(ConstService.getPathType(Short.toString(request.getParentTypeId())));
-            pathNode.setLastModifyUserId(lastModifyUserId);
-            pathNode.setTaskId(taskId);
-            nodeList.add(pathNode);
-            pid = pathNode.getId();
-        }
-        if (!nodeList.isEmpty()) {
-            int n = storageTreeDao.insertList(nodeList);
-            assert (n > 0);
-        }
-        return pid;
-    }
-
-    private StorageEntityUnionDTO updateStorageUnion(@NotNull StorageEntityUnionDTO srcUnion,
-                                                     @NotNull UpdateNodeDTO request,
-                                                     String pid,
-                                                     String taskId,
-                                                     String storagePath,
-                                                     String lastModifyUserId,
-                                                     Long fileLength,
-                                                     Short typeId) {
-        //修改节点属性
-        BeanUtils.copyProperties(request, srcUnion);
-        if (!StringUtils.isEmpty(storagePath)) {
-            srcUnion.setNodeName(StringUtils.getFileName(storagePath));
-            srcUnion.setPath(StringUtils.formatPath(storagePath));
-        }
-        srcUnion.setTaskId(taskId);
-        srcUnion.setPid(pid);
-        srcUnion.setLastModifyUserId(lastModifyUserId);
-        srcUnion.setTypeId(Short.toString(typeId));
-
-        if (srcUnion.getHisEntity() != null) {
-            StorageFileHisEntity hisEntity = srcUnion.getHisEntity();
-            BeanUtils.copyProperties(request, hisEntity);
-            hisEntity.setFileId(request.getMainFileId());
-            if (StringUtils.isEmpty(hisEntity.getFileId())) hisEntity.setFileId(srcUnion.getId());
-            hisEntity.update();
-        }
-
-        if (srcUnion.getFileEntity() != null) {
-            StorageFileEntity fileEntity = srcUnion.getFileEntity();
-            BeanUtils.copyProperties(request, fileEntity);
-            fileEntity.update();
-        }
-        srcUnion.update();
-        return srcUnion;
+//        assert (n > 0);
     }
 
     private SimpleNodeDTO getNodeByFuzzyPathOld(String fuzzyPath){
@@ -870,7 +766,26 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         query.setPath(StringUtils.formatPath(query.getPath()));
         query.setParentPath(StringUtils.formatPath(query.getParentPath()));
         query.setFuzzyPath(StringUtils.formatPath(query.getFuzzyPath()));
-        List<SimpleNodeDTO> list = storageDao.listNode(BeanUtils.cleanProperties(query));
+
+        StringBuilder keyBuilder = new StringBuilder();
+        keyBuilder.append(query.getId()).append(query.getPath()).append(query.getParentPath())
+                .append(query.getTypeId()).append(query.getAccountId()).append(query.getPid());
+        String key = keyBuilder.toString();
+        List<SimpleNodeDTO> list = simpleNodeMap.get(key);
+        Integer times = queryTimesMap.get(key);
+        final Integer MAX_QUERY_USE_TIMES = 20;
+        if ((list == null) || (times > MAX_QUERY_USE_TIMES)) {
+            log.info("\t----> listNode_1:" + (System.currentTimeMillis()-t) + "ms");
+            t = System.currentTimeMillis();
+            list = storageDao.listNode(BeanUtils.cleanProperties(query));
+            log.info("\t----> listNode_2:" + (System.currentTimeMillis()-t) + "ms");
+            t = System.currentTimeMillis();
+            simpleNodeMap.put(key, list);
+            queryTimesMap.put(key,0);
+        } else {
+            times++;
+            queryTimesMap.put(key,times);
+        }
 
         log.info("\t----> listNode花费时间:" + (System.currentTimeMillis()-t) + "ms");
         return list;
@@ -891,8 +806,11 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     private SimpleNodeDTO convertToSimpleNodeDTO(StorageTreeEntity entity, String fullPath){
         if (entity == null) return null;
         SimpleNodeDTO node = BeanUtils.createCleanFrom(entity,SimpleNodeDTO.class);
-        if (entity.getTypeId() != null) {
+        if (StringUtils.isNotEmpty(entity.getTypeId())) {
             node.setIsDirectory(ConstService.isDirectoryType(entity.getTypeId()));
+        } else {
+            entity.setTypeId(ConstService.STORAGE_NODE_TYPE_UNKNOWN.toString());
+            node.setIsDirectory(false);
         }
         node.setName(entity.getNodeName());
         node.setPath(fullPath);
@@ -916,6 +834,7 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         return node;
     }
 
+
     @Override
     public SimpleNodeDTO createNode(SimpleNodeDTO parent, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
 
@@ -933,7 +852,9 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
         if (parentEntity != null) {
             nodeUnion.setPid(parentEntity.getId());
             String parentPath = parentEntity.getPath();
-            if (StringUtils.isNotEmpty(parentPath)) parentPath += StringUtils.SPLIT_PATH;
+            if (StringUtils.isNotEmpty(parentPath)) {
+                parentPath += StringUtils.SPLIT_PATH;
+            }
             nodeUnion.setPath(StringUtils.formatPath(parentPath + nodeUnion.getNodeName()));
             if (ConstService.isUnknownFileType(nodeUnion.getTypeId())) {
                 nodeUnion.setTypeId(ConstService.getFileType(parentEntity.getTypeId()));
@@ -943,20 +864,21 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             nodeUnion.setTaskId(parentEntity.getTaskId());
             nodeUnion.setProjectId(parentEntity.getProjectId());
         } else {
-            String taskId = request.getTaskId();
-            if (StringUtils.isEmpty(taskId) && parent != null){
-                taskId = parent.getTaskId();
-            }
-            String projectId = (parent != null) ? parent.getProjectId() : null;
             nodeUnion.setPid(null);
             nodeUnion.setPath(nodeUnion.getNodeName());
-            if (ConstService.isUnknownFileType(nodeUnion.getTypeId())) {
-                if (parent != null) nodeUnion.setTypeId(ConstService.getFileType((new Short(parent.getTypeId())).toString()));
-            } else if (ConstService.isUnknownDirectoryType(nodeUnion.getTypeId())) {
-                if (parent != null) nodeUnion.setTypeId(ConstService.getPathType((new Short(parent.getTypeId())).toString()));
+            if (isValid(parent)) {
+                if (ConstService.isUnknownFileType(nodeUnion.getTypeId())) {
+                    nodeUnion.setTypeId(ConstService.getFileType((new Short(parent.getTypeId())).toString()));
+                } else if (ConstService.isUnknownDirectoryType(nodeUnion.getTypeId())) {
+                    nodeUnion.setTypeId(ConstService.getPathType((new Short(parent.getTypeId())).toString()));
+                }
+                if (StringUtils.isEmpty(nodeUnion.getTaskId())) {
+                    nodeUnion.setTaskId(parent.getTaskId());
+                }
+                if (StringUtils.isEmpty(nodeUnion.getProjectId())) {
+                    nodeUnion.setProjectId(parent.getProjectId());
+                }
             }
-            nodeUnion.setTaskId(taskId);
-            nodeUnion.setProjectId(projectId);
         }
 
         if (!ConstService.isDirectoryType(nodeUnion.getTypeId()) && isFileInfoValid(request)){
@@ -976,14 +898,17 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
             }
         }
         insertStorageUnion(nodeUnion);
-        String path = "";
-        if (parent != null) {
-            path += parent.getPath();
+
+        //获取新节点全路径
+        StringBuilder pathBuilder = new StringBuilder();
+        if (isValid(parent)) {
+            pathBuilder.append(parent.getPath());
+            if (pathBuilder.length() > 0) {
+                pathBuilder.append(StringUtils.SPLIT_PATH);
+            }
         }
-        if (StringUtils.isNotEmpty(request.getPath())) {
-            path += StringUtils.SPLIT_PATH + request.getPath();
-        }
-        SimpleNodeDTO node = convertToSimpleNodeDTO(nodeUnion,path);
+        pathBuilder.append(nodeUnion.getPath());
+        SimpleNodeDTO node = convertToSimpleNodeDTO(nodeUnion,pathBuilder.toString());
 
         log.info("\t----> createNode:" + (System.currentTimeMillis()-t) + "ms");
         return node;
@@ -995,20 +920,24 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
     }
 
     private StorageTreeEntity getParentEntity(SimpleNodeDTO parent, @NotNull UpdateNodeDTO request, Current current) throws CustomException {
-        if ((parent == null) && (StringUtils.isNotEmpty(request.getPath()))) {
+        StorageTreeEntity parentEntity = null;
+        if (StringUtils.isNotEmpty(request.getPath())) {
             String parentPath = StringUtils.getDirName(request.getPath());
             if (StringUtils.isNotEmpty(parentPath)) {
                 if (!StringUtils.isStartWith(parentPath, StringUtils.SPLIT_PATH)) {
                     parentPath = StringUtils.SPLIT_PATH + parentPath;
                 }
             }
+            if (isValid(parent)) {
+                parentPath = parent.getPath() + parentPath;
+            }
             parent = getNodeByFuzzyPath(parentPath,current);
-            if (parent != null) {
+            if (isValid(parent)) {
                 QueryNodeInfoDTO query = new QueryNodeInfoDTO();
                 QueryNodeInfoTextDTO txtQuery = new QueryNodeInfoTextDTO();
                 query.setTextQuery(txtQuery);
                 FullNodeDTO parentFullInfo = getNodeInfo(parent, query, current);
-                CheckService.check((parentFullInfo != null) && (parentFullInfo.getTextInfo() != null));
+                CheckService.check((parentFullInfo != null) && (parentFullInfo.getTextInfo() != null),ErrorCode.DataIsInvalid,"getParentEntity");
                 String path = StringUtils.substring(parentPath, StringUtils.length(parentFullInfo.getTextInfo().getPath()) + StringUtils.SPLIT_PATH.length());
                 if (StringUtils.isNotEmpty(path)) {
                     path += StringUtils.SPLIT_PATH + StringUtils.getFileName(request.getPath());
@@ -1016,15 +945,16 @@ public class StorageServiceImpl extends BaseLocalService<StorageServicePrx> impl
                     path = StringUtils.getFileName(request.getPath());
                 }
                 request.setPath(path);
+                if (StringUtils.isEmpty(parent.getTaskId())){
+                    parent.setTaskId(request.getTaskId());
+                }
             }
-        }
-        String dirName = StringUtils.getDirName(request.getPath());
-        if ((parent != null) && StringUtils.isEmpty(parent.getTaskId())){
-            parent.setTaskId(request.getTaskId());
-        }
-        StorageTreeEntity parentEntity = insertPathNodeList(parent, dirName, request.getLastModifyUserId(), request.getLastModifyRoleId());
-        if ((parentEntity != null) && StringUtils.isNotEmpty(request.getTaskId())){
-            parentEntity.setTaskId(request.getTaskId());
+            String dirName = StringUtils.getDirName(request.getPath());
+            if (StringUtils.isNotEmpty(dirName)) {
+                parentEntity = insertPathNodeList(parent, dirName, request.getLastModifyUserId(), request.getLastModifyRoleId());
+            } else if (isValid(parent)){
+                parentEntity = storageTreeDao.selectById(StringUtils.left(parent.getId(),StringUtils.DEFAULT_ID_LENGTH));
+            }
         }
         return parentEntity;
     }

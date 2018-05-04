@@ -5,6 +5,7 @@ import com.maoding.CoreUtils.BeanUtils;
 import com.maoding.CoreUtils.ObjectUtils;
 import com.maoding.FileServer.Config.RemoteFileServerPrx;
 import com.maoding.FileServer.zeroc.*;
+import com.maoding.Storage.Dao.StorageDao;
 import com.maoding.Storage.zeroc.*;
 import com.maoding.User.zeroc.AccountDTO;
 import com.maoding.User.zeroc.LoginDTO;
@@ -179,7 +180,14 @@ public class FileServiceImplTest {
 
     @Test
     public void testListCANode() throws Exception {
-        List<CANodeDTO> list = listCANode();
+        List<CANodeDTO> list;
+//        list = listCANode();
+        list = listDesignNode();
+    }
+
+    private List<CANodeDTO> listDesignNode() throws Exception {
+        log.debug("\t>>>>>>>> listDesignNode");
+        return fileService.listDesignNode(getLocalAccount(), false,null);
     }
 
     private List<CANodeDTO> listCANode() throws Exception {
@@ -189,24 +197,50 @@ public class FileServiceImplTest {
 
     @Test
     public void testListNode() throws Exception{
-        List<SimpleNodeDTO> list = listAllNode();
+        List<SimpleNodeDTO> list;
+        SimpleNodeDTO node;
+//        List<SimpleNodeDTO> list = listAllNode();
 //        listRootNode();
-//        List<SimpleNodeDTO> list = listChildNode();
+//        list = listChildNode();
 //        listChildrenNode();
-//        List<SimpleNodeDTO> list = listRemoteChild("d1ba184a668d49789a224e8e8200fb17-1");
-//        List<SimpleNodeDTO> list = listRemoteAll();
+//        list = listRemoteChild();
+//        list = listRemoteAll();
+//        node = getRemoteByPath();
+//        list = listRemoteRoot();
+        list = listLocalRoot();
     }
 
+
+    private SimpleNodeDTO getRemoteByPath() throws Exception {
+        log.debug("\t>>>>>>>> getRemoteByPath");
+        return getRemote().getNodeByPathForAccount(getRemoteAccount(),"/09-卯丁新办公场地建设/设计/初步设计");
+    }
 
     private List<SimpleNodeDTO> listRemoteAll() throws Exception {
         log.debug("\t>>>>>>>> listRemoteAll");
-        return getRemote().listAllNodeForAccount(getAccount("07649b3d23094f28bfce78930bf4d4ac"));
+        return getRemote().listAllNodeForAccount(getRemoteAccount());
     }
 
-    private List<SimpleNodeDTO> listRemoteChild(String id) throws Exception {
+    private List<SimpleNodeDTO> listRemoteChild() throws Exception {
         log.debug("\t>>>>>>>> listRemoteChild");
-        SimpleNodeDTO parent = getRemote().getNodeByIdForAccount(getAccount("07649b3d23094f28bfce78930bf4d4ac"),id);
-        return getRemote().listChildNodeForAccount(getAccount("07649b3d23094f28bfce78930bf4d4ac"),parent);
+        for (int i=0; i<100; i++){
+            SimpleNodeDTO parent = getRemote().getNodeByIdForAccount(getRemoteAccount(), getRemoteTask().getId());
+            getRemote().listChildNodeForAccount(getRemoteAccount(),parent);
+        }
+        SimpleNodeDTO parent = getRemote().getNodeByIdForAccount(getRemoteAccount(), getRemoteTask().getId());
+        return getRemote().listChildNodeForAccount(getRemoteAccount(),parent);
+    }
+
+    private List<SimpleNodeDTO> listRemoteRoot() throws Exception {
+        log.debug("\t>>>>>>>> listRemoteRoot");
+        return getRemote().listRootNodeForAccount(getRemoteAccount());
+    }
+    @Autowired
+    StorageDao storageDao;
+
+    private List<SimpleNodeDTO> listLocalRoot() throws Exception {
+        log.debug("\t>>>>>>>> listLocalRoot");
+        return fileService.listRootNodeForAccount(getRemoteAccount(),null);
     }
 
 
@@ -217,6 +251,9 @@ public class FileServiceImplTest {
 
     private List<SimpleNodeDTO> listChildNode() throws Exception {
         log.debug("\t>>>>>>>> listChild");
+        for (int i=0; i<10000; i++) {
+            fileService.listChildNodeForAccount(getLocalAccount(), getLocalTask(),null);
+        }
         return fileService.listChildNodeForAccount(getLocalAccount(), getLocalTask(),null);
     }
 
@@ -231,9 +268,7 @@ public class FileServiceImplTest {
     }
 
     private AccountDTO getRemoteAccount(){
-        AccountDTO account = new AccountDTO();
-        account.setId("d437448683314cad91dc30b68879901d");
-        return account;
+        return getAccount("07649b3d23094f28bfce78930bf4d4ac");
     }
 
     private AccountDTO getLocalAccount(){
@@ -257,17 +292,36 @@ public class FileServiceImplTest {
     }
 
     private SimpleNodeDTO getLocalTask() throws Exception {
+        return getLocalNode("552f9b02dc2d4e9c9ee9a9ce402b7e07-1");
+    }
+
+    private SimpleNodeDTO getRemoteTask() throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
         query.setId("8bc9dda2677c410c97f4e0f5a0347643-1");
-        List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
-        return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
+        List<SimpleNodeDTO> list = getRemote().listNodeForAccount(getRemoteAccount(),query);
+        return list.get(0);
     }
 
     private SimpleNodeDTO getLocalNode() throws Exception {
+        return getLocalNode("F7B919FB5DD84403A1985DA9E4E10800-1");
+    }
+
+    private SimpleNodeDTO getLocalNode(String id) throws Exception {
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setId("91DF0F4018464CEFA64C401AE4E7D3D9-1");
+        query.setId(id);
         List<SimpleNodeDTO> list = fileService.listNodeForAccount(getLocalAccount(),query,null);
-        return (ObjectUtils.isNotEmpty(list)) ? list.get(0) : null;
+        return list.get(0);
+    }
+
+    private SimpleNodeDTO getRemoteNode() throws Exception {
+        return getRemoteNode("A6086E9E1DF642BF85216FF3114CAB71-1");
+    }
+
+    private SimpleNodeDTO getRemoteNode(String id) throws Exception {
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setId(id);
+        List<SimpleNodeDTO> list = getRemote().listNodeForAccount(getRemoteAccount(),query);
+        return list.get(0);
     }
 
     private FullNodeDTO getLocalFullNode() throws Exception {
@@ -330,7 +384,8 @@ public class FileServiceImplTest {
 //        commitNode();
 //        checkNode();
 //        issueNode();
-        askCA();
+        askLocalCA();
+//        askRemoteCA();
 //        audit();
     }
 
@@ -342,12 +397,20 @@ public class FileServiceImplTest {
 //        return fileService.auditNodeRequestForAccount(getLocalAccount(),getLocalNode(),null);
 //    }
 
-    private SimpleNodeDTO askCA() throws Exception {
-        return fileService.askCANodeRequestForAccount(getLocalAccount(),getCANode(),null);
+    private SimpleNodeDTO askRemoteCA() throws Exception {
+        return getRemote().askCANodeRequestForAccount(getRemoteAccount(), getRemoteCANode());
     }
 
-    private CANodeDTO getCANode() throws Exception {
+    private SimpleNodeDTO askLocalCA() throws Exception {
+        return fileService.askCANodeRequestForAccount(getLocalAccount(), getLocalCANode(),null);
+    }
+
+    private CANodeDTO getLocalCANode() throws Exception {
         return BeanUtils.createCleanFrom(getLocalNode(),CANodeDTO.class);
+    }
+
+    private CANodeDTO getRemoteCANode() throws Exception {
+        return BeanUtils.createCleanFrom(getRemoteNode(),CANodeDTO.class);
     }
 
     private SimpleNodeDTO issueNode() throws Exception {
@@ -474,10 +537,20 @@ public class FileServiceImplTest {
     @Test
     public void testCreateNode() throws Exception {
 //        createLocalDirectory();
-        createLocalFileWithSubDir();
+//        createLocalFileWithSubDir();
 //        createLocalLargeFile();
 //        createRangeChild();
+        createTaskFile();
     }
+
+    private SimpleNodeDTO createTaskFile() throws Exception{
+        log.debug("\t>>>>>>>> createTaskFile");
+        CreateNodeRequestDTO request = new CreateNodeRequestDTO();
+        request.setIsDirectory(false);
+        request.setFullName("aaaa.txt");
+        return fileService.createNodeForAccount(getLocalAccount(), getLocalTask(),request,null);
+    }
+
 
     private SimpleNodeDTO createRangeChild() throws Exception {
         SimpleNodeDTO parent = getLocalSimpleNode("d1ba184a668d49789a224e8e8200fb17-1");
@@ -506,8 +579,8 @@ public class FileServiceImplTest {
         log.debug("\t>>>>>>>> createRemoteDirectory");
         CreateNodeRequestDTO request = new CreateNodeRequestDTO();
         request.setIsDirectory(true);
-        request.setFullName("father/child/child3");
-        return fileService.createNodeForAccount(getLocalAccount(), getLocalDir(),request,null);
+        request.setFullName("child3");
+        return fileService.createNodeForAccount(getRemoteAccount(), getRemoteTask(),request,null);
     }
 
     private SimpleNodeDTO createLocalFileWithSubDir() throws Exception{
@@ -526,6 +599,7 @@ public class FileServiceImplTest {
         request.setFullName("father/child/child3");
         return fileService.createNodeForAccount(getLocalAccount(), getLocalTask(),request,null);
     }
+
 
     /** action before each test */
     @Before

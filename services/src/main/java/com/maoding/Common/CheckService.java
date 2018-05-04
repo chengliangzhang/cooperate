@@ -2,8 +2,6 @@ package com.maoding.Common;
 
 import com.maoding.Common.zeroc.CustomException;
 import com.maoding.Common.zeroc.ErrorCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -12,13 +10,20 @@ import org.slf4j.LoggerFactory;
  * 描    述 :
  */
 public class CheckService {
-    private final static Logger log = LoggerFactory.getLogger(CheckService.class);
-
     public static void check(boolean condition, ErrorCode code, String message) throws CustomException {
-        if (!(condition)) throw new CustomException(code,message);
+        if (!(condition)) {
+            CustomException e = new CustomException(code,message);
+            StackTraceElement[] st = e.getStackTrace();
+            if (st != null && st.length > 1) {
+                message += " --- " + st[1].getClassName() + "." + st[1].getMethodName() +
+                        "(" + st[1].getFileName() + ":" + st[1].getLineNumber() + ")";
+                e = new CustomException(code,message);
+            }
+            throw e;
+        }
     }
     public static void check(boolean condition, ErrorCode code) throws CustomException{
-        check(condition,code,"系统异常");
+        check(condition,code, "系统异常");
     }
     public static void check(boolean condition, String message) throws CustomException{
         check(condition,ErrorCode.Assert,message);

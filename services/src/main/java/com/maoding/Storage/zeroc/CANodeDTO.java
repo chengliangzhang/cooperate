@@ -191,6 +191,30 @@ public class CANodeDTO implements java.lang.Cloneable,
         this.fileLength = fileLength;
     }
 
+    public String lastCommitFileMd5;
+
+    public String getLastCommitFileMd5()
+    {
+        return lastCommitFileMd5;
+    }
+
+    public void setLastCommitFileMd5(String lastCommitFileMd5)
+    {
+        this.lastCommitFileMd5 = lastCommitFileMd5;
+    }
+
+    public String lastCommitFileLength;
+
+    public String getLastCommitFileLength()
+    {
+        return lastCommitFileLength;
+    }
+
+    public void setLastCommitFileLength(String lastCommitFileLength)
+    {
+        this.lastCommitFileLength = lastCommitFileLength;
+    }
+
     public boolean isPassDesign;
 
     public boolean getIsPassDesign()
@@ -255,9 +279,11 @@ public class CANodeDTO implements java.lang.Cloneable,
         this.ownerName = "";
         this.path = "";
         this.fileMd5 = "";
+        this.lastCommitFileMd5 = "";
+        this.lastCommitFileLength = "";
     }
 
-    public CANodeDTO(String id, String name, long createTimeStamp, long lastModifyTimeStamp, String roleName, String projectId, String projectName, String taskId, String taskName, String ownerUserId, String ownerName, String path, String fileMd5, long fileLength, boolean isPassDesign, boolean isPassCheck, boolean isPassAudit)
+    public CANodeDTO(String id, String name, long createTimeStamp, long lastModifyTimeStamp, String roleName, String projectId, String projectName, String taskId, String taskName, String ownerUserId, String ownerName, String path, String fileMd5, long fileLength, String lastCommitFileMd5, String lastCommitFileLength, boolean isPassDesign, boolean isPassCheck, boolean isPassAudit)
     {
         this.id = id;
         this.name = name;
@@ -273,6 +299,8 @@ public class CANodeDTO implements java.lang.Cloneable,
         this.path = path;
         this.fileMd5 = fileMd5;
         this.fileLength = fileLength;
+        this.lastCommitFileMd5 = lastCommitFileMd5;
+        this.lastCommitFileLength = lastCommitFileLength;
         this.isPassDesign = isPassDesign;
         this.isPassCheck = isPassCheck;
         this.isPassAudit = isPassAudit;
@@ -381,6 +409,20 @@ public class CANodeDTO implements java.lang.Cloneable,
             {
                 return false;
             }
+            if(this.lastCommitFileMd5 != r.lastCommitFileMd5)
+            {
+                if(this.lastCommitFileMd5 == null || r.lastCommitFileMd5 == null || !this.lastCommitFileMd5.equals(r.lastCommitFileMd5))
+                {
+                    return false;
+                }
+            }
+            if(this.lastCommitFileLength != r.lastCommitFileLength)
+            {
+                if(this.lastCommitFileLength == null || r.lastCommitFileLength == null || !this.lastCommitFileLength.equals(r.lastCommitFileLength))
+                {
+                    return false;
+                }
+            }
             if(this.isPassDesign != r.isPassDesign)
             {
                 return false;
@@ -418,6 +460,8 @@ public class CANodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileMd5);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastCommitFileMd5);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastCommitFileLength);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassDesign);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassCheck);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassAudit);
@@ -454,6 +498,8 @@ public class CANodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.path);
         ostr.writeString(this.fileMd5);
         ostr.writeLong(this.fileLength);
+        ostr.writeString(this.lastCommitFileMd5);
+        ostr.writeString(this.lastCommitFileLength);
         ostr.writeBool(this.isPassDesign);
         ostr.writeBool(this.isPassCheck);
         ostr.writeBool(this.isPassAudit);
@@ -475,6 +521,8 @@ public class CANodeDTO implements java.lang.Cloneable,
         this.path = istr.readString();
         this.fileMd5 = istr.readString();
         this.fileLength = istr.readLong();
+        this.lastCommitFileMd5 = istr.readString();
+        this.lastCommitFileLength = istr.readString();
         this.isPassDesign = istr.readBool();
         this.isPassCheck = istr.readBool();
         this.isPassAudit = istr.readBool();
@@ -532,5 +580,5 @@ public class CANodeDTO implements java.lang.Cloneable,
 
     private static final CANodeDTO _nullMarshalValue = new CANodeDTO();
 
-    public static final long serialVersionUID = -1518422445L;
+    public static final long serialVersionUID = -941778381L;
 }

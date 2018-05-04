@@ -15,12 +15,30 @@ import javax.persistence.Table;
 public class StorageTreeEntity extends BaseTreeEntity {
     @Column /** 相关联的任务id */
     private String taskId;
-
     @Column /** 相关联的项目id */
     private String projectId;
-
     @Column /** 文件所属用户id */
     private String ownerUserId;
+    @Column /** 节点文件长度，与只读文件的长度相同 */
+    private Long fileLength;
+    @Column /** 节点文件md5校验值，与只读文件md5校验值相同 */
+    private String fileMd5;
+
+    public Long getFileLength() {
+        return fileLength;
+    }
+
+    public void setFileLength(Long fileLength) {
+        this.fileLength = fileLength;
+    }
+
+    public String getFileMd5() {
+        return fileMd5;
+    }
+
+    public void setFileMd5(String fileMd5) {
+        this.fileMd5 = fileMd5;
+    }
 
     public String getProjectId() {
         return projectId;

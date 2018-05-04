@@ -9,7 +9,7 @@
 [["java:package:com.maoding.FileServer"]]
 module zeroc {
     interface FileService {
-        CANodeList listDesignNode(AccountDTO account) throws CustomException; //查询可提交的设计文档
+        CANodeList listDesignNode(AccountDTO account,bool isForCommit) throws CustomException; //查询可提交的设计文档
         CANodeList listCANode(AccountDTO account) throws CustomException; //查询可校审的文档
 
         CommitListResultDTO checkNodeListRequest(CANodeList srcList) throws CustomException; //提交文件
@@ -94,6 +94,7 @@ module zeroc {
 
         SimpleNodeDTO createVersion(AccountDTO account, SimpleNodeDTO src, string path, CommitRequestDTO request) throws CustomException; //创建版本
         SimpleNodeDTO updateVersion(AccountDTO account, SimpleNodeDTO src, SimpleNodeDTO dst, CommitRequestDTO request) throws CustomException; //创建版本
+        CommitListResultDTO updateNodeList(AccountDTO account,SimpleNodeList srcList,CommitRequestDTO request) throws CustomException; //更改节点属性
 
         bool deleteNode(SimpleNodeDTO src) throws CustomException; //删除节点
         bool deleteNodeForAccount(AccountDTO account,SimpleNodeDTO src) throws CustomException; //删除节点

@@ -20,7 +20,9 @@ module zeroc {
         string ownerName; //节点所有者名称
         string path; //节点全路径
         string fileMd5; //MD5
-        long fileLength; //节点长度
+        long fileLength; //文件长度
+        string lastCommitFileMd5; //最后一次提交时的md5
+        string lastCommitFileLength; //最后一次提交时的文件长度
         bool isPassDesign; //已经提交过校审
         bool isPassCheck; //通过校验
         bool isPassAudit; //通过审核
@@ -47,9 +49,6 @@ module zeroc {
         string ownerName; //节点所有者名称
         string projectName; //项目名称
         string taskName; //任务名称
-        bool isPassDesign; //已经提交过校审
-        bool isPassCheck; //通过校验
-        bool isPassAudit; //通过审核
 
         //即时属性
         bool isReadOnly; //节点是否只读
@@ -280,8 +279,8 @@ module zeroc {
         string fileVersion; //文件版本号
         string majorTypeId; //文件所属专业编号
         string readOnlyKey; //只读版本在文件服务器上的存储名称
-        long readOnlyFileLength; //只读版本文件长度
-        string readOnlyFileMd5; //只读版本校验和
+        long fileLength; //只读版本文件长度
+        string fileMd5; //只读版本校验和
         string writableKey; //可写版本在文件服务器上的存储名称
 
         //文件校审信息
@@ -335,17 +334,24 @@ module zeroc {
 
     ["java:getset","clr:property"]
     struct QueryCANodeDTO { //节点查询申请，每个属性都可以是逗号分隔的多个数据
-        string rangeId; //节点所属分类类型
-        string notTypeId; //过滤的节点类型
+        ["deprecate"] string rangeId; //节点所属分类类型
+        ["deprecate"] string notTypeId; //过滤的节点类型
         string passDesign; //已提交校审标志
         string passCheck; //已通过校验标志
         string passAudit; //已通过审核标志
+        string isDesign; //是否设计文档
+        string isCA; //是否校审文档
+        string isCommit; //是否提资文档
+        string isHistory; //是否历史文档
         string userId; //用户编号
-        string taskLeaderMode; //用户是否任务负责人
-        string designerMode; //用户是否设计
-        string checkerMode; //用户是否校对
-        string auditorMode; //用户是否审核
-        string webRoleTypeId; //用户是否审核
+        string isTaskLeader; //用户是否任务负责人
+        string isTaskDesigner; //用户是否设计
+        string isTaskChecker; //用户是否校对
+        string isTaskAuditor; //用户是否审核
+        ["deprecate"] string webRoleTypeId; //用户角色类型
+        ["deprecate"] string actionTypeId; //获取最后提交状态时用到的历史提交动作
+        string askCA; //获取最后提交状态时用到的提交动作是否申请校审
+        string askCommit; //获取最后提交状态时用到的提交动作是否申请提资
     };
 
     ["java:getset","clr:property"]
@@ -386,12 +392,13 @@ module zeroc {
     ["java:getset","clr:property"]
     struct UpdateNodeDTO { //节点更改申请
         //节点信息
-        short typeId; //节点类型
+        string typeId; //节点类型
         string path; //绝对或相对路径，包含文件名
         string ownerUserId; //拥有者用户id
 
         //节点关联属性
         string taskId; //所属任务Id
+        string projectId; //所属项目编号
         string mainFileId; //主文件id
 
         //文件服务器信息
@@ -401,16 +408,16 @@ module zeroc {
 
         //文件节点信息
         short fileTypeId; //目标文件类型Id
-        ["deprecate"] long fileLength; //目标文件大小
+        long fileLength; //目标文件大小
         string fileVersion; //文件版本号
-        ["deprecate"] string fileChecksum; //文件校验和
+        string fileMd5; //文件校验和
         string majorTypeId; //文件所属专业编号
         string readOnlyKey; //只读版本在文件服务器上的存储名称
-        long readOnlyFileLength; //只读版本文件长度
-        string readOnlyFileMd5; //只读版本校验和
+        ["deprecate"] long readOnlyFileLength; //只读版本文件长度
+        ["deprecate"] string readOnlyFileMd5; //只读版本校验和
         string writableKey; //可写版本在文件服务器上的存储名称
-        long writableFileLength; //可写版本文件长度
-        string writableFileMd5; //可写版本校验和
+        ["deprecate"] long writableFileLength; //可写版本文件长度
+        ["deprecate"] string writableFileMd5; //可写版本校验和
 
         //文件校审信息
         bool isPassDesign; //已提交过校审
@@ -431,16 +438,6 @@ module zeroc {
         //操作者信息
         string lastModifyUserId; //操作者用户id
         string lastModifyRoleId; //操作者职责id
-
-        ["deprecate"] string pid; //父节点编号
-        ["deprecate"] string readFileScope; //只读版本在文件服务器上的存储位置
-        ["deprecate:使用readOnlyKey代替"] string readFileKey; //只读版本在文件服务器上的存储名称
-        ["deprecate:使用writableScope代替"] string writeFileScope; //可写版本在文件服务器上的存储位置
-        ["deprecate:使用writableKey代替"] string writeFileKey; //可写版本在文件服务器上的存储名称
-        ["deprecate:使用path代替"] string fullName; //要创建的节点名，可包含相对于父节点的路径
-        ["deprecate"] string parentPath; //父节点的全路径
-        ["deprecate"] short parentTypeId; //父节点的类型
-        ["deprecate"] string parentStoragePath; //父节点相对路径
     };
 
     ["java:getset","clr:property"]

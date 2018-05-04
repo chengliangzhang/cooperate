@@ -2,6 +2,7 @@ package com.maoding.Storage.Entity;
 
 import com.maoding.Base.BaseEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Table;
 
 /**
@@ -12,7 +13,9 @@ import javax.persistence.Table;
  */
 @Table(name = "md_list_element")
 public class ElementEntity extends BaseEntity {
+    @Column /** 占位符 */
     private String title;
+    @Column /** 元素内容 */
     private byte[] dataArray;
 
     public String getTitle() {

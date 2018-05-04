@@ -4,6 +4,7 @@ import com.maoding.Common.Dao.ConstDao;
 import com.maoding.Common.Entity.ConstEntity;
 import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.Common.zeroc.StringElementDTO;
+import com.maoding.CoreUtils.DigitUtils;
 import com.maoding.CoreUtils.SpringUtils;
 import com.maoding.CoreUtils.StringUtils;
 import org.slf4j.Logger;
@@ -162,6 +163,10 @@ public class ConstService {
     public static final Integer POS_IS_DESIGN = 3;
     public static final Integer POS_IS_COMMIT = 4;
     public static final Integer POS_IS_HISTORY = 5;
+
+    public static final String MODE_TRUE = "1";
+    public static final String MODE_FALSE = "0";
+    public static final String MODE_BOTH = "0,1";
 
     public static final String SPLIT_EXTRA = ";";
     public static final String V_END = "}";
@@ -330,7 +335,7 @@ public class ConstService {
     }
 
     public static Short getActionNodeTypeId(@NotNull Short actionTypeId){
-        return Short.parseShort(getExtra(CLASSIC_TYPE_ACTION,actionTypeId,1));
+        return DigitUtils.parseShort(getExtra(CLASSIC_TYPE_ACTION,actionTypeId,2));
     }
 
     public static String getActionNodePath(@NotNull Short actionTypeId){
@@ -338,11 +343,11 @@ public class ConstService {
     }
 
     public static String getActionNodePath(@NotNull Short actionTypeId, StringElementDTO stringElement){
-        return getExtra(CLASSIC_TYPE_ACTION,actionTypeId,stringElement,2);
+        return getExtra(CLASSIC_TYPE_ACTION,actionTypeId,stringElement,3);
     }
 
     public static Short getActionFileServerTypeId(@NotNull Short actionTypeId){
-        return Short.parseShort(getExtra(CLASSIC_TYPE_ACTION,actionTypeId,3));
+        return DigitUtils.parseShort(getExtra(CLASSIC_TYPE_ACTION,actionTypeId,4));
     }
 
     public static String getActionFileServerAddress(@NotNull Short actionTypeId){
@@ -350,11 +355,19 @@ public class ConstService {
     }
 
     public static String getActionFileServerAddress(@NotNull Short actionTypeId, @NotNull StringElementDTO stringElement){
-        return getExtra(CLASSIC_TYPE_ACTION,actionTypeId,stringElement,4);
+        return getExtra(CLASSIC_TYPE_ACTION,actionTypeId,stringElement,5);
+    }
+
+    public static String getActionFileServerBaseDir(@NotNull Short actionTypeId){
+        return getActionFileServerBaseDir(actionTypeId,null);
+    }
+
+    public static String getActionFileServerBaseDir(@NotNull Short actionTypeId, @NotNull StringElementDTO stringElement){
+        return getExtra(CLASSIC_TYPE_ACTION,actionTypeId,stringElement,6);
     }
 
     public static String getActionNoticeTypeIdString(Short actionTypeId){
-        return getExtra(CLASSIC_TYPE_ACTION,actionTypeId,5);
+        return getExtra(CLASSIC_TYPE_ACTION,actionTypeId,7);
     }
 
 
@@ -423,21 +436,21 @@ public class ConstService {
         }
         if (s.contains(V_CLASSIC_NAME_START)){
             String vClassic = s.substring(s.indexOf(V_CLASSIC_NAME_START) + V_CLASSIC_NAME_START.length(),s.indexOf(V_END,s.indexOf(V_CLASSIC_NAME_START)));
-            s = StringUtils.replace(s,V_CLASSIC_NAME_START + vClassic + V_END,getRangeName(Short.parseShort(vClassic)));
+            s = StringUtils.replace(s,V_CLASSIC_NAME_START + vClassic + V_END,getRangeName(DigitUtils.parseShort(vClassic)));
         }
         if (s.contains(V_ACTION_NAME_START)){
             String vAction = s.substring(s.indexOf(V_ACTION_NAME_START) + V_ACTION_NAME_START.length(),s.indexOf(V_END,s.indexOf(V_CLASSIC_NAME_START)));
-            s = StringUtils.replace(s,V_ACTION_NAME_START + vAction + V_END,getActionName(Short.parseShort(vAction)));
+            s = StringUtils.replace(s,V_ACTION_NAME_START + vAction + V_END,getActionName(DigitUtils.parseShort(vAction)));
         }
         return s;
     }
 
     public static boolean isUnknownDirectoryType(@NotNull String typeId){
-        return (isCustomType(typeId)) || (STORAGE_NODE_TYPE_DIR_UNKNOWN.equals(Short.parseShort(typeId)));
+        return (isCustomType(typeId)) || (STORAGE_NODE_TYPE_DIR_UNKNOWN.equals(DigitUtils.parseShort(typeId)));
     }
 
     public static boolean isUnknownFileType(@NotNull String typeId){
-        return (isCustomType(typeId)) || (STORAGE_NODE_TYPE_UNKNOWN.equals(Short.parseShort(typeId)));
+        return (isCustomType(typeId)) || (STORAGE_NODE_TYPE_UNKNOWN.equals(DigitUtils.parseShort(typeId)));
     }
 
     public static boolean isCustomType(@NotNull String typeId){
@@ -447,27 +460,27 @@ public class ConstService {
 
 
     public static boolean isDirectoryType(@NotNull String typeId) {
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_DIRECTORY);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE, DigitUtils.parseShort(typeId)),POS_IS_DIRECTORY);
     }
 
     public static boolean isProjectType(@NotNull String typeId) {
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_PROJECT);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_PROJECT);
     }
 
     public static boolean isTaskType(@NotNull String typeId) {
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_TASK);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_TASK);
     }
 
     public static boolean isDesignType(@NotNull String typeId) {
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_DESIGN);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_DESIGN);
     }
 
     public static boolean isCommitType(@NotNull String typeId){
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_COMMIT);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_COMMIT);
     }
 
     public static boolean isHistoryType(@NotNull String typeId){
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,Short.parseShort(typeId)),POS_IS_HISTORY);
+        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_HISTORY);
     }
 
     public static boolean isSystemType(@NotNull String typeId){
@@ -476,7 +489,7 @@ public class ConstService {
 
     public static String getTypeName(@NotNull String typeId){
         try {
-            return getTitle(CLASSIC_TYPE_STORAGE_NODE, Short.parseShort(typeId));
+            return getTitle(CLASSIC_TYPE_STORAGE_NODE, DigitUtils.parseShort(typeId));
         } catch (NumberFormatException e) {
             log.warn("节点类型存在问题");
             return getTitle(CLASSIC_TYPE_STORAGE_NODE, STORAGE_NODE_TYPE_UNKNOWN);
@@ -484,20 +497,10 @@ public class ConstService {
     }
 
     public static String getPathType(@NotNull String typeId){
-        try {
-            return getExtra(CLASSIC_TYPE_STORAGE_NODE, Short.parseShort(typeId), 2);
-        } catch (NumberFormatException e) {
-            log.warn("父目录节点类型存在问题");
-            return STORAGE_NODE_TYPE_DIR_UNKNOWN.toString();
-        }
+        return getExtra(CLASSIC_TYPE_STORAGE_NODE, DigitUtils.parseShort(typeId), 2);
     }
 
     public static String getFileType(@NotNull String typeId){
-        try {
-            return getExtra(CLASSIC_TYPE_STORAGE_NODE, Short.parseShort(typeId), 3);
-        } catch (NumberFormatException e) {
-            log.warn("父目录节点类型存在问题");
-            return STORAGE_NODE_TYPE_UNKNOWN.toString();
-        }
+        return getExtra(CLASSIC_TYPE_STORAGE_NODE, DigitUtils.parseShort(typeId), 3);
     }
 }

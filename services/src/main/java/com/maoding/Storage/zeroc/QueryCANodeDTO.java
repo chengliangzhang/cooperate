@@ -23,25 +23,43 @@ package com.maoding.Storage.zeroc;
 public class QueryCANodeDTO implements java.lang.Cloneable,
                                        java.io.Serializable
 {
+    /**
+     **/
+    @Deprecated
     public String rangeId;
 
+    /**
+     **/
+    @Deprecated
     public String getRangeId()
     {
         return rangeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setRangeId(String rangeId)
     {
         this.rangeId = rangeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public String notTypeId;
 
+    /**
+     **/
+    @Deprecated
     public String getNotTypeId()
     {
         return notTypeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setNotTypeId(String notTypeId)
     {
         this.notTypeId = notTypeId;
@@ -83,6 +101,54 @@ public class QueryCANodeDTO implements java.lang.Cloneable,
         this.passAudit = passAudit;
     }
 
+    public String isDesign;
+
+    public String getIsDesign()
+    {
+        return isDesign;
+    }
+
+    public void setIsDesign(String isDesign)
+    {
+        this.isDesign = isDesign;
+    }
+
+    public String isCA;
+
+    public String getIsCA()
+    {
+        return isCA;
+    }
+
+    public void setIsCA(String isCA)
+    {
+        this.isCA = isCA;
+    }
+
+    public String isCommit;
+
+    public String getIsCommit()
+    {
+        return isCommit;
+    }
+
+    public void setIsCommit(String isCommit)
+    {
+        this.isCommit = isCommit;
+    }
+
+    public String isHistory;
+
+    public String getIsHistory()
+    {
+        return isHistory;
+    }
+
+    public void setIsHistory(String isHistory)
+    {
+        this.isHistory = isHistory;
+    }
+
     public String userId;
 
     public String getUserId()
@@ -95,64 +161,118 @@ public class QueryCANodeDTO implements java.lang.Cloneable,
         this.userId = userId;
     }
 
-    public String taskLeaderMode;
+    public String isTaskLeader;
 
-    public String getTaskLeaderMode()
+    public String getIsTaskLeader()
     {
-        return taskLeaderMode;
+        return isTaskLeader;
     }
 
-    public void setTaskLeaderMode(String taskLeaderMode)
+    public void setIsTaskLeader(String isTaskLeader)
     {
-        this.taskLeaderMode = taskLeaderMode;
+        this.isTaskLeader = isTaskLeader;
     }
 
-    public String designerMode;
+    public String isTaskDesigner;
 
-    public String getDesignerMode()
+    public String getIsTaskDesigner()
     {
-        return designerMode;
+        return isTaskDesigner;
     }
 
-    public void setDesignerMode(String designerMode)
+    public void setIsTaskDesigner(String isTaskDesigner)
     {
-        this.designerMode = designerMode;
+        this.isTaskDesigner = isTaskDesigner;
     }
 
-    public String checkerMode;
+    public String isTaskChecker;
 
-    public String getCheckerMode()
+    public String getIsTaskChecker()
     {
-        return checkerMode;
+        return isTaskChecker;
     }
 
-    public void setCheckerMode(String checkerMode)
+    public void setIsTaskChecker(String isTaskChecker)
     {
-        this.checkerMode = checkerMode;
+        this.isTaskChecker = isTaskChecker;
     }
 
-    public String auditorMode;
+    public String isTaskAuditor;
 
-    public String getAuditorMode()
+    public String getIsTaskAuditor()
     {
-        return auditorMode;
+        return isTaskAuditor;
     }
 
-    public void setAuditorMode(String auditorMode)
+    public void setIsTaskAuditor(String isTaskAuditor)
     {
-        this.auditorMode = auditorMode;
+        this.isTaskAuditor = isTaskAuditor;
     }
 
+    /**
+     **/
+    @Deprecated
     public String webRoleTypeId;
 
+    /**
+     **/
+    @Deprecated
     public String getWebRoleTypeId()
     {
         return webRoleTypeId;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setWebRoleTypeId(String webRoleTypeId)
     {
         this.webRoleTypeId = webRoleTypeId;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public String actionTypeId;
+
+    /**
+     **/
+    @Deprecated
+    public String getActionTypeId()
+    {
+        return actionTypeId;
+    }
+
+    /**
+     **/
+    @Deprecated
+    public void setActionTypeId(String actionTypeId)
+    {
+        this.actionTypeId = actionTypeId;
+    }
+
+    public String askCA;
+
+    public String getAskCA()
+    {
+        return askCA;
+    }
+
+    public void setAskCA(String askCA)
+    {
+        this.askCA = askCA;
+    }
+
+    public String askCommit;
+
+    public String getAskCommit()
+    {
+        return askCommit;
+    }
+
+    public void setAskCommit(String askCommit)
+    {
+        this.askCommit = askCommit;
     }
 
     public QueryCANodeDTO()
@@ -162,27 +282,41 @@ public class QueryCANodeDTO implements java.lang.Cloneable,
         this.passDesign = "";
         this.passCheck = "";
         this.passAudit = "";
+        this.isDesign = "";
+        this.isCA = "";
+        this.isCommit = "";
+        this.isHistory = "";
         this.userId = "";
-        this.taskLeaderMode = "";
-        this.designerMode = "";
-        this.checkerMode = "";
-        this.auditorMode = "";
+        this.isTaskLeader = "";
+        this.isTaskDesigner = "";
+        this.isTaskChecker = "";
+        this.isTaskAuditor = "";
         this.webRoleTypeId = "";
+        this.actionTypeId = "";
+        this.askCA = "";
+        this.askCommit = "";
     }
 
-    public QueryCANodeDTO(String rangeId, String notTypeId, String passDesign, String passCheck, String passAudit, String userId, String taskLeaderMode, String designerMode, String checkerMode, String auditorMode, String webRoleTypeId)
+    public QueryCANodeDTO(String rangeId, String notTypeId, String passDesign, String passCheck, String passAudit, String isDesign, String isCA, String isCommit, String isHistory, String userId, String isTaskLeader, String isTaskDesigner, String isTaskChecker, String isTaskAuditor, String webRoleTypeId, String actionTypeId, String askCA, String askCommit)
     {
         this.rangeId = rangeId;
         this.notTypeId = notTypeId;
         this.passDesign = passDesign;
         this.passCheck = passCheck;
         this.passAudit = passAudit;
+        this.isDesign = isDesign;
+        this.isCA = isCA;
+        this.isCommit = isCommit;
+        this.isHistory = isHistory;
         this.userId = userId;
-        this.taskLeaderMode = taskLeaderMode;
-        this.designerMode = designerMode;
-        this.checkerMode = checkerMode;
-        this.auditorMode = auditorMode;
+        this.isTaskLeader = isTaskLeader;
+        this.isTaskDesigner = isTaskDesigner;
+        this.isTaskChecker = isTaskChecker;
+        this.isTaskAuditor = isTaskAuditor;
         this.webRoleTypeId = webRoleTypeId;
+        this.actionTypeId = actionTypeId;
+        this.askCA = askCA;
+        this.askCommit = askCommit;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -234,6 +368,34 @@ public class QueryCANodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.isDesign != r.isDesign)
+            {
+                if(this.isDesign == null || r.isDesign == null || !this.isDesign.equals(r.isDesign))
+                {
+                    return false;
+                }
+            }
+            if(this.isCA != r.isCA)
+            {
+                if(this.isCA == null || r.isCA == null || !this.isCA.equals(r.isCA))
+                {
+                    return false;
+                }
+            }
+            if(this.isCommit != r.isCommit)
+            {
+                if(this.isCommit == null || r.isCommit == null || !this.isCommit.equals(r.isCommit))
+                {
+                    return false;
+                }
+            }
+            if(this.isHistory != r.isHistory)
+            {
+                if(this.isHistory == null || r.isHistory == null || !this.isHistory.equals(r.isHistory))
+                {
+                    return false;
+                }
+            }
             if(this.userId != r.userId)
             {
                 if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
@@ -241,30 +403,30 @@ public class QueryCANodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.taskLeaderMode != r.taskLeaderMode)
+            if(this.isTaskLeader != r.isTaskLeader)
             {
-                if(this.taskLeaderMode == null || r.taskLeaderMode == null || !this.taskLeaderMode.equals(r.taskLeaderMode))
+                if(this.isTaskLeader == null || r.isTaskLeader == null || !this.isTaskLeader.equals(r.isTaskLeader))
                 {
                     return false;
                 }
             }
-            if(this.designerMode != r.designerMode)
+            if(this.isTaskDesigner != r.isTaskDesigner)
             {
-                if(this.designerMode == null || r.designerMode == null || !this.designerMode.equals(r.designerMode))
+                if(this.isTaskDesigner == null || r.isTaskDesigner == null || !this.isTaskDesigner.equals(r.isTaskDesigner))
                 {
                     return false;
                 }
             }
-            if(this.checkerMode != r.checkerMode)
+            if(this.isTaskChecker != r.isTaskChecker)
             {
-                if(this.checkerMode == null || r.checkerMode == null || !this.checkerMode.equals(r.checkerMode))
+                if(this.isTaskChecker == null || r.isTaskChecker == null || !this.isTaskChecker.equals(r.isTaskChecker))
                 {
                     return false;
                 }
             }
-            if(this.auditorMode != r.auditorMode)
+            if(this.isTaskAuditor != r.isTaskAuditor)
             {
-                if(this.auditorMode == null || r.auditorMode == null || !this.auditorMode.equals(r.auditorMode))
+                if(this.isTaskAuditor == null || r.isTaskAuditor == null || !this.isTaskAuditor.equals(r.isTaskAuditor))
                 {
                     return false;
                 }
@@ -272,6 +434,27 @@ public class QueryCANodeDTO implements java.lang.Cloneable,
             if(this.webRoleTypeId != r.webRoleTypeId)
             {
                 if(this.webRoleTypeId == null || r.webRoleTypeId == null || !this.webRoleTypeId.equals(r.webRoleTypeId))
+                {
+                    return false;
+                }
+            }
+            if(this.actionTypeId != r.actionTypeId)
+            {
+                if(this.actionTypeId == null || r.actionTypeId == null || !this.actionTypeId.equals(r.actionTypeId))
+                {
+                    return false;
+                }
+            }
+            if(this.askCA != r.askCA)
+            {
+                if(this.askCA == null || r.askCA == null || !this.askCA.equals(r.askCA))
+                {
+                    return false;
+                }
+            }
+            if(this.askCommit != r.askCommit)
+            {
+                if(this.askCommit == null || r.askCommit == null || !this.askCommit.equals(r.askCommit))
                 {
                     return false;
                 }
@@ -292,12 +475,19 @@ public class QueryCANodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, passDesign);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, passCheck);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, passAudit);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isDesign);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isCA);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isCommit);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isHistory);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskLeaderMode);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, designerMode);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, checkerMode);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, auditorMode);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskLeader);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskDesigner);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskChecker);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskAuditor);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, webRoleTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, askCA);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, askCommit);
         return h_;
     }
 
@@ -322,12 +512,19 @@ public class QueryCANodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.passDesign);
         ostr.writeString(this.passCheck);
         ostr.writeString(this.passAudit);
+        ostr.writeString(this.isDesign);
+        ostr.writeString(this.isCA);
+        ostr.writeString(this.isCommit);
+        ostr.writeString(this.isHistory);
         ostr.writeString(this.userId);
-        ostr.writeString(this.taskLeaderMode);
-        ostr.writeString(this.designerMode);
-        ostr.writeString(this.checkerMode);
-        ostr.writeString(this.auditorMode);
+        ostr.writeString(this.isTaskLeader);
+        ostr.writeString(this.isTaskDesigner);
+        ostr.writeString(this.isTaskChecker);
+        ostr.writeString(this.isTaskAuditor);
         ostr.writeString(this.webRoleTypeId);
+        ostr.writeString(this.actionTypeId);
+        ostr.writeString(this.askCA);
+        ostr.writeString(this.askCommit);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -337,12 +534,19 @@ public class QueryCANodeDTO implements java.lang.Cloneable,
         this.passDesign = istr.readString();
         this.passCheck = istr.readString();
         this.passAudit = istr.readString();
+        this.isDesign = istr.readString();
+        this.isCA = istr.readString();
+        this.isCommit = istr.readString();
+        this.isHistory = istr.readString();
         this.userId = istr.readString();
-        this.taskLeaderMode = istr.readString();
-        this.designerMode = istr.readString();
-        this.checkerMode = istr.readString();
-        this.auditorMode = istr.readString();
+        this.isTaskLeader = istr.readString();
+        this.isTaskDesigner = istr.readString();
+        this.isTaskChecker = istr.readString();
+        this.isTaskAuditor = istr.readString();
         this.webRoleTypeId = istr.readString();
+        this.actionTypeId = istr.readString();
+        this.askCA = istr.readString();
+        this.askCommit = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, QueryCANodeDTO v)
@@ -397,5 +601,5 @@ public class QueryCANodeDTO implements java.lang.Cloneable,
 
     private static final QueryCANodeDTO _nullMarshalValue = new QueryCANodeDTO();
 
-    public static final long serialVersionUID = -168937953L;
+    public static final long serialVersionUID = 595213166L;
 }
