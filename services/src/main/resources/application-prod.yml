@@ -51,7 +51,7 @@ mybatis:
 
 mapper:
     mappers:
-        - com.maoding.Base.BaseDao
+        - com.maoding.Base.CoreDao
     not-empty: false
     identity: MYSQL
 

@@ -1,8 +1,6 @@
 package com.maoding.CoreFileServer.MaodingWeb;
 
-import com.maoding.Bean.CoreKeyValuePair;
 import com.maoding.Bean.CoreResponse;
-import com.maoding.Bean.CoreUploadFileItem;
 import com.maoding.CoreFileServer.CoreCreateFileRequest;
 import com.maoding.CoreFileServer.CoreFileServer;
 import com.maoding.CoreUtils.BeanUtils;
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,8 +28,10 @@ public class WebFileServer implements CoreFileServer {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private static final Integer MAX_BLOCK_SIZE = (8192 * 1024);
-    private static final String DEFAULT_URL = "http://127.0.0.1:8071/fileCenter/netFile/uploadFile";
+    private static final String DEFAULT_URL = "http://127.0.0.1:8071/";
+    private static final String DEFAULT_FUNCTION = "fileCenter/netFile/uploadFile";
     private String lastUrl = null;
+    private String lastBaseDir = null;
 
     /**
      * 设定文件服务器地址
@@ -48,8 +48,17 @@ public class WebFileServer implements CoreFileServer {
      */
     @Override
     public String coreGetServerAddress() {
-        return DEFAULT_URL;
-//        return (lastUrl != null) ? lastUrl : DEFAULT_URL;
+//        return DEFAULT_URL;
+        return (lastUrl != null) ? lastUrl : DEFAULT_URL;
+    }
+
+    @Override
+    public String coreGetBaseDir() {
+        return (lastBaseDir != null) ? lastBaseDir : DEFAULT_FUNCTION;
+    }
+
+    private String getUrlString(){
+        return coreGetServerAddress() + "/" + coreGetBaseDir();
     }
 
     private CoreResponse<FastdfsUploadResult> convertResponse(CoreResponse<?> resultUnknownType){
@@ -73,13 +82,13 @@ public class WebFileServer implements CoreFileServer {
     @Override
     public String coreCreateFile(CoreCreateFileRequest createRequest) {
         //设定要使用的url
-        String urlString = coreGetServerAddress();
+        String urlString = getUrlString();
 
         // 设定要上传的Field及其对应的value
         File srcFile = null;
-        ArrayList<CoreKeyValuePair> ptyList = new ArrayList<>();
-        ptyList.add(new CoreKeyValuePair("id", UUID.randomUUID().toString().replaceAll("-", "")));
-        ptyList.add(new CoreKeyValuePair("type", HttpUtils.DEFAULT_FILE_CONTENT_TYPE));
+        Map<String,String> ptyMap = new HashMap<>();
+        ptyMap.put("id", UUID.randomUUID().toString().replaceAll("-", ""));
+        ptyMap.put("type", HttpUtils.DEFAULT_FILE_CONTENT_TYPE);
         if (createRequest != null) {
             //设定要上传的文件名及要上传的文件
             String fileName = null;
@@ -92,7 +101,7 @@ public class WebFileServer implements CoreFileServer {
                 //设定其他属性
                 String dirName = StringUtils.getDirName(createRequest.getPath());
                 String ptyName = StringUtils.getFileName(dirName);
-                String[] nodeArray = createRequest.getPath().split("-");
+                String[] nodeArray = ptyName.split("-");
                 final int PROJECT_ID_POS = 0;
                 final int COMPANY_ID_POS = 1;
                 final int TASK_ID_POS = 2;
@@ -100,44 +109,40 @@ public class WebFileServer implements CoreFileServer {
                 final int ACCOUNT_ID_POS = 4;
 
                 if (nodeArray.length >= PROJECT_ID_POS){
-                    ptyList.add(new CoreKeyValuePair("projectId", StringUtils.left(nodeArray[PROJECT_ID_POS],StringUtils.DEFAULT_ID_LENGTH)));
+                    ptyMap.put("projectId", StringUtils.left(nodeArray[PROJECT_ID_POS],StringUtils.DEFAULT_ID_LENGTH));
                 }
                 if (nodeArray.length >= COMPANY_ID_POS){
-                    ptyList.add(new CoreKeyValuePair("companyId", StringUtils.left(nodeArray[COMPANY_ID_POS],StringUtils.DEFAULT_ID_LENGTH)));
+                    ptyMap.put("companyId", StringUtils.left(nodeArray[COMPANY_ID_POS],StringUtils.DEFAULT_ID_LENGTH));
                 }
                 if (nodeArray.length >= TASK_ID_POS){
-                    ptyList.add(new CoreKeyValuePair("taskId", StringUtils.left(nodeArray[TASK_ID_POS],StringUtils.DEFAULT_ID_LENGTH)));
+                    ptyMap.put("taskId", StringUtils.left(nodeArray[TASK_ID_POS],StringUtils.DEFAULT_ID_LENGTH));
                 }
                 if (nodeArray.length >= SKY_PID_POS){
-                    ptyList.add(new CoreKeyValuePair("pid", StringUtils.left(nodeArray[SKY_PID_POS],StringUtils.DEFAULT_ID_LENGTH)));
+                    ptyMap.put("pid", StringUtils.left(nodeArray[SKY_PID_POS],StringUtils.DEFAULT_ID_LENGTH));
                 }
                 if (nodeArray.length >= ACCOUNT_ID_POS){
-                    ptyList.add(new CoreKeyValuePair("accountId", StringUtils.left(nodeArray[ACCOUNT_ID_POS],StringUtils.DEFAULT_ID_LENGTH)));
+                    ptyMap.put("accountId", StringUtils.left(nodeArray[ACCOUNT_ID_POS],StringUtils.DEFAULT_ID_LENGTH));
                 }
             }
-            if (StringUtils.isNotEmpty(fileName)) ptyList.add(new CoreKeyValuePair("name",fileName));
+            if (StringUtils.isNotEmpty(fileName)) ptyMap.put("name",fileName);
 
-            ptyList.add(new CoreKeyValuePair("lastModifiedDate",StringUtils.getTimeStamp()));
+            ptyMap.put("lastModifiedDate",StringUtils.getTimeStamp());
         }
 
-        CoreResponse<FastdfsUploadResult> response = sendRequest(srcFile,0,-1,ptyList,urlString);
+        CoreResponse<FastdfsUploadResult> response = sendRequest(srcFile,0,-1,ptyMap,urlString);
 
-        String key = null;
-        if ((response != null) && (response.isSuccessful())) {
-            FastdfsUploadResult webResponse = response.getData();
-            assert (webResponse != null);
-            key = webResponse.getFastdfsPath();
-        }
-        return key;
+        assert (response != null);
+        FastdfsUploadResult webResponse = response.getData();
+        assert (webResponse != null);
+        return webResponse.getFastdfsPath();
     }
 
-    private CoreResponse<FastdfsUploadResult> sendRequest(File file, long pos, int size, ArrayList<CoreKeyValuePair> ptyList, String urlString){
+    private CoreResponse<FastdfsUploadResult> sendRequest(File file, long pos, int size, Map<String,String> ptyMap, String urlString){
 
         CoreResponse<FastdfsUploadResult> result = null;
 
         // 设定服务地址和文件相关属性，计算和调整文件长度
-        String url = coreGetServerAddress();
-        if (StringUtils.isNotEmpty(urlString)) url = urlString;
+        String url = (StringUtils.isNotEmpty(urlString)) ? urlString : getUrlString();
 
         String path = null;
         CoreUploadFileItem fileItem = null;
@@ -160,26 +165,33 @@ public class WebFileServer implements CoreFileServer {
         pos = 0;
 
         //计算和补充文件相关属性
-        ptyList.add(new CoreKeyValuePair("size", Integer.toString(size)));
+        ptyMap.put("size", Integer.toString(size));
         Integer perSize = MAX_BLOCK_SIZE;
-        ptyList.add(new CoreKeyValuePair("chunkPerSize", perSize.toString()));
-        Integer maxChunk = (int)((pos + size) / perSize);
-        ptyList.add(new CoreKeyValuePair("chunks", maxChunk.toString()));
+        ptyMap.put("chunkPerSize", perSize.toString());
 
         long realPos = pos;
         int realSize = size;
         if (realSize > perSize) realSize = perSize;
         Integer minChunk = (int)(pos / perSize);
-        CoreKeyValuePair curChunkPty = null;
-        for (Integer chunk=minChunk; chunk<(maxChunk+1); chunk++) {
-            if (curChunkPty != null) ptyList.remove(curChunkPty);
-            curChunkPty = new CoreKeyValuePair("chunk",chunk.toString());
-            ptyList.add(curChunkPty);
-            CoreResponse<?> resultUnknownType = HttpUtils.postFileData(url,ptyList,fileItem,realPos,realSize);
+        Integer maxChunk = (int)((pos + size) / perSize) + 1;
+        if (maxChunk > (minChunk + 1)) {
+            ptyMap.put("chunks", maxChunk.toString());
+        } else {
+            ptyMap.put("chunks", "0");
+        }
+        for (Integer chunk=minChunk; chunk<maxChunk; chunk++) {
+            ptyMap.put("chunk",chunk.toString());
+            CoreResponse<?> resultUnknownType = HttpUtils.postFileData(url,ptyMap,fileItem,realPos,realSize);
             result = convertResponse(resultUnknownType);
             if ((result == null) || (result.isError())) break;
             realPos += realSize;
             if ((realPos + realSize) > (pos + size)) realSize = (int)(pos + size - realPos);
+            if (chunk.equals(minChunk)) {
+                FastdfsUploadResult webResponse = result.getData();
+                ptyMap.put("fastdfsGroup",webResponse.getFastdfsGroup());
+                ptyMap.put("fastdfsPath",webResponse.getFastdfsPath());
+                ptyMap.put("uploadId",webResponse.getUploadId());
+            }
         }
 
         return result;

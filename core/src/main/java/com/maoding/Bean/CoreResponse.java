@@ -1,11 +1,12 @@
 package com.maoding.Bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.maoding.Const.ApiResponseConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -18,6 +19,24 @@ public class CoreResponse<T> implements Serializable {
     @JsonIgnore
     private final static Logger log = LoggerFactory.getLogger(CoreResponse.class);
 
+    public final static Integer SUCCESS = 0; //操作成功
+    public final static Integer FAILED = 1; //操作失败
+    public final static Integer ERROR = -1; //发生异常
+    public final static Integer DATA_ERROR = -2; //数据异常
+    public final static Integer NO_PERMISSION = -3; //未授权
+    public final static Integer URL_NOT_FOUND = 404; //找不到URL
+
+    public final static Map<Integer,String> DEFAULT_MESSAGE = new HashMap<Integer,String>(){
+        {
+            put(SUCCESS,"操作成功");
+            put(FAILED, "操作失败");
+            put(ERROR,"发生异常");
+            put(DATA_ERROR,"数据异常");
+            put(NO_PERMISSION,"未授权");
+            put(URL_NOT_FOUND,"找不到URL");
+        }
+    };
+    
     /** 返回状态，等于0-正常，小于0-发生异常，大于0-存在警告 */
     private Integer status;
     /** 返回状态文字说明 */
@@ -40,8 +59,8 @@ public class CoreResponse<T> implements Serializable {
     }
 
     public CoreResponse(Integer status, String msg, T data) {
-        this.status = (status != null) ? status : ApiResponseConst.SUCCESS;
-        this.msg = (msg != null) ? msg : ApiResponseConst.DEFAULT_MESSAGE.get(this.status);
+        this.status = (status != null) ? status : SUCCESS;
+        this.msg = (msg != null) ? msg : DEFAULT_MESSAGE.get(this.status);
         this.data = data;
 
         //记录日志
@@ -57,14 +76,14 @@ public class CoreResponse<T> implements Serializable {
             log.info(this.msg);
         }
     }
-    public CoreResponse(String msg, T data) {this(ApiResponseConst.SUCCESS,msg,data);}
+    public CoreResponse(String msg, T data) {this(SUCCESS,msg,data);}
     public CoreResponse(String msg) {this(msg,null);}
     public CoreResponse(Integer code, String msg) {this(code,msg,null);}
     public CoreResponse(Integer code) {this(code,null);}
-    public CoreResponse() {this(ApiResponseConst.SUCCESS);}
+    public CoreResponse() {this(SUCCESS);}
 
     public static <E> CoreResponse<E> success(String msg, E data) {
-        return new CoreResponse<>(ApiResponseConst.SUCCESS, msg, data);
+        return new CoreResponse<>(SUCCESS, msg, data);
     }
     public static <E> CoreResponse<E> success(E data) {
         return success(null,data);
@@ -74,7 +93,7 @@ public class CoreResponse<T> implements Serializable {
     }
 
     public static <E> CoreResponse<E> failed(String msg, E data) {
-        return new CoreResponse<>(ApiResponseConst.FAILED, msg, data);
+        return new CoreResponse<>(FAILED, msg, data);
     }
     public static <E> CoreResponse<E> failed(String msg) {
         return failed(msg,null);
@@ -95,7 +114,7 @@ public class CoreResponse<T> implements Serializable {
 
     @JsonIgnore
     public boolean isSuccessful() {
-        return ApiResponseConst.SUCCESS.equals(status);
+        return SUCCESS.equals(status);
     }
 
     @JsonIgnore
@@ -132,7 +151,7 @@ public class CoreResponse<T> implements Serializable {
     public String getCode() {
         String s = code;
         if (s == null){
-            s =  (status != null) ? status.toString() : ApiResponseConst.SUCCESS.toString();
+            s =  (status != null) ? status.toString() : SUCCESS.toString();
         }
         return s;
     }
@@ -147,7 +166,7 @@ public class CoreResponse<T> implements Serializable {
         Object o = info;
         if (o == null){
             o = msg;
-            if (o == null) o = (status != null) ? ApiResponseConst.DEFAULT_MESSAGE.get(status) : ApiResponseConst.DEFAULT_MESSAGE.get(ApiResponseConst.SUCCESS);
+            if (o == null) o = (status != null) ? DEFAULT_MESSAGE.get(status) : DEFAULT_MESSAGE.get(SUCCESS);
         }
         return o;
     }
@@ -160,8 +179,8 @@ public class CoreResponse<T> implements Serializable {
         return this;
     }
 
-    public static <E> CoreResponse<E> urlNotFound(String msg, E data){return error(ApiResponseConst.URL_NOT_FOUND,msg,data);}
-    public static <E> CoreResponse<E> dataNotFound(String msg, E data){return error(ApiResponseConst.DATA_ERROR,msg,data);}
-    public static <E> CoreResponse<E> error(String msg, E data){return error(ApiResponseConst.ERROR,msg,data);}
-    public static CoreResponse<Object> error(Object info){return error(ApiResponseConst.ERROR,info.toString(),null);}
+    public static <E> CoreResponse<E> urlNotFound(String msg, E data){return error(URL_NOT_FOUND,msg,data);}
+    public static <E> CoreResponse<E> dataNotFound(String msg, E data){return error(DATA_ERROR,msg,data);}
+    public static <E> CoreResponse<E> error(String msg, E data){return error(ERROR,msg,data);}
+    public static CoreResponse<Object> error(Object info){return error(ERROR,info.toString(),null);}
 }

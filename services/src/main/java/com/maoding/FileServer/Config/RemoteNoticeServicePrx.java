@@ -1,6 +1,6 @@
 package com.maoding.FileServer.Config;
 
-import com.maoding.Base.BaseRemoteService;
+import com.maoding.Base.CoreRemoteService;
 import com.maoding.Notice.zeroc.*;
 import com.maoding.User.zeroc.AccountDTO;
 import com.maoding.CoreUtils.SpringUtils;
@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
  * 日    期 : 2018/1/17 9:50
  * 描    述 :
  */
-public class RemoteNoticeServicePrx extends BaseRemoteService<NoticeServicePrx> implements NoticeServicePrx{
+public class RemoteNoticeServicePrx extends CoreRemoteService<NoticeServicePrx> implements NoticeServicePrx{
 
     private static NoticeServicePrx lastPrx = null;
     private static NoticeService noticeService = null;

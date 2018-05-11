@@ -69,30 +69,11 @@ public class ConstService {
 
     //节点类型
     public static final Short STORAGE_NODE_TYPE_UNKNOWN = 0;
-    public static final Short STORAGE_NODE_TYPE_FILE_MAIN = 1;
-    public static final Short STORAGE_NODE_TYPE_FILE_COMMIT = 2;
-    public static final Short STORAGE_NODE_TYPE_FILE_COMMIT_HIS = 3;
-    public static final Short STORAGE_NODE_TYPE_DIR_UNKNOWN = 10;
-    public static final Short STORAGE_NODE_TYPE_DIR_PROJECT = 11;
-    public static final Short STORAGE_NODE_TYPE_DIR_TASK = 12;
-    public static final Short STORAGE_NODE_TYPE_DIR_ORG = 13;
-    public static final Short STORAGE_NODE_TYPE_DIR_NOTICE = 14;
-    public static final Short STORAGE_NODE_TYPE_DIR_EXP = 15;
-    public static final Short STORAGE_NODE_TYPE_DIR_BACK = 16;
-    public static final Short STORAGE_NODE_TYPE_DIR_RECYCLE = 17;
-    public static final Short STORAGE_NODE_TYPE_DIR_USER = 18;
-    public static final Short STORAGE_NODE_TYPE_DIR_DESIGN = 20;
-    public static final Short STORAGE_NODE_TYPE_DIR_DESIGN_ISSUE = 21;
-    public static final Short STORAGE_NODE_TYPE_DIR_DESIGN_TASK = 22;
-    public static final Short STORAGE_NODE_TYPE_DIR_DESIGN_USER = 23;
-    public static final Short STORAGE_NODE_TYPE_DIR_COMMIT = 30;
-    public static final Short STORAGE_NODE_TYPE_DIR_COMMIT_TASK = 31;
-    public static final Short STORAGE_NODE_TYPE_DIR_COMMIT_HIS = 32;
-    public static final Short STORAGE_NODE_TYPE_DIR_COMMIT_USER = 33;
-    public static final Short STORAGE_NODE_TYPE_DIR_OUTPUT = 40;
-    public static final Short STORAGE_NODE_TYPE_DIR_OUTPUT_WEB = 41;
-    public static final Short STORAGE_NODE_TYPE_DIR_OUTPUT_WEB_ARCHIVE = 42;
-    public static final Short STORAGE_NODE_TYPE_DIR_OUTPUT_USER = 43;
+    public static final Short STORAGE_NODE_TYPE_DIR_UNKNOWN = 1;
+    public static final Short STORAGE_NODE_TYPE_FILE_COMMIT = 321;
+    public static final Short STORAGE_NODE_TYPE_FILE_COMMIT_HIS = 331;
+    public static final Short STORAGE_NODE_TYPE_DIR_OUTPUT_WEB = 501;
+    public static final Short STORAGE_NODE_TYPE_DIR_OUTPUT_WEB_ARCHIVE = 520;
 
     //文件类型
     public static final Short STORAGE_FILE_TYPE_UNKNOWN = 0;
@@ -108,12 +89,6 @@ public class ConstService {
     public static final Short STORAGE_FILE_TYPE_NOTICE = 21;
     public static final Short STORAGE_FILE_TYPE_MIRROR = 22;
 
-    //默认值
-    public static final Short STORAGE_NODE_TYPE_FILE_MIN = STORAGE_NODE_TYPE_FILE_MAIN;
-    public static final Short STORAGE_NODE_TYPE_FILE_MAX = STORAGE_NODE_TYPE_FILE_COMMIT_HIS;
-    public static final Short STORAGE_NODE_TYPE_DIR_MIN = STORAGE_NODE_TYPE_DIR_UNKNOWN;
-    public static final Short STORAGE_NODE_TYPE_DIR_MAX = STORAGE_NODE_TYPE_DIR_USER;
-
     //分类常量
     public static final Short STORAGE_RANGE_TYPE_UNKNOWN = 0;
     public static final Short STORAGE_RANGE_TYPE_DESIGN = 1;
@@ -121,7 +96,7 @@ public class ConstService {
     public static final Short STORAGE_RANGE_TYPE_COMMIT = 3;
 
     /** 历史动作类型 */
-    public static final Short STORAGE_ACTION_TYPE_UNKOWN = 0;
+    public static final Short STORAGE_ACTION_TYPE_UNKNOWN = 0;
     public static final Short STORAGE_ACTION_TYPE_BACKUP = 1;
     public static final Short STORAGE_ACTION_TYPE_CHECK = 2;
     public static final Short STORAGE_ACTION_TYPE_AUDIT = 3;
@@ -157,12 +132,15 @@ public class ConstService {
     public static final Short WEB_ROLE_TASK_AUDIT = 6;
 
 
-    public static final Integer POS_IS_DIRECTORY = 0;
-    public static final Integer POS_IS_PROJECT = 1;
-    public static final Integer POS_IS_TASK = 2;
-    public static final Integer POS_IS_DESIGN = 3;
-    public static final Integer POS_IS_COMMIT = 4;
-    public static final Integer POS_IS_HISTORY = 5;
+    public static final Integer POS_IS_DIRECTORY = 1;
+    public static final Integer POS_IS_PROJECT = 2;
+    public static final Integer POS_IS_ISSUE = 3;
+    public static final Integer POS_IS_TASK = 4;
+    public static final Integer POS_IS_DESIGN = 5;
+    public static final Integer POS_IS_CA = 6;
+    public static final Integer POS_IS_COMMIT = 7;
+    public static final Integer POS_IS_WEB = 8;
+    public static final Integer POS_IS_HISTORY = 9;
 
     public static final String MODE_TRUE = "1";
     public static final String MODE_FALSE = "0";
@@ -272,8 +250,12 @@ public class ConstService {
         return s;
     }
 
-    public static boolean isSpecial(String attr, int index){
-        return (attr != null) && (attr.length() > index) && (attr.charAt(index) != '0');
+    public static boolean isAttrTrue(short classicId,short codeId,int pos){
+        return isAttrTrue(getExtra(classicId,codeId,1),pos);
+    }
+
+    public static boolean isAttrTrue(String attr, int pos){
+        return (attr != null) && (attr.length() >= pos) && (pos > 0) && (attr.charAt(pos-1) != '0');
     }
 
     public static List<IdNameDTO> listMajor(){
@@ -289,19 +271,7 @@ public class ConstService {
     }
 
     public static String getRangeId(@NotNull String typeId){
-        Short rangeId = null;
-        Map<Short, ConstEntity> rangeMap = getConstMap(CLASSIC_TYPE_STORAGE_RANGE);
-        for (Map.Entry<Short, ConstEntity> rangeEntry : rangeMap.entrySet()) {
-            ConstEntity range = rangeEntry.getValue();
-            if (range != null) {
-                String typeIds = range.getExtra(3);
-                if ((typeIds != null) && (typeIds.contains(typeId))) {
-                    rangeId = range.getCodeId();
-                    break;
-                }
-            }
-        }
-        return (rangeId != null) ? rangeId.toString() : STORAGE_RANGE_TYPE_UNKNOWN.toString();
+        return getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId),5);
     }
 
     public static String getActionName(Short actionTypeId){
@@ -453,34 +423,34 @@ public class ConstService {
         return (isCustomType(typeId)) || (STORAGE_NODE_TYPE_UNKNOWN.equals(DigitUtils.parseShort(typeId)));
     }
 
-    public static boolean isCustomType(@NotNull String typeId){
+    public static boolean isCustomType(String typeId){
         final Integer CUSTOM_TYPE_LENGTH = 32;
-        return typeId.length() >= CUSTOM_TYPE_LENGTH;
+        return (typeId != null) && (typeId.length() >= CUSTOM_TYPE_LENGTH);
     }
 
 
     public static boolean isDirectoryType(@NotNull String typeId) {
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE, DigitUtils.parseShort(typeId)),POS_IS_DIRECTORY);
+        return isAttrTrue(getExtra(CLASSIC_TYPE_STORAGE_NODE, DigitUtils.parseShort(typeId)),POS_IS_DIRECTORY);
     }
 
     public static boolean isProjectType(@NotNull String typeId) {
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_PROJECT);
+        return isAttrTrue(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_PROJECT);
     }
 
     public static boolean isTaskType(@NotNull String typeId) {
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_TASK);
+        return isAttrTrue(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_TASK);
     }
 
     public static boolean isDesignType(@NotNull String typeId) {
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_DESIGN);
+        return isAttrTrue(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_DESIGN);
     }
 
     public static boolean isCommitType(@NotNull String typeId){
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_COMMIT);
+        return isAttrTrue(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_COMMIT);
     }
 
     public static boolean isHistoryType(@NotNull String typeId){
-        return isSpecial(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_HISTORY);
+        return isAttrTrue(getExtra(CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(typeId)),POS_IS_HISTORY);
     }
 
     public static boolean isSystemType(@NotNull String typeId){

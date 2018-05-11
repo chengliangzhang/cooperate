@@ -22,7 +22,7 @@ public class Application extends SpringApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-        IceRunner iceRunner = SpringUtils.getBean(IceRunner.class);
-        iceRunner.run(args);
+        Runner runner = SpringUtils.getBean(Runner.class);
+        runner.run(args);
     }
 }

@@ -22,12 +22,121 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default java.util.List<FullNodeDTO> listFullNode(QueryFullNodeDTO query)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listFullNode(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<FullNodeDTO> listFullNode(QueryFullNodeDTO query, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listFullNodeAsync(query, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<FullNodeDTO>> listFullNodeAsync(QueryFullNodeDTO query)
+    {
+        return _iceI_listFullNodeAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<FullNodeDTO>> listFullNodeAsync(QueryFullNodeDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listFullNodeAsync(query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<FullNodeDTO>> _iceI_listFullNodeAsync(QueryFullNodeDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<FullNodeDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listFullNode", null, sync, _iceE_listFullNode);
+        f.invoke(true, context, null, ostr -> {
+                     QueryFullNodeDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     java.util.List<FullNodeDTO> ret;
+                     ret = FullNodeListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listFullNode =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    default java.util.List<HistoryDTO> listHistory(QueryHistoryDTO query)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        return listHistory(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<HistoryDTO> listHistory(QueryHistoryDTO query, java.util.Map<String, String> context)
+        throws com.maoding.Common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_listHistoryAsync(query, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.Common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<HistoryDTO>> listHistoryAsync(QueryHistoryDTO query)
+    {
+        return _iceI_listHistoryAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<HistoryDTO>> listHistoryAsync(QueryHistoryDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listHistoryAsync(query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<HistoryDTO>> _iceI_listHistoryAsync(QueryHistoryDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<HistoryDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listHistory", null, sync, _iceE_listHistory);
+        f.invoke(true, context, null, ostr -> {
+                     QueryHistoryDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     java.util.List<HistoryDTO> ret;
+                     ret = HistoryListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_listHistory =
+    {
+        com.maoding.Common.zeroc.CustomException.class
+    };
+
+    /**
+     **/
+    @Deprecated
     default java.util.List<CANodeDTO> listCANode(QueryCANodeDTO query)
         throws com.maoding.Common.zeroc.CustomException
     {
         return listCANode(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     **/
+    @Deprecated
     default java.util.List<CANodeDTO> listCANode(QueryCANodeDTO query, java.util.Map<String, String> context)
         throws com.maoding.Common.zeroc.CustomException
     {
@@ -45,11 +154,20 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         }
     }
 
+    /**
+     * @return A future that will be completed with the result.
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<CANodeDTO>> listCANodeAsync(QueryCANodeDTO query)
     {
         return _iceI_listCANodeAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
+    /**
+     * @param context The Context map to send with the invocation.
+     * @return A future that will be completed with the result.
+     **/
+    @Deprecated
     default java.util.concurrent.CompletableFuture<java.util.List<CANodeDTO>> listCANodeAsync(QueryCANodeDTO query, java.util.Map<String, String> context)
     {
         return _iceI_listCANodeAsync(query, context, false);

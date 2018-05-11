@@ -1,6 +1,6 @@
 package com.maoding.CoreNotice.Storm;
 
-import com.maoding.Base.BaseRemoteService;
+import com.maoding.Base.CoreRemoteService;
 import com.zeroc.Ice.Current;
 import com.zeroc.IceStorm.*;
 
@@ -12,7 +12,7 @@ import java.util.Map;
  * 日    期 : 2018/1/5 15:41
  * 描    述 :
  */
-public class StormService extends BaseRemoteService<TopicManagerPrx> implements TopicManagerPrx,TopicManager{
+public class StormService extends CoreRemoteService<TopicManagerPrx> implements TopicManagerPrx,TopicManager{
     @Override
     public TopicPrx create(String s, Current current) throws TopicExists {
         return null;

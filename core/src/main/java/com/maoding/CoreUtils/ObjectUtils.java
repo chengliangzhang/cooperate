@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -85,6 +86,8 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
             return true;
         } else if (object instanceof List) {
             return (((List) object).size() <= 0);
+        } else if (object.getClass().isArray()) {
+            return (Array.getLength(object)) > 0;
         } else {
             return object instanceof String && StringUtils.isEmpty((String) object);
         }

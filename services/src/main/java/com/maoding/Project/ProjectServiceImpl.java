@@ -1,15 +1,14 @@
 package com.maoding.Project;
 
-import com.maoding.Base.BaseLocalService;
+import com.maoding.Base.CoreLocalService;
 import com.maoding.Bean.CoreResponse;
 import com.maoding.Common.Config.WebServiceConfig;
-import com.maoding.Project.zeroc.ProjectDTO;
-import com.maoding.Project.zeroc.ProjectService;
-import com.maoding.Project.zeroc.ProjectServicePrx;
-import com.maoding.Project.zeroc.QueryProjectDTO;
 import com.maoding.CoreUtils.BeanUtils;
 import com.maoding.CoreUtils.FileUtils;
 import com.maoding.CoreUtils.HttpUtils;
+import com.maoding.Project.zeroc.ProjectDTO;
+import com.maoding.Project.zeroc.ProjectService;
+import com.maoding.Project.zeroc.QueryProjectDTO;
 import com.zeroc.Ice.Current;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ import java.util.List;
  */
 @Service("projectService")
 @Transactional(rollbackFor = Exception.class)
-public class ProjectServiceImpl extends BaseLocalService<ProjectServicePrx> implements ProjectService,ProjectServicePrx{
+public class ProjectServiceImpl extends CoreLocalService implements ProjectService{
     @Autowired
     WebServiceConfig webServiceConfig;
 

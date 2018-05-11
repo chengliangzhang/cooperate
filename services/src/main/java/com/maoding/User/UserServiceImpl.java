@@ -1,6 +1,6 @@
 package com.maoding.User;
 
-import com.maoding.Base.BaseLocalService;
+import com.maoding.Base.CoreLocalService;
 import com.maoding.Bean.CoreResponse;
 import com.maoding.Common.Config.WebServiceConfig;
 import com.maoding.Common.zeroc.IdNameDTO;
@@ -27,7 +27,7 @@ import java.util.Map;
  * 描    述 :
  */
 @Service("userService")
-public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements UserService,UserServicePrx {
+public class UserServiceImpl extends CoreLocalService implements UserService{
 
     @Autowired
     private WebServiceConfig webServiceConfig;
@@ -37,6 +37,11 @@ public class UserServiceImpl extends BaseLocalService<UserServicePrx> implements
 
     @Autowired
     private RoleListDao roleListDao;
+
+    @Override
+    public List<RoleDTO> listRole(QueryRoleDTO query, Current current) {
+        return null;
+    }
 
     @Override
     public void setWebRoleStatus(@NotNull WebRoleDTO webRole, @NotNull String statusId, Current current) {

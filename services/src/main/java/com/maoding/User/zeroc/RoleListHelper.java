@@ -42,7 +42,7 @@ public final class RoleListHelper
     {
         final java.util.List<RoleDTO> v;
         v = new java.util.ArrayList<RoleDTO>();
-        final int len0 = istr.readAndCheckSeqSize(6);
+        final int len0 = istr.readAndCheckSeqSize(2);
         for(int i0 = 0; i0 < len0; i0++)
         {
             RoleDTO elem;

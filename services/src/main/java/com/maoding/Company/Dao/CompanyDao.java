@@ -1,6 +1,6 @@
 package com.maoding.Company.Dao;
 
-import com.maoding.Base.BaseDao;
+import com.maoding.Base.CoreDao;
 import com.maoding.Company.Entity.CompanyEntity;
 
 /**
@@ -9,5 +9,5 @@ import com.maoding.Company.Entity.CompanyEntity;
  * 日    期 : 2017/10/13 11:25
  * 描    述 :
  */
-public interface CompanyDao extends BaseDao<CompanyEntity> {
+public interface CompanyDao extends CoreDao<CompanyEntity> {
 }

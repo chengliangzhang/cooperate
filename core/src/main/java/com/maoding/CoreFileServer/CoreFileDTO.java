@@ -10,6 +10,7 @@ import java.io.Serializable;
  * 日    期 : 2017/10/25 9:53
  * 描    述 :
  */
+@Deprecated
 public class CoreFileDTO implements Serializable {
     /** 服务器地址 */
     @Deprecated

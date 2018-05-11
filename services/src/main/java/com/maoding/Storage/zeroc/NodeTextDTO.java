@@ -215,6 +215,18 @@ public class NodeTextDTO implements java.lang.Cloneable,
         this.mainFilePath = mainFilePath;
     }
 
+    public String companyId;
+
+    public String getCompanyId()
+    {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId)
+    {
+        this.companyId = companyId;
+    }
+
     public NodeTextDTO()
     {
         this.path = "";
@@ -233,9 +245,10 @@ public class NodeTextDTO implements java.lang.Cloneable,
         this.fileTypeName = "";
         this.majorName = "";
         this.mainFilePath = "";
+        this.companyId = "";
     }
 
-    public NodeTextDTO(String path, String rangeName, String companyName, String companyPath, String projectName, String issueName, String issuePath, String taskName, String taskPath, String storagePath, String ownerName, String lastModifyRoleName, String serverTypeName, String fileTypeName, String majorName, String mainFilePath)
+    public NodeTextDTO(String path, String rangeName, String companyName, String companyPath, String projectName, String issueName, String issuePath, String taskName, String taskPath, String storagePath, String ownerName, String lastModifyRoleName, String serverTypeName, String fileTypeName, String majorName, String mainFilePath, String companyId)
     {
         this.path = path;
         this.rangeName = rangeName;
@@ -253,6 +266,7 @@ public class NodeTextDTO implements java.lang.Cloneable,
         this.fileTypeName = fileTypeName;
         this.majorName = majorName;
         this.mainFilePath = mainFilePath;
+        this.companyId = companyId;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -381,6 +395,13 @@ public class NodeTextDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.companyId != r.companyId)
+            {
+                if(this.companyId == null || r.companyId == null || !this.companyId.equals(r.companyId))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
@@ -408,6 +429,7 @@ public class NodeTextDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainFilePath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
         return h_;
     }
 
@@ -443,6 +465,7 @@ public class NodeTextDTO implements java.lang.Cloneable,
         ostr.writeString(this.fileTypeName);
         ostr.writeString(this.majorName);
         ostr.writeString(this.mainFilePath);
+        ostr.writeString(this.companyId);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -463,6 +486,7 @@ public class NodeTextDTO implements java.lang.Cloneable,
         this.fileTypeName = istr.readString();
         this.majorName = istr.readString();
         this.mainFilePath = istr.readString();
+        this.companyId = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, NodeTextDTO v)
@@ -517,5 +541,5 @@ public class NodeTextDTO implements java.lang.Cloneable,
 
     private static final NodeTextDTO _nullMarshalValue = new NodeTextDTO();
 
-    public static final long serialVersionUID = -477664511L;
+    public static final long serialVersionUID = -1319981588L;
 }

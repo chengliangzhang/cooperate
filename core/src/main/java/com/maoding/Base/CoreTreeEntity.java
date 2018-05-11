@@ -8,7 +8,7 @@ import javax.persistence.Column;
  * 日    期 : 2017/11/20 11:27
  * 描    述 :
  */
-public class BaseTreeEntity extends BaseEntity{
+public class CoreTreeEntity extends CoreEntity {
     /** 父节点在此表中的id */
     @Column
     private String pid;

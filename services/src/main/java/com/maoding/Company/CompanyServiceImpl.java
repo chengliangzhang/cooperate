@@ -1,7 +1,8 @@
 package com.maoding.Company;
 
-import com.maoding.Base.BaseLocalService;
-import com.maoding.Company.zeroc.*;
+import com.maoding.Company.zeroc.CompanyDTO;
+import com.maoding.Company.zeroc.CompanyService;
+import com.maoding.Company.zeroc.QueryCompanyDTO;
 import com.zeroc.Ice.Current;
 import org.springframework.stereotype.Service;
 
@@ -15,20 +16,7 @@ import java.util.List;
  */
 @SuppressWarnings("deprecation")
 @Service("companyService")
-public class CompanyServiceImpl extends BaseLocalService<CompanyServicePrx> implements CompanyService,CompanyServicePrx {
-//    @Autowired
-//    OrganizationDao organizationDao;
-
-    /** 同步方式获取业务接口代理对象 */
-    public static CompanyServicePrx getInstance(String adapterName) {
-        CompanyServiceImpl prx = new CompanyServiceImpl();
-        return prx.getServicePrx("CompanyService",adapterName,CompanyServicePrx.class,_CompanyServicePrxI.class);
-    }
-    public static CompanyServicePrx getInstance() {
-        return getInstance(null);
-    }
-
-
+public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<CompanyDTO> listCompany(QueryCompanyDTO query, Current current) {
         return null;

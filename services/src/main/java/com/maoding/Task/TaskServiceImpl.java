@@ -1,10 +1,9 @@
 package com.maoding.Task;
 
-import com.maoding.Base.BaseLocalService;
+import com.maoding.Base.CoreLocalService;
 import com.maoding.Task.zeroc.QueryTaskDTO;
 import com.maoding.Task.zeroc.TaskDTO;
 import com.maoding.Task.zeroc.TaskService;
-import com.maoding.Task.zeroc.TaskServicePrx;
 import com.zeroc.Ice.Current;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,7 @@ import java.util.List;
  * 描    述 :
  */
 @Service("taskService")
-public class TaskServiceImpl extends BaseLocalService<TaskServicePrx> implements TaskService,TaskServicePrx {
+public class TaskServiceImpl extends CoreLocalService implements TaskService{
     @Override
     public List<TaskDTO> listTask(QueryTaskDTO query, Current current) {
         return null;

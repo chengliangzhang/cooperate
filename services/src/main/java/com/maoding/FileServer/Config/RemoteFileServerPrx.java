@@ -1,6 +1,6 @@
 package com.maoding.FileServer.Config;
 
-import com.maoding.Base.BaseRemoteService;
+import com.maoding.Base.CoreRemoteService;
 import com.maoding.FileServer.zeroc.FileServicePrx;
 import com.maoding.FileServer.zeroc._FileServicePrxI;
 import com.maoding.CoreUtils.StringUtils;
@@ -11,7 +11,7 @@ import com.maoding.CoreUtils.StringUtils;
  * 日    期 : 2018/1/8 18:43
  * 描    述 :
  */
-public class RemoteFileServerPrx extends BaseRemoteService<FileServicePrx> implements FileServicePrx{
+public class RemoteFileServerPrx extends CoreRemoteService<FileServicePrx> implements FileServicePrx{
     private static FileServicePrx lastPrx = null;
     private static String lastAdapterName = null;
 

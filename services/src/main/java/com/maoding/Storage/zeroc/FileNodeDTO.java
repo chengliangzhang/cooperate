@@ -20,9 +20,6 @@
 
 package com.maoding.Storage.zeroc;
 
-/**
- **/
-@Deprecated
 public class FileNodeDTO implements java.lang.Cloneable,
                                     java.io.Serializable
 {
@@ -38,28 +35,16 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.basic = basic;
     }
 
-    public short fileTypeId;
+    public String id;
 
-    public short getFileTypeId()
+    public String getId()
     {
-        return fileTypeId;
+        return id;
     }
 
-    public void setFileTypeId(short fileTypeId)
+    public void setId(String id)
     {
-        this.fileTypeId = fileTypeId;
-    }
-
-    public String fileTypeName;
-
-    public String getFileTypeName()
-    {
-        return fileTypeName;
-    }
-
-    public void setFileTypeName(String fileTypeName)
-    {
-        this.fileTypeName = fileTypeName;
+        this.id = id;
     }
 
     public String fileVersion;
@@ -74,30 +59,6 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.fileVersion = fileVersion;
     }
 
-    public String fileChecksum;
-
-    public String getFileChecksum()
-    {
-        return fileChecksum;
-    }
-
-    public void setFileChecksum(String fileChecksum)
-    {
-        this.fileChecksum = fileChecksum;
-    }
-
-    public String majorId;
-
-    public String getMajorId()
-    {
-        return majorId;
-    }
-
-    public void setMajorId(String majorId)
-    {
-        this.majorId = majorId;
-    }
-
     public String majorName;
 
     public String getMajorName()
@@ -110,164 +71,194 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.majorName = majorName;
     }
 
-    public String mainFileId;
+    public long fileLength;
 
-    public String getMainFileId()
+    public long getFileLength()
     {
-        return mainFileId;
+        return fileLength;
     }
 
-    public void setMainFileId(String mainFileId)
+    public void setFileLength(long fileLength)
     {
-        this.mainFileId = mainFileId;
+        this.fileLength = fileLength;
     }
 
-    public String fileRemark;
+    public String fileMd5;
 
-    public String getFileRemark()
+    public String getFileMd5()
     {
-        return fileRemark;
+        return fileMd5;
     }
 
-    public void setFileRemark(String fileRemark)
+    public void setFileMd5(String fileMd5)
     {
-        this.fileRemark = fileRemark;
+        this.fileMd5 = fileMd5;
     }
 
-    public String serverTypeId;
+    public long createTimeStamp;
 
-    public String getServerTypeId()
+    public long getCreateTimeStamp()
     {
-        return serverTypeId;
+        return createTimeStamp;
     }
 
-    public void setServerTypeId(String serverTypeId)
+    public void setCreateTimeStamp(long createTimeStamp)
     {
-        this.serverTypeId = serverTypeId;
+        this.createTimeStamp = createTimeStamp;
     }
 
-    public String serverTypeName;
+    public long lastModifyTimeStamp;
 
-    public String getServerTypeName()
+    public long getLastModifyTimeStamp()
     {
-        return serverTypeName;
+        return lastModifyTimeStamp;
     }
 
-    public void setServerTypeName(String serverTypeName)
+    public void setLastModifyTimeStamp(long lastModifyTimeStamp)
     {
-        this.serverTypeName = serverTypeName;
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
     }
 
-    public String serverAddress;
+    public long lastFileLength;
 
-    public String getServerAddress()
+    public long getLastFileLength()
     {
-        return serverAddress;
+        return lastFileLength;
     }
 
-    public void setServerAddress(String serverAddress)
+    public void setLastFileLength(long lastFileLength)
     {
-        this.serverAddress = serverAddress;
+        this.lastFileLength = lastFileLength;
     }
 
-    public String readFileScope;
+    public String lastFileMd5;
 
-    public String getReadFileScope()
+    public String getLastFileMd5()
     {
-        return readFileScope;
+        return lastFileMd5;
     }
 
-    public void setReadFileScope(String readFileScope)
+    public void setLastFileMd5(String lastFileMd5)
     {
-        this.readFileScope = readFileScope;
+        this.lastFileMd5 = lastFileMd5;
     }
 
-    public String readFileKey;
+    public long lastCommitFileLength;
 
-    public String getReadFileKey()
+    public long getLastCommitFileLength()
     {
-        return readFileKey;
+        return lastCommitFileLength;
     }
 
-    public void setReadFileKey(String readFileKey)
+    public void setLastCommitFileLength(long lastCommitFileLength)
     {
-        this.readFileKey = readFileKey;
+        this.lastCommitFileLength = lastCommitFileLength;
     }
 
-    public String writeFileScope;
+    public String lastCommitFileMd5;
 
-    public String getWriteFileScope()
+    public String getLastCommitFileMd5()
     {
-        return writeFileScope;
+        return lastCommitFileMd5;
     }
 
-    public void setWriteFileScope(String writeFileScope)
+    public void setLastCommitFileMd5(String lastCommitFileMd5)
     {
-        this.writeFileScope = writeFileScope;
+        this.lastCommitFileMd5 = lastCommitFileMd5;
     }
 
-    public String writeFileKey;
+    public boolean isPassDesign;
 
-    public String getWriteFileKey()
+    public boolean getIsPassDesign()
     {
-        return writeFileKey;
+        return isPassDesign;
     }
 
-    public void setWriteFileKey(String writeFileKey)
+    public void setIsPassDesign(boolean isPassDesign)
     {
-        this.writeFileKey = writeFileKey;
+        this.isPassDesign = isPassDesign;
     }
 
-    public java.util.List<HistoryDTO> historyList;
-
-    public java.util.List<HistoryDTO> getHistoryList()
+    public boolean isIsPassDesign()
     {
-        return historyList;
+        return isPassDesign;
     }
 
-    public void setHistoryList(java.util.List<HistoryDTO> historyList)
+    public boolean isPassCheck;
+
+    public boolean getIsPassCheck()
     {
-        this.historyList = historyList;
+        return isPassCheck;
+    }
+
+    public void setIsPassCheck(boolean isPassCheck)
+    {
+        this.isPassCheck = isPassCheck;
+    }
+
+    public boolean isIsPassCheck()
+    {
+        return isPassCheck;
+    }
+
+    public boolean isPassAudit;
+
+    public boolean getIsPassAudit()
+    {
+        return isPassAudit;
+    }
+
+    public void setIsPassAudit(boolean isPassAudit)
+    {
+        this.isPassAudit = isPassAudit;
+    }
+
+    public boolean isIsPassAudit()
+    {
+        return isPassAudit;
+    }
+
+    public java.util.List<com.maoding.User.zeroc.RoleDTO> roleList;
+
+    public java.util.List<com.maoding.User.zeroc.RoleDTO> getRoleList()
+    {
+        return roleList;
+    }
+
+    public void setRoleList(java.util.List<com.maoding.User.zeroc.RoleDTO> roleList)
+    {
+        this.roleList = roleList;
     }
 
     public FileNodeDTO()
     {
         this.basic = new SimpleNodeDTO();
-        this.fileTypeName = "";
+        this.id = "";
         this.fileVersion = "";
-        this.fileChecksum = "";
-        this.majorId = "";
         this.majorName = "";
-        this.mainFileId = "";
-        this.fileRemark = "";
-        this.serverTypeId = "";
-        this.serverTypeName = "";
-        this.serverAddress = "";
-        this.readFileScope = "";
-        this.readFileKey = "";
-        this.writeFileScope = "";
-        this.writeFileKey = "";
+        this.fileMd5 = "";
+        this.lastFileMd5 = "";
+        this.lastCommitFileMd5 = "";
     }
 
-    public FileNodeDTO(SimpleNodeDTO basic, short fileTypeId, String fileTypeName, String fileVersion, String fileChecksum, String majorId, String majorName, String mainFileId, String fileRemark, String serverTypeId, String serverTypeName, String serverAddress, String readFileScope, String readFileKey, String writeFileScope, String writeFileKey, java.util.List<HistoryDTO> historyList)
+    public FileNodeDTO(SimpleNodeDTO basic, String id, String fileVersion, String majorName, long fileLength, String fileMd5, long createTimeStamp, long lastModifyTimeStamp, long lastFileLength, String lastFileMd5, long lastCommitFileLength, String lastCommitFileMd5, boolean isPassDesign, boolean isPassCheck, boolean isPassAudit, java.util.List<com.maoding.User.zeroc.RoleDTO> roleList)
     {
         this.basic = basic;
-        this.fileTypeId = fileTypeId;
-        this.fileTypeName = fileTypeName;
+        this.id = id;
         this.fileVersion = fileVersion;
-        this.fileChecksum = fileChecksum;
-        this.majorId = majorId;
         this.majorName = majorName;
-        this.mainFileId = mainFileId;
-        this.fileRemark = fileRemark;
-        this.serverTypeId = serverTypeId;
-        this.serverTypeName = serverTypeName;
-        this.serverAddress = serverAddress;
-        this.readFileScope = readFileScope;
-        this.readFileKey = readFileKey;
-        this.writeFileScope = writeFileScope;
-        this.writeFileKey = writeFileKey;
-        this.historyList = historyList;
+        this.fileLength = fileLength;
+        this.fileMd5 = fileMd5;
+        this.createTimeStamp = createTimeStamp;
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
+        this.lastFileLength = lastFileLength;
+        this.lastFileMd5 = lastFileMd5;
+        this.lastCommitFileLength = lastCommitFileLength;
+        this.lastCommitFileMd5 = lastCommitFileMd5;
+        this.isPassDesign = isPassDesign;
+        this.isPassCheck = isPassCheck;
+        this.isPassAudit = isPassAudit;
+        this.roleList = roleList;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -291,13 +282,9 @@ public class FileNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.fileTypeId != r.fileTypeId)
+            if(this.id != r.id)
             {
-                return false;
-            }
-            if(this.fileTypeName != r.fileTypeName)
-            {
-                if(this.fileTypeName == null || r.fileTypeName == null || !this.fileTypeName.equals(r.fileTypeName))
+                if(this.id == null || r.id == null || !this.id.equals(r.id))
                 {
                     return false;
                 }
@@ -309,20 +296,6 @@ public class FileNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.fileChecksum != r.fileChecksum)
-            {
-                if(this.fileChecksum == null || r.fileChecksum == null || !this.fileChecksum.equals(r.fileChecksum))
-                {
-                    return false;
-                }
-            }
-            if(this.majorId != r.majorId)
-            {
-                if(this.majorId == null || r.majorId == null || !this.majorId.equals(r.majorId))
-                {
-                    return false;
-                }
-            }
             if(this.majorName != r.majorName)
             {
                 if(this.majorName == null || r.majorName == null || !this.majorName.equals(r.majorName))
@@ -330,72 +303,62 @@ public class FileNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.mainFileId != r.mainFileId)
+            if(this.fileLength != r.fileLength)
             {
-                if(this.mainFileId == null || r.mainFileId == null || !this.mainFileId.equals(r.mainFileId))
+                return false;
+            }
+            if(this.fileMd5 != r.fileMd5)
+            {
+                if(this.fileMd5 == null || r.fileMd5 == null || !this.fileMd5.equals(r.fileMd5))
                 {
                     return false;
                 }
             }
-            if(this.fileRemark != r.fileRemark)
+            if(this.createTimeStamp != r.createTimeStamp)
             {
-                if(this.fileRemark == null || r.fileRemark == null || !this.fileRemark.equals(r.fileRemark))
+                return false;
+            }
+            if(this.lastModifyTimeStamp != r.lastModifyTimeStamp)
+            {
+                return false;
+            }
+            if(this.lastFileLength != r.lastFileLength)
+            {
+                return false;
+            }
+            if(this.lastFileMd5 != r.lastFileMd5)
+            {
+                if(this.lastFileMd5 == null || r.lastFileMd5 == null || !this.lastFileMd5.equals(r.lastFileMd5))
                 {
                     return false;
                 }
             }
-            if(this.serverTypeId != r.serverTypeId)
+            if(this.lastCommitFileLength != r.lastCommitFileLength)
             {
-                if(this.serverTypeId == null || r.serverTypeId == null || !this.serverTypeId.equals(r.serverTypeId))
+                return false;
+            }
+            if(this.lastCommitFileMd5 != r.lastCommitFileMd5)
+            {
+                if(this.lastCommitFileMd5 == null || r.lastCommitFileMd5 == null || !this.lastCommitFileMd5.equals(r.lastCommitFileMd5))
                 {
                     return false;
                 }
             }
-            if(this.serverTypeName != r.serverTypeName)
+            if(this.isPassDesign != r.isPassDesign)
             {
-                if(this.serverTypeName == null || r.serverTypeName == null || !this.serverTypeName.equals(r.serverTypeName))
-                {
-                    return false;
-                }
+                return false;
             }
-            if(this.serverAddress != r.serverAddress)
+            if(this.isPassCheck != r.isPassCheck)
             {
-                if(this.serverAddress == null || r.serverAddress == null || !this.serverAddress.equals(r.serverAddress))
-                {
-                    return false;
-                }
+                return false;
             }
-            if(this.readFileScope != r.readFileScope)
+            if(this.isPassAudit != r.isPassAudit)
             {
-                if(this.readFileScope == null || r.readFileScope == null || !this.readFileScope.equals(r.readFileScope))
-                {
-                    return false;
-                }
+                return false;
             }
-            if(this.readFileKey != r.readFileKey)
+            if(this.roleList != r.roleList)
             {
-                if(this.readFileKey == null || r.readFileKey == null || !this.readFileKey.equals(r.readFileKey))
-                {
-                    return false;
-                }
-            }
-            if(this.writeFileScope != r.writeFileScope)
-            {
-                if(this.writeFileScope == null || r.writeFileScope == null || !this.writeFileScope.equals(r.writeFileScope))
-                {
-                    return false;
-                }
-            }
-            if(this.writeFileKey != r.writeFileKey)
-            {
-                if(this.writeFileKey == null || r.writeFileKey == null || !this.writeFileKey.equals(r.writeFileKey))
-                {
-                    return false;
-                }
-            }
-            if(this.historyList != r.historyList)
-            {
-                if(this.historyList == null || r.historyList == null || !this.historyList.equals(r.historyList))
+                if(this.roleList == null || r.roleList == null || !this.roleList.equals(r.roleList))
                 {
                     return false;
                 }
@@ -412,22 +375,21 @@ public class FileNodeDTO implements java.lang.Cloneable,
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::FileNodeDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, basic);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileVersion);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileChecksum);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainFileId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileRemark);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverAddress);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readFileScope);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readFileKey);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writeFileScope);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writeFileKey);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, historyList);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileMd5);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastFileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastFileMd5);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastCommitFileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastCommitFileMd5);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassDesign);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassCheck);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassAudit);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, roleList);
         return h_;
     }
 
@@ -448,43 +410,41 @@ public class FileNodeDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         SimpleNodeDTO.ice_write(ostr, this.basic);
-        ostr.writeShort(this.fileTypeId);
-        ostr.writeString(this.fileTypeName);
+        ostr.writeString(this.id);
         ostr.writeString(this.fileVersion);
-        ostr.writeString(this.fileChecksum);
-        ostr.writeString(this.majorId);
         ostr.writeString(this.majorName);
-        ostr.writeString(this.mainFileId);
-        ostr.writeString(this.fileRemark);
-        ostr.writeString(this.serverTypeId);
-        ostr.writeString(this.serverTypeName);
-        ostr.writeString(this.serverAddress);
-        ostr.writeString(this.readFileScope);
-        ostr.writeString(this.readFileKey);
-        ostr.writeString(this.writeFileScope);
-        ostr.writeString(this.writeFileKey);
-        HistoryListHelper.write(ostr, this.historyList);
+        ostr.writeLong(this.fileLength);
+        ostr.writeString(this.fileMd5);
+        ostr.writeLong(this.createTimeStamp);
+        ostr.writeLong(this.lastModifyTimeStamp);
+        ostr.writeLong(this.lastFileLength);
+        ostr.writeString(this.lastFileMd5);
+        ostr.writeLong(this.lastCommitFileLength);
+        ostr.writeString(this.lastCommitFileMd5);
+        ostr.writeBool(this.isPassDesign);
+        ostr.writeBool(this.isPassCheck);
+        ostr.writeBool(this.isPassAudit);
+        com.maoding.User.zeroc.RoleListHelper.write(ostr, this.roleList);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.basic = SimpleNodeDTO.ice_read(istr);
-        this.fileTypeId = istr.readShort();
-        this.fileTypeName = istr.readString();
+        this.id = istr.readString();
         this.fileVersion = istr.readString();
-        this.fileChecksum = istr.readString();
-        this.majorId = istr.readString();
         this.majorName = istr.readString();
-        this.mainFileId = istr.readString();
-        this.fileRemark = istr.readString();
-        this.serverTypeId = istr.readString();
-        this.serverTypeName = istr.readString();
-        this.serverAddress = istr.readString();
-        this.readFileScope = istr.readString();
-        this.readFileKey = istr.readString();
-        this.writeFileScope = istr.readString();
-        this.writeFileKey = istr.readString();
-        this.historyList = HistoryListHelper.read(istr);
+        this.fileLength = istr.readLong();
+        this.fileMd5 = istr.readString();
+        this.createTimeStamp = istr.readLong();
+        this.lastModifyTimeStamp = istr.readLong();
+        this.lastFileLength = istr.readLong();
+        this.lastFileMd5 = istr.readString();
+        this.lastCommitFileLength = istr.readLong();
+        this.lastCommitFileMd5 = istr.readString();
+        this.isPassDesign = istr.readBool();
+        this.isPassCheck = istr.readBool();
+        this.isPassAudit = istr.readBool();
+        this.roleList = com.maoding.User.zeroc.RoleListHelper.read(istr);
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, FileNodeDTO v)
@@ -539,5 +499,5 @@ public class FileNodeDTO implements java.lang.Cloneable,
 
     private static final FileNodeDTO _nullMarshalValue = new FileNodeDTO();
 
-    public static final long serialVersionUID = -14132188L;
+    public static final long serialVersionUID = -950949378L;
 }

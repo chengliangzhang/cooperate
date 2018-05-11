@@ -1,6 +1,6 @@
 package com.maoding.CoreUtils;
 
-import com.maoding.Base.BaseEntity;
+import com.maoding.Base.CoreEntity;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -65,7 +65,7 @@ class TestClass1 {
     private String string;
     private Father object;
     private byte[] array;
-    private BaseEntity entity;
+    private CoreEntity entity;
     private List<Integer> list;
 
     public List<Integer> getList() {
@@ -76,11 +76,11 @@ class TestClass1 {
         this.list = list;
     }
 
-    public BaseEntity getEntity() {
+    public CoreEntity getEntity() {
         return entity;
     }
 
-    public void setEntity(BaseEntity entity) {
+    public void setEntity(CoreEntity entity) {
         this.entity = entity;
     }
 
@@ -131,7 +131,7 @@ class TestClass2 {
     private StringBuffer string;
     private Child object;
     private Byte[] array;
-    private BaseEntity entity;
+    private CoreEntity entity;
     private List<Float> list;
 
     public List<Float> getList() {
@@ -142,11 +142,11 @@ class TestClass2 {
         this.list = list;
     }
 
-    public BaseEntity getEntity() {
+    public CoreEntity getEntity() {
         return entity;
     }
 
-    public void setEntity(BaseEntity entity) {
+    public void setEntity(CoreEntity entity) {
         this.entity = entity;
     }
 
@@ -205,7 +205,7 @@ public class BeanUtilsTest {
         src.setString(new StringBuffer("class2"));
         src.setObject(new Child(1,"child"));
         src.setArray(new Byte[]{1,2,3,null});
-        src.setEntity(new BaseEntity());
+        src.setEntity(new CoreEntity());
         src.setList(new ArrayList<>());
         src.getList().add(1.1f);
         Map<String,Object> des = BeanUtils.createMapFrom(src,String.class,Object.class);
@@ -249,7 +249,7 @@ public class BeanUtilsTest {
         src.put("String","class2");
         src.put("Object",new Child(2,"child"));
         src.put("Array",new Byte[]{1,2,3,null});
-        src.put("Entity",new BaseEntity());
+        src.put("Entity",new CoreEntity());
         List<Float> list = new ArrayList<>();
         list.add(1.5f);
         src.put("List",list);
@@ -264,7 +264,7 @@ public class BeanUtilsTest {
         src.put("String","class1");
         src.put("Object",new Father(1));
         src.put("Array",new byte[]{1,2,3});
-        src.put("Entity",new BaseEntity());
+        src.put("Entity",new CoreEntity());
         List<Integer> list = new ArrayList<>();
         list.add(1);
         src.put("List",list);
@@ -279,7 +279,7 @@ public class BeanUtilsTest {
         src.setString("class1");
         src.setObject(new Father(1));
         src.setArray(new byte[]{1,2,3});
-        src.setEntity(new BaseEntity());
+        src.setEntity(new CoreEntity());
         src.setList(new ArrayList<>());
         src.getList().add(1);
         TestClass2 des = BeanUtils.createFrom(src,TestClass2.class);
@@ -293,7 +293,7 @@ public class BeanUtilsTest {
         src.setString(new StringBuffer("class2"));
         src.setObject(new Child(1,"child"));
         src.setArray(new Byte[]{1,2,3,null});
-        src.setEntity(new BaseEntity());
+        src.setEntity(new CoreEntity());
         src.setList(new ArrayList<>());
         src.getList().add(1.1f);
         TestClass1 des = BeanUtils.createFrom(src,TestClass1.class);

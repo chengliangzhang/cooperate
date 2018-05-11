@@ -1,6 +1,5 @@
 package com.maoding.CoreFileServer.Ftp;
 
-import com.maoding.Const.FileServerConst;
 import com.maoding.CoreFileServer.*;
 import com.maoding.CoreUtils.StringUtils;
 import org.apache.commons.net.ftp.FTP;
@@ -40,6 +39,26 @@ public class FtpServer implements CoreFileServer {
     private static final int PORT = 21;
     private static final String USER_NAME = "anonymous";
     private static final String PASSWORD = "abc@abc.com";
+
+    final static Integer FILE_SERVER_TYPE_FASTFDS = 1;
+    final static Integer FILE_SERVER_TYPE_ALIYUN = 2;
+    final static Integer FILE_SERVER_TYPE_CIFS = 3;
+    final static Integer FILE_SERVER_TYPE_FTP = 4;
+    final static Integer FILE_SERVER_TYPE_LOCAL = 5;
+
+    final static Integer FILE_SERVER_MODE_DEFAULT = 0;
+    final static Integer FILE_SERVER_MODE_DEFAULT_COM = 1;
+    final static Integer FILE_SERVER_MODE_HTTP_GET = 2;
+    final static Integer FILE_SERVER_MODE_HTTP_POST = 3;
+    final static Integer FILE_SERVER_MODE_OSS = 4;
+    final static Integer FILE_SERVER_MODE_LOCAL = 5;
+    final static Integer FILE_SERVER_MODE_RPC = 6;
+
+    final static Integer DEFAULT_CHUNK_SIZE = 8192;
+
+    final static Short OPEN_MODE_READ_ONLY = 0;
+    final static Short OPEN_MODE_READ_WRITE = 1;
+    
 //    private static final String HOST_NAME = "192.168.33.148";
 //    private static final int PORT = 2121;
 //    private static final String USER_NAME = "administrator";
@@ -62,10 +81,10 @@ public class FtpServer implements CoreFileServer {
         requestDTO.setUrl("http://localhost:8087");
         requestDTO.putParam(BASE_DIR_NAME, src.getScope());
         requestDTO.putParam(PATH_NAME, src.getKey());
-        if (FileServerConst.FILE_SERVER_MODE_DEFAULT.equals(mode)) {
-            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        if (FILE_SERVER_MODE_DEFAULT.equals(mode)) {
+            requestDTO.setMode(FILE_SERVER_MODE_LOCAL);
         } else {
-            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+            requestDTO.setMode(FILE_SERVER_MODE_HTTP_POST);
         }
         requestDTO.putParam("uploadId", UUID.randomUUID().toString());
         return requestDTO;
@@ -91,10 +110,10 @@ public class FtpServer implements CoreFileServer {
         requestDTO.setUrl("http://localhost:8087");
         requestDTO.putParam(BASE_DIR_NAME, src.getScope());
         requestDTO.putParam(PATH_NAME, src.getKey());
-        if (FileServerConst.FILE_SERVER_MODE_DEFAULT.equals(mode)) {
-            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_LOCAL);
+        if (FILE_SERVER_MODE_DEFAULT.equals(mode)) {
+            requestDTO.setMode(FILE_SERVER_MODE_LOCAL);
         } else {
-            requestDTO.setMode(FileServerConst.FILE_SERVER_MODE_HTTP_POST);
+            requestDTO.setMode(FILE_SERVER_MODE_HTTP_POST);
         }
         File f = new File(FILE_SERVER_PATH + "/" + src.getKey());
         requestDTO.putParam("size", ((Long) f.length()).toString());

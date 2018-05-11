@@ -1,6 +1,6 @@
 package com.maoding.Notice;
 
-import com.maoding.Base.BaseLocalService;
+import com.maoding.Base.CoreLocalService;
 import com.maoding.CoreNotice.CoreMessageDTO;
 import com.maoding.CoreNotice.CoreNoticeClient;
 import com.maoding.Notice.Config.NoticeConfig;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
  * 描    述 :
  */
 @Service("noticeClient")
-public class NoticeClientImpl extends BaseLocalService<NoticeClientPrx> implements NoticeClientPrx,NoticeClient,CoreNoticeClient {
+public class NoticeClientImpl extends CoreLocalService implements NoticeClient,CoreNoticeClient {
 
 
     @Autowired

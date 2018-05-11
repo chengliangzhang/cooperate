@@ -47,72 +47,16 @@ public class RoleDTO implements java.lang.Cloneable,
         this.name = name;
     }
 
-    public String companyId;
-
-    public String getCompanyId()
-    {
-        return companyId;
-    }
-
-    public void setCompanyId(String companyId)
-    {
-        this.companyId = companyId;
-    }
-
-    public String companyName;
-
-    public String getCompanyName()
-    {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName)
-    {
-        this.companyName = companyName;
-    }
-
-    public String userId;
-
-    public String getUserId()
-    {
-        return userId;
-    }
-
-    public void setUserId(String userId)
-    {
-        this.userId = userId;
-    }
-
-    public String userName;
-
-    public String getUserName()
-    {
-        return userName;
-    }
-
-    public void setUserName(String userName)
-    {
-        this.userName = userName;
-    }
-
     public RoleDTO()
     {
         this.id = "";
         this.name = "";
-        this.companyId = "";
-        this.companyName = "";
-        this.userId = "";
-        this.userName = "";
     }
 
-    public RoleDTO(String id, String name, String companyId, String companyName, String userId, String userName)
+    public RoleDTO(String id, String name)
     {
         this.id = id;
         this.name = name;
-        this.companyId = companyId;
-        this.companyName = companyName;
-        this.userId = userId;
-        this.userName = userName;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -143,34 +87,6 @@ public class RoleDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.companyId != r.companyId)
-            {
-                if(this.companyId == null || r.companyId == null || !this.companyId.equals(r.companyId))
-                {
-                    return false;
-                }
-            }
-            if(this.companyName != r.companyName)
-            {
-                if(this.companyName == null || r.companyName == null || !this.companyName.equals(r.companyName))
-                {
-                    return false;
-                }
-            }
-            if(this.userId != r.userId)
-            {
-                if(this.userId == null || r.userId == null || !this.userId.equals(r.userId))
-                {
-                    return false;
-                }
-            }
-            if(this.userName != r.userName)
-            {
-                if(this.userName == null || r.userName == null || !this.userName.equals(r.userName))
-                {
-                    return false;
-                }
-            }
 
             return true;
         }
@@ -184,10 +100,6 @@ public class RoleDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::RoleDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyName);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, userName);
         return h_;
     }
 
@@ -209,20 +121,12 @@ public class RoleDTO implements java.lang.Cloneable,
     {
         ostr.writeString(this.id);
         ostr.writeString(this.name);
-        ostr.writeString(this.companyId);
-        ostr.writeString(this.companyName);
-        ostr.writeString(this.userId);
-        ostr.writeString(this.userName);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.id = istr.readString();
         this.name = istr.readString();
-        this.companyId = istr.readString();
-        this.companyName = istr.readString();
-        this.userId = istr.readString();
-        this.userName = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, RoleDTO v)
@@ -277,5 +181,5 @@ public class RoleDTO implements java.lang.Cloneable,
 
     private static final RoleDTO _nullMarshalValue = new RoleDTO();
 
-    public static final long serialVersionUID = 1554562731L;
+    public static final long serialVersionUID = -1377162165L;
 }

@@ -26,6 +26,8 @@ public interface UserService extends com.zeroc.Ice.Object
 
     java.util.List<WebRoleDTO> listWebRole(QueryWebRoleDTO query, com.zeroc.Ice.Current current);
 
+    java.util.List<RoleDTO> listRole(QueryRoleDTO query, com.zeroc.Ice.Current current);
+
     boolean login(LoginDTO loginInfo, com.zeroc.Ice.Current current);
 
     AccountDTO getCurrent(com.zeroc.Ice.Current current);
@@ -84,6 +86,20 @@ public interface UserService extends com.zeroc.Ice.Object
         java.util.List<WebRoleDTO> ret = obj.listWebRole(iceP_query, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
         WebRoleListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listRole(UserService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        QueryRoleDTO iceP_query;
+        iceP_query = QueryRoleDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<RoleDTO> ret = obj.listRole(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        RoleListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }
@@ -175,6 +191,7 @@ public interface UserService extends com.zeroc.Ice.Object
         "ice_ping",
         "listMember",
         "listProjectRoleByProjectId",
+        "listRole",
         "listUserJoin",
         "listUserJoinForAccount",
         "listWebRole",
@@ -224,21 +241,25 @@ public interface UserService extends com.zeroc.Ice.Object
             }
             case 7:
             {
-                return _iceD_listUserJoin(this, in, current);
+                return _iceD_listRole(this, in, current);
             }
             case 8:
             {
-                return _iceD_listUserJoinForAccount(this, in, current);
+                return _iceD_listUserJoin(this, in, current);
             }
             case 9:
             {
-                return _iceD_listWebRole(this, in, current);
+                return _iceD_listUserJoinForAccount(this, in, current);
             }
             case 10:
             {
-                return _iceD_login(this, in, current);
+                return _iceD_listWebRole(this, in, current);
             }
             case 11:
+            {
+                return _iceD_login(this, in, current);
+            }
+            case 12:
             {
                 return _iceD_setWebRoleStatus(this, in, current);
             }

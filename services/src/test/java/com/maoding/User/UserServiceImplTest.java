@@ -1,13 +1,12 @@
 package com.maoding.User;
 
-import com.maoding.FileServer.Config.RemoteUserServicePrx;
-import com.maoding.User.zeroc.QueryWebRoleDTO;
-import com.maoding.User.zeroc.UserService;
-import com.maoding.User.zeroc.UserServicePrx;
-import com.maoding.User.zeroc.WebRoleDTO;
+import com.maoding.Base.CoreRemoteService;
+import com.maoding.User.zeroc.*;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,17 +32,39 @@ import java.util.List;
 
 public class UserServiceImplTest {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     private UserServicePrx remote = null;
 
     private UserServicePrx getRemote(){
         if (remote == null) {
-            remote = RemoteUserServicePrx.getInstance("UserServer;120.24.238.128");
+            CoreRemoteService<UserServicePrx> prx = new CoreRemoteService<>();
+            remote = prx.getServicePrx("UserService","UserServer;192.168.13.140",UserServicePrx.class,_UserServicePrxI.class);
         }
         return remote;
+    }
+
+    @Test
+    public void testLogin() throws Exception{
+        loginRemote();
+    }
+
+    private boolean loginRemote() throws Exception {
+        log.debug("\t>>>>>>>> loginRemote");
+        return getRemote().login(getLocalLoginInfo());
+    }
+
+    private LoginDTO getLocalLoginInfo() {
+        return new LoginDTO(
+                "",
+                "",
+                false,
+                "123456",
+                "13680809727");
     }
 
     @Test

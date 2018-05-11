@@ -1,9 +1,8 @@
 package com.maoding.CoreUtils;
 
-import com.maoding.Bean.CoreKeyValuePair;
+import com.maoding.CoreFileServer.MaodingWeb.CoreKeyValuePair;
 import com.maoding.Bean.CoreResponse;
-import com.maoding.Bean.CoreUploadFileItem;
-import com.maoding.Const.HttpConst;
+import com.maoding.CoreFileServer.MaodingWeb.CoreUploadFileItem;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -37,9 +36,10 @@ public class HttpUtils {
     /** 日志对象 */
     private static final Logger log = LoggerFactory.getLogger(HttpUtils.class);
 
-    public static final Integer MAX_BLOCK_SIZE = (8192 * 1024);
+    public static final int MAX_BLOCK_SIZE = (8192 * 1024);
     public static final String DEFAULT_FILE_CONTENT_TYPE = "text/plain";
 //    public static final String DEFAULT_FILE_CONTENT_TYPE = "application/octet-stream";
+    final static int HTTP_RESULT_OK = 200;
 
     public static <T> CloseableHttpResponse postData(CloseableHttpClient client, String url, String type, T data) {
         assert (url != null);
@@ -121,10 +121,12 @@ public class HttpUtils {
         RandomAccessFile rf = null;
         if (url != null) {
             try {
+                log.info("正在连接" + urlString);
                 // 向服务器发送post请求
                 connection = (HttpURLConnection) url.openConnection();
 
                 // 发送POST请求必须设置如下两行
+                log.info("连接成功，准备发送");
                 connection.setDoOutput(true);
                 connection.setDoInput(true);
                 connection.setUseCaches(false);
@@ -168,7 +170,9 @@ public class HttpUtils {
                     long realPos = pos;
                     int realSize = size;
                     if (realSize == 0) realSize = (int) rf.length();
-                    if (blockSize == 0) blockSize = MAX_BLOCK_SIZE;
+                    if (blockSize == 0) {
+                        blockSize = MAX_BLOCK_SIZE;
+                    }
                     if ((0 < blockSize) && (blockSize < realSize)) realSize = blockSize;
                     while (realPos < (pos + size)) {
                         if (realPos > pos) out.write(BOUNDARY_BODY.getBytes(DEFAULT_CHAR_SET));
@@ -178,17 +182,20 @@ public class HttpUtils {
                         int bytes = rf.read(buf);
                         out.write(buf, 0, bytes);
                         realPos += bytes;
+                        log.info("已发送了" + realPos);
                     }
                 }
 
                 //写结尾
                 out.write(BOUNDARY_END.getBytes(DEFAULT_CHAR_SET));
                 out.flush();
+                log.info("发送完毕");
             } catch (IOException e) {
                 log.error("发送web操作时错误",e);
             } finally {
                 FileUtils.close(rf);
                 FileUtils.close(out);
+                log.info("关闭发送流");
             }
         }
 
@@ -197,6 +204,7 @@ public class HttpUtils {
         if (connection != null) {
             InputStream in = null;
             try {
+                log.info("等待回应");
                 in = connection.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
@@ -208,6 +216,7 @@ public class HttpUtils {
                 log.error("发送web操作后接收返回值时错误",e);
             } finally {
                 FileUtils.close(in);
+                log.info("关闭接收流");
             }
         }
 
@@ -217,9 +226,22 @@ public class HttpUtils {
                                                CoreUploadFileItem fileItem, long pos, int size) {
         return postFileData(urlString,propertyList,fileItem,pos,size,0);
     }
+    public static CoreResponse<?> postFileData(@NotNull String urlString, @NotNull Map<String,String> propertyMap,
+                                               CoreUploadFileItem fileItem, long pos, int size) {
+        ArrayList<CoreKeyValuePair> propertyList = new ArrayList<>();
+        for(Map.Entry<String,String> entry : propertyMap.entrySet()){
+            CoreKeyValuePair property = new CoreKeyValuePair(entry.getKey(),entry.getValue());
+            propertyList.add(property);
+        }
+        return postFileData(urlString,propertyList,fileItem,pos,size,0);
+    }
+
+    public static File getFile(String url,String localDir) {
+        return null;
+    }
 
     public static Boolean isResponseOK(CloseableHttpResponse response){
-        return (response != null) && (response.getStatusLine() != null) && (response.getStatusLine().getStatusCode() == HttpConst.HTTP_RESULT_OK);
+        return (response != null) && (response.getStatusLine() != null) && (response.getStatusLine().getStatusCode() == HTTP_RESULT_OK);
     }
 
     public static CoreResponse getResult(CloseableHttpResponse response){

@@ -1,6 +1,6 @@
 package com.maoding.Storage;
 
-import com.maoding.Base.BaseController;
+import com.maoding.Base.CoreController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/StorageServer")
-public class StorageServiceController extends BaseController {
+public class StorageServiceController extends CoreController {
 }

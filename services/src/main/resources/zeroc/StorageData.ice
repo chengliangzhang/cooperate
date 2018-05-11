@@ -1,11 +1,13 @@
 #pragma once
 #include <Common.ice>
+#include <UserData.ice>
 
 [["java:package:com.maoding.Storage"]]
 module zeroc {
-    ["java:getset","clr:property"]
+    ["java:getset","clr:property","deprecate"]
     struct CANodeDTO { //节点信息（目录和文件通用信息）
         string id; //节点编号（树节点编号）
+        string pid; //父节点编号
         string name; //节点名称（树节点名称或文件名称）
         long createTimeStamp; //节点建立时间
         long lastModifyTimeStamp; //节点最后修改时间
@@ -21,8 +23,10 @@ module zeroc {
         string path; //节点全路径
         string fileMd5; //MD5
         long fileLength; //文件长度
+        string lastFileMd5; //最后一次提交校审时的md5
+        long lastFileLength; //最后一次提交校审时的文件长度
         string lastCommitFileMd5; //最后一次提交时的md5
-        string lastCommitFileLength; //最后一次提交时的文件长度
+        long lastCommitFileLength; //最后一次提交时的文件长度
         bool isPassDesign; //已经提交过校审
         bool isPassCheck; //通过校验
         bool isPassAudit; //通过审核
@@ -63,7 +67,7 @@ module zeroc {
         string userName; //操作人员名字
         string roleId; //操作人员职责id
         string roleName; //操作人员职责名称
-        short actionTypeId; //操作动作编号
+        string actionTypeId; //操作动作编号
         string actionName; //操作动作名称
         long actionTimeStamp; //操作时间
         string actionTimeText; //操作时间文字
@@ -73,31 +77,31 @@ module zeroc {
     };
     ["java:type:java.util.ArrayList<HistoryDTO>"] sequence<HistoryDTO> HistoryList;
 
-    ["java:getset","clr:property","deprecate"]
+    ["java:getset","clr:property"]
     struct FileNodeDTO { //文件信息
-        SimpleNodeDTO basic; //节点基本信息
+        SimpleNodeDTO basic; //文件节点基本信息
 
         //文件节点特有信息
-        short fileTypeId; //文件类型
-        string fileTypeName; //文件类型文字说明
+        string id; //文件编号（不包含分类编号）
         string fileVersion; //文件版本号
-        string fileChecksum; //文件校验和
-        string majorId; //文件所属专业id
         string majorName; //文件所属专业名称
-        string mainFileId; //设计文件id
-        string fileRemark; //文件操作注解
+        long fileLength; //文件长度
+        string fileMd5; //文件校验和
+        long createTimeStamp; //文件建立时间
+        long lastModifyTimeStamp; //文件最后修改时间
 
-        //实际文件存储位置
-        string serverTypeId; //文件服务器类型id
-        string serverTypeName; //文件服务器类型名称
-        string serverAddress; //文件服务器地址
+        long lastFileLength; //最后一次提交校审时的文件长度
+        string lastFileMd5; //最后一次提交校审时的md5
 
-        string readFileScope; //只读版本在文件服务器上的存储位置
-        string readFileKey; //只读版本在文件服务器上的存储名称
-        string writeFileScope; //可写版本在文件服务器上的存储位置
-        string writeFileKey; //可写版本在文件服务器上的存储名称
+        long lastCommitFileLength; //最后一次提资时的文件长度
+        string lastCommitFileMd5; //最后一次提资时的md5
 
-        HistoryList historyList; //文件相关历史列表
+        bool isPassDesign; //文件已经提交过校审
+        bool isPassCheck; //文件已经通过校验
+        bool isPassAudit; //文件已经通过审核
+
+        //任务角色信息
+        RoleList roleList; //与此文档上相关的角色
     };
     ["java:type:java.util.ArrayList<FileNodeDTO>"] sequence<FileNodeDTO> FileNodeList;
 
@@ -119,6 +123,7 @@ module zeroc {
         string fileTypeName; //文件类型文字说明
         string majorName; //文件所属专业名称
         string mainFilePath; //主文件全路径
+        string companyId; //所属公司编号
     };
     ["java:type:java.util.ArrayList<NodeTextDTO>"] sequence<NodeTextDTO> NodeTextList;
 
@@ -319,6 +324,7 @@ module zeroc {
         string taskId; //节点所属生产任务id
         string companyId; //节点所属组织id
         string ownerUserId; //节点拥有者用户id
+        string notOwnerUserId; //非节点拥有者用户id
         string lastModifyRoleId; //最后更改者职责id
         string accountId; //查询者用户id
         string parentPath; //父路径
@@ -333,23 +339,46 @@ module zeroc {
     };
 
     ["java:getset","clr:property"]
-    struct QueryCANodeDTO { //节点查询申请，每个属性都可以是逗号分隔的多个数据
-        ["deprecate"] string rangeId; //节点所属分类类型
-        ["deprecate"] string notTypeId; //过滤的节点类型
+    struct QueryFullNodeDTO { //节点查询申请，每个属性都可以是逗号分隔的多个数据
+        string statusAttr; //文件校审标志掩码
         string passDesign; //已提交校审标志
         string passCheck; //已通过校验标志
         string passAudit; //已通过审核标志
+        string nodeTypeAttr; //文件类型掩码
         string isDesign; //是否设计文档
         string isCA; //是否校审文档
         string isCommit; //是否提资文档
         string isHistory; //是否历史文档
         string userId; //用户编号
+        string roleAttr; //用户角色布尔属性掩码
         string isTaskLeader; //用户是否任务负责人
         string isTaskDesigner; //用户是否设计
         string isTaskChecker; //用户是否校对
         string isTaskAuditor; //用户是否审核
-        ["deprecate"] string webRoleTypeId; //用户角色类型
-        ["deprecate"] string actionTypeId; //获取最后提交状态时用到的历史提交动作
+        string actionAttr; //历史动作布尔属性掩码
+        string askCA; //获取最后提交状态时用到的提交动作是否申请校审
+        string askCommit; //获取最后提交状态时用到的提交动作是否申请提资
+        string key; //实体文件路径
+    };
+
+    ["java:getset","clr:property","deprecate"]
+    struct QueryCANodeDTO { //节点查询申请，每个属性都可以是逗号分隔的多个数据
+        string statusAttr; //文件校审标志掩码
+        string passDesign; //已提交校审标志
+        string passCheck; //已通过校验标志
+        string passAudit; //已通过审核标志
+        string nodeTypeAttr; //文件类型掩码
+        string isDesign; //是否设计文档
+        string isCA; //是否校审文档
+        string isCommit; //是否提资文档
+        string isHistory; //是否历史文档
+        string userId; //用户编号
+        string roleAttr; //用户角色布尔属性掩码
+        string isTaskLeader; //用户是否任务负责人
+        string isTaskDesigner; //用户是否设计
+        string isTaskChecker; //用户是否校对
+        string isTaskAuditor; //用户是否审核
+        string actionAttr; //历史动作布尔属性掩码
         string askCA; //获取最后提交状态时用到的提交动作是否申请校审
         string askCommit; //获取最后提交状态时用到的提交动作是否申请提资
     };
@@ -402,37 +431,33 @@ module zeroc {
         string mainFileId; //主文件id
 
         //文件服务器信息
-        short serverTypeId; //文件服务器类型
+        string serverTypeId; //文件服务器类型
         string serverAddress; //文件服务器地址
         string baseDir; //文件在文件服务器上的存储位置
 
         //文件节点信息
-        short fileTypeId; //目标文件类型Id
-        long fileLength; //目标文件大小
+        string fileTypeId; //目标文件类型Id
+        string fileLength; //目标文件大小
         string fileVersion; //文件版本号
         string fileMd5; //文件校验和
         string majorTypeId; //文件所属专业编号
         string readOnlyKey; //只读版本在文件服务器上的存储名称
-        ["deprecate"] long readOnlyFileLength; //只读版本文件长度
-        ["deprecate"] string readOnlyFileMd5; //只读版本校验和
         string writableKey; //可写版本在文件服务器上的存储名称
-        ["deprecate"] long writableFileLength; //可写版本文件长度
-        ["deprecate"] string writableFileMd5; //可写版本校验和
 
         //文件校审信息
-        bool isPassDesign; //已提交过校审
-        bool isPassCheck; //通过校验
-        bool isPassAudit; //通过审核
+        string isPassDesign; //已提交过校审
+        string isPassCheck; //通过校验
+        string isPassAudit; //通过审核
 
         //镜像信息
-        short mirrorTypeId; //镜像文件服务器类型
+        string mirrorTypeId; //镜像文件服务器类型
         string mirrorAddress; //镜像文件服务器地址
         string mirrorBaseDir; //文件在镜像文件服务器上的存储位置
         string readOnlyMirrorKey; //只读版本在本地的镜像
         string writableMirrorKey; //可写版本在本地的镜像
 
         //历史节点信息
-        short actionTypeId; //文件操作类型
+        string actionTypeId; //文件操作类型
         string remark; //文件操作注解
 
         //操作者信息
@@ -445,5 +470,14 @@ module zeroc {
         string companyId; //组织id
         string projectId; //项目id
         string ownerUserId; //拥有者用户id
+    };
+
+    ["java:getset","clr:property"]
+    struct QueryHistoryDTO { //历史信息查询，每个属性都可以是逗号分隔的多个数据
+        string actionAttr; //历史动作布尔属性掩码
+        string actionTypeId; //历史动作编码
+        string notActionTypeId; //排除的历史动作编码
+        string isCA; //历史动作是否申请校审
+        string isCommit; //历史动作是否申请提资
     };
 };

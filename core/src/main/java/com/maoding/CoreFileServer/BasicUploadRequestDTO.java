@@ -8,6 +8,7 @@ import java.util.Map;
  * 日    期 : 2017/10/30 19:00
  * 描    述 :
  */
+@Deprecated
 public class BasicUploadRequestDTO {
     /** 上传申请的唯一编号 */
     private Integer requestId;

@@ -42,7 +42,7 @@ public final class NodeTextListHelper
     {
         final java.util.List<NodeTextDTO> v;
         v = new java.util.ArrayList<NodeTextDTO>();
-        final int len0 = istr.readAndCheckSeqSize(16);
+        final int len0 = istr.readAndCheckSeqSize(17);
         for(int i0 = 0; i0 < len0; i0++)
         {
             NodeTextDTO elem;

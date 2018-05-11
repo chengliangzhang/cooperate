@@ -1,6 +1,6 @@
 package com.maoding.Storage.Dao;
 
-import com.maoding.Base.BaseDao;
+import com.maoding.Base.CoreDao;
 import com.maoding.Storage.Entity.StorageFileHisEntity;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
  * 描    述 :
  */
 @Repository
-public interface StorageFileHisDao extends BaseDao<StorageFileHisEntity> {
+public interface StorageFileHisDao extends CoreDao<StorageFileHisEntity> {
 
 }

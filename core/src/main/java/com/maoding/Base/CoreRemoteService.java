@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 日    期 : 2017/9/12 20:12
  * 描    述 :
  */
-public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
+public class CoreRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
     /** 日志对象 */
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     /** ice配置对象 */
     @Autowired
-    private IceConfig iceConfig;
+    private CoreProperties iceProperties;
 
     /** 查找远程服务线程 */
     private class ConnectThread extends Thread {
@@ -43,35 +43,27 @@ public class BaseRemoteService<P extends ObjectPrx> extends _ObjectPrxI {
         }
 
         private Communicator getCommunicator(){
-            if (!StringUtils.isEmpty(locatorIp)) {
-                String locatorConfig = "IceGrid/Locator:tcp -h " + locatorIp + " -p 4061";
-                communicator = Util.initialize(new String[]{"--" + GRID_LOCATION + "=" + locatorConfig});
-                log.info("使用" + locatorConfig + "的IceGrid服务器");
-                locatorIp = null;
-            } else if (communicator == null){
-                communicator = (iceConfig != null) ? iceConfig.getCommunicator() : Util.initialize();
-            }
-
-            assert (communicator != null);
-            return communicator;
+            Communicator c = (iceProperties != null) ? iceProperties.getCommunicator() : CoreProperties.getDirectCommunicator(locatorIp);
+            assert (c != null);
+            return c;
         }
 
         private String getFullServiceName(){
             if (fullServiceName == null) {
                 if (StringUtils.isEmpty(adapterName)) {
-                    if (iceConfig != null) {
+                    if (iceProperties != null) {
                         if (getCommunicator().getDefaultLocator() != null) {
-                            String adapterId = iceConfig.getProperty(serviceName + "." + ADAPTER_ID);
+                            String adapterId = iceProperties.getProperty(serviceName + "." + ADAPTER_ID);
                             if (!StringUtils.isEmpty(adapterId)) adapterName = "@" + adapterId;
                         }
                         if (StringUtils.isEmpty(adapterName)) {
-                            String endPoints = iceConfig.getProperty(serviceName + "." + END_POINTS);
+                            String endPoints = iceProperties.getProperty(serviceName + "." + END_POINTS);
                             if (!StringUtils.isEmpty(endPoints)) adapterName = ":" + endPoints;
                         }
                     }
                 } else if (adapterName.contains(".") && !adapterName.contains("-h")) {
-                    if (iceConfig != null) {
-                        String endPoints = iceConfig.getProperty(serviceName + "." + END_POINTS);
+                    if (iceProperties != null) {
+                        String endPoints = iceProperties.getProperty(serviceName + "." + END_POINTS);
                         adapterName = ":" + StringUtils.replaceParam(endPoints, "-h", adapterName);
                     } else {
                         adapterName = ":tcp -h " + adapterName;

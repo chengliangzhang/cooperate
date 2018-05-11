@@ -1,6 +1,6 @@
 package com.maoding.Storage.Entity;
 
-import com.maoding.Base.BaseEntity;
+import com.maoding.Base.CoreEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -12,25 +12,18 @@ import javax.persistence.Table;
  * 描    述 :
  */
 @Table(name = "md_list_storage_file_his")
-public class StorageFileHisEntity extends BaseEntity {
+public class StorageFileHisEntity extends CoreEntity {
     @Column /** 协同文件编号id */
     private String mainFileId;
     @Column /** 校审动作类型id */
-    private Short actionTypeId;
+    private String actionTypeId;
     @Column /** 文件操作时的只读文件长度 */
-    private long fileLength;
+    private Long fileLength;
     @Column /** 文件操作时的只读文件md5校验值 */
     private String fileMd5;
     @Column /** 操作注解 */
     private String remark;
 
-    public long getFileLength() {
-        return fileLength;
-    }
-
-    public void setFileLength(long fileLength) {
-        this.fileLength = fileLength;
-    }
 
     public String getFileMd5() {
         return fileMd5;
@@ -48,12 +41,20 @@ public class StorageFileHisEntity extends BaseEntity {
         this.mainFileId = mainFileId;
     }
 
-    public Short getActionTypeId() {
+    public String getActionTypeId() {
         return actionTypeId;
     }
 
-    public void setActionTypeId(Short actionTypeId) {
+    public void setActionTypeId(String actionTypeId) {
         this.actionTypeId = actionTypeId;
+    }
+
+    public Long getFileLength() {
+        return fileLength;
+    }
+
+    public void setFileLength(Long fileLength) {
+        this.fileLength = fileLength;
     }
 
     public String getRemark() {

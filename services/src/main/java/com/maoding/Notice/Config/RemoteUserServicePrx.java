@@ -1,6 +1,6 @@
 package com.maoding.Notice.Config;
 
-import com.maoding.Base.BaseRemoteService;
+import com.maoding.Base.CoreRemoteService;
 import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.User.zeroc.*;
 import com.maoding.CoreUtils.SpringUtils;
@@ -14,7 +14,7 @@ import java.util.List;
  * 描    述 :
  */
 @SuppressWarnings("deprecation")
-public class RemoteUserServicePrx extends BaseRemoteService<UserServicePrx> implements UserServicePrx {
+public class RemoteUserServicePrx extends CoreRemoteService<UserServicePrx> implements UserServicePrx {
 
     private static UserServicePrx lastPrx = null;
     private static UserService userService = null;

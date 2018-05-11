@@ -1,6 +1,6 @@
 package com.maoding.FileServer;
 
-import com.maoding.Base.BaseController;
+import com.maoding.Base.CoreController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/FileServer")
-public class FileServiceController extends BaseController {
+public class FileServiceController extends CoreController {
 //    @RequestMapping(value = "/setFileServerType", method = RequestMethod.POST)
 //    public ApiResponse setFileServerType(@RequestParam Integer type) {
 //        FileServicePrx prx = FileServiceImpl.getInstance();

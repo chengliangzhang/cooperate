@@ -16,7 +16,7 @@ import java.util.List;
  * 日    期 : 2017/9/12 19:12
  * 描    述 : 数据库访问层接口（自带通用方法）
  */
-public interface BaseDao<T extends BaseEntity> extends Mapper<T>, MySqlMapper<T>, CustomMapper<T> {
+public interface CoreDao<T extends CoreEntity> extends Mapper<T>, MySqlMapper<T>, CustomMapper<T> {
     //FIXME 特别注意，该接口不能被扫描到，否则会出错
     default T selectById(@NotNull String id){
         return selectByPrimaryKey(id);

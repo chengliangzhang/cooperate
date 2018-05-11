@@ -1,6 +1,6 @@
 package com.maoding.CoreNotice.Storm;
 
-import com.maoding.Base.IceConfig;
+import com.maoding.Base.CoreProperties;
 import com.maoding.CoreNotice.CoreMessageDTO;
 import com.maoding.CoreNotice.CoreNoticeService;
 import com.maoding.CoreNotice.CoreReceiverDTO;
@@ -26,19 +26,15 @@ public class StormClient implements CoreNoticeService {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    IceConfig iceConfig;
+    CoreProperties iceProperties;
 
-    private static Communicator communicator = null;
     private static TopicManagerPrx topicManager = null;
 
     private TopicManagerPrx getTopicManager(){
         if (topicManager == null) {
-            if (communicator == null) {
-                assert (iceConfig != null);
-                communicator = iceConfig.getCommunicator();
-            }
-            assert (communicator != null);
-            topicManager = TopicManagerPrx.checkedCast(communicator.stringToProxy("IceStorm/TopicManager@StormSvr"));
+            Communicator c = (iceProperties != null) ? iceProperties.getCommunicator() : CoreProperties.getDirectCommunicator(null);
+            assert (c != null);
+            topicManager = TopicManagerPrx.checkedCast(c.stringToProxy("IceStorm/TopicManager@StormSvr"));
         }
         return topicManager;
     }

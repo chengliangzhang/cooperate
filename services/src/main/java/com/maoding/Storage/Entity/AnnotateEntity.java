@@ -1,6 +1,6 @@
 package com.maoding.Storage.Entity;
 
-import com.maoding.Base.BaseTreeEntity;
+import com.maoding.Base.CoreTreeEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * 描    述 :
  */
 @Table(name = "md_tree_annotate")
-public class AnnotateEntity extends BaseTreeEntity {
+public class AnnotateEntity extends CoreTreeEntity {
     @Column /** 批注评论正文 */
     private String content;
     @Column /** 被批注的文件编号 */

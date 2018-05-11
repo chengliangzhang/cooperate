@@ -15,7 +15,7 @@ import java.util.UUID;
  * 日    期 : 2017/9/12 19:12
  * 描    述 :
  */
-public class BaseEntity implements Serializable,Cloneable {
+public class CoreEntity implements Serializable,Cloneable {
     /** 实体ID */
     @GeneratedValue(generator = "UUID")
     @Id
@@ -91,7 +91,7 @@ public class BaseEntity implements Serializable,Cloneable {
         this.lastModifyRoleId = lastModifyRoleId;
     }
 
-    public BaseEntity(){
+    public CoreEntity(){
         reset();
     }
 

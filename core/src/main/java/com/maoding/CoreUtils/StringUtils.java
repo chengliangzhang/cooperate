@@ -89,7 +89,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         int pos1 = str.indexOf(prefix) + prefix.length();
         String r = str.substring(pos1).trim();
         int pos2 = r.indexOf(sp);
-        return prefix + ((pos2 > -1) ? r.substring(0,pos2) : r);
+        return ((pos2 > -1) ? r.substring(0,pos2) : r);
     }
     public static String getParam(String str, String prefix){
         return getParam(str,prefix," ");

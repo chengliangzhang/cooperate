@@ -7,6 +7,7 @@ module zeroc {
     interface UserService {
         void setWebRoleStatus(WebRoleDTO webRole,string statusId); //设置角色的工作状态
         WebRoleList listWebRole(QueryWebRoleDTO query); //列出用户在生产任务中担任的角色
+        RoleList listRole(QueryRoleDTO query); //列出用户担任的角色
 
         bool login(LoginDTO loginInfo); //登录
         AccountDTO getCurrent(); //获取当前账号信息

@@ -1,6 +1,6 @@
 package com.maoding.Storage.Entity;
 
-import com.maoding.Base.BaseEntity;
+import com.maoding.Base.CoreEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * 描    述 :
  */
 @Table(name = "md_list_attachment")
-public class AttachmentEntity extends BaseEntity {
+public class AttachmentEntity extends CoreEntity {
     @Column /** 文件注解编号 */
     private String annotateId;
 

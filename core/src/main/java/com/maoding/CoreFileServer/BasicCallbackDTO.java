@@ -8,6 +8,7 @@ import java.util.Map;
  * 日    期 : 2017/11/1 16:27
  * 描    述 :
  */
+@Deprecated
 public class BasicCallbackDTO {
     /** 回调地址 */
     private String url;

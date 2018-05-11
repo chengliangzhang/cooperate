@@ -1,6 +1,6 @@
 package com.maoding.Storage.Entity;
 
-import com.maoding.Base.BaseEntity;
+import com.maoding.Base.CoreEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * 描    述 :
  */
 @Table(name = "md_list_storage_file")
-public class StorageFileEntity extends BaseEntity {
+public class StorageFileEntity extends CoreEntity {
     /** 文件服务器类型 */
     @Column
     private String serverTypeId;

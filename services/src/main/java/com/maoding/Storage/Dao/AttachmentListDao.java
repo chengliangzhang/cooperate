@@ -1,6 +1,6 @@
 package com.maoding.Storage.Dao;
 
-import com.maoding.Base.BaseDao;
+import com.maoding.Base.CoreDao;
 import com.maoding.Storage.Entity.AttachmentEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -14,7 +14,7 @@ import java.util.List;
  * 描    述 :
  */
 @Repository
-public interface AttachmentListDao extends BaseDao<AttachmentEntity> {
+public interface AttachmentListDao extends CoreDao<AttachmentEntity> {
     void deleteAttachment(@Param("annotateId") String annotateId,
                           @Param("attachmentIdList") List<String> attachmentIdList,
                           @Param("lastModifyUserId") String lastModifyUserId);

@@ -1,6 +1,6 @@
 package com.maoding.FileServer;
 
-import com.maoding.Base.BaseLocalService;
+import com.maoding.Base.CoreLocalService;
 import com.maoding.Common.CheckService;
 import com.maoding.Common.Config.WebServiceConfig;
 import com.maoding.Common.ConstService;
@@ -11,6 +11,7 @@ import com.maoding.CoreFileServer.CoreFileServer;
 import com.maoding.CoreFileServer.Disk.DiskFileServer;
 import com.maoding.CoreFileServer.MaodingWeb.WebFileServer;
 import com.maoding.CoreUtils.BeanUtils;
+import com.maoding.CoreUtils.DigitUtils;
 import com.maoding.CoreUtils.ObjectUtils;
 import com.maoding.CoreUtils.StringUtils;
 import com.maoding.FileServer.Config.FileServerConfig;
@@ -37,10 +38,11 @@ import java.util.*;
  */
 @SuppressWarnings("deprecation")
 @Service("fileService")
-public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements FileService, FileServicePrx {
+public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Autowired
     private FileServerConfig setting;
+
     @Autowired
     private WebServiceConfig webServiceConfig;
 
@@ -49,35 +51,63 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     private Map<String,NodeFileDTO> fileMap = new HashMap<>();
     private Map<String,String> pathMap = new HashMap<>();
 
+    @Override
+    public void clearAll(AccountDTO account, Current current) throws CustomException {
+        CoreFileServer localServer = getCoreFileServer();
+        List<String> keyList = localServer.coreListKey();
+        for (String key : keyList) {
+            clearKey(account,key,current);
+        }
+    }
 
     @Override
-    public List<CANodeDTO> listDesignNode(AccountDTO account, boolean isForCommit, Current current) throws CustomException {
+    public void clearKey(AccountDTO account, @NotNull String key, Current current) throws CustomException {
+        CoreFileServer localServer = getCoreFileServer();
+        List<String> keyList = localServer.coreListKey(key);
+        if (ObjectUtils.isNotEmpty(keyList)) {
+            for (String k : keyList) {
+                clearKey(account, k, current);
+            }
+            //根据实体文件查找文件节点
+            QueryFullNodeDTO query = new QueryFullNodeDTO();
+            query.setKey(key);
+            List<FullNodeDTO> fileList = getStorageService().listFullNode(query);
+            if (ObjectUtils.isNotEmpty(fileList)){
+                //如果找到，根据文件节点路径更新实体文件路径
+                FullNodeDTO fullNode = fileList.get(0);
+                renameKey(fullNode,key);
+            } else {
+                //如果没找到，删除实体文件
+                localServer.coreDeleteFile(key);
+            }
+        }
+    }
+
+    private void renameKey(FullNodeDTO fullNode,String key) throws CustomException {
+
+    }
+
+    @Override
+    public List<CANodeDTO> listDesignNode(AccountDTO account, Current current) throws CustomException {
         QueryCANodeDTO query = new QueryCANodeDTO();
-//        query.setUserId(getAccountId(account));
-//        query.setWebRoleTypeId(ConstService.WEB_ROLE_TASK_DESIGN.toString());
+        query.setUserId(getAccountId(account));
         query.setIsTaskDesigner(ConstService.MODE_TRUE);
-        query.setIsTaskLeader(ConstService.MODE_TRUE);
         query.setIsDesign(ConstService.MODE_TRUE);
         query.setIsHistory(ConstService.MODE_FALSE);
-//        query.setRangeId(ConstService.STORAGE_RANGE_TYPE_DESIGN.toString());
-//        query.setNotTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT_HIS.toString());
-        if (isForCommit) {
-            query.setAskCA(ConstService.MODE_TRUE);
-        } else {
-            query.setAskCommit(ConstService.MODE_TRUE);
-        }
         return getStorageService().listCANode(query);
     }
 
     @Override
     public List<CANodeDTO> listCANode(AccountDTO account, Current current) throws CustomException {
+        final String ROLE_CHECK_AUDIT = "000011";
         QueryCANodeDTO query = new QueryCANodeDTO();
         query.setUserId(getAccountId(account));
-        query.setRangeId(ConstService.STORAGE_RANGE_TYPE_CA.toString());
-        query.setWebRoleTypeId(ConstService.WEB_ROLE_TASK_CHECK.toString() + "," + ConstService.WEB_ROLE_TASK_AUDIT.toString());
-        query.setNotTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT_HIS.toString());
+        query.setIsCA(ConstService.MODE_TRUE);
+        query.setRoleAttr(ROLE_CHECK_AUDIT);
+        query.setIsHistory(ConstService.MODE_FALSE);
         return getStorageService().listCANode(query);
     }
+
 
     @Override
     public long getTime(Current current) throws CustomException {
@@ -86,12 +116,12 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public void restartWebRole(WebRoleDTO webRole, Current current) throws CustomException {
-        setWebRoleStatus(webRole,"0");
+        setWebRoleStatus(webRole,"0",current);
     }
 
     @Override
     public void finishWebRole(WebRoleDTO webRole, Current current) throws CustomException {
-        setWebRoleStatus(webRole,"1");
+        setWebRoleStatus(webRole,"1",current);
     }
 
     @Override
@@ -368,7 +398,10 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
                 String id = file.getId();
                 fileMap.put(id, file);
                 CoreFileServer fileServer = getCoreFileServer(file.getServerTypeId(), file.getServerAddress(), file.getBaseDir());
-                if (!isLocalFile(file)) {
+                //*// 本行以双斜杠开始根据是否本地文件打开上传线程，单斜杠不打开上传线程
+                if (!isLocalFile(file))
+                //*/
+                {
                     new Thread() {
                         @Override
                         public void run() {
@@ -463,9 +496,13 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         return server.coreCreateFile(request);
     }
     private File getSrcFile(String serverTypeId,String serverAddress,String baseDir,String key){
-        CoreFileServer server = getCoreFileServer(serverTypeId,serverAddress,baseDir);
-        assert (server != null);
-        return server.coreGetFile(key);
+        File file = null;
+        if (StringUtils.isNotEmpty(key)){
+            CoreFileServer server = getCoreFileServer(serverTypeId, serverAddress, baseDir);
+            assert (server != null);
+            file = server.coreGetFile(key);
+        }
+        return file;
     }
     private UpdateNodeDTO updateKey(@NotNull UpdateNodeDTO updateRequest, String key, boolean isReadOnly, boolean isMirror){
         if (isReadOnly && !isMirror) updateRequest.setReadOnlyKey(key);
@@ -493,27 +530,31 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         if (fileInfo == null){ //如果文件信息为空，则创建本地文件
             String key = createLocalKey(coreCreateRequest);
             updateRequest = updateKey(updateRequest,key,isReadOnly,false);
-            updateRequest.setServerTypeId(Short.parseShort(setting.getServerTypeId()));
+            updateRequest.setServerTypeId(setting.getServerTypeId());
             updateRequest.setServerAddress(setting.getServerAddress());
             updateRequest.setBaseDir(setting.getBaseDir());
         } else if (isLocalFile(fileInfo)) { //如果是本地文件，则从另一侧复制,或创建本地文件
             String otherKey = (!isReadOnly) ? fileInfo.getReadOnlyKey() : fileInfo.getWritableKey();
-            File srcFile = getSrcFile(fileInfo.getServerTypeId(),fileInfo.getServerAddress(),fileInfo.getBaseDir(),otherKey);
-            if (srcFile != null) coreCreateRequest.setSrcFile(srcFile);
+            if (StringUtils.isNotEmpty(otherKey)) {
+                File srcFile = getSrcFile(fileInfo.getServerTypeId(), fileInfo.getServerAddress(), fileInfo.getBaseDir(), otherKey);
+                if (srcFile != null) coreCreateRequest.setSrcFile(srcFile);
+            }
             String key = createLocalKey(coreCreateRequest);
             updateRequest = updateKey(updateRequest,key,isReadOnly,false);
             BeanUtils.copyCleanProperties(updateRequest,fileInfo);
-            updateRequest.setServerTypeId(Short.parseShort(setting.getServerTypeId()));
+            updateRequest.setServerTypeId(setting.getServerTypeId());
             updateRequest.setServerAddress(setting.getServerAddress());
             updateRequest.setBaseDir(setting.getBaseDir());
         } else { //如果文件不是本地文件，则创建本地镜像文件
             String remoteKey = (isReadOnly) ? fileInfo.getReadOnlyKey() : fileInfo.getWritableKey();
-            File srcFile = getSrcFile(fileInfo.getServerTypeId(),fileInfo.getServerAddress(),fileInfo.getBaseDir(),remoteKey);
-            if (srcFile != null) coreCreateRequest.setSrcFile(srcFile);
+            if (StringUtils.isNotEmpty(remoteKey)) {
+                File srcFile = getSrcFile(fileInfo.getServerTypeId(), fileInfo.getServerAddress(), fileInfo.getBaseDir(), remoteKey);
+                if (srcFile != null) coreCreateRequest.setSrcFile(srcFile);
+            }
             String key = createLocalKey(coreCreateRequest);
             updateRequest = updateKey(updateRequest,key,isReadOnly,true);
             BeanUtils.copyCleanProperties(updateRequest,fileInfo);
-            updateRequest.setMirrorTypeId(Short.parseShort(setting.getServerTypeId()));
+            updateRequest.setMirrorTypeId(setting.getServerTypeId());
             updateRequest.setMirrorAddress(setting.getServerAddress());
             updateRequest.setMirrorBaseDir(setting.getBaseDir());
         }
@@ -547,17 +588,15 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     @Override
     public String getNodePathForAccount(AccountDTO account, SimpleNodeDTO node, Current current) throws CustomException {
         String path = null;
-        if (node != null) {
+        if (isValid(node)) {
             String id = node.getId();
             if (StringUtils.isNotEmpty(id)) {
                 path = pathMap.get(id);
-                if (StringUtils.isEmpty(path)) {
-                    QueryNodeInfoTextDTO txtQuery = new QueryNodeInfoTextDTO();
-                    QueryNodeInfoDTO query = new QueryNodeInfoDTO();
-                    query.setTextQuery(txtQuery);
-                    FullNodeDTO nodeInfo = getNodeInfoForAccount(account, node, query, current);
-                    CheckService.check((nodeInfo != null) && (nodeInfo.getTextInfo() != null),ErrorCode.DataIsInvalid,"getNodePathForAccount");
-                    path = nodeInfo.getTextInfo().getPath();
+                //*/// 本行如果以双斜杠开始则使用缓存，单斜杠开始为不使用缓存
+                if (StringUtils.isEmpty(path))
+                //*/
+                {
+                    path = node.getPath();
                     if (StringUtils.isNotEmpty(path)) {
                         pathMap.put(id, path);
                     }
@@ -600,7 +639,10 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         CheckService.check(!node.getIsDirectory(),ErrorCode.InvalidParameter,"getFileInfoForAccount");
         String id = StringUtils.left(node.getId(),StringUtils.DEFAULT_ID_LENGTH);
         NodeFileDTO fileInfo = fileMap.get(id);
-        if (fileInfo == null) {
+        //*// 本行如果以双斜杠开始则使用缓存，单斜杠开始为不使用缓存
+        if (fileInfo == null)
+        //*/
+        {
             QueryNodeInfoDTO infoQuery = new QueryNodeInfoDTO();
             infoQuery.setFileQuery(getFileQuery());
             FullNodeDTO file = getNodeInfoForAccount(account, node, infoQuery, current);
@@ -638,7 +680,9 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     @Override
     public List<SimpleNodeDTO> listChildNodeForAccount(AccountDTO account, @NotNull SimpleNodeDTO parent, Current current) throws CustomException {
         if (isRootNode(parent)) return listRootNodeForAccount(account,current);
-        return getStorageService().listChild(parent);
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setPid(parent.getId());
+        return listNodeForAccount(account,query,current);
     }
 
     @Override
@@ -649,7 +693,9 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     @Override
     public List<SimpleNodeDTO> listChildrenNodeForAccount(AccountDTO account, SimpleNodeDTO parent, Current current) throws CustomException {
         if (isRootNode(parent)) return listAllNodeForAccount(account,current);
-        return getStorageService().listChildren(parent);
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setParentPath(parent.getPath());
+        return listNodeForAccount(account,query,current);
     }
 
     private boolean isRootNode(@NotNull SimpleNodeDTO parent){
@@ -664,7 +710,9 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     @Override
     public List<SimpleNodeDTO> listRootNodeForAccount(AccountDTO account, Current current) throws CustomException {
         CheckService.check(StringUtils.isNotEmpty(getAccountId(account)),ErrorCode.NoPermission,"listRootNodeForAccount");
-        return getStorageService().listRoot(getAccountId(account));
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setPid("-");
+        return listNodeForAccount(account,query,current);
     }
 
     @Override
@@ -681,10 +729,13 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     @Override
     public List<SimpleNodeDTO> listWebArchiveDirForAccount(AccountDTO account, String projectId, Current current) throws CustomException {
         QueryNodeDTO query = new QueryNodeDTO();
+        query.setAccountId(getAccountId(account));
         query.setProjectId(projectId);
-        query.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_OUTPUT_WEB.toString() + ","
-                + ConstService.STORAGE_NODE_TYPE_DIR_OUTPUT_WEB_ARCHIVE.toString());
+        query.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_OUTPUT_WEB_ARCHIVE.toString());
         List<SimpleNodeDTO> nodeList = getStorageService().listOldNode(BeanUtils.cleanProperties(query));
+        for (SimpleNodeDTO node : nodeList) {
+            setAttr(node,getAccountId(account));
+        }
         return nodeList;
     }
 
@@ -731,6 +782,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public CommitListResultDTO issueNodeListForAccount(AccountDTO account, @NotNull List<SimpleNodeDTO> srcList, CommitRequestDTO request, Current current) throws CustomException {
+        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_ISSUE.toString());
         return commitNodeListForAccount(account,srcList,request,current);
     }
 
@@ -754,7 +806,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         BeanUtils.copyCleanProperties(request,stringElement);
         stringElement.setSkyPid(request.getPid());
         stringElement.setActionId(actionTypeId);
-        stringElement.setActionName(ConstService.getActionName(Short.parseShort(actionTypeId)));
+        stringElement.setActionName(ConstService.getActionName(DigitUtils.parseShort(actionTypeId)));
     }
 
     @Override
@@ -765,7 +817,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public SimpleNodeDTO changeNodeOwnerForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, @NotNull UserDTO dstOwner, Current current) throws CustomException {
-        CheckService.check(!isReadOnly(src,getAccountId(account)),ErrorCode.NoPermission,"changeNodeOwnerForAccount");
+        CheckService.check(!isReadOnly(src,account),ErrorCode.NoPermission);
         UpdateNodeDTO updateRequest = new UpdateNodeDTO();
         updateRequest.setOwnerUserId(dstOwner.getId());
         return getStorageService().updateNode(src,null,updateRequest);
@@ -775,27 +827,66 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         return (account != null) ? account.getId() : null;
     }
 
-    private boolean isReadOnlyType(@NotNull String nodeType) {
-        return ConstService.isProjectType(nodeType)
-            || ConstService.isTaskType(nodeType)
-            || ConstService.isCommitType(nodeType)
-            || ConstService.isHistoryType(nodeType);
-    }
-    private boolean isReadOnly(@NotNull SimpleNodeDTO src,String accountId){
-        return isReadOnlyType(src.getTypeId())
-                || ((StringUtils.isNotEmpty(src.getOwnerUserId()))
-                    && (StringUtils.isNotSame(accountId,src.getOwnerUserId())));
+    private boolean isProject(short nodeType) {
+        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_PROJECT);
     }
 
-    private boolean isCanCreateChildType(@NotNull String nodeType) {
-        return !ConstService.isProjectType(nodeType)
-                && !ConstService.isCommitType(nodeType)
-                && !ConstService.isHistoryType(nodeType);
+    private boolean isIssue(short nodeType) {
+        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_ISSUE);
     }
 
-    private boolean canCreateChild(@NotNull SimpleNodeDTO src,String accountId){
-        return src.getIsDirectory()
-                && isCanCreateChildType(src.getTypeId());
+    private boolean isTask(short nodeType) {
+        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_ISSUE);
+    }
+
+    private boolean isCA(short nodeType) {
+        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_CA);
+    }
+
+    private boolean isCommit(short nodeType) {
+        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_COMMIT);
+    }
+
+    private boolean isWeb(short nodeType) {
+        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_WEB);
+    }
+
+    private boolean isHistory(short nodeType) {
+        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_HISTORY);
+    }
+
+    private boolean isReadOnlyType(short nodeType) {
+        return isProject(nodeType)
+            || isIssue(nodeType)
+            || isTask(nodeType)
+            || isCA(nodeType)
+            || isCommit(nodeType)
+            || isWeb(nodeType)
+            || isHistory(nodeType);
+    }
+
+    private boolean isReadOnly(@NotNull SimpleNodeDTO src,AccountDTO account){
+        return isReadOnly(DigitUtils.parseShort(src.getTypeId()),src.getOwnerUserId(),getAccountId(account));
+    }
+
+    private boolean isReadOnly(short nodeType,String ownerUserId, String accountId){
+        return isReadOnlyType(nodeType)
+                || (StringUtils.isNotEmpty(ownerUserId)
+                    && (StringUtils.isNotSame(ownerUserId,accountId)));
+    }
+
+    private boolean isCanCreateChildType(short nodeType) {
+        return !isProject(nodeType)
+                && !isCommit(nodeType)
+                && !isWeb(nodeType)
+                && !isHistory(nodeType);
+    }
+
+    private SimpleNodeDTO setAttr(@NotNull SimpleNodeDTO node, String accountId) {
+        short nodeType = DigitUtils.parseShort(node.getTypeId());
+        node.setIsReadOnly(isReadOnly(nodeType,node.getOwnerUserId(),accountId));
+        node.setCanCreateChild(isCanCreateChildType(nodeType));
+        return node;
     }
 
     @Override
@@ -879,8 +970,8 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     }
 
     @Override
-    public boolean deleteNodeForAccount(AccountDTO account, SimpleNodeDTO src, Current current) throws CustomException {
-        if ((src != null) && (StringUtils.isNotEmpty(src.getId()))) {
+    public boolean deleteNodeForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, Current current) throws CustomException {
+        if (isValid(src)) {
             DeleteAskDTO deleteAsk = new DeleteAskDTO();
             deleteAsk.setLastModifyUserId(getAccountId(account));
             getStorageService().deleteNode(src,deleteAsk);
@@ -949,11 +1040,23 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     public boolean setNodeLengthForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, long fileLength, Current current) throws CustomException {
         CheckService.check(!src.getIsDirectory(),ErrorCode.InvalidParameter,"setNodeLengthForAccount");
         NodeFileDTO file = getFileInfoForAccount(account,src,current);
-        if (file != null) {
+        if ((file != null) && (StringUtils.isNotEmpty(file.getWritableKey()))) {
+            if (StringUtils.isEmpty(file.getWritableKey())){
+            }
             setFileLength(account,file,fileLength,current);
             return true;
         } else {
-            return false;
+            CoreFileServer localServer = getCoreFileServer();
+            String key = localServer.coreCreateFile(src.getPath(),fileLength);
+
+            UpdateNodeDTO updateRequest = new UpdateNodeDTO();
+            updateRequest.setServerTypeId(setting.getServerTypeId());
+            updateRequest.setServerAddress(setting.getServerAddress());
+            updateRequest.setBaseDir(setting.getBaseDir());
+            updateRequest.setFileLength((new Long(fileLength)).toString());
+            updateRequest.setWritableKey(key);
+            getStorageService().updateNodeSimple(src,updateRequest);
+            return true;
         }
     }
 
@@ -1058,8 +1161,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     public List<SimpleNodeDTO> listNodeForAccount(AccountDTO account, @NotNull QueryNodeDTO query, Current current) throws CustomException {
         List<SimpleNodeDTO> list = getStorageService().listNode(query);
         for (SimpleNodeDTO node : list) {
-            node.setIsReadOnly(isReadOnly(node, getAccountId(account)));
-            node.setCanCreateChild(canCreateChild(node, getAccountId(account)));
+            setAttr(node,getAccountId(account));
         }
         return list;
     }
@@ -1123,6 +1225,10 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         return (file != null) && (StringUtils.isNotEmpty(file.getId())) && StringUtils.isNotEmpty(getFileKey(file,isReadOnly));
     }
 
+    private boolean isValid(SimpleNodeDTO node){
+        return (node != null) && (StringUtils.isNotEmpty(node.getId()));
+    }
+
     @Override
     public int writeNode(@NotNull SimpleNodeDTO src, @NotNull FileDataDTO data, Current current) throws CustomException {
         return writeNodeForAccount(getCurrentAccount(current),src,data,current);
@@ -1132,12 +1238,17 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
     public int writeNodeForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, @NotNull FileDataDTO data, Current current) throws CustomException {
         NodeFileDTO file = getFileInfoForAccount(account,src,current);
         String path = getNodePathForAccount(account,src,current);
-        return writeFile(account,file,data,path,current);
+        boolean rw = isReadOnly(src,account);
+        return writeRWFile(account,file,data,path,rw,current);
     }
 
     @Override
     public FileDataDTO readFile(AccountDTO account, NodeFileDTO file, long pos, int size, Current current) throws CustomException {
-        String key = getFileKey(file,true);
+        return readFile(account,file,pos,size,true,current);
+    }
+
+    public FileDataDTO readFile(AccountDTO account, NodeFileDTO file, long pos, int size, boolean isReadOnly, Current current) throws CustomException {
+        String key = getFileKey(file,isReadOnly);
         FileDataDTO data = null;
         if (StringUtils.isNotEmpty(key)) {
             CoreFileServer localServer = getCoreFileServer();
@@ -1153,10 +1264,27 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
                 src,pos,size,current);
     }
 
+    private boolean isFile(@NotNull SimpleNodeDTO src){
+        return !src.getIsDirectory();
+    }
     @Override
     public FileDataDTO readNodeForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, long pos, int size, Current current) throws CustomException {
+        CheckService.check(isFile(src),ErrorCode.DataIsInvalid);
         NodeFileDTO file = getFileInfoForAccount(account,src,current);
-        return readFile(account,file,pos,size,current);
+        if (file == null) {
+            return null;
+        }
+        boolean rw = isReadOnly(src,account);
+        String key = getFileKey(file,rw);
+        if (StringUtils.isEmpty(key)) {
+            if (rw) {
+                releaseNodeForAccount(account, src, 0, current);
+            } else {
+                reloadNodeForAccount(account, src, current);
+            }
+            file = getFileInfoForAccount(account,src,current);
+        }
+        return readFile(account,file,pos,size,rw,current);
     }
 
     @Override
@@ -1170,13 +1298,52 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         UpdateNodeDTO updateRequest = BeanUtils.createCleanFrom(request,UpdateNodeDTO.class);
         updateRequest.setPath(StringUtils.formatPath(request.getFullName()));
         updateRequest.setLastModifyUserId(getAccountId(account));
+        log.info("改变节点" + src.getId() + "名称为：" + request.getFullName());
         return getStorageService().updateNode(src,dstParent,updateRequest);
     }
 
 
+    private CommitListResultDTO updateCANodeList(AccountDTO account, List<CANodeDTO> srcList, Current current) throws CustomException {
+        UpdateNodeDTO updateRequest = new UpdateNodeDTO();
+        updateRequest.setLastModifyUserId(getAccountId(account));
+        List<SimpleNodeDTO> successList = new ArrayList<>();
+        List<CommitFailDTO> failList = new ArrayList<>();
+        for (CANodeDTO src : srcList){
+            try {
+                updateRequest.setIsPassCheck(src.getIsPassCheck() ? ConstService.MODE_TRUE : ConstService.MODE_FALSE);
+                updateRequest.setIsPassAudit(src.getIsPassAudit() ? ConstService.MODE_TRUE : ConstService.MODE_FALSE);
+                SimpleNodeDTO dst = getStorageService().updateNodeSimple(getNodeByCANode(src),updateRequest);
+                successList.add(dst);
+            } catch (CustomException e) {
+                CommitFailDTO failDTO = BeanUtils.createCleanFrom(src,CommitFailDTO.class);
+                failList.add(failDTO);
+            }
+        }
+        CommitListResultDTO result = new CommitListResultDTO();
+        result.setSuccessList(successList);
+        result.setFailList(failList);
+        return result;
+    }
+
     @Override
     public CommitListResultDTO updateNodeList(AccountDTO account, List<SimpleNodeDTO> srcList, CommitRequestDTO request, Current current) throws CustomException {
-        return null;
+        UpdateNodeDTO updateRequest = BeanUtils.createCleanFrom(request,UpdateNodeDTO.class);
+        updateRequest.setLastModifyUserId(getAccountId(account));
+        List<SimpleNodeDTO> successList = new ArrayList<>();
+        List<CommitFailDTO> failList = new ArrayList<>();
+        for (SimpleNodeDTO src : srcList){
+            try {
+                SimpleNodeDTO dst = getStorageService().updateNodeSimple(src,updateRequest);
+                successList.add(dst);
+            } catch (CustomException e) {
+                CommitFailDTO failDTO = BeanUtils.createCleanFrom(src,CommitFailDTO.class);
+                failList.add(failDTO);
+            }
+        }
+        CommitListResultDTO result = new CommitListResultDTO();
+        result.setSuccessList(successList);
+        result.setFailList(failList);
+        return result;
     }
 
     @Override
@@ -1187,21 +1354,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public CommitListResultDTO checkNodeListRequestForAccount(AccountDTO account, List<CANodeDTO> srcList, Current current) throws CustomException {
-        List<SimpleNodeDTO> successList = new ArrayList<>();
-        List<CommitFailDTO> failList = new ArrayList<>();
-        for (CANodeDTO src : srcList){
-            SimpleNodeDTO result = checkNodeRequestForAccount(account,src,current);
-            if ((result != null) && (!StringUtils.isEmpty(result.getId()))) {
-                successList.add(result);
-            } else {
-                CommitFailDTO failDTO = new CommitFailDTO();
-                failDTO.setId(src.getId());
-            }
-        }
-        CommitListResultDTO result = new CommitListResultDTO();
-        result.setSuccessList(successList);
-        result.setFailList(failList);
-        return result;
+        return updateCANodeList(account,srcList,current);
     }
 
     @Override
@@ -1212,10 +1365,9 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public SimpleNodeDTO checkNodeRequestForAccount(AccountDTO account, CANodeDTO src, Current current) throws CustomException {
-        CommitRequestDTO commitRequest = new CommitRequestDTO();
-        commitRequest.setIsPassCheck(true);
-        SimpleNodeDTO srcNode = BeanUtils.createFrom(src,SimpleNodeDTO.class);
-        return updateVersion(account,srcNode,srcNode,commitRequest,current);
+        UpdateNodeDTO updateAsk = new UpdateNodeDTO();
+        updateAsk.setIsPassCheck(src.getIsPassCheck() ? ConstService.MODE_TRUE : ConstService.MODE_FALSE);
+        return getStorageService().updateNodeSimple(getNodeByCANode(src),updateAsk);
     }
 
     @Override
@@ -1226,21 +1378,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public CommitListResultDTO auditNodeListRequestForAccount(AccountDTO account, List<CANodeDTO> srcList, Current current) throws CustomException {
-        List<SimpleNodeDTO> successList = new ArrayList<>();
-        List<CommitFailDTO> failList = new ArrayList<>();
-        for (CANodeDTO src : srcList){
-            SimpleNodeDTO result = auditNodeRequestForAccount(account,src,current);
-            if ((result != null) && (!StringUtils.isEmpty(result.getId()))) {
-                successList.add(result);
-            } else {
-                CommitFailDTO failDTO = new CommitFailDTO();
-                failDTO.setId(src.getId());
-            }
-        }
-        CommitListResultDTO result = new CommitListResultDTO();
-        result.setSuccessList(successList);
-        result.setFailList(failList);
-        return result;
+        return updateCANodeList(account,srcList,current);
     }
 
     @Override
@@ -1251,10 +1389,49 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
     @Override
     public SimpleNodeDTO auditNodeRequestForAccount(AccountDTO account, CANodeDTO src, Current current) throws CustomException {
-        CommitRequestDTO commitRequest = new CommitRequestDTO();
-        commitRequest.setIsPassAudit(true);
-        SimpleNodeDTO srcNode = BeanUtils.createFrom(src,SimpleNodeDTO.class);
-        return updateVersion(account,srcNode,srcNode,commitRequest,current);
+        UpdateNodeDTO updateAsk = new UpdateNodeDTO();
+        updateAsk.setIsPassAudit(src.getIsPassAudit() ? ConstService.MODE_TRUE : ConstService.MODE_FALSE);
+        return getStorageService().updateNodeSimple(getNodeByCANode(src),updateAsk);
+    }
+
+    private SimpleNodeDTO getNodeByCANode(CANodeDTO caNode) throws CustomException {
+        return BeanUtils.createFrom(caNode,SimpleNodeDTO.class);
+    }
+
+    private List<SimpleNodeDTO> getNodeByCANode(List<CANodeDTO> caNode) throws CustomException {
+        return BeanUtils.createListFrom(caNode,SimpleNodeDTO.class);
+    }
+
+    @Override
+    public CommitListResultDTO requestIssueListForAccount(AccountDTO account, List<CANodeDTO> srcList, SimpleNodeDTO parent, Current current) throws CustomException {
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_ISSUE.toString());
+        request.setPid(parent.getId());
+
+        return commitNodeListForAccount(account,getNodeByCANode(srcList),request,current);
+    }
+
+    @Override
+    public SimpleNodeDTO requestIssueForAccount(AccountDTO account, CANodeDTO src, SimpleNodeDTO parent, Current current) throws CustomException {
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_ISSUE.toString());
+        request.setPid(parent.getId());
+
+        return commitNodeForAccount(account,getNodeByCANode(src),request,current);
+    }
+
+    @Override
+    public CommitListResultDTO requestCommitListForAccount(AccountDTO account, @NotNull List<CANodeDTO> srcList, Current current) throws CustomException {
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_COMMIT.toString());
+        return commitNodeListForAccount(account,BeanUtils.createListFrom(srcList,SimpleNodeDTO.class),request,current);
+    }
+
+    @Override
+    public SimpleNodeDTO requestCommitForAccount(AccountDTO account, CANodeDTO src, Current current) throws CustomException {
+        CommitRequestDTO request = new CommitRequestDTO();
+        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_COMMIT.toString());
+        return commitNodeForAccount(account,BeanUtils.createCleanFrom(src,SimpleNodeDTO.class),request,current);
     }
 
     @Override
@@ -1267,16 +1444,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         CommitRequestDTO request = new CommitRequestDTO();
         request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_ASK_CA.toString());
         request.setIsPassDesign(true);
-        CommitListResultDTO result = null;
-        if (ObjectUtils.isNotEmpty(srcList)) {
-            List<SimpleNodeDTO> srcNodeList = new ArrayList<>();
-            for (CANodeDTO src : srcList) {
-                SimpleNodeDTO srcNode = BeanUtils.createCleanFrom(src,SimpleNodeDTO.class);
-                srcNodeList.add(srcNode);
-            }
-            result = commitNodeListForAccount(account,srcNodeList,request,current);
-        }
-        return result;
+        return commitNodeListForAccount(account,BeanUtils.createListFrom(srcList,SimpleNodeDTO.class),request,current);
     }
 
     @Override
@@ -1289,8 +1457,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         CommitRequestDTO request = new CommitRequestDTO();
         request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_ASK_CA.toString());
         request.setIsPassDesign(true);
-        SimpleNodeDTO srcNode = BeanUtils.createCleanFrom(src,SimpleNodeDTO.class);
-        return commitNodeForAccount(account,srcNode,request,current);
+        return commitNodeForAccount(account,BeanUtils.createCleanFrom(src,SimpleNodeDTO.class),request,current);
     }
 
     @Override
@@ -1333,7 +1500,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         }
 
         //获取目标文件的类型
-        Short nodeTypeId = ConstService.getActionNodeTypeId(Short.parseShort(actionTypeId));
+        Short nodeTypeId = ConstService.getActionNodeTypeId(DigitUtils.parseShort(actionTypeId));
         if (ConstService.STORAGE_NODE_TYPE_UNKNOWN.equals(nodeTypeId)) {
             nodeTypeId = ConstService.STORAGE_NODE_TYPE_FILE_COMMIT_HIS;
         }
@@ -1344,7 +1511,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         updateStringElement(stringElement, src, txt, request, actionTypeId);
         String path = request.getPath();
         if (StringUtils.isEmpty(path)) { //如果没有指定路径，使用默认配置
-            path = ConstService.getActionNodePath(Short.parseShort(actionTypeId), stringElement);
+            path = ConstService.getActionNodePath(DigitUtils.parseShort(actionTypeId), stringElement);
 
             //如果未定义，使用当前路径
             if (StringUtils.isEmpty(path)) {
@@ -1358,16 +1525,16 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         }
         //如果与源文件文件名相同，添加动作名称
         if (StringUtils.isSame(path,txt.getPath())){
-            String actionName = ConstService.getActionName(Short.parseShort(actionTypeId));
+            String actionName = ConstService.getActionName(DigitUtils.parseShort(actionTypeId));
             String fileName = StringUtils.getFileNameWithoutExt(path) + StringUtils.SPLIT_NAME_PART +
                     actionName + StringUtils.getFileExt(path);
             path = StringUtils.formatPath(StringUtils.getDirName(path) + StringUtils.SPLIT_PATH + fileName);
         }
 
         //根据提交动作取出要上传的文件服务器类型和地址
-        String serverTypeId = ConstService.getActionFileServerTypeId(Short.parseShort(actionTypeId)).toString();
-        String serverAddress = ConstService.getActionFileServerAddress(Short.parseShort(actionTypeId),stringElement);
-        String baseDir = ConstService.getActionFileServerBaseDir(Short.parseShort(actionTypeId),stringElement);;
+        String serverTypeId = ConstService.getActionFileServerTypeId(DigitUtils.parseShort(actionTypeId)).toString();
+        String serverAddress = ConstService.getActionFileServerAddress(DigitUtils.parseShort(actionTypeId),stringElement);
+        String baseDir = ConstService.getActionFileServerBaseDir(DigitUtils.parseShort(actionTypeId),stringElement);;
 
         //建立或更新版本节点
         request.setActionTypeId(actionTypeId);
@@ -1381,9 +1548,6 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         //更新源节点状态
         if (request.getIsPassDesign() || request.getIsPassCheck() || request.getIsPassAudit()) {
             UpdateNodeDTO updateRequest = new UpdateNodeDTO();
-            updateRequest.setIsPassDesign(request.getIsPassDesign());
-            updateRequest.setIsPassCheck(request.getIsPassCheck());
-            updateRequest.setIsPassAudit(request.getIsPassAudit());
             getStorageService().updateNodeSimple(src,updateRequest);
         }
 
@@ -1397,7 +1561,7 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
 
         //发送通知消息
-        String typeIdString = ConstService.getActionNoticeTypeIdString(Short.parseShort(actionTypeId));
+        String typeIdString = ConstService.getActionNoticeTypeIdString(DigitUtils.parseShort(actionTypeId));
         if (StringUtils.isNotEmpty(typeIdString)){
             NoticeRequestDTO noticeRequest = new NoticeRequestDTO();
             noticeRequest.setTypeIdString(typeIdString);
@@ -1483,41 +1647,28 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         String dstKey = fileServer.coreCreateFile(dstPath,localFile);
 
         //获取目标文件的类型
-        Short nodeTypeId = ConstService.getActionNodeTypeId(Short.parseShort(request.getActionTypeId()));
-        if (ConstService.STORAGE_NODE_TYPE_UNKNOWN.equals(nodeTypeId)) {
-            nodeTypeId = ConstService.STORAGE_NODE_TYPE_FILE_COMMIT_HIS;
-        }
+        Short nodeTypeId = ConstService.getActionNodeTypeId(DigitUtils.parseShort(request.getActionTypeId()));
 
         UpdateNodeDTO createRequest = BeanUtils.createCleanFrom(request,UpdateNodeDTO.class);
-        createRequest.setServerTypeId(Short.parseShort(setting.getServerTypeId()));
+        BeanUtils.copyCleanProperties(src,createRequest);
+        createRequest.setServerTypeId(setting.getServerTypeId());
         createRequest.setServerAddress(setting.getServerAddress());
         createRequest.setBaseDir(setting.getBaseDir());
         createRequest.setReadOnlyKey(dstKey);
         createRequest.setLastModifyUserId(getAccountId(account));
         createRequest.setPath(path);
         createRequest.setMainFileId(StringUtils.left(src.getId(),StringUtils.DEFAULT_ID_LENGTH));
-        createRequest.setTaskId(src.getTaskId());
-        createRequest.setProjectId(src.getProjectId());
         createRequest.setTypeId(nodeTypeId.toString());
-        createRequest.setFileLength(src.getFileLength());
-        createRequest.setFileMd5(src.getFileMd5());
         createRequest.setOwnerUserId(getAccountId(account));
         return getStorageService().createNode(parent,createRequest);
     }
 
+    private String getBackupNodeTypeId(String actionTypeId) {
+        return ConstService.getExtra(ConstService.CLASSIC_TYPE_ACTION,DigitUtils.parseShort(actionTypeId),8);
+    }
 
-    private CoreCreateFileRequest updateCoreCreateFileRequest(@NotNull CoreCreateFileRequest request,FileNodeDTO src,String path,File srcFile){
-        if (src != null){
-            BeanUtils.copyProperties(src.getBasic(),request);
-            BeanUtils.copyProperties(src,request);
-        }
-        if (StringUtils.isNotEmpty(path)){
-            request.setPath(path);
-        }
-        if (null != srcFile){
-            request.setSrcFile(srcFile);
-        }
-        return request;
+    private String getNodeTypeName(String nodeTypeId) {
+        return ConstService.getTitle(ConstService.CLASSIC_TYPE_STORAGE_NODE,DigitUtils.parseShort(nodeTypeId));
     }
 
     @Override
@@ -1526,18 +1677,27 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
 
         //备份原有节点
         String dstPath = getNodePathForAccount(account,dst,current);
+        String backupDirTypeId = getBackupNodeTypeId(request.getActionTypeId());
+        String backupDirName = getNodeTypeName(backupDirTypeId);
 
         MoveNodeRequestDTO moveRequest = new MoveNodeRequestDTO();
-        String backupPath = DEFAULT_BACKUP_DIR;
-        if (StringUtils.isNotEmpty(backupPath)) {
-            backupPath += StringUtils.SPLIT_PATH;
+        String backupDir = StringUtils.getDirName(dst.getPath());
+        backupDir += StringUtils.SPLIT_PATH + backupDirName;
+        SimpleNodeDTO parent = getNodeByPathForAccount(account,backupDir,current);
+        if ((parent == null) && (StringUtils.isNotEmpty(StringUtils.getDirName(dst.getPath())))){
+            parent = getNodeByPathForAccount(account,StringUtils.getDirName(dst.getPath()),current);
+            if (parent != null) {
+                UpdateNodeDTO createBackupRequest = new UpdateNodeDTO();
+                createBackupRequest.setPath(backupDirName);
+                createBackupRequest.setTypeId(backupDirTypeId);
+                parent = getStorageService().createNode(parent, createBackupRequest);
+            }
         }
-        backupPath += StringUtils.getFileNameWithoutExt(dst.getName());
-        backupPath += StringUtils.SPLIT_NAME_PART + StringUtils.getTimeStamp();
-        backupPath += StringUtils.getFileExt(dst.getName());
-        moveRequest.setFullName(backupPath);
-        SimpleNodeDTO parent = getNodeByIdForAccount(account,dst.getPid(),current);
-        moveNodeForAccount(account,dst,parent,moveRequest,current);
+        String backupFileName = StringUtils.getFileNameWithoutExt(dst.getName());
+        backupFileName += StringUtils.SPLIT_NAME_PART + StringUtils.getTimeStamp();
+        backupFileName += StringUtils.getFileExt(dst.getName());
+        moveRequest.setFullName(backupFileName);
+        moveNodeForAccount(account, dst, parent, moveRequest, current);
 
         //发布源节点
         return createVersion(account,src,dstPath,request,current);
@@ -1578,37 +1738,31 @@ public class FileServiceImpl extends BaseLocalService<FileServicePrx> implements
         createRequest.setOwnerUserId(accountId);
         createRequest.setPath(request.getFullName());
         if (request.getIsDirectory()) {
-            createRequest.setServerTypeId((short)0);
-            createRequest.setServerAddress(null);
-            createRequest.setBaseDir(null);
-            createRequest.setFileLength(0);
-            if ((parent != null) && (StringUtils.isNotEmpty(parent.getId()))) {
+            if (!isValid(parent)) {
                 createRequest.setTypeId(ConstService.getPathType(parent.getTypeId()));
-//                createRequest.setPid(parent.getId());
                 createRequest.setTaskId(parent.getTaskId());
             } else {
                 createRequest.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN.toString());
-//                createRequest.setPid(null);
                 createRequest.setTaskId(null);
             }
         } else {
-            createRequest.setServerTypeId(Short.parseShort(setting.getServerTypeId()));
+            createRequest.setServerTypeId(setting.getServerTypeId());
             createRequest.setServerAddress(setting.getServerAddress());
             createRequest.setBaseDir(setting.getBaseDir());
             if (request.getFileLength() > 0) {
                 String path = getNodePathForAccount(account,parent,current);
                 path = StringUtils.formatPath(path + StringUtils.SPLIT_PATH + createRequest.getPath());
-                String key = getCoreFileServer().coreCreateFile(path,createRequest.getFileLength());
+                long fileLength = DigitUtils.parseLong(createRequest.getFileLength());
+                String key = getCoreFileServer().coreCreateFile(path,fileLength);
                 createRequest.setWritableKey(key);
-                createRequest.setReadOnlyFileLength(request.getFileLength());
+            } else {
+                createRequest.setFileLength(null);
             }
-            if ((parent != null) && (StringUtils.isNotEmpty(parent.getId()))) {
+            if (isValid(parent)) {
                 createRequest.setTypeId(ConstService.getFileType(parent.getTypeId()));
-//                createRequest.setPid(parent.getId());
                 createRequest.setTaskId(parent.getTaskId());
             } else {
                 createRequest.setTypeId(ConstService.STORAGE_NODE_TYPE_UNKNOWN.toString());
-//                createRequest.setPid(null);
                 createRequest.setTaskId(null);
             }
         }

@@ -22,6 +22,16 @@ package com.maoding.Storage.zeroc;
 
 public interface StorageService extends com.zeroc.Ice.Object
 {
+    java.util.List<FullNodeDTO> listFullNode(QueryFullNodeDTO query, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    java.util.List<HistoryDTO> listHistory(QueryHistoryDTO query, com.zeroc.Ice.Current current)
+        throws com.maoding.Common.zeroc.CustomException;
+
+    /**
+     * @param current The Current object for the invocation.
+     **/
+    @Deprecated
     java.util.List<CANodeDTO> listCANode(QueryCANodeDTO query, com.zeroc.Ice.Current current)
         throws com.maoding.Common.zeroc.CustomException;
 
@@ -132,6 +142,37 @@ public interface StorageService extends com.zeroc.Ice.Object
         return "::zeroc::StorageService";
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listFullNode(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        QueryFullNodeDTO iceP_query;
+        iceP_query = QueryFullNodeDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<FullNodeDTO> ret = obj.listFullNode(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        FullNodeListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listHistory(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+        throws com.zeroc.Ice.UserException
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        QueryHistoryDTO iceP_query;
+        iceP_query = QueryHistoryDTO.ice_read(istr);
+        inS.endReadParams();
+        java.util.List<HistoryDTO> ret = obj.listHistory(iceP_query, current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        HistoryListHelper.write(ostr, ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    @Deprecated
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_listCANode(StorageService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
     {
@@ -608,6 +649,8 @@ public interface StorageService extends com.zeroc.Ice.Object
         "listChild",
         "listChildren",
         "listEmbedElement",
+        "listFullNode",
+        "listHistory",
         "listNode",
         "listNodeFile",
         "listOldNode",
@@ -620,6 +663,7 @@ public interface StorageService extends com.zeroc.Ice.Object
         "updateNodeSimple"
     };
 
+    @SuppressWarnings("deprecation")
     @Override
     default java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceDispatch(com.zeroc.IceInternal.Incoming in, com.zeroc.Ice.Current current)
         throws com.zeroc.Ice.UserException
@@ -726,41 +770,49 @@ public interface StorageService extends com.zeroc.Ice.Object
             }
             case 23:
             {
-                return _iceD_listNode(this, in, current);
+                return _iceD_listFullNode(this, in, current);
             }
             case 24:
             {
-                return _iceD_listNodeFile(this, in, current);
+                return _iceD_listHistory(this, in, current);
             }
             case 25:
             {
-                return _iceD_listOldNode(this, in, current);
+                return _iceD_listNode(this, in, current);
             }
             case 26:
             {
-                return _iceD_listRoot(this, in, current);
+                return _iceD_listNodeFile(this, in, current);
             }
             case 27:
             {
-                return _iceD_summaryNodeLength(this, in, current);
+                return _iceD_listOldNode(this, in, current);
             }
             case 28:
             {
-                return _iceD_updateAnnotate(this, in, current);
+                return _iceD_listRoot(this, in, current);
             }
             case 29:
             {
-                return _iceD_updateEmbedElement(this, in, current);
+                return _iceD_summaryNodeLength(this, in, current);
             }
             case 30:
             {
-                return _iceD_updateNode(this, in, current);
+                return _iceD_updateAnnotate(this, in, current);
             }
             case 31:
             {
-                return _iceD_updateNodeFile(this, in, current);
+                return _iceD_updateEmbedElement(this, in, current);
             }
             case 32:
+            {
+                return _iceD_updateNode(this, in, current);
+            }
+            case 33:
+            {
+                return _iceD_updateNodeFile(this, in, current);
+            }
+            case 34:
             {
                 return _iceD_updateNodeSimple(this, in, current);
             }

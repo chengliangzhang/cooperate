@@ -1,6 +1,6 @@
 package com.maoding.Notice.Config;
 
-import com.maoding.Base.BaseRemoteService;
+import com.maoding.Base.CoreRemoteService;
 import com.zeroc.IceStorm.TopicManagerPrx;
 import com.zeroc.IceStorm._TopicManagerPrxI;
 
@@ -10,7 +10,7 @@ import com.zeroc.IceStorm._TopicManagerPrxI;
  * 日    期 : 2018/1/16 22:40
  * 描    述 :
  */
-public class RemoteTopicManagerPrx extends BaseRemoteService<TopicManagerPrx> implements TopicManagerPrx{
+public class RemoteTopicManagerPrx extends CoreRemoteService<TopicManagerPrx> implements TopicManagerPrx{
 
     private static TopicManagerPrx topicManagerPrx = null;
 

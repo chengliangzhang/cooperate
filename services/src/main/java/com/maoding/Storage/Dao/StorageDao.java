@@ -17,7 +17,10 @@ import java.util.Map;
  */
 @Repository
 public interface StorageDao {
+//    @Deprecated
     List<CANodeDTO> listCANode(QueryCANodeDTO query);
+
+//    List<FileNodeDTO> listFile(QueryFileNodeDTO query);
     List<SimpleNodeDTO> listWebArchiveDir(QueryNodeDTO query);
 
     List<SimpleNodeDTO> listNode(QueryNodeDTO query);

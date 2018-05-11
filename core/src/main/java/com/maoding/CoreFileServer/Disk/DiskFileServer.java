@@ -4,6 +4,7 @@ import com.maoding.CoreFileServer.CoreCreateFileRequest;
 import com.maoding.CoreFileServer.CoreFileDataDTO;
 import com.maoding.CoreFileServer.CoreFileServer;
 import com.maoding.CoreUtils.FileUtils;
+import com.maoding.CoreUtils.ObjectUtils;
 import com.maoding.CoreUtils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +12,11 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -193,17 +195,8 @@ public class DiskFileServer implements CoreFileServer {
     @Override
     public void coreSetFileLength(String key, long fileLength) {
         String path = getPath(key);
-        RandomAccessFile file = null;
-        try {
-            file = new RandomAccessFile(path,"rw");
-            file.setLength(fileLength);
-        } catch (FileNotFoundException e) {
-            log.error("未找到文件" + path,e);
-        } catch (IOException e) {
-            log.error("设置文件" + path + "长度时出错",e);
-        } finally {
-            FileUtils.close(file);
-        }
+        File file = new File(path);
+        FileUtils.setFileLength(file,fileLength);
     }
 
     /** 改名或移动文件 */
@@ -354,8 +347,10 @@ public class DiskFileServer implements CoreFileServer {
             FileUtils.close(rf);
         }
 
-        log.info("\t----> coreWriteFile写入" + StringUtils.calBytes(len) + "到" + path + ":用时" + (System.currentTimeMillis() - t)
-                + "ms，速度" + StringUtils.calSpeed(len,t));
+        log.info("\t----> coreWriteFile写入" + StringUtils.calBytes(len) + "到" + path + "："
+                + "pos=" + data.getPos() + ",size=" + data.getSize() + ","
+                + "用时" + (System.currentTimeMillis() - t) + "ms,"
+                + "速度" + StringUtils.calSpeed(len,t));
         return len;
     }
 
@@ -427,4 +422,22 @@ public class DiskFileServer implements CoreFileServer {
         }
     }
 
+    /**
+     * 获取文件服务器上的文件标识
+     *
+     * @param key 所属的父目录
+     */
+    @Override
+    public List<String> coreListKey(String key) {
+        String path = (StringUtils.isRootPath(key)) ? coreGetBaseDir() : getPath(key);
+        File f = new File(path);
+        List<String> list = null;
+        if (f.exists() && f.isDirectory()) {
+            String[] files = f.list();
+            if (ObjectUtils.isNotEmpty(files)) {
+                list = new ArrayList<>(Arrays.asList(files));
+            }
+        }
+        return list;
+    }
 }

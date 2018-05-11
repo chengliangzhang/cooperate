@@ -1,6 +1,6 @@
 package com.maoding.User.Entity;
 
-import com.maoding.Base.BaseEntity;
+import com.maoding.Base.CoreEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * 描    述 :
  */
 @Table(name = "md_list_role")
-public class RoleEntity extends BaseEntity {
+public class RoleEntity extends CoreEntity {
     @Column /** 组织编号 */
     private String orgId;
     @Column /** 项目任务编号 */

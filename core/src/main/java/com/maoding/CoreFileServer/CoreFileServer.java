@@ -1,5 +1,7 @@
 package com.maoding.CoreFileServer;
 
+import com.maoding.CoreUtils.StringUtils;
+
 import java.io.File;
 import java.util.List;
 
@@ -81,10 +83,10 @@ public interface CoreFileServer {
     }
 
     /** 清理本地镜像文件 */
-    default void clearLocalMirrorFile(File mirrorFile){}
-    default void clearLocalMirrorFile(){}
+    default void coreClearMirrorFile(File mirrorFile){}
+    default void coreClearMirrorFile(){}
 
     /** 获取文件服务器上的文件标识 */
-    default List<String> listKey(String key){return null;}
-    default List<String> listKey(){return listKey("-");}
+    default List<String> coreListKey(String key){return null;}
+    default List<String> coreListKey(){return coreListKey(StringUtils.SPLIT_PATH);}
 }

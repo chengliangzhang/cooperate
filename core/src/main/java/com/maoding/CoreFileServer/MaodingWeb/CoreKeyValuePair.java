@@ -1,4 +1,4 @@
-package com.maoding.Bean;
+package com.maoding.CoreFileServer.MaodingWeb;
 
 import java.io.Serializable;
 

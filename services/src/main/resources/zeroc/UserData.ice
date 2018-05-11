@@ -57,10 +57,6 @@ module zeroc {
     struct RoleDTO {
         string id; //唯一编号
         string name; //职责角色名
-        string companyId; //职责所属组织id
-        string companyName; //职责所属组织名称
-        string userId; //用户id
-        string userName; //用户名称
     };
     ["java:type:java.util.ArrayList<RoleDTO>"] sequence<RoleDTO> RoleList;
 
@@ -119,5 +115,25 @@ module zeroc {
         long startTimeStamp; //起始时间
         long endTimeStamp; //终止时间
         string accountId; //查询者用户id
+    };
+
+    ["java:getset","clr:property"]
+    struct QueryRoleDTO { //角色查询条件
+        string attrStr; //角色类型布尔属性
+        string typeId; //角色类型编码
+        string notTypeId; //排除角色类型编码
+        string userId; //要查询的用户编码
+        string notUserId; //排除查询的用户编码
+        string projectId; //要查询的生产任务编码
+        string taskId; //要查询的生产任务编码
+        string companyId; //要查询的公司编码
+
+        //通用查询条件
+        string id; //记录id
+        string lastModifyUserId; //最后更改者用户编号
+        string lastModifyRoleId; //最后更改者职责编号
+        string startTimeStamp; //起始时间，字符化的长整数
+        string endTimeStamp; //终止时间，字符化的长整数
+        string accountId; //查询者用户编号
     };
 };

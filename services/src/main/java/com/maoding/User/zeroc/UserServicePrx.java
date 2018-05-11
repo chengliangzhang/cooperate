@@ -85,6 +85,39 @@ public interface UserServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default java.util.List<RoleDTO> listRole(QueryRoleDTO query)
+    {
+        return listRole(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default java.util.List<RoleDTO> listRole(QueryRoleDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listRoleAsync(query, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<RoleDTO>> listRoleAsync(QueryRoleDTO query)
+    {
+        return _iceI_listRoleAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.util.List<RoleDTO>> listRoleAsync(QueryRoleDTO query, java.util.Map<String, String> context)
+    {
+        return _iceI_listRoleAsync(query, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<RoleDTO>> _iceI_listRoleAsync(QueryRoleDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<RoleDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listRole", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     QueryRoleDTO.ice_write(ostr, iceP_query);
+                 }, istr -> {
+                     java.util.List<RoleDTO> ret;
+                     ret = RoleListHelper.read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default boolean login(LoginDTO loginInfo)
     {
         return login(loginInfo, com.zeroc.Ice.ObjectPrx.noExplicitContext);

@@ -1,6 +1,6 @@
 package com.maoding.User.Dao;
 
-import com.maoding.Base.BaseDao;
+import com.maoding.Base.CoreDao;
 import com.maoding.User.Entity.RoleEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
  * 描    述 :
  */
 @Repository
-public interface RoleListDao extends BaseDao<RoleEntity> {
+public interface RoleListDao extends CoreDao<RoleEntity> {
     void setWebRoleStatus(@Param("webRoleId") String webRoleId,@Param("statusId") String statusId);
 }

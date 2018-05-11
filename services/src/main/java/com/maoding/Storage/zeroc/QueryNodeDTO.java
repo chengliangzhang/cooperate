@@ -155,6 +155,18 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.ownerUserId = ownerUserId;
     }
 
+    public String notOwnerUserId;
+
+    public String getNotOwnerUserId()
+    {
+        return notOwnerUserId;
+    }
+
+    public void setNotOwnerUserId(String notOwnerUserId)
+    {
+        this.notOwnerUserId = notOwnerUserId;
+    }
+
     public String lastModifyRoleId;
 
     public String getLastModifyRoleId()
@@ -288,6 +300,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.taskId = "";
         this.companyId = "";
         this.ownerUserId = "";
+        this.notOwnerUserId = "";
         this.lastModifyRoleId = "";
         this.accountId = "";
         this.parentPath = "";
@@ -300,7 +313,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.fuzzyPath = "";
     }
 
-    public QueryNodeDTO(String id, String pid, String name, String path, String typeId, String projectId, String rangeId, String issueId, String taskId, String companyId, String ownerUserId, String lastModifyRoleId, String accountId, String parentPath, String notTypeId, String passDesign, String passCheck, String passAudit, String directoryMode, String fuzzyId, String fuzzyPath)
+    public QueryNodeDTO(String id, String pid, String name, String path, String typeId, String projectId, String rangeId, String issueId, String taskId, String companyId, String ownerUserId, String notOwnerUserId, String lastModifyRoleId, String accountId, String parentPath, String notTypeId, String passDesign, String passCheck, String passAudit, String directoryMode, String fuzzyId, String fuzzyPath)
     {
         this.id = id;
         this.pid = pid;
@@ -313,6 +326,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.taskId = taskId;
         this.companyId = companyId;
         this.ownerUserId = ownerUserId;
+        this.notOwnerUserId = notOwnerUserId;
         this.lastModifyRoleId = lastModifyRoleId;
         this.accountId = accountId;
         this.parentPath = parentPath;
@@ -416,6 +430,13 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.notOwnerUserId != r.notOwnerUserId)
+            {
+                if(this.notOwnerUserId == null || r.notOwnerUserId == null || !this.notOwnerUserId.equals(r.notOwnerUserId))
+                {
+                    return false;
+                }
+            }
             if(this.lastModifyRoleId != r.lastModifyRoleId)
             {
                 if(this.lastModifyRoleId == null || r.lastModifyRoleId == null || !this.lastModifyRoleId.equals(r.lastModifyRoleId))
@@ -508,6 +529,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notOwnerUserId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyRoleId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, accountId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, parentPath);
@@ -548,6 +570,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.taskId);
         ostr.writeString(this.companyId);
         ostr.writeString(this.ownerUserId);
+        ostr.writeString(this.notOwnerUserId);
         ostr.writeString(this.lastModifyRoleId);
         ostr.writeString(this.accountId);
         ostr.writeString(this.parentPath);
@@ -573,6 +596,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.taskId = istr.readString();
         this.companyId = istr.readString();
         this.ownerUserId = istr.readString();
+        this.notOwnerUserId = istr.readString();
         this.lastModifyRoleId = istr.readString();
         this.accountId = istr.readString();
         this.parentPath = istr.readString();
@@ -637,5 +661,5 @@ public class QueryNodeDTO implements java.lang.Cloneable,
 
     private static final QueryNodeDTO _nullMarshalValue = new QueryNodeDTO();
 
-    public static final long serialVersionUID = 1550845410L;
+    public static final long serialVersionUID = -1979324051L;
 }

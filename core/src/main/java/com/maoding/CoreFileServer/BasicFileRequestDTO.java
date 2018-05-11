@@ -10,6 +10,7 @@ import java.util.Map;
  * 日    期 : 2017/10/25 9:55
  * 描    述 :
  */
+@Deprecated
 public class BasicFileRequestDTO implements Serializable {
     /** 申请文件服务器操作时的访问地址 */
     private String url;

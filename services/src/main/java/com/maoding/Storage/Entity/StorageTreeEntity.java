@@ -1,6 +1,6 @@
 package com.maoding.Storage.Entity;
 
-import com.maoding.Base.BaseTreeEntity;
+import com.maoding.Base.CoreTreeEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * 描    述 :
  */
 @Table(name = "md_tree_storage")
-public class StorageTreeEntity extends BaseTreeEntity {
+public class StorageTreeEntity extends CoreTreeEntity {
     @Column /** 相关联的任务id */
     private String taskId;
     @Column /** 相关联的项目id */

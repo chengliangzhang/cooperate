@@ -48,10 +48,11 @@ public class FileUtils {
     }
 
     public static void setFileLength(@NotNull File file, long fileLength){
-        if (file.exists()) {
+        if (file.exists() && file.isFile()) {
             RandomAccessFile rf = null;
             try {
                 rf = new RandomAccessFile(file, "rw");
+                log.info("打开文件设置长度为" + fileLength + "：" + file.getPath());
                 rf.setLength(fileLength);
             } catch (FileNotFoundException e) {
                 log.error("未找到文件" + file.getPath(), e);
@@ -59,6 +60,7 @@ public class FileUtils {
                 log.error("设置文件" + file.getPath() + "长度时出错", e);
             } finally {
                 FileUtils.close(rf);
+                log.info("关闭设置长度的文件：" + file.getPath());
             }
         } else {
             log.warn("文件" + file.getPath() + "不存在");
@@ -66,13 +68,16 @@ public class FileUtils {
     }
 
     public static void copyFile(@NotNull File srcFile, @NotNull File dstFile){
-        if (srcFile.exists()) {
+        if (srcFile.exists() && srcFile.isFile()) {
             //复制文件
-            FileChannel in = null;
-            FileChannel out = null;
+            FileInputStream inStream = null;
+            FileOutputStream outStream = null;
             try {
-                in = (new FileInputStream(srcFile)).getChannel();
-                out = (new FileOutputStream(dstFile)).getChannel();
+                inStream = new FileInputStream(srcFile);
+                outStream = new FileOutputStream(dstFile);
+                log.info("打开文件进行复制：源文件：" + srcFile.getPath() + ",目标文件：" + dstFile.getPath());
+                FileChannel in = inStream.getChannel();
+                FileChannel out = outStream.getChannel();
                 while (in.position() < in.size()) {
                     int length = DEFAULT_BUFFER_SIZE;
                     if ((in.size() - in.position()) < length) {
@@ -86,8 +91,9 @@ public class FileUtils {
             } catch (IOException e) {
                 log.error("从" + srcFile.getPath() + "复制到" + dstFile.getPath() + "时出错", e);
             } finally {
-                close(out);
-                close(in);
+                close(outStream);
+                close(inStream);
+                log.info("关闭复制的文件：" + srcFile.getPath() + "," + dstFile.getPath());
             }
         } else {
             log.warn("文件" + srcFile.getPath() + "不存在");
@@ -97,12 +103,17 @@ public class FileUtils {
     public static String calcChecksum(@NotNull File srcFile) {
         assert (srcFile.exists() && srcFile.isFile());
         String md5 = null;
+        FileInputStream inStream = null;
         try {
-            md5 = DigestUtils.md5Hex(new FileInputStream(srcFile)).toUpperCase();
+            inStream = new FileInputStream(srcFile);
+            log.info("打开文件计算Md5：" + srcFile.getPath());
+            md5 = DigestUtils.md5Hex(inStream).toUpperCase();
         } catch (IOException e) {
             log.error("读取文件" + srcFile.getPath() + "时出错",e);
+        } finally {
+            close(inStream);
+            log.info("关闭计算Md5的文件：" + srcFile.getPath());
         }
         return md5;
     }
-
 }

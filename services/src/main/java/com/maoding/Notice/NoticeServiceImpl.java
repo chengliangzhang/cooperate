@@ -1,7 +1,7 @@
 package com.maoding.Notice;
 
-import com.maoding.Base.BaseLocalService;
-import com.maoding.Base.IceConfig;
+import com.maoding.Base.CoreLocalService;
+import com.maoding.Common.Config.IceConfig;
 import com.maoding.Common.ConstService;
 import com.maoding.Common.zeroc.IdNameDTO;
 import com.maoding.Common.zeroc.StringElementDTO;
@@ -37,7 +37,7 @@ import java.util.Map;
  * 描    述 :
  */
 @Service("noticeService")
-public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implements NoticeService, NoticeServicePrx, CoreNoticeClient {
+public class NoticeServiceImpl extends CoreLocalService implements NoticeService, CoreNoticeClient {
 
     @Autowired
     IceConfig iceConfig;
@@ -389,17 +389,5 @@ public class NoticeServiceImpl extends BaseLocalService<NoticeServicePrx> implem
 
     private String getUserNameById(String id){
         return id;
-    }
-
-    /**
-     * 同步方式获取业务接口代理对象
-     */
-    public static NoticeServicePrx getInstance(String adapterName) {
-        NoticeServiceImpl prx = new NoticeServiceImpl();
-        return prx.getServicePrx("NoticeService", adapterName, NoticeServicePrx.class, _NoticeServicePrxI.class);
-    }
-
-    public static NoticeServicePrx getInstance() {
-        return getInstance(null);
     }
 }

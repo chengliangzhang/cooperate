@@ -9,7 +9,9 @@
 [["java:package:com.maoding.FileServer"]]
 module zeroc {
     interface FileService {
-        CANodeList listDesignNode(AccountDTO account,bool isForCommit) throws CustomException; //查询可提交的设计文档
+        void clearAll(AccountDTO account) throws CustomException; //整理文件服务器上的文件，并清理不再用到的文件
+        void clearKey(AccountDTO account,string key) throws CustomException; //整理文件服务器上的文件，并清理不再用到的文件
+        CANodeList listDesignNode(AccountDTO account) throws CustomException; //查询可提交的设计文档
         CANodeList listCANode(AccountDTO account) throws CustomException; //查询可校审的文档
 
         CommitListResultDTO checkNodeListRequest(CANodeList srcList) throws CustomException; //提交文件
@@ -26,6 +28,12 @@ module zeroc {
         CommitListResultDTO askCANodeListRequestForAccount(AccountDTO account,CANodeList srcList) throws CustomException; //提交文件
         SimpleNodeDTO askCANodeRequest(CANodeDTO src) throws CustomException; //提交文件
         SimpleNodeDTO askCANodeRequestForAccount(AccountDTO account,CANodeDTO src) throws CustomException; //提交文件
+
+        CommitListResultDTO requestCommitListForAccount(AccountDTO account,CANodeList srcList) throws CustomException; //提交文件
+        SimpleNodeDTO requestCommitForAccount(AccountDTO account,CANodeDTO src) throws CustomException; //提交文件
+
+        CommitListResultDTO requestIssueListForAccount(AccountDTO account,CANodeList srcList, SimpleNodeDTO parent) throws CustomException; //提交文件
+        SimpleNodeDTO requestIssueForAccount(AccountDTO account,CANodeDTO src, SimpleNodeDTO parent) throws CustomException; //提交文件
 
         long getTime() throws CustomException; //获取服务器时间
 

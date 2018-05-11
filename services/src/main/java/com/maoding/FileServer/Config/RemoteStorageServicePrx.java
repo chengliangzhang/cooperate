@@ -1,6 +1,6 @@
 package com.maoding.FileServer.Config;
 
-import com.maoding.Base.BaseRemoteService;
+import com.maoding.Base.CoreRemoteService;
 import com.maoding.Common.zeroc.CustomException;
 import com.maoding.Common.zeroc.DeleteAskDTO;
 import com.maoding.CoreUtils.SpringUtils;
@@ -15,7 +15,7 @@ import java.util.List;
  * 描    述 :
  */
 @SuppressWarnings("deprecation")
-public class RemoteStorageServicePrx extends BaseRemoteService<StorageServicePrx> implements StorageServicePrx {
+public class RemoteStorageServicePrx extends CoreRemoteService<StorageServicePrx> implements StorageServicePrx {
 
     private static StorageServicePrx lastPrx = null;
     private static StorageService storageService = null;

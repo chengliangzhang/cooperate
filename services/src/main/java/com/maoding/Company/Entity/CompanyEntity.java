@@ -1,6 +1,6 @@
 package com.maoding.Company.Entity;
 
-import com.maoding.Base.BaseEntity;
+import com.maoding.Base.CoreEntity;
 
 import javax.persistence.Table;
 
@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * 描    述 :
  */
 @Table(name = "maoding_web_company")
-public class CompanyEntity extends BaseEntity {
+public class CompanyEntity extends CoreEntity {
 
     /**
      * 企业名称

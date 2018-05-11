@@ -42,7 +42,7 @@ public final class HistoryListHelper
     {
         final java.util.List<HistoryDTO> v;
         v = new java.util.ArrayList<HistoryDTO>();
-        final int len0 = istr.readAndCheckSeqSize(19);
+        final int len0 = istr.readAndCheckSeqSize(18);
         for(int i0 = 0; i0 < len0; i0++)
         {
             HistoryDTO elem;

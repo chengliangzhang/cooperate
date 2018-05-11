@@ -1,6 +1,6 @@
 package com.maoding.Storage.Dao;
 
-import com.maoding.Base.BaseDao;
+import com.maoding.Base.CoreDao;
 import com.maoding.Storage.Entity.AnnotateEntity;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
  * 描    述 :
  */
 @Repository
-public interface AnnotateTreeDao extends BaseDao<AnnotateEntity> {
+public interface AnnotateTreeDao extends CoreDao<AnnotateEntity> {
 }

@@ -538,21 +538,18 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
      * 清理Bean内为空字符串的属性，将其替换为null
      */
     public static <T> T cleanProperties(T obj){
-        if (obj == null) {
+        if (ObjectUtils.isEmpty(obj)) {
             return null;
-        } else if (obj.getClass().isPrimitive()) {
-            return obj;
-        } else if (obj.getClass().isArray()){
-            return (Array.getLength(obj) > 0) ? obj : null;
-        } else if (ObjectUtils.isEmpty(obj)) {
-            return null;
-        } else if (DigitUtils.isDigitalClass(obj.getClass())) {
+        } else if ((DigitUtils.isDigitalClass(obj.getClass())) ||
+                (obj.getClass().isArray()) ||
+                (obj.getClass().isPrimitive())) {
             return obj;
         }
 
         MethodAccess objMethodAccess = methodMap.get(obj.getClass());
         if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
 
+        boolean isValid = false;
         List<String> fieldList = fieldMap.get(obj.getClass());
         if (fieldList != null) {
             assert (objMethodAccess != null);
@@ -562,14 +559,19 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 String setKey = obj.getClass().getName() + DOT + SET + field;
                 Integer getIndex = methodIndexMap.get(getKey);
                 Integer setIndex = methodIndexMap.get(setKey);
-                if ((setIndex != null) && (getIndex != null) && (ObjectUtils.isEmpty(objMethodAccess.invoke(obj,getIndex)))) {
-                    Class<?> fieldClass = objParameterTypes[setIndex][0];
-                    if (!fieldClass.isPrimitive())
-                        objMethodAccess.invoke(obj,setIndex,fieldClass.cast(null));
+                if ((setIndex != null) && (getIndex != null)) {
+                    if (ObjectUtils.isEmpty(objMethodAccess.invoke(obj,getIndex))) {
+                        Class<?> fieldClass = objParameterTypes[setIndex][0];
+                        if (!fieldClass.isPrimitive()) {
+                            objMethodAccess.invoke(obj, setIndex, fieldClass.cast(null));
+                        }
+                    } else {
+                        isValid = true;
+                    }
                 }
             }
         }
-        return obj;
+        return (isValid) ? obj : null;
     }
 
     public static <K,V> Map<K,V> cleanProperties(Map<K,V> obj){

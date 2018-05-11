@@ -26,7 +26,8 @@ public class DigitUtils {
     }
 
     public static Boolean isDigitalClass(final Class<?> clazz){
-        return (clazz.isAssignableFrom(Byte.class)
+        return (clazz.isPrimitive()
+                || clazz.isAssignableFrom(Byte.class)
                 || clazz.isAssignableFrom(Short.class)
                 || clazz.isAssignableFrom(Integer.class)
                 || clazz.isAssignableFrom(Long.class)
@@ -36,15 +37,25 @@ public class DigitUtils {
     }
 
     public static long parseLong(final Object value){
-        if (value == null) {
+        if (ObjectUtils.isEmpty(value)) {
             return 0L;
         } else if (value.getClass().isPrimitive()) {
-            return (long) value;
+            if (value.getClass() == boolean.class) {
+                return ((boolean)value) ? 1L : 0L;
+            } else {
+                return (long) value;
+            }
         } else if (value instanceof Boolean) {
             return ((Boolean)value) ? 1L : 0L;
         } else {
             try {
-                return Long.parseLong(value.toString());
+                if ("true".equalsIgnoreCase(value.toString())) {
+                    return 1L;
+                } else if ("false".equalsIgnoreCase(value.toString())) {
+                    return 0L;
+                } else {
+                    return Long.parseLong(value.toString());
+                }
             } catch (NumberFormatException e) {
                 log.warn("无法转换" + value.toString());
                 return 0L;
@@ -53,35 +64,60 @@ public class DigitUtils {
     }
 
     public static boolean parseBoolean(final Object value){
+        if ((value != null) && (value.getClass() == boolean.class)) {
+            return (boolean)value;
+        }
         return (parseLong(value) != 0L);
     }
 
     public static char parseChar(final Object value){
+        if ((value != null) && (value.getClass() == char.class)) {
+            return (char)value;
+        }
         return (char)parseLong(value);
     }
 
     public static byte parseByte(final Object value){
+        if ((value != null) && (value.getClass() == byte.class)) {
+            return (byte)value;
+        }
         return (byte)parseLong(value);
     }
 
     public static short parseShort(final Object value){
+        if ((value != null) && (value.getClass() == short.class)) {
+            return (short)value;
+        }
         return (short)parseLong(value);
     }
 
     public static int parseInt(final Object value){
+        if ((value != null) && (value.getClass() == int.class)) {
+            return (int)value;
+        }
         return (int)parseLong(value);
     }
 
     public static double parseDouble(final Object value){
-        if (value == null) {
+        if (ObjectUtils.isEmpty(value)) {
             return (double)0;
         } else if (value.getClass().isPrimitive()) {
-            return (double)value;
+            if (value.getClass() == boolean.class) {
+                return ((boolean)value) ? (double)1 : (double)0;
+            } else {
+                return (double) value;
+            }
         } else if (value instanceof Boolean) {
             return ((Boolean)value) ? (double)1 : (double)0;
         } else {
             try {
-                return Double.parseDouble(value.toString());
+                if ("true".equalsIgnoreCase(value.toString())) {
+                    return (double)1;
+                } else if ("false".equalsIgnoreCase(value.toString())) {
+                    return (double)0;
+                } else {
+                    return Double.parseDouble(value.toString());
+                }
             } catch (NumberFormatException e) {
                 log.warn("无法转换" + value.toString());
                 return (double)0;
@@ -90,6 +126,9 @@ public class DigitUtils {
     }
 
     public static float parseFloat(final Object value) {
+        if ((value != null) && (value.getClass() == float.class)) {
+            return (float)value;
+        }
         return (float)parseDouble(value);
     }
 }

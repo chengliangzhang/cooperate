@@ -83,14 +83,14 @@ public class HistoryDTO implements java.lang.Cloneable,
         this.roleName = roleName;
     }
 
-    public short actionTypeId;
+    public String actionTypeId;
 
-    public short getActionTypeId()
+    public String getActionTypeId()
     {
         return actionTypeId;
     }
 
-    public void setActionTypeId(short actionTypeId)
+    public void setActionTypeId(String actionTypeId)
     {
         this.actionTypeId = actionTypeId;
     }
@@ -171,13 +171,14 @@ public class HistoryDTO implements java.lang.Cloneable,
         this.userName = "";
         this.roleId = "";
         this.roleName = "";
+        this.actionTypeId = "";
         this.actionName = "";
         this.actionTimeText = "";
         this.remark = "";
         this.fileId = "";
     }
 
-    public HistoryDTO(String id, String userId, String userName, String roleId, String roleName, short actionTypeId, String actionName, long actionTimeStamp, String actionTimeText, String remark, String fileId)
+    public HistoryDTO(String id, String userId, String userName, String roleId, String roleName, String actionTypeId, String actionName, long actionTimeStamp, String actionTimeText, String remark, String fileId)
     {
         this.id = id;
         this.userId = userId;
@@ -243,7 +244,10 @@ public class HistoryDTO implements java.lang.Cloneable,
             }
             if(this.actionTypeId != r.actionTypeId)
             {
-                return false;
+                if(this.actionTypeId == null || r.actionTypeId == null || !this.actionTypeId.equals(r.actionTypeId))
+                {
+                    return false;
+                }
             }
             if(this.actionName != r.actionName)
             {
@@ -323,7 +327,7 @@ public class HistoryDTO implements java.lang.Cloneable,
         ostr.writeString(this.userName);
         ostr.writeString(this.roleId);
         ostr.writeString(this.roleName);
-        ostr.writeShort(this.actionTypeId);
+        ostr.writeString(this.actionTypeId);
         ostr.writeString(this.actionName);
         ostr.writeLong(this.actionTimeStamp);
         ostr.writeString(this.actionTimeText);
@@ -338,7 +342,7 @@ public class HistoryDTO implements java.lang.Cloneable,
         this.userName = istr.readString();
         this.roleId = istr.readString();
         this.roleName = istr.readString();
-        this.actionTypeId = istr.readShort();
+        this.actionTypeId = istr.readString();
         this.actionName = istr.readString();
         this.actionTimeStamp = istr.readLong();
         this.actionTimeText = istr.readString();
