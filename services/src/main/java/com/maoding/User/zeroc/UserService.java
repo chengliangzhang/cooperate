@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.User.zeroc;
+package com.maoding.user.zeroc;
 
 public interface UserService extends com.zeroc.Ice.Object
 {
@@ -38,7 +38,7 @@ public interface UserService extends com.zeroc.Ice.Object
 
     UserJoinDTO listUserJoinForAccount(AccountDTO account, com.zeroc.Ice.Current current);
 
-    java.util.List<com.maoding.Common.zeroc.IdNameDTO> listMember(QueryMemberDTO query, com.zeroc.Ice.Current current);
+    java.util.List<com.maoding.common.zeroc.IdNameDTO> listMember(QueryMemberDTO query, com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -175,9 +175,9 @@ public interface UserService extends com.zeroc.Ice.Object
         QueryMemberDTO iceP_query;
         iceP_query = QueryMemberDTO.ice_read(istr);
         inS.endReadParams();
-        java.util.List<com.maoding.Common.zeroc.IdNameDTO> ret = obj.listMember(iceP_query, current);
+        java.util.List<com.maoding.common.zeroc.IdNameDTO> ret = obj.listMember(iceP_query, current);
         com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        com.maoding.Common.zeroc.IdNameListHelper.write(ostr, ret);
+        com.maoding.common.zeroc.IdNameListHelper.write(ostr, ret);
         inS.endWriteParams(ostr);
         return inS.setResult(ostr);
     }

@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Task.zeroc;
+package com.maoding.task.zeroc;
 
 public class QueryTaskDTO implements java.lang.Cloneable,
                                      java.io.Serializable

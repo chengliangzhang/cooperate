@@ -1,10 +1,10 @@
-package com.maoding.CoreNotice.ActiveMQ;
+package com.maoding.coreNotice.activeMQ;
 
-import com.maoding.CoreNotice.CoreNoticeClient;
-import com.maoding.CoreNotice.CoreNoticeService;
-import com.maoding.CoreNotice.CoreReceiverDTO;
-import com.maoding.CoreUtils.BeanUtils;
-import com.maoding.CoreUtils.StringUtils;
+import com.maoding.coreNotice.CoreNoticeClient;
+import com.maoding.coreNotice.CoreNoticeService;
+import com.maoding.coreNotice.CoreReceiverDTO;
+import com.maoding.coreUtils.BeanUtils;
+import com.maoding.coreUtils.StringUtils;
 import io.vertx.core.AbstractVerticle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +107,7 @@ public class ActiveMQClient extends AbstractVerticle implements CoreNoticeServic
             consumer.setMessageListener(msg -> {
                 try {
                     ActiveMQMessageDTO m = getMessage(msg);
-                    com.maoding.CoreNotice.CoreMessageDTO coreMessage = new com.maoding.CoreNotice.CoreMessageDTO();
+                    com.maoding.coreNotice.CoreMessageDTO coreMessage = new com.maoding.coreNotice.CoreMessageDTO();
                     coreMessage.setContent(m.getContent());
                     handler.notice(coreMessage);
                 } catch (JMSException e) {
@@ -121,7 +121,7 @@ public class ActiveMQClient extends AbstractVerticle implements CoreNoticeServic
     }
 
     @Override
-    public void sendMessage(@NotNull com.maoding.CoreNotice.CoreMessageDTO msg, @NotNull CoreReceiverDTO receiver) {
+    public void sendMessage(@NotNull com.maoding.coreNotice.CoreMessageDTO msg, @NotNull CoreReceiverDTO receiver) {
         String topic = receiver.getTopic();
 
         if (StringUtils.isNotEmpty(topic)) {

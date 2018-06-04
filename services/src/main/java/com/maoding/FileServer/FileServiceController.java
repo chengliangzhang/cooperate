@@ -1,6 +1,6 @@
-package com.maoding.FileServer;
+package com.maoding.fileServer;
 
-import com.maoding.Base.CoreController;
+import com.maoding.coreBase.CoreController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;

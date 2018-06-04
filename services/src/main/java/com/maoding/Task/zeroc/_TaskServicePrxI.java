@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Task.zeroc;
+package com.maoding.task.zeroc;
 
 public class _TaskServicePrxI extends com.zeroc.Ice._ObjectPrxI implements TaskServicePrx
 {

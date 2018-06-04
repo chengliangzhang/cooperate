@@ -1,12 +1,12 @@
-package com.maoding.Notice;
+package com.maoding.notice;
 
-import com.maoding.Base.CoreLocalService;
-import com.maoding.CoreNotice.CoreMessageDTO;
-import com.maoding.CoreNotice.CoreNoticeClient;
-import com.maoding.Notice.Config.NoticeConfig;
-import com.maoding.Notice.zeroc.MessageDTO;
-import com.maoding.Notice.zeroc.NoticeClient;
-import com.maoding.Notice.zeroc.NoticeClientPrx;
+import com.maoding.coreBase.CoreLocalService;
+import com.maoding.coreNotice.CoreMessageDTO;
+import com.maoding.coreNotice.CoreNoticeClient;
+import com.maoding.notice.config.NoticeConfig;
+import com.maoding.notice.zeroc.MessageDTO;
+import com.maoding.notice.zeroc.NoticeClient;
+import com.maoding.notice.zeroc.NoticeClientPrx;
 import com.zeroc.Ice.*;
 import com.zeroc.IceStorm.TopicPrx;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
-package com.maoding.Storage.Dto;
+package com.maoding.storage.dto;
 
-import com.maoding.Storage.Entity.StorageTreeEntity;
-import com.maoding.Storage.Entity.StorageFileEntity;
-import com.maoding.Storage.Entity.StorageFileHisEntity;
+import com.maoding.storage.entity.StorageTreeEntity;
+import com.maoding.storage.entity.StorageFileEntity;
+import com.maoding.storage.entity.StorageFileHisEntity;
 
 /**
  * 深圳市卯丁技术有限公司

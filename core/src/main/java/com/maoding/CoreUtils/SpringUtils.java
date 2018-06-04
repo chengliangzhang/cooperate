@@ -1,4 +1,4 @@
-package com.maoding.CoreUtils;
+package com.maoding.coreUtils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

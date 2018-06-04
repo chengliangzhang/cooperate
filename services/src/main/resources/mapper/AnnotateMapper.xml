@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.maoding.Storage.Dao.AnnotateDao">
+<mapper namespace="com.maoding.storage.dao.AnnotateDao">
     <sql id="ConditionForQueryAnnotate">
         <if test="statusId != null and statusId != ''.toString()">
             and find_in_set(annotate.status_id,#{statusId})
@@ -57,12 +57,12 @@
         </if>
     </sql>
 
-    <resultMap id="AnnotateMap" type="com.maoding.Storage.zeroc.AnnotateDTO" autoMapping="true">
+    <resultMap id="AnnotateMap" type="com.maoding.storage.zeroc.AnnotateDTO" autoMapping="true">
         <association property="element" select="selectElementByAnnotateId" column="{annotateId=id}" fetchType="eager"/>
         <collection property="accessoryList" select="selectFileByAnnotateId" column="{annotateId=id}" fetchType="eager"/>
     </resultMap>
 
-    <select id="listAnnotate" resultMap="AnnotateMap" parameterType="com.maoding.Storage.zeroc.QueryAnnotateDTO">
+    <select id="listAnnotate" resultMap="AnnotateMap" parameterType="com.maoding.storage.zeroc.QueryAnnotateDTO">
         select annotate.*
         from
             md_tree_annotate annotate
@@ -71,7 +71,7 @@
         </where>
     </select>
 
-    <select id="selectElementByAnnotateId" resultType="com.maoding.Storage.zeroc.EmbedElementDTO" parameterType="java.util.Map">
+    <select id="selectElementByAnnotateId" resultType="com.maoding.storage.zeroc.EmbedElementDTO" parameterType="java.util.Map">
         select element.*
         from
             md_list_attachment attachment
@@ -85,7 +85,7 @@
         limit 1
     </select>
 
-    <select id="selectFileByAnnotateId" resultType="com.maoding.Storage.zeroc.NodeFileDTO" parameterType="java.util.Map">
+    <select id="selectFileByAnnotateId" resultType="com.maoding.storage.zeroc.NodeFileDTO" parameterType="java.util.Map">
         select file.*
         from
             md_list_attachment attachment

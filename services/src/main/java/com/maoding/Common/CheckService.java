@@ -1,7 +1,7 @@
-package com.maoding.Common;
+package com.maoding.common;
 
-import com.maoding.Common.zeroc.CustomException;
-import com.maoding.Common.zeroc.ErrorCode;
+import com.maoding.common.zeroc.CustomException;
+import com.maoding.common.zeroc.ErrorCode;
 
 /**
  * 深圳市卯丁技术有限公司

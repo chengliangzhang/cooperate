@@ -1,9 +1,9 @@
-package com.maoding.Notice.Config;
+package com.maoding.notice.config;
 
-import com.maoding.CoreNotice.ActiveMQ.ActiveMQClient;
-import com.maoding.CoreNotice.CoreNoticeService;
-import com.maoding.User.zeroc.UserServicePrx;
-import com.maoding.CoreUtils.SpringUtils;
+import com.maoding.common.remoteService.RemoteTopicManagerPrx;
+import com.maoding.coreNotice.CoreNoticeService;
+import com.maoding.coreNotice.activeMQ.ActiveMQClient;
+import com.maoding.coreUtils.SpringUtils;
 import com.zeroc.IceStorm.TopicManagerPrx;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -17,18 +17,30 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "notice")
 public class NoticeConfig {
+    private final static String DEFAULT_TOPIC_MANAGER_SERVICE = "IceStorm/TopicManager@StormSvr";
+    private final static String DEFAULT_COMMUNICATE_CONFIG = "--Ice.Default.Locator=IceGrid/Locator:tcp -h 127.0.0.1 -p 4061";
+
     private static CoreNoticeService activeMQ = null;
 
-    private String topicAdapter;
+    private String topicService;
     private String userServiceAdapter;
     private String commonTopic;
+    private String communicateConfig;
 
-    public String getTopicAdapter() {
-        return topicAdapter;
+    public String getCommunicateConfig() {
+        return communicateConfig;
     }
 
-    public void setTopicAdapter(String topicAdapter) {
-        this.topicAdapter = topicAdapter;
+    public void setCommunicateConfig(String communicateConfig) {
+        this.communicateConfig = communicateConfig;
+    }
+
+    public String getTopicService() {
+        return topicService;
+    }
+
+    public void setTopicService(String topicService) {
+        this.topicService = topicService;
     }
 
     public String getCommonTopic() {
@@ -54,17 +66,10 @@ public class NoticeConfig {
         return activeMQ;
     }
 
-    public UserServicePrx getUserService(String serverAddress){
-        return RemoteUserServicePrx.getInstance(serverAddress);
-    }
-    public UserServicePrx getUserService(){
-        return getUserService(getUserServiceAdapter());
-    }
-
-    public TopicManagerPrx getTopicManager(String serverAddress){
-        return RemoteTopicManagerPrx.getInstance(serverAddress);
+    public TopicManagerPrx getTopicManager(String service, String config){
+        return RemoteTopicManagerPrx.getInstance(service,config);
     }
     public TopicManagerPrx getTopicManager(){
-        return getTopicManager(getTopicAdapter());
+        return getTopicManager(getTopicService(),getCommunicateConfig());
     }
 }

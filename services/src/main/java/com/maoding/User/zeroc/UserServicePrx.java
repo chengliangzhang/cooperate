@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.User.zeroc;
+package com.maoding.user.zeroc;
 
 public interface UserServicePrx extends com.zeroc.Ice.ObjectPrx
 {
@@ -279,34 +279,34 @@ public interface UserServicePrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
-    default java.util.List<com.maoding.Common.zeroc.IdNameDTO> listMember(QueryMemberDTO query)
+    default java.util.List<com.maoding.common.zeroc.IdNameDTO> listMember(QueryMemberDTO query)
     {
         return listMember(query, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default java.util.List<com.maoding.Common.zeroc.IdNameDTO> listMember(QueryMemberDTO query, java.util.Map<String, String> context)
+    default java.util.List<com.maoding.common.zeroc.IdNameDTO> listMember(QueryMemberDTO query, java.util.Map<String, String> context)
     {
         return _iceI_listMemberAsync(query, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Common.zeroc.IdNameDTO>> listMemberAsync(QueryMemberDTO query)
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.common.zeroc.IdNameDTO>> listMemberAsync(QueryMemberDTO query)
     {
         return _iceI_listMemberAsync(query, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.Common.zeroc.IdNameDTO>> listMemberAsync(QueryMemberDTO query, java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<java.util.List<com.maoding.common.zeroc.IdNameDTO>> listMemberAsync(QueryMemberDTO query, java.util.Map<String, String> context)
     {
         return _iceI_listMemberAsync(query, context, false);
     }
 
-    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Common.zeroc.IdNameDTO>> _iceI_listMemberAsync(QueryMemberDTO iceP_query, java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.common.zeroc.IdNameDTO>> _iceI_listMemberAsync(QueryMemberDTO iceP_query, java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.Common.zeroc.IdNameDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listMember", null, sync, null);
+        com.zeroc.IceInternal.OutgoingAsync<java.util.List<com.maoding.common.zeroc.IdNameDTO>> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "listMember", null, sync, null);
         f.invoke(true, context, null, ostr -> {
                      QueryMemberDTO.ice_write(ostr, iceP_query);
                  }, istr -> {
-                     java.util.List<com.maoding.Common.zeroc.IdNameDTO> ret;
-                     ret = com.maoding.Common.zeroc.IdNameListHelper.read(istr);
+                     java.util.List<com.maoding.common.zeroc.IdNameDTO> ret;
+                     ret = com.maoding.common.zeroc.IdNameListHelper.read(istr);
                      return ret;
                  });
         return f;

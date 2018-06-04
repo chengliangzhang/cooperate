@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Notice.zeroc;
+package com.maoding.notice.zeroc;
 
 public class _NoticeClientPrxI extends com.zeroc.Ice._ObjectPrxI implements NoticeClientPrx
 {

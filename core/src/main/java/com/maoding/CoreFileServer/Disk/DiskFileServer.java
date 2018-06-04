@@ -1,11 +1,11 @@
-package com.maoding.CoreFileServer.Disk;
+package com.maoding.coreFileServer.disk;
 
-import com.maoding.CoreFileServer.CoreCreateFileRequest;
-import com.maoding.CoreFileServer.CoreFileDataDTO;
-import com.maoding.CoreFileServer.CoreFileServer;
-import com.maoding.CoreUtils.FileUtils;
-import com.maoding.CoreUtils.ObjectUtils;
-import com.maoding.CoreUtils.StringUtils;
+import com.maoding.coreFileServer.CoreCreateFileRequest;
+import com.maoding.coreFileServer.CoreFileDataDTO;
+import com.maoding.coreFileServer.CoreFileServer;
+import com.maoding.coreUtils.FileUtils;
+import com.maoding.coreUtils.ObjectUtils;
+import com.maoding.coreUtils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -108,7 +108,7 @@ public class DiskFileServer implements CoreFileServer {
     public boolean coreIsExist(String key) {
         if (StringUtils.isEmpty(key)) return false;
         File f = new File(getPath(key));
-        return f.exists() && f.isFile();
+        return FileUtils.isValidFile(f);
     }
 
     /**
@@ -154,10 +154,10 @@ public class DiskFileServer implements CoreFileServer {
      * @param key 文件标志
      */
     @Override
-    public String coreCalcChecksum(String key) {
+    public String coreCalcMd5(String key) {
         assert (coreIsExist(key));
         File file = new File(getPath(key));
-        return FileUtils.calcChecksum(file);
+        return FileUtils.calcMd5(file);
     }
 
     /**
@@ -181,7 +181,7 @@ public class DiskFileServer implements CoreFileServer {
         long len = 0;
         if (coreIsExist(key)){
             File file = new File(getPath(key));
-            len = file.length();
+            len = FileUtils.getFileLength(file);
         }
         return len;
     }
@@ -414,30 +414,52 @@ public class DiskFileServer implements CoreFileServer {
     @Override
     public void coreDeleteFile(String key) {
         if (coreIsExist(key)){
-            File f = new File(getPath(key));
-            if (!f.isDirectory() || (f.listFiles() == null)){
-                boolean isSuccess = f.delete();
-                assert (isSuccess);
+            String path = getPath(key);
+            File f = new File(path);
+            boolean isSuccess = f.delete();
+            assert (isSuccess);
+            File p = new File(StringUtils.getDirName(path));
+            if (ObjectUtils.isEmpty(p.listFiles())){
+                p.delete();
             }
         }
     }
 
-    /**
-     * 获取文件服务器上的文件标识
-     *
-     * @param key 所属的父目录
-     */
     @Override
-    public List<String> coreListKey(String key) {
-        String path = (StringUtils.isRootPath(key)) ? coreGetBaseDir() : getPath(key);
-        File f = new File(path);
-        List<String> list = null;
-        if (f.exists() && f.isDirectory()) {
-            String[] files = f.list();
-            if (ObjectUtils.isNotEmpty(files)) {
-                list = new ArrayList<>(Arrays.asList(files));
+    public List<String> coreListKey(long timeBefore) {
+        long t = System.currentTimeMillis();
+        List<String> list = new ArrayList<>();
+        File root = new File(coreGetBaseDir());
+        appendFiles(list,root,t - timeBefore);
+        return list;
+    }
+
+    private void appendFiles(List<String> list,File f,long beforeTime){
+        if ((f != null) && (f.exists())) {
+            if (f.isDirectory()){
+                File[] childArray = f.listFiles();
+                if (ObjectUtils.isNotEmpty(childArray)){
+                    for (File child : childArray) {
+                        if (child.isDirectory()) {
+                            appendFiles(list, child,beforeTime);
+                        } else if (child.lastModified() < beforeTime){
+                            String key = getKeyByPath(child.getPath());
+                            list.add(key);
+                        }
+                    }
+                }
+            } else {
+                String key = getKeyByPath(f.getPath());
+                list.add(key);
             }
         }
-        return list;
+    }
+
+    private String getKeyByPath(String path){
+        String key = StringUtils.formatPath(path);
+        if (StringUtils.isNotEmpty(key)){
+            key = key.substring(StringUtils.length(StringUtils.formatPath(coreGetBaseDir())));
+        }
+        return StringUtils.formatPath(key);
     }
 }

@@ -1,13 +1,20 @@
 package com.maoding;
 
-import com.maoding.Common.Config.IceConfig;
-import com.maoding.Common.Config.StartupConfig;
-import com.maoding.CoreUtils.FileUtils;
-import com.maoding.CoreUtils.StringUtils;
-import com.maoding.CoreUtils.ThreadUtils;
+import com.maoding.common.config.IceConfig;
+import com.maoding.common.config.ScheduleConfig;
+import com.maoding.common.config.StartupConfig;
+import com.maoding.coreUtils.FileUtils;
+import com.maoding.coreUtils.StringUtils;
+import com.maoding.coreUtils.ThreadUtils;
+import com.maoding.fileServer.zeroc.FileServicePrx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
@@ -19,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -27,7 +36,8 @@ import java.util.Properties;
  * 描    述 :
  */
 @Component
-public class Runner {
+@EnableScheduling
+public class Runner implements SchedulingConfigurer {
     /** 日志对象 */
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -36,6 +46,11 @@ public class Runner {
 
     @Autowired
     private StartupConfig startupConfig;
+
+    @Autowired
+    private ScheduleConfig scheduleConfig;
+
+    private boolean started = false;
 
     public void run(String[] args) {
         //更新数据库
@@ -54,6 +69,7 @@ public class Runner {
             runIceBox(startupConfig.getIcebox());
         }
         //启动服务
+        started = true;
         if (StringUtils.isNotEmpty(iceConfig.getConfig())) {
             startIceService(iceConfig.getConfig());
         }
@@ -169,4 +185,29 @@ public class Runner {
         //等待ice公共服务启动完毕
         ThreadUtils.sleep(4000);
     }
+
+    @Scheduled(fixedDelay  = 5 * 1000)
+    public void clearFileServer() throws Exception {
+        if (!started) return;
+        if (scheduleConfig.getClearServer()) {
+            FileServicePrx fileServicePrx = iceConfig.getFileService();
+            if (fileServicePrx != null) {
+                log.info("------- ------- ------- 清理文件 ------- ------- -------");
+                long t = System.currentTimeMillis();
+                fileServicePrx.clearAll(null);
+                log.info("------- ------- 结束清理，用时" + (System.currentTimeMillis() - t) + "ms ------- -------");
+            }
+        }
+    }
+
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        taskRegistrar.setScheduler(taskExecutor());
+    }
+
+    @Bean
+    public Executor taskExecutor() {
+        return Executors.newScheduledThreadPool(scheduleConfig.getPoolSize());
+    }
+
 }

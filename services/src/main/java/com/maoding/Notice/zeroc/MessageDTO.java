@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Notice.zeroc;
+package com.maoding.notice.zeroc;
 
 public class MessageDTO implements java.lang.Cloneable,
                                    java.io.Serializable

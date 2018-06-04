@@ -1,8 +1,8 @@
-package com.maoding.CoreUtils;
+package com.maoding.coreUtils;
 
-import com.maoding.CoreFileServer.MaodingWeb.CoreKeyValuePair;
-import com.maoding.Bean.CoreResponse;
-import com.maoding.CoreFileServer.MaodingWeb.CoreUploadFileItem;
+import com.maoding.coreFileServer.web.CoreKeyValuePair;
+import com.maoding.coreBean.CoreResponse;
+import com.maoding.coreFileServer.web.CoreUploadFileItem;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -41,8 +41,7 @@ public class HttpUtils {
 //    public static final String DEFAULT_FILE_CONTENT_TYPE = "application/octet-stream";
     final static int HTTP_RESULT_OK = 200;
 
-    public static <T> CloseableHttpResponse postData(CloseableHttpClient client, String url, String type, T data) {
-        assert (url != null);
+    public static <T> CloseableHttpResponse postData(CloseableHttpClient client, @NotNull String url, String type, T data) {
         final String requestBodyType = "application/json";
         final String defaultVarName = "var";
 
@@ -89,7 +88,7 @@ public class HttpUtils {
     public static CoreResponse<?> postFileData(@NotNull String urlString, @NotNull ArrayList<CoreKeyValuePair> propertyList,
                                              CoreUploadFileItem fileItem, long pos, int size, int blockSize) {
         final String END_LINE  = "\r\n";
-        final String BOUNDARY = "----WebKitFormBoundaryqZ6H6BhuiKmeRPOm";
+        final String BOUNDARY = "------WebKitFormBoundaryevvAep7TZEo073p4";
         final String BOUNDARY_BODY = END_LINE + "--" + BOUNDARY + END_LINE;
         final String BOUNDARY_END = END_LINE + "--" + BOUNDARY + "--" + END_LINE;
         final String BODY_NAME_START = "Content-Disposition: form-data; name=\"";
@@ -150,6 +149,7 @@ public class HttpUtils {
                             .append(kvp.getValue());
                 }
                 out.write(contentBody.toString().getBytes(DEFAULT_CHAR_SET));
+                log.info(contentBody.toString());
 
                 if (fileItem != null) {
                     //写文件起始块
@@ -163,6 +163,7 @@ public class HttpUtils {
                             .append(FILE_NAME_END)
                             .append(FILE_CONTENT_TYPE);
                     out.write(contentBody.toString().getBytes(DEFAULT_CHAR_SET));
+                    log.info(contentBody.toString());
 
                     // 真正向服务器写文件
                     rf = new RandomAccessFile(fileItem.getFileName(), "r");
@@ -188,6 +189,7 @@ public class HttpUtils {
 
                 //写结尾
                 out.write(BOUNDARY_END.getBytes(DEFAULT_CHAR_SET));
+                log.info(BOUNDARY_END);
                 out.flush();
                 log.info("发送完毕");
             } catch (IOException e) {

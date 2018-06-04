@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Notice.zeroc;
+package com.maoding.notice.zeroc;
 
 public class NoticeRequestDTO implements java.lang.Cloneable,
                                          java.io.Serializable
@@ -83,14 +83,14 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
         this.userId = userId;
     }
 
-    public com.maoding.Common.zeroc.StringElementDTO stringElement;
+    public com.maoding.common.zeroc.StringElementDTO stringElement;
 
-    public com.maoding.Common.zeroc.StringElementDTO getStringElement()
+    public com.maoding.common.zeroc.StringElementDTO getStringElement()
     {
         return stringElement;
     }
 
-    public void setStringElement(com.maoding.Common.zeroc.StringElementDTO stringElement)
+    public void setStringElement(com.maoding.common.zeroc.StringElementDTO stringElement)
     {
         this.stringElement = stringElement;
     }
@@ -102,10 +102,10 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
         this.taskId = "";
         this.companyId = "";
         this.userId = "";
-        this.stringElement = new com.maoding.Common.zeroc.StringElementDTO();
+        this.stringElement = new com.maoding.common.zeroc.StringElementDTO();
     }
 
-    public NoticeRequestDTO(String typeIdString, String projectId, String taskId, String companyId, String userId, com.maoding.Common.zeroc.StringElementDTO stringElement)
+    public NoticeRequestDTO(String typeIdString, String projectId, String taskId, String companyId, String userId, com.maoding.common.zeroc.StringElementDTO stringElement)
     {
         this.typeIdString = typeIdString;
         this.projectId = projectId;
@@ -212,7 +212,7 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
         ostr.writeString(this.taskId);
         ostr.writeString(this.companyId);
         ostr.writeString(this.userId);
-        com.maoding.Common.zeroc.StringElementDTO.ice_write(ostr, this.stringElement);
+        com.maoding.common.zeroc.StringElementDTO.ice_write(ostr, this.stringElement);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -222,7 +222,7 @@ public class NoticeRequestDTO implements java.lang.Cloneable,
         this.taskId = istr.readString();
         this.companyId = istr.readString();
         this.userId = istr.readString();
-        this.stringElement = com.maoding.Common.zeroc.StringElementDTO.ice_read(istr);
+        this.stringElement = com.maoding.common.zeroc.StringElementDTO.ice_read(istr);
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, NoticeRequestDTO v)

@@ -1,11 +1,12 @@
 package com.maoding.Storage;
 
-import com.maoding.Base.CoreRemoteService;
-import com.maoding.Common.ConstService;
-import com.maoding.Common.zeroc.DeleteAskDTO;
-import com.maoding.Common.zeroc.QueryAskDTO;
-import com.maoding.CoreUtils.StringUtils;
-import com.maoding.Storage.zeroc.*;
+import com.maoding.common.ConstService;
+import com.maoding.common.zeroc.DeleteAskDTO;
+import com.maoding.common.zeroc.QueryAskDTO;
+import com.maoding.coreBase.CoreRemoteService;
+import com.maoding.coreUtils.StringUtils;
+import com.maoding.storage.zeroc.*;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -37,6 +38,9 @@ public class StorageServiceImplTest {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
     @Rule public ExpectedException thrown = ExpectedException.none();
 
+    private final boolean TEST_LOCAL = false;
+    private final boolean SAME_TEST = false;
+
     @Autowired
     private StorageService storageService;
 
@@ -50,17 +54,16 @@ public class StorageServiceImplTest {
         return remote;
     }
 
+    @Ignore
     @Test
-    public void testListNodeFile() throws Exception {
-//        listNodeFileById();
-//        listNodeFileByServer();
-        listNodeFileByKey();
-    }
-
-    private List<NodeFileDTO> listNodeFileByKey() throws Exception {
+    public void testListNodeFileByKey() throws Exception {
+        log.debug("\t>>>>>>>> testListNodeFileByKey");
+        List<NodeFileDTO> list;
         QueryNodeFileDTO query = new QueryNodeFileDTO();
         query.setKey("c_3.txt");
-        return storageService.listNodeFile(query,null);
+        list = storageService.listNodeFile(query,null);
+        list = storageService.listNodeFile(query,null);
+        list = storageService.listNodeFile(query,null);
     }
 
     private List<NodeFileDTO> listNodeFileByServer() throws Exception {
@@ -77,6 +80,7 @@ public class StorageServiceImplTest {
         return storageService.listNodeFile(query,null);
     }
 
+    @Ignore
     @Test
     public void testCreateElement() throws Exception {
         UpdateElementDTO request = new UpdateElementDTO();
@@ -84,6 +88,7 @@ public class StorageServiceImplTest {
         storageService.createEmbedElement(request,null);
     }
 
+    @Ignore
     @Test
     public void testUpdateElement() throws Exception {
         UpdateElementDTO request = new UpdateElementDTO();
@@ -91,6 +96,7 @@ public class StorageServiceImplTest {
         storageService.updateEmbedElement(getLocalElement(),request,null);
     }
 
+    @Ignore
     @Test
     public void testUpdateAnnotate() throws Exception {
 //        updateAnnotateSimple();
@@ -131,6 +137,7 @@ public class StorageServiceImplTest {
         return list;
     }
 
+    @Ignore
     @Test
     public void testListAnnotate() throws Exception {
         listAnnotateByFileId();
@@ -158,6 +165,7 @@ public class StorageServiceImplTest {
         return list.get(0);
     }
 
+    @Ignore
     @Test
     public void testCreateAnnotate() throws Exception {
 //        createAnnotateSimple();
@@ -189,26 +197,6 @@ public class StorageServiceImplTest {
         return list.get(0);
     }
 
-    @Test
-    public void testCreateNodeFile() throws Exception {
-        createNodeFileNoMirror();
-        createNodeFileWithMirror();
-    }
-
-    private NodeFileDTO createNodeFileWithMirror() throws Exception {
-        UpdateNodeFileDTO request = new UpdateNodeFileDTO();
-        request.setServerTypeId("2");
-        request.setServerAddress("127.0.0.1");
-        request.setBaseDir("c:/work/file_server");
-        request.setReadOnlyKey("a/b/c.txt");
-        request.setWritableKey("a/b/c_2.txt");
-        request.setMirrorTypeId("1");
-        request.setMirrorAddress("127.0.0.1");
-        request.setMirrorBaseDir("c:/work/file_server/.mirror");
-        request.setReadOnlyMirrorKey("c_3.txt");
-        request.setWritableMirrorKey("c_4.txt");
-        return storageService.createNodeFileWithRequestOnly(request,null);
-    }
 
     private NodeFileDTO createNodeFileNoMirror() throws Exception {
         UpdateNodeFileDTO request = new UpdateNodeFileDTO();
@@ -223,11 +211,23 @@ public class StorageServiceImplTest {
 
     @Test
     public void testSummary() throws Exception {
+        final boolean isTestLocal = SAME_TEST ? TEST_LOCAL : true;
         QuerySummaryDTO query = new QuerySummaryDTO();
-        query.setCompanyId("5aeb14ea46dd4282b136736976d4e430");
-        long size = storageService.summaryNodeLength(query,null);
+        query.setAccountId(getLocalAccountId());
+
+        SummaryFileDTO summary;
+        for (int i=0; i<1; i++){
+            long t = System.currentTimeMillis();
+            if (isTestLocal) {
+                summary = storageService.summaryFile(query,null);;
+            } else {
+                summary = getRemote().summaryFile(query,null);;
+            }
+            log.info("\t>>>>>>>> testSummary:" + (System.currentTimeMillis()-t) + "ms");
+        }
     }
 
+    @Ignore
     @Test
     public void testDelete() throws Exception{
         deleteByNode();
@@ -256,9 +256,10 @@ public class StorageServiceImplTest {
         return ask;
     }
 
+    @Ignore
     @Test
     public void testGetNodeInfo() throws Exception {
-        SimpleNodeDTO node = getLocalNode();
+        SimpleNodeDTO node = getLocalFileNode();
         QueryNodeInfoDTO query = new QueryNodeInfoDTO();
         QueryNodeInfoTextDTO txtQuery = new QueryNodeInfoTextDTO();
         query.setTextQuery(txtQuery);
@@ -271,7 +272,7 @@ public class StorageServiceImplTest {
     }
 
     private SimpleNodeDTO getLocalParent() throws Exception {
-        return getLocalNode("2EF0DC04AF3E49079462B9AA044C0636-3");
+        return getLocalNode("3C06760164134131B711F5D744BAA54C-2");
     }
 
     private SimpleNodeDTO getLocalTask() throws Exception {
@@ -286,16 +287,26 @@ public class StorageServiceImplTest {
         return getLocalNode("01bb5bf70fab49dfbf180f64f0594be3");
     }
 
-    private SimpleNodeDTO getLocalNode() throws Exception {
-        return getLocalNode("FB3DC113DB5E4CA5A19A253565783257-2");
+    private SimpleNodeDTO getLocalFileNode() throws Exception {
+        return getLocalNode("0CC161F7AB7141FC9B833F15EA4ACF99-1");
     }
 
     private SimpleNodeDTO getLocalNode(String id) throws Exception {
-        return storageService.getNodeById(id,null);
+        return getNode(id,true);
     }
 
+    private SimpleNodeDTO getNode(String id,boolean isLocal) throws Exception {
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setId(id);
+        List<SimpleNodeDTO> list = (isLocal) ? storageService.listNode(query,null) :
+                getRemote().listNode(query);
+        return list.get(0);
+    }
+
+
+
     private FullNodeDTO getLocalFullNode() throws Exception {
-        SimpleNodeDTO node = getLocalNode();
+        SimpleNodeDTO node = getLocalFileNode();
         QueryNodeInfoDTO query = new QueryNodeInfoDTO();
         QueryNodeInfoTextDTO txtQuery = new QueryNodeInfoTextDTO();
         query.setTextQuery(txtQuery);
@@ -311,28 +322,31 @@ public class StorageServiceImplTest {
         return list.get(0);
     }
     private NodeFileDTO getLocalNodeFile() throws Exception {
-        FullNodeDTO fileNode = getLocalFullNode();
-        NodeFileDTO fileInfo = fileNode.getFileInfo();
-        return fileInfo;
+        return getLocalNodeFile("434553E123F24ADCA64083047D31FE79-2");
+    }
+    private NodeFileDTO getLocalNodeFile(String id) throws Exception {
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setId(id);
+        List<NodeFileDTO> list = storageService.listFile(query,null);
+        return list.get(0);
     }
 
     @Test
-    public void testListNode() throws Exception {
-//        listNodeById();
-//        listNodeByIdString();
-//        listNodeByPath();
-//        listOldNodeByFuzzyPath();
-//        listOldNodeByFuzzyId();
-//        listOldNodeByTypeId();
-        listChild("d1ba184a668d49789a224e8e8200fb17-1");
-    }
-
-    private List<SimpleNodeDTO> listChild(String pid) throws Exception {
+    public void testListChild() throws Exception {
+        log.debug("\t>>>>>>>> testListChild");
+        List<SimpleNodeDTO> list;
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setPid(pid);
-        query.setAccountId("13221450717");
-        List<SimpleNodeDTO> list = storageService.listNode(query,null);
-        return list;
+        query.setPid("d1ba184a668d49789a224e8e8200fb17-1");
+        query.setNeedPath("1");
+        query.setNeedOwnerName("1");
+        query.setNeedTaskName("1");
+        query.setNeedCompanyName("1");
+        query.setNeedLastModifyUserName("sun");
+        list = storageService.listNode(query,null);
+        query.setNeedProjectName("1");
+        list = storageService.listNode(query,null);
+        query.setNeedLastModifyUserName("1");
+        list = storageService.listNode(query,null);
     }
 
     private void listOldNodeByTypeId() throws Exception{
@@ -354,16 +368,97 @@ public class StorageServiceImplTest {
         List<SimpleNodeDTO> list = storageService.listOldNode(query,null);
     }
 
-    private void listNodeByPath() throws Exception {
+    private String getLocalAccountId(){
+        return "d437448683314cad91dc30b68879901d";
+    }
+
+    private QueryNodeDTO getAccountQuery() {
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setAccountId(getLocalAccountId());
+        return query;
+    }
+
+    private QueryNodeDTO getFileQuery() {
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setDirectoryMode("0");
+        return query;
+    }
+
+    private QueryNodeDTO getQueryTaskChild() {
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setPid("d1ba184a668d49789a224e8e8200fb17-1");
+//        query.setNeedPath("1");
+//        query.setNeedOwnerName("1");
+//        query.setNeedProjectName("1");
+//        query.setNeedTaskName("1");
+        return query;
+    }
+
+    private QueryNodeDTO getQueryPath() {
         QueryNodeDTO query = new QueryNodeDTO();
         query.setPath("/dd新项目/设计");
-        List<SimpleNodeDTO> list = storageService.listNode(query,null);
-        query = new QueryNodeDTO();
-        query.setFuzzyPath("/73立项/提资/项目前期/aaaa/bbbb/cc.txt");
+        query.setNeedPath("1");
+        query.setNeedOwnerName("1");
+        query.setNeedProjectName("1");
+        query.setNeedTaskName("1");
+        return query;
+    }
+
+    @Test
+    public void testListFileByAccount() throws Exception {
+        final boolean isTestLocal = SAME_TEST ? TEST_LOCAL : true;
+        QueryNodeDTO query = getFileQuery();
+        query.setAccountId(getLocalAccountId());
+
+        List<NodeFileDTO> list;
+        for (int i=0; i<1; i++){
+            long t = System.currentTimeMillis();
+            if (isTestLocal) {
+                list = storageService.listFile(query,null);;
+            } else {
+                list = getRemote().listFile(query,null);;
+            }
+            log.info("\t>>>>>>>> testListFileByAccount:" + (System.currentTimeMillis()-t) + "ms");
+        }
+    }
+
+    @Test
+    public void testListFileByFileId() throws Exception {
+        final boolean isTestLocal = SAME_TEST ? TEST_LOCAL : true;
+        QueryNodeDTO query = new QueryNodeDTO();
+        query.setFuzzyId(StringUtils.left(getLocalFileNode().getId(), StringUtils.DEFAULT_ID_LENGTH));
+
+        List<NodeFileDTO> list;
+        for (int i=0; i<1; i++){
+            long t = System.currentTimeMillis();
+            if (isTestLocal) {
+                list = storageService.listFile(query,null);;
+            } else {
+                list = getRemote().listFile(query,null);;
+            }
+            log.info("\t>>>>>>>> testListFileByFileId:" + (System.currentTimeMillis()-t) + "ms");
+        }
+    }
+
+    @Ignore
+    @Test
+    public void testListCANode() throws Exception {
+        log.debug("\t>>>>>>>> testListCANode");
+        QueryCANodeDTO query = new QueryCANodeDTO();
+        query.setIsDesign("1");
+        List<CANodeDTO> list;
+        list = storageService.listCANode(query,null);
+        list = storageService.listCANode(query,null);
+        list = storageService.listCANode(query,null);
+    }
+
+    @Test
+    public void testListNodeByPath() throws Exception {
+        log.debug("\t>>>>>>>> testListNodeByPath");
+        List<SimpleNodeDTO> list;
+        QueryNodeDTO query = getQueryPath();
         list = storageService.listNode(query,null);
-        query = new QueryNodeDTO();
-        query.setParentPath("");
-        query.setAccountId("41d244733ec54f09a255836637f2b21d");
+        list = storageService.listNode(query,null);
         list = storageService.listNode(query,null);
     }
 
@@ -389,28 +484,17 @@ public class StorageServiceImplTest {
         list = storageService.listNode(query,null);
     }
 
-    @Test
-    public void testCreateNode() throws Exception {
-        SimpleNodeDTO node;
-//        createSimpleDir();
-//        createPathDir();
-//        createAbsoluteDir();
-//        createPathFile();
-//        createMirrorFile();
-//        node = createHisFile();
-        node = createParentChild();
-//        node = createTaskChild();
-//        node = createRangeChild();
-//        node = createProjectChild();
-//        node = createRootChild();
-    }
+
 
     private SimpleNodeDTO createParentChild() throws Exception {
         return storageService.createNode(getLocalParent(),getUpdateFileAsk(),null);
     }
 
-    private SimpleNodeDTO createTaskChild() throws Exception {
-        return storageService.createNode(getLocalTask(),getUpdateFileAsk(),null);
+    @Ignore
+    @Test
+    public void testCreateTaskChild() throws Exception {
+        SimpleNodeDTO node;
+        node = storageService.createNode(getLocalTask(),getUpdateFileAsk(),null);
     }
 
     private SimpleNodeDTO createRangeChild() throws Exception {
@@ -436,10 +520,10 @@ public class StorageServiceImplTest {
         request.setBaseDir("/work/file_server");
         request.setReadOnlyKey("/x/y/abcde.txt");
         request.setWritableKey("/x/y/aaaa.txt");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT.toString());
+        request.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT));
         request.setFileLength("50");
         request.setFileMd5("fileMd5");
-        request.setActionTypeId(ConstService.STORAGE_ACTION_TYPE_COMMIT.toString());
+        request.setActionTypeId(Short.toString(ConstService.STORAGE_ACTION_TYPE_COMMIT));
         request.setRemark("这是a 历史记录");
         return request;
     }
@@ -455,7 +539,7 @@ public class StorageServiceImplTest {
         request.setBaseDir("/work/file_server");
         request.setReadOnlyKey("/x/y/abcde.txt");
         request.setWritableKey("/x/y/aaaa.txt");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT.toString());
+        request.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT));
         request.setFileLength("50");
         request.setRemark("这是a 历史记录");
         return storageService.createNode(getLocalParent(),request,null);
@@ -472,7 +556,7 @@ public class StorageServiceImplTest {
         request.setBaseDir("/work/file_server");
         request.setReadOnlyKey("/x/y/abcde.txt");
         request.setWritableKey("/x/y/aaaa.txt");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT.toString());
+        request.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT));
         request.setFileLength("50");
         request.setMirrorBaseDir("c:/work/file_server");
         request.setReadOnlyMirrorKey("mirror.txt");
@@ -484,14 +568,14 @@ public class StorageServiceImplTest {
         request.setOwnerUserId("12345");
         request.setLastModifyUserId("11111");
         request.setLastModifyRoleId("11111");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_UNKNOWN.toString());
+        request.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_UNKNOWN));
         request.setPath("abcde.txt");
         request.setServerTypeId("1");
         request.setServerAddress("c:");
         request.setBaseDir("/work/file_server");
         request.setReadOnlyKey("/x/y/abcde.txt");
         request.setWritableKey("/x/y/aaaa.txt");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT.toString());
+        request.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_FILE_COMMIT));
         request.setMainFileId("xxx");
         request.setFileLength("10");
         request.setMajorTypeId("1222");
@@ -502,7 +586,7 @@ public class StorageServiceImplTest {
     private void createAbsoluteDir() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setOwnerUserId("12345");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN.toString());
+        request.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
         request.setPath("/1/2/3/abcde");
         SimpleNodeDTO dto = storageService.createNode(null,request,null);
     }
@@ -511,7 +595,7 @@ public class StorageServiceImplTest {
         SimpleNodeDTO parent = getLocalParent();
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setOwnerUserId("12345");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN.toString());
+        request.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
         request.setPath("/1/2/3/abcde");
         request.setLastModifyUserId("111");
         request.setLastModifyRoleId("111");
@@ -524,128 +608,36 @@ public class StorageServiceImplTest {
         SimpleNodeDTO parent = getLocalParent();
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setOwnerUserId("12345");
-        request.setTypeId(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN.toString());
+        request.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
         request.setPath("abcde");
         SimpleNodeDTO dto = storageService.createNode(parent,request,null);
     }
 
-    @Test
-    public void testUpdateNodeFile() throws Exception {
-//        updateNodeFileSimple();
-        updateNodeFileWithMirror();
-    }
 
-    private NodeFileDTO updateNodeFileWithMirror() throws Exception {
+    @Ignore
+    @Test
+    public void updateNodeFileSimple() throws Exception {
+        NodeFileDTO file;
         UpdateNodeFileDTO request = new UpdateNodeFileDTO();
         request.setLastModifyUserId("accountId");
         request.setLastModifyRoleId("accountRoleId");
-        request.setMainFileId(StringUtils.left(getLocalNode().getId(),32));
-        request.setMirrorTypeId("1");
-        request.setMirrorAddress("127.0.0.1");
-        request.setBaseDir("c:/work/file_server");
-        request.setWritableMirrorKey(".mirror/abc.txt");
-        NodeFileDTO file = storageService.updateNodeFile(getLocalNodeFile(),request,null);
-        return file;
-    }
-
-    private NodeFileDTO updateNodeFileSimple() throws Exception {
-        UpdateNodeFileDTO request = new UpdateNodeFileDTO();
-        request.setLastModifyUserId("accountId");
-        request.setLastModifyRoleId("accountRoleId");
-        NodeFileDTO file = storageService.updateNodeFile(getLocalNodeFile(),request,null);
-        return file;
+        request.setPassAudit("1");
+        file = storageService.updateFile(getLocalNodeFile(),request,null);
+        file = storageService.updateFile(getLocalNodeFile(),request,null);
+        file = storageService.updateFile(getLocalNodeFile(),request,null);
     }
 
 
+    @Ignore
     @Test
-    public void testUpdateNode() throws Exception {
-        updateNodeRenameFile();
-        updateNodeMoveFileByPath();
-        updateNodeMoveFileByPid();
-        updateNodeRenamePath();
-        updateNodeMovePath();
-        updateNodeTreePty();
-        updateNodeFilePty();
-        updateNodeHisPty();
-        updateNodeMirrorPty();
-    }
-
-    private void updateNodeMirrorPty() throws Exception {
+    public void testUpdateNodeTree() throws Exception {
+        SimpleNodeDTO node;
         UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setLastModifyUserId("accountId");
-        request.setLastModifyRoleId("accountRoleId");
-        request.setMirrorTypeId("1");
-        request.setMirrorAddress("127.0.0.1");
-        request.setMirrorBaseDir("c:/work/.mirror");
-        request.setReadOnlyMirrorKey("readonlymirror");
-        request.setWritableMirrorKey("writableMirror");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),null,request,null);
-        request.setLastModifyUserId("41d244733ec54f09a255836637f2b21d");
-        request.setLastModifyRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
-        request.setMirrorTypeId("1");
-        request.setMirrorAddress("127.0.0.1");
-        request.setMirrorBaseDir("c:/work/.mirror");
-        request.setReadOnlyMirrorKey("aaaa.txt");
-        request.setWritableMirrorKey("bbbb.txt");
-        storageService.updateNode(file,null,request,null);
-    }
-
-    private void updateNodeHisPty() throws Exception {
-        UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setLastModifyUserId("accountId");
-        request.setLastModifyRoleId("accountRoleId");
-        request.setActionTypeId("2");
-        request.setRemark("remark");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),null,request,null);
-        request.setLastModifyUserId("41d244733ec54f09a255836637f2b21d");
-        request.setLastModifyRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
-        request.setActionTypeId("3");
-        request.setRemark("1111111111");
-        storageService.updateNode(file,null,request,null);
-    }
-
-    private void updateNodeFilePty() throws Exception {
-        UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setLastModifyUserId("accountId");
-        request.setLastModifyRoleId("accountRoleId");
-        request.setServerTypeId("2");
-        request.setServerAddress("serverAddress");
-        request.setBaseDir("baseDir");
-        request.setReadOnlyKey("readOnlyKey");
-        request.setWritableKey("writableKey");
-        request.setMainFileId("mainFieldId");
-        request.setFileVersion("fileVersion");
-        request.setMajorTypeId("majorTypeId");
-        request.setFileMd5("fileMd5");
-        SimpleNodeDTO file = storageService.updateNodeSimple(getLocalNode(),request,null);
-        request.setLastModifyUserId("41d244733ec54f09a255836637f2b21d");
-        request.setLastModifyRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
-        request.setServerTypeId("1");
-        request.setServerAddress("c:");
-        request.setBaseDir("/work/file_server");
-        request.setReadOnlyKey("a/b/c.txt");
-        request.setWritableKey("a/b/d.txt");
-        request.setMainFileId("2653ACA178AD49C29C2C81AB02006F69");
-        request.setFileVersion("v1.0");
-        request.setMajorTypeId("1");
-        request.setFileMd5("1111111111111111111111111111");
-        storageService.updateNode(file,null,request,null);
-    }
-
-    private void updateNodeTreePty() throws Exception {
-        UpdateNodeDTO request = new UpdateNodeDTO();
-        request.setTaskId("f05fefd3cb204314b74503290b8410f3");
         request.setOwnerUserId("ownerUserId");
         request.setLastModifyUserId("accountId");
         request.setLastModifyRoleId("accountRoleId");
-        request.setFileLength("111");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),null,request,null);
-        request.setTaskId("f04c86a1a7da43d5b27b951eb5c69a32");
-        request.setOwnerUserId("0623b7a797ac4341aaf2220bb375d670");
-        request.setLastModifyUserId("41d244733ec54f09a255836637f2b21d");
-        request.setLastModifyRoleId("1-05ed53eaf0114c18be5a658c26f9cdce");
-        request.setFileLength("153");
-        storageService.updateNode(file,null,request,null);
+        request.setPath("axax");
+        storageService.updateNode(getLocalParent(),null,request,null);
     }
 
     private void updateNodeMovePath() throws Exception {
@@ -670,7 +662,7 @@ public class StorageServiceImplTest {
         UpdateNodeDTO request = new UpdateNodeDTO();
         SimpleNodeDTO parent = getLocalNode("f43cb268d3334c76b920db4298b0239f-1");
         request.setPath("/xx/xxxx.txt");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),parent,request,null);
+        SimpleNodeDTO file = storageService.updateNode(getLocalFileNode(),parent,request,null);
         parent = getLocalNode(getLocalParent().getId());
         request.setPath("kk/kkk.txt");
         storageService.updateNode(file,parent,request,null);
@@ -679,7 +671,7 @@ public class StorageServiceImplTest {
     private void updateNodeMoveFileByPath() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setPath("/maoding/设计/施工配合/施工图配合1/ww/yyy.txt");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),null,request,null);
+        SimpleNodeDTO file = storageService.updateNode(getLocalFileNode(),null,request,null);
         request.setPath("/海狸大厦-生产安排设置人员测试/设计/施工图设计阶段/给排水施工图/废水系统/yy.txt");
         storageService.updateNode(file,null,request,null);
     }
@@ -687,7 +679,7 @@ public class StorageServiceImplTest {
     private void updateNodeRenameFile() throws Exception {
         UpdateNodeDTO request = new UpdateNodeDTO();
         request.setPath("xxxx.txt");
-        SimpleNodeDTO file = storageService.updateNode(getLocalNode(),null,request,null);
+        SimpleNodeDTO file = storageService.updateNode(getLocalFileNode(),null,request,null);
         request.setPath("yyyy.txt");
         storageService.updateNode(file,null,request,null);
     }

@@ -45,7 +45,7 @@
                                 <taskdef name="slice2java" classpath="ant-ice-4.0.0.jar"
                                          classname="Slice2JavaTask"/>
                                 <slice2java outputdir="src/main/java" includepath="src/main/resources/zeroc">
-                                    <fileset dir="src/main/resources/zeroc" includes="*.ice"/>
+                                    <fileset dir="src/main/resources/zeroc" includes="**/*.ice"/>
                                 </slice2java>
                             </target>
                         </configuration>

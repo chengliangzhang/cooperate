@@ -1,9 +1,7 @@
 #pragma once
-#include <Common.ice>
-#include <NoticeData.ice>
-#include <User.ice>
+#include <data/NoticeData.ice>
 
-[["java:package:com.maoding.Notice"]]
+[["java:package:com.maoding.notice"]]
 module zeroc {
     interface NoticeClient {
         void notice(MessageDTO msg); //接收到通知

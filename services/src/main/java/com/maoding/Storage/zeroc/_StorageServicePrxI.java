@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class _StorageServicePrxI extends com.zeroc.Ice._ObjectPrxI implements StorageServicePrx
 {

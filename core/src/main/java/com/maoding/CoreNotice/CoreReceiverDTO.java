@@ -1,4 +1,4 @@
-package com.maoding.CoreNotice;
+package com.maoding.coreNotice;
 
 import java.util.List;
 

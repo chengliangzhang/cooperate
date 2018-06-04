@@ -1,10 +1,10 @@
-package com.maoding.User.Dao;
+package com.maoding.user.dao;
 
-import com.maoding.Common.zeroc.IdNameDTO;
-import com.maoding.User.zeroc.ProjectRoleDTO;
-import com.maoding.User.zeroc.QueryMemberDTO;
-import com.maoding.User.zeroc.QueryWebRoleDTO;
-import com.maoding.User.zeroc.WebRoleDTO;
+import com.maoding.common.zeroc.IdNameDTO;
+import com.maoding.user.zeroc.ProjectRoleDTO;
+import com.maoding.user.zeroc.QueryMemberDTO;
+import com.maoding.user.zeroc.QueryWebRoleDTO;
+import com.maoding.user.zeroc.WebRoleDTO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

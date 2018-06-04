@@ -1,14 +1,14 @@
-package com.maoding.Project;
+package com.maoding.project;
 
-import com.maoding.Base.CoreLocalService;
-import com.maoding.Bean.CoreResponse;
-import com.maoding.Common.Config.WebServiceConfig;
-import com.maoding.CoreUtils.BeanUtils;
-import com.maoding.CoreUtils.FileUtils;
-import com.maoding.CoreUtils.HttpUtils;
-import com.maoding.Project.zeroc.ProjectDTO;
-import com.maoding.Project.zeroc.ProjectService;
-import com.maoding.Project.zeroc.QueryProjectDTO;
+import com.maoding.coreBase.CoreLocalService;
+import com.maoding.coreBean.CoreResponse;
+import com.maoding.common.config.WebServiceConfig;
+import com.maoding.coreUtils.BeanUtils;
+import com.maoding.coreUtils.FileUtils;
+import com.maoding.coreUtils.HttpUtils;
+import com.maoding.project.zeroc.ProjectDTO;
+import com.maoding.project.zeroc.ProjectService;
+import com.maoding.project.zeroc.QueryProjectDTO;
 import com.zeroc.Ice.Current;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;

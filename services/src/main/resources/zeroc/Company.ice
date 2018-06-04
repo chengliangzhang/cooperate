@@ -1,8 +1,7 @@
 #pragma once
-#include <Common.ice>
-#include <CompanyData.ice>
+#include <data/CompanyData.ice>
 
-[["java:package:com.maoding.Company"]]
+[["java:package:com.maoding.company"]]
 module zeroc {
     interface CompanyService {
         CompanyList listCompany(QueryCompanyDTO query); //获取指定用户所属组织

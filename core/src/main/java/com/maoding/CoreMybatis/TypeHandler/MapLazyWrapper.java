@@ -1,4 +1,4 @@
-package com.maoding.CoreMybatis.TypeHandler;
+package com.maoding.coreMybatis.typeHandler;
 
 import java.io.IOException;
 import java.io.Serializable;

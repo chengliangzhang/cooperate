@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.FileServer.zeroc;
+package com.maoding.fileServer.zeroc;
 
 public class _FileServicePrxI extends com.zeroc.Ice._ObjectPrxI implements FileServicePrx
 {

@@ -16,7 +16,12 @@ spring:
 # Druid
 # ===================================================================
 druid:
-    url: jdbc:mysql://172.16.6.71:3306/maoding_qa
+#### .com数据库
+    url: jdbc:mysql://rm-wz93ulb0g6s0y3bi4o.mysql.rds.aliyuncs.com:3306/maoding_pord_v2
+#### .net数据库
+#    url: jdbc:mysql://rm-wz93ulb0g6s0y3bi4o.mysql.rds.aliyuncs.com:3306/md_net
+#### 内网数据库
+#    url: jdbc:mysql://172.16.6.71:3306/maoding_qa
     username: idccapp
     password: idccapp
     driverClassName: com.mysql.jdbc.Driver
@@ -51,7 +56,7 @@ mybatis:
 
 mapper:
     mappers:
-        - com.maoding.Base.CoreDao
+        - com.maoding.coreBase.CoreDao
     not-empty: false
     identity: MYSQL
 
@@ -66,26 +71,38 @@ logging:
 # ===================================================================
 ice:
     config: c:/work/maoding-services/services/src/main/resources/properties/ice-config-test.properties
+#    storage: StorageService@StorageServer;--Ice.Default.Locator=IceGrid/Locator:tcp -h 120.24.238.128 -p 4061
+#    user:
+#    notice:
+#    topic:
 
 # ===================================================================
 # WEB SERVICE
 # ===================================================================
-webservice:
-    url: http://172.16.6.73/maoding
+webService:
+#    maodingWeb: http://39.108.169.202/maoding
+#    maodingWeb: http://172.16.6.73/maoding
+    maodingWeb: https://www.idccplus.com/maoding
+### .com上的file-center地址
+    fileCenter: https://www.imaoding.com/fileCenter
+### 开发机上的file-center地址
+#    fileCenter: http://192.168.15.114:8071/fileCenter
+
 
 # ===================================================================
 # FILE SERVER
 # ===================================================================
-fileserver:
-    type: 5
-    storageServiceAdapter: StorageServer;192.168.13.140
-    noticeServiceAdapter: NoticeServer;192.168.13.140
+#fileServer:
+#    serverTypeId:
+#    serverAddress:
+#    baseDir:
+#    mirrorBaseDir:
 
 # ===================================================================
 # NOTICE SERVICE
 # ===================================================================
 notice:
-    topicAdapter: StormSvr;192.168.13.140
+    topicAdapter: StormSvr;127.0.0.1
     commonTopic: notify:web;im:account
 
 # ===================================================================
@@ -111,5 +128,11 @@ activemq:
 startup:
     database:
     activemq:
-    icegrid: c:/work/maoding-services/icestart.bat;c:/work/maoding-services/services/src/main/resources/properties/command-dev.properties;icegridregistry
-    icebox: c:/work/maoding-services/icestart.bat;c:/work/maoding-services/services/src/main/resources/properties/command-dev.properties;icebox
+    icegrid: c:/work/maoding-services/icestart.bat;c:/work/maoding-services/services/src/main/resources/properties/command.properties;icegridregistry
+    icebox: c:/work/maoding-services/icestart.bat;c:/work/maoding-services/services/src/main/resources/properties/command.properties;icebox
+
+# ===================================================================
+# Schedule
+# ===================================================================
+schedule:
+    clearServer: false

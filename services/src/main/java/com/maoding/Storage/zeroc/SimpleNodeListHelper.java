@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public final class SimpleNodeListHelper
 {
@@ -42,7 +42,7 @@ public final class SimpleNodeListHelper
     {
         final java.util.List<SimpleNodeDTO> v;
         v = new java.util.ArrayList<SimpleNodeDTO>();
-        final int len0 = istr.readAndCheckSeqSize(39);
+        final int len0 = istr.readAndCheckSeqSize(43);
         for(int i0 = 0; i0 < len0; i0++)
         {
             SimpleNodeDTO elem;

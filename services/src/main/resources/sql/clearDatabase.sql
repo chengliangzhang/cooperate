@@ -10,6 +10,7 @@ DROP PROCEDURE IF EXISTS `clearStorageData`;
 DROP PROCEDURE IF EXISTS `copyFileRealPath`;
 DROP PROCEDURE IF EXISTS `copyStorageData`;
 DROP PROCEDURE IF EXISTS `updatePermissionTables`;
+DROP PROCEDURE IF EXISTS `clearTables`;
 DROP FUNCTION IF EXISTS `getIssueId`;
 DROP FUNCTION IF EXISTS `getPath`;
 DROP FUNCTION IF EXISTS `getTaskPath`;
@@ -28,6 +29,16 @@ DROP TABLE IF EXISTS `sys_maoding_web_org`;
 DROP TABLE IF EXISTS `sys_maoding_web_org_relation`;
 DROP TABLE IF EXISTS `sys_maoding_web_user`;
 DROP TABLE IF EXISTS `sys_maoding_web_user_admin`;
+
+--清理无效的im表
+DROP TABLE IF EXISTS `maoding_web_im_error_user`;
+DROP TABLE IF EXISTS `maoding_web_im_chat_history`;
+DROP TABLE IF EXISTS `maoding_web_im_group`;
+DROP TABLE IF EXISTS `maoding_web_im_group_error`;
+DROP TABLE IF EXISTS `maoding_web_im_group_error_user`;
+DROP TABLE IF EXISTS `maoding_web_im_group_user`;
+DROP TABLE IF EXISTS `maoding_web_im_user`;
+
 
 -- 清理无效视图
 DROP VIEW IF EXISTS `maoding_storage_file_tmp`;
@@ -68,16 +79,16 @@ DROP VIEW IF EXISTS `maoding_storage_task`;
 DROP VIEW IF EXISTS `maoding_task_node`;
 
 -- -- 清理无用字段
-DROP PROCEDURE IF EXISTS `clearTables`;
-CREATE PROCEDURE `clearTables`()
+DROP PROCEDURE IF EXISTS `clearFields`;
+CREATE PROCEDURE `clearFields`()
 BEGIN
   -- md_tree_storage
-  if exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_tree_storage' and column_name='file_length') then
-    alter table md_tree_storage drop column `file_length`;
+  if exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='md_tree_storage' and column_name='node_length') then
+    alter table md_tree_storage drop column `node_length`;
   end if;
 
 END;
-call clearTables();
+call clearFields();
 
 -- -- 清理无效数据
 DROP PROCEDURE IF EXISTS `clearData`;

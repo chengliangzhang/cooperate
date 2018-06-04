@@ -1,7 +1,7 @@
-package com.maoding.CoreFileServer.Ftp;
+package com.maoding.coreFileServer.ftp;
 
-import com.maoding.CoreFileServer.*;
-import com.maoding.CoreUtils.StringUtils;
+import com.maoding.coreFileServer.*;
+import com.maoding.coreUtils.StringUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;

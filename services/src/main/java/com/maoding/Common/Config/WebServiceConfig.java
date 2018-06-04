@@ -1,4 +1,4 @@
-package com.maoding.Common.Config;
+package com.maoding.common.config;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -12,23 +12,34 @@ import org.springframework.stereotype.Component;
  * 描    述 :
  */
 @Component
-@ConfigurationProperties(prefix = "webservice")
-public class WebServiceConfig {
+@ConfigurationProperties(prefix = "webService")
+public class WebServiceConfig extends BaseConfig {
+    private final static String DEFAULT_WEB_URL = "http://172.16.6.73/maoding";
+    private final static String DEFAULT_FILE_CENTER_URL = "http://172.16.6.71:8071";
 
-    private String url;
+    private String maodingWeb;
+    private String fileCenter;
     private CloseableHttpClient client = null;
 
-    public String getUrl() {
-        return url;
+    public String getMaodingWeb() {
+        return getProperty("maodingWeb",maodingWeb,DEFAULT_WEB_URL);
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setMaodingWeb(String maodingWeb) {
+        this.maodingWeb = maodingWeb;
+    }
+
+    public String getFileCenter() {
+        return getProperty("fileCenter",fileCenter,DEFAULT_FILE_CENTER_URL);
+    }
+
+    public void setFileCenter(String fileCenter) {
+        this.fileCenter = fileCenter;
     }
 
     public String getLoginUrl() {
         String LOGIN_URL = "/iWork/sys/login";
-        return url + LOGIN_URL;
+        return getMaodingWeb() + LOGIN_URL;
     }
 
     public String getLoginParamsType() {
@@ -37,15 +48,15 @@ public class WebServiceConfig {
 
     public String getGetCurrentUrl() {
         String GET_WORK_URL = "/iWork/sys/getCurrUserOfWork";
-        return url + GET_WORK_URL;
+        return getMaodingWeb() + GET_WORK_URL;
     }
 
     public String getLoadProjectDetailsUrl(){
-        return url + "/iWork/project/loadProjectDetails";
+        return getMaodingWeb() + "/iWork/project/loadProjectDetails";
     }
 
     public String getUploadUrl(){
-        return url + "/fileCenter/netFile/uploadFile";
+        return getMaodingWeb() + "/netFile/uploadFile";
     }
 
     public CloseableHttpClient getClient() {
@@ -69,5 +80,9 @@ public class WebServiceConfig {
 
     public String getGetCurrentInfoKey() {
         return "userInfo";
+    }
+
+    public String getUpload(){
+        return "netFile/uploadFile";
     }
 }

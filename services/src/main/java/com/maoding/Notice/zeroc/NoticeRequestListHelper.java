@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Notice.zeroc;
+package com.maoding.notice.zeroc;
 
 public final class NoticeRequestListHelper
 {
@@ -42,7 +42,7 @@ public final class NoticeRequestListHelper
     {
         final java.util.List<NoticeRequestDTO> v;
         v = new java.util.ArrayList<NoticeRequestDTO>();
-        final int len0 = istr.readAndCheckSeqSize(27);
+        final int len0 = istr.readAndCheckSeqSize(28);
         for(int i0 = 0; i0 < len0; i0++)
         {
             NoticeRequestDTO elem;

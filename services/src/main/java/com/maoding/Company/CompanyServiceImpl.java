@@ -1,8 +1,8 @@
-package com.maoding.Company;
+package com.maoding.company;
 
-import com.maoding.Company.zeroc.CompanyDTO;
-import com.maoding.Company.zeroc.CompanyService;
-import com.maoding.Company.zeroc.QueryCompanyDTO;
+import com.maoding.company.zeroc.CompanyDTO;
+import com.maoding.company.zeroc.CompanyService;
+import com.maoding.company.zeroc.QueryCompanyDTO;
 import com.zeroc.Ice.Current;
 import org.springframework.stereotype.Service;
 

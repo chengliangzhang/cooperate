@@ -1,4 +1,4 @@
-package com.maoding.CoreNotice.ActiveMQ;
+package com.maoding.coreNotice.activeMQ;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

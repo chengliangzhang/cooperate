@@ -1,8 +1,7 @@
 #pragma once
-#include <Common.ice>
-#include <UserData.ice>
+#include <data/UserData.ice>
 
-[["java:package:com.maoding.User"]]
+[["java:package:com.maoding.user"]]
 module zeroc {
     interface UserService {
         void setWebRoleStatus(WebRoleDTO webRole,string statusId); //设置角色的工作状态

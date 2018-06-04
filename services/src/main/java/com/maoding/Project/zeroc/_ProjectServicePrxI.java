@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Project.zeroc;
+package com.maoding.project.zeroc;
 
 public class _ProjectServicePrxI extends com.zeroc.Ice._ObjectPrxI implements ProjectServicePrx
 {

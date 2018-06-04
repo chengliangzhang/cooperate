@@ -51,7 +51,7 @@ mybatis:
 
 mapper:
     mappers:
-        - com.maoding.Base.CoreDao
+        - com.maoding.coreBase.CoreDao
     not-empty: false
     identity: MYSQL
 
@@ -70,8 +70,9 @@ ice:
 # ===================================================================
 # WEB SERVICE
 # ===================================================================
-webservice:
-    url: http://172.16.6.73/maoding
+webService:
+    maodingWeb: http://172.16.6.73/maoding
+    fileCenter: http://172.16.6.73:8071
 
 # ===================================================================
 # OSS 阿里云文件服务

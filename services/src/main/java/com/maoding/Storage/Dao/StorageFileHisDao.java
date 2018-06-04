@@ -1,7 +1,7 @@
-package com.maoding.Storage.Dao;
+package com.maoding.storage.dao;
 
-import com.maoding.Base.CoreDao;
-import com.maoding.Storage.Entity.StorageFileHisEntity;
+import com.maoding.coreBase.CoreDao;
+import com.maoding.storage.entity.StorageFileHisEntity;
 import org.springframework.stereotype.Repository;
 
 /**

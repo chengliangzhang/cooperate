@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.User.zeroc;
+package com.maoding.user.zeroc;
 
 public final class UserListHelper
 {

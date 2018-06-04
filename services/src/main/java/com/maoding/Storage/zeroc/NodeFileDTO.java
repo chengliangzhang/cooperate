@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class NodeFileDTO implements java.lang.Cloneable,
                                     java.io.Serializable
@@ -47,6 +47,18 @@ public class NodeFileDTO implements java.lang.Cloneable,
         this.fileTypeId = fileTypeId;
     }
 
+    public String fileTypeName;
+
+    public String getFileTypeName()
+    {
+        return fileTypeName;
+    }
+
+    public void setFileTypeName(String fileTypeName)
+    {
+        this.fileTypeName = fileTypeName;
+    }
+
     public String fileVersion;
 
     public String getFileVersion()
@@ -59,16 +71,49 @@ public class NodeFileDTO implements java.lang.Cloneable,
         this.fileVersion = fileVersion;
     }
 
+    public long fileLength;
+
+    public long getFileLength()
+    {
+        return fileLength;
+    }
+
+    public void setFileLength(long fileLength)
+    {
+        this.fileLength = fileLength;
+    }
+
+    /**
+     **/
+    @Deprecated
     public String fileChecksum;
 
+    /**
+     **/
+    @Deprecated
     public String getFileChecksum()
     {
         return fileChecksum;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setFileChecksum(String fileChecksum)
     {
         this.fileChecksum = fileChecksum;
+    }
+
+    public String fileMd5;
+
+    public String getFileMd5()
+    {
+        return fileMd5;
+    }
+
+    public void setFileMd5(String fileMd5)
+    {
+        this.fileMd5 = fileMd5;
     }
 
     public String majorTypeId;
@@ -95,38 +140,169 @@ public class NodeFileDTO implements java.lang.Cloneable,
         this.mainFileId = mainFileId;
     }
 
+    public String companyId;
+
+    public String getCompanyId()
+    {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId)
+    {
+        this.companyId = companyId;
+    }
+
+    public long lastFileLength;
+
+    public long getLastFileLength()
+    {
+        return lastFileLength;
+    }
+
+    public void setLastFileLength(long lastFileLength)
+    {
+        this.lastFileLength = lastFileLength;
+    }
+
+    public String lastFileMd5;
+
+    public String getLastFileMd5()
+    {
+        return lastFileMd5;
+    }
+
+    public void setLastFileMd5(String lastFileMd5)
+    {
+        this.lastFileMd5 = lastFileMd5;
+    }
+
+    public long lastCommitFileLength;
+
+    public long getLastCommitFileLength()
+    {
+        return lastCommitFileLength;
+    }
+
+    public void setLastCommitFileLength(long lastCommitFileLength)
+    {
+        this.lastCommitFileLength = lastCommitFileLength;
+    }
+
+    public String lastCommitFileMd5;
+
+    public String getLastCommitFileMd5()
+    {
+        return lastCommitFileMd5;
+    }
+
+    public void setLastCommitFileMd5(String lastCommitFileMd5)
+    {
+        this.lastCommitFileMd5 = lastCommitFileMd5;
+    }
+
+    /**
+     **/
+    @Deprecated
     public boolean isPassCheck;
 
+    /**
+     **/
+    @Deprecated
     public boolean getIsPassCheck()
     {
         return isPassCheck;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setIsPassCheck(boolean isPassCheck)
     {
         this.isPassCheck = isPassCheck;
     }
 
+    @Deprecated
     public boolean isIsPassCheck()
     {
         return isPassCheck;
     }
 
+    /**
+     **/
+    @Deprecated
     public boolean isPassAudit;
 
+    /**
+     **/
+    @Deprecated
     public boolean getIsPassAudit()
     {
         return isPassAudit;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setIsPassAudit(boolean isPassAudit)
     {
         this.isPassAudit = isPassAudit;
     }
 
+    @Deprecated
     public boolean isIsPassAudit()
     {
         return isPassAudit;
+    }
+
+    public boolean passDesign;
+
+    public boolean getPassDesign()
+    {
+        return passDesign;
+    }
+
+    public void setPassDesign(boolean passDesign)
+    {
+        this.passDesign = passDesign;
+    }
+
+    public boolean isPassDesign()
+    {
+        return passDesign;
+    }
+
+    public boolean passCheck;
+
+    public boolean getPassCheck()
+    {
+        return passCheck;
+    }
+
+    public void setPassCheck(boolean passCheck)
+    {
+        this.passCheck = passCheck;
+    }
+
+    public boolean isPassCheck()
+    {
+        return passCheck;
+    }
+
+    public boolean passAudit;
+
+    public boolean getPassAudit()
+    {
+        return passAudit;
+    }
+
+    public void setPassAudit(boolean passAudit)
+    {
+        this.passAudit = passAudit;
+    }
+
+    public boolean isPassAudit()
+    {
+        return passAudit;
     }
 
     public String serverTypeId;
@@ -189,64 +365,334 @@ public class NodeFileDTO implements java.lang.Cloneable,
         this.writableKey = writableKey;
     }
 
+    public String mainServerTypeId;
+
+    public String getMainServerTypeId()
+    {
+        return mainServerTypeId;
+    }
+
+    public void setMainServerTypeId(String mainServerTypeId)
+    {
+        this.mainServerTypeId = mainServerTypeId;
+    }
+
+    public String mainServerAddress;
+
+    public String getMainServerAddress()
+    {
+        return mainServerAddress;
+    }
+
+    public void setMainServerAddress(String mainServerAddress)
+    {
+        this.mainServerAddress = mainServerAddress;
+    }
+
+    public String mainBaseDir;
+
+    public String getMainBaseDir()
+    {
+        return mainBaseDir;
+    }
+
+    public void setMainBaseDir(String mainBaseDir)
+    {
+        this.mainBaseDir = mainBaseDir;
+    }
+
+    public String mainFileTypeId;
+
+    public String getMainFileTypeId()
+    {
+        return mainFileTypeId;
+    }
+
+    public void setMainFileTypeId(String mainFileTypeId)
+    {
+        this.mainFileTypeId = mainFileTypeId;
+    }
+
+    /**
+     **/
+    @Deprecated
     public String readOnlyMirrorKey;
 
+    /**
+     **/
+    @Deprecated
     public String getReadOnlyMirrorKey()
     {
         return readOnlyMirrorKey;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setReadOnlyMirrorKey(String readOnlyMirrorKey)
     {
         this.readOnlyMirrorKey = readOnlyMirrorKey;
     }
 
+    /**
+     **/
+    @Deprecated
     public String writableMirrorKey;
 
+    /**
+     **/
+    @Deprecated
     public String getWritableMirrorKey()
     {
         return writableMirrorKey;
     }
 
+    /**
+     **/
+    @Deprecated
     public void setWritableMirrorKey(String writableMirrorKey)
     {
         this.writableMirrorKey = writableMirrorKey;
+    }
+
+    public String nodeId;
+
+    public String getNodeId()
+    {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId)
+    {
+        this.nodeId = nodeId;
+    }
+
+    public String pid;
+
+    public String getPid()
+    {
+        return pid;
+    }
+
+    public void setPid(String pid)
+    {
+        this.pid = pid;
+    }
+
+    public String name;
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public long createTimeStamp;
+
+    public long getCreateTimeStamp()
+    {
+        return createTimeStamp;
+    }
+
+    public void setCreateTimeStamp(long createTimeStamp)
+    {
+        this.createTimeStamp = createTimeStamp;
+    }
+
+    public long lastModifyTimeStamp;
+
+    public long getLastModifyTimeStamp()
+    {
+        return lastModifyTimeStamp;
+    }
+
+    public void setLastModifyTimeStamp(long lastModifyTimeStamp)
+    {
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
+    }
+
+    public String path;
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
+
+    public String roleName;
+
+    public String getRoleName()
+    {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName)
+    {
+        this.roleName = roleName;
+    }
+
+    public String projectId;
+
+    public String getProjectId()
+    {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId)
+    {
+        this.projectId = projectId;
+    }
+
+    public String projectName;
+
+    public String getProjectName()
+    {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName)
+    {
+        this.projectName = projectName;
+    }
+
+    public String taskId;
+
+    public String getTaskId()
+    {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId)
+    {
+        this.taskId = taskId;
+    }
+
+    public String taskName;
+
+    public String getTaskName()
+    {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName)
+    {
+        this.taskName = taskName;
+    }
+
+    public String ownerUserId;
+
+    public String getOwnerUserId()
+    {
+        return ownerUserId;
+    }
+
+    public void setOwnerUserId(String ownerUserId)
+    {
+        this.ownerUserId = ownerUserId;
+    }
+
+    public String ownerName;
+
+    public String getOwnerName()
+    {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName)
+    {
+        this.ownerName = ownerName;
     }
 
     public NodeFileDTO()
     {
         this.id = "";
         this.fileTypeId = "";
+        this.fileTypeName = "";
         this.fileVersion = "";
         this.fileChecksum = "";
+        this.fileMd5 = "";
         this.majorTypeId = "";
         this.mainFileId = "";
+        this.companyId = "";
+        this.lastFileMd5 = "";
+        this.lastCommitFileMd5 = "";
         this.serverTypeId = "";
         this.serverAddress = "";
         this.baseDir = "";
         this.readOnlyKey = "";
         this.writableKey = "";
+        this.mainServerTypeId = "";
+        this.mainServerAddress = "";
+        this.mainBaseDir = "";
+        this.mainFileTypeId = "";
         this.readOnlyMirrorKey = "";
         this.writableMirrorKey = "";
+        this.nodeId = "";
+        this.pid = "";
+        this.name = "";
+        this.path = "";
+        this.roleName = "";
+        this.projectId = "";
+        this.projectName = "";
+        this.taskId = "";
+        this.taskName = "";
+        this.ownerUserId = "";
+        this.ownerName = "";
     }
 
-    public NodeFileDTO(String id, String fileTypeId, String fileVersion, String fileChecksum, String majorTypeId, String mainFileId, boolean isPassCheck, boolean isPassAudit, String serverTypeId, String serverAddress, String baseDir, String readOnlyKey, String writableKey, String readOnlyMirrorKey, String writableMirrorKey)
+    public NodeFileDTO(String id, String fileTypeId, String fileTypeName, String fileVersion, long fileLength, String fileChecksum, String fileMd5, String majorTypeId, String mainFileId, String companyId, long lastFileLength, String lastFileMd5, long lastCommitFileLength, String lastCommitFileMd5, boolean isPassCheck, boolean isPassAudit, boolean passDesign, boolean passCheck, boolean passAudit, String serverTypeId, String serverAddress, String baseDir, String readOnlyKey, String writableKey, String mainServerTypeId, String mainServerAddress, String mainBaseDir, String mainFileTypeId, String readOnlyMirrorKey, String writableMirrorKey, String nodeId, String pid, String name, long createTimeStamp, long lastModifyTimeStamp, String path, String roleName, String projectId, String projectName, String taskId, String taskName, String ownerUserId, String ownerName)
     {
         this.id = id;
         this.fileTypeId = fileTypeId;
+        this.fileTypeName = fileTypeName;
         this.fileVersion = fileVersion;
+        this.fileLength = fileLength;
         this.fileChecksum = fileChecksum;
+        this.fileMd5 = fileMd5;
         this.majorTypeId = majorTypeId;
         this.mainFileId = mainFileId;
+        this.companyId = companyId;
+        this.lastFileLength = lastFileLength;
+        this.lastFileMd5 = lastFileMd5;
+        this.lastCommitFileLength = lastCommitFileLength;
+        this.lastCommitFileMd5 = lastCommitFileMd5;
         this.isPassCheck = isPassCheck;
         this.isPassAudit = isPassAudit;
+        this.passDesign = passDesign;
+        this.passCheck = passCheck;
+        this.passAudit = passAudit;
         this.serverTypeId = serverTypeId;
         this.serverAddress = serverAddress;
         this.baseDir = baseDir;
         this.readOnlyKey = readOnlyKey;
         this.writableKey = writableKey;
+        this.mainServerTypeId = mainServerTypeId;
+        this.mainServerAddress = mainServerAddress;
+        this.mainBaseDir = mainBaseDir;
+        this.mainFileTypeId = mainFileTypeId;
         this.readOnlyMirrorKey = readOnlyMirrorKey;
         this.writableMirrorKey = writableMirrorKey;
+        this.nodeId = nodeId;
+        this.pid = pid;
+        this.name = name;
+        this.createTimeStamp = createTimeStamp;
+        this.lastModifyTimeStamp = lastModifyTimeStamp;
+        this.path = path;
+        this.roleName = roleName;
+        this.projectId = projectId;
+        this.projectName = projectName;
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.ownerUserId = ownerUserId;
+        this.ownerName = ownerName;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -277,6 +723,13 @@ public class NodeFileDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.fileTypeName != r.fileTypeName)
+            {
+                if(this.fileTypeName == null || r.fileTypeName == null || !this.fileTypeName.equals(r.fileTypeName))
+                {
+                    return false;
+                }
+            }
             if(this.fileVersion != r.fileVersion)
             {
                 if(this.fileVersion == null || r.fileVersion == null || !this.fileVersion.equals(r.fileVersion))
@@ -284,9 +737,20 @@ public class NodeFileDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.fileLength != r.fileLength)
+            {
+                return false;
+            }
             if(this.fileChecksum != r.fileChecksum)
             {
                 if(this.fileChecksum == null || r.fileChecksum == null || !this.fileChecksum.equals(r.fileChecksum))
+                {
+                    return false;
+                }
+            }
+            if(this.fileMd5 != r.fileMd5)
+            {
+                if(this.fileMd5 == null || r.fileMd5 == null || !this.fileMd5.equals(r.fileMd5))
                 {
                     return false;
                 }
@@ -305,11 +769,52 @@ public class NodeFileDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.companyId != r.companyId)
+            {
+                if(this.companyId == null || r.companyId == null || !this.companyId.equals(r.companyId))
+                {
+                    return false;
+                }
+            }
+            if(this.lastFileLength != r.lastFileLength)
+            {
+                return false;
+            }
+            if(this.lastFileMd5 != r.lastFileMd5)
+            {
+                if(this.lastFileMd5 == null || r.lastFileMd5 == null || !this.lastFileMd5.equals(r.lastFileMd5))
+                {
+                    return false;
+                }
+            }
+            if(this.lastCommitFileLength != r.lastCommitFileLength)
+            {
+                return false;
+            }
+            if(this.lastCommitFileMd5 != r.lastCommitFileMd5)
+            {
+                if(this.lastCommitFileMd5 == null || r.lastCommitFileMd5 == null || !this.lastCommitFileMd5.equals(r.lastCommitFileMd5))
+                {
+                    return false;
+                }
+            }
             if(this.isPassCheck != r.isPassCheck)
             {
                 return false;
             }
             if(this.isPassAudit != r.isPassAudit)
+            {
+                return false;
+            }
+            if(this.passDesign != r.passDesign)
+            {
+                return false;
+            }
+            if(this.passCheck != r.passCheck)
+            {
+                return false;
+            }
+            if(this.passAudit != r.passAudit)
             {
                 return false;
             }
@@ -348,6 +853,34 @@ public class NodeFileDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.mainServerTypeId != r.mainServerTypeId)
+            {
+                if(this.mainServerTypeId == null || r.mainServerTypeId == null || !this.mainServerTypeId.equals(r.mainServerTypeId))
+                {
+                    return false;
+                }
+            }
+            if(this.mainServerAddress != r.mainServerAddress)
+            {
+                if(this.mainServerAddress == null || r.mainServerAddress == null || !this.mainServerAddress.equals(r.mainServerAddress))
+                {
+                    return false;
+                }
+            }
+            if(this.mainBaseDir != r.mainBaseDir)
+            {
+                if(this.mainBaseDir == null || r.mainBaseDir == null || !this.mainBaseDir.equals(r.mainBaseDir))
+                {
+                    return false;
+                }
+            }
+            if(this.mainFileTypeId != r.mainFileTypeId)
+            {
+                if(this.mainFileTypeId == null || r.mainFileTypeId == null || !this.mainFileTypeId.equals(r.mainFileTypeId))
+                {
+                    return false;
+                }
+            }
             if(this.readOnlyMirrorKey != r.readOnlyMirrorKey)
             {
                 if(this.readOnlyMirrorKey == null || r.readOnlyMirrorKey == null || !this.readOnlyMirrorKey.equals(r.readOnlyMirrorKey))
@@ -358,6 +891,91 @@ public class NodeFileDTO implements java.lang.Cloneable,
             if(this.writableMirrorKey != r.writableMirrorKey)
             {
                 if(this.writableMirrorKey == null || r.writableMirrorKey == null || !this.writableMirrorKey.equals(r.writableMirrorKey))
+                {
+                    return false;
+                }
+            }
+            if(this.nodeId != r.nodeId)
+            {
+                if(this.nodeId == null || r.nodeId == null || !this.nodeId.equals(r.nodeId))
+                {
+                    return false;
+                }
+            }
+            if(this.pid != r.pid)
+            {
+                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
+                {
+                    return false;
+                }
+            }
+            if(this.name != r.name)
+            {
+                if(this.name == null || r.name == null || !this.name.equals(r.name))
+                {
+                    return false;
+                }
+            }
+            if(this.createTimeStamp != r.createTimeStamp)
+            {
+                return false;
+            }
+            if(this.lastModifyTimeStamp != r.lastModifyTimeStamp)
+            {
+                return false;
+            }
+            if(this.path != r.path)
+            {
+                if(this.path == null || r.path == null || !this.path.equals(r.path))
+                {
+                    return false;
+                }
+            }
+            if(this.roleName != r.roleName)
+            {
+                if(this.roleName == null || r.roleName == null || !this.roleName.equals(r.roleName))
+                {
+                    return false;
+                }
+            }
+            if(this.projectId != r.projectId)
+            {
+                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
+                {
+                    return false;
+                }
+            }
+            if(this.projectName != r.projectName)
+            {
+                if(this.projectName == null || r.projectName == null || !this.projectName.equals(r.projectName))
+                {
+                    return false;
+                }
+            }
+            if(this.taskId != r.taskId)
+            {
+                if(this.taskId == null || r.taskId == null || !this.taskId.equals(r.taskId))
+                {
+                    return false;
+                }
+            }
+            if(this.taskName != r.taskName)
+            {
+                if(this.taskName == null || r.taskName == null || !this.taskName.equals(r.taskName))
+                {
+                    return false;
+                }
+            }
+            if(this.ownerUserId != r.ownerUserId)
+            {
+                if(this.ownerUserId == null || r.ownerUserId == null || !this.ownerUserId.equals(r.ownerUserId))
+                {
+                    return false;
+                }
+            }
+            if(this.ownerName != r.ownerName)
+            {
+                if(this.ownerName == null || r.ownerName == null || !this.ownerName.equals(r.ownerName))
                 {
                     return false;
                 }
@@ -375,19 +993,47 @@ public class NodeFileDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::NodeFileDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileTypeName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileVersion);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileLength);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileChecksum);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileMd5);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, majorTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainFileId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastFileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastFileMd5);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastCommitFileLength);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastCommitFileMd5);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassCheck);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isPassAudit);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, passDesign);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, passCheck);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, passAudit);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverAddress);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, baseDir);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readOnlyKey);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableKey);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainServerTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainServerAddress);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainBaseDir);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainFileTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, readOnlyMirrorKey);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, writableMirrorKey);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, nodeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, createTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyTimeStamp);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, roleName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerName);
         return h_;
     }
 
@@ -409,38 +1055,94 @@ public class NodeFileDTO implements java.lang.Cloneable,
     {
         ostr.writeString(this.id);
         ostr.writeString(this.fileTypeId);
+        ostr.writeString(this.fileTypeName);
         ostr.writeString(this.fileVersion);
+        ostr.writeLong(this.fileLength);
         ostr.writeString(this.fileChecksum);
+        ostr.writeString(this.fileMd5);
         ostr.writeString(this.majorTypeId);
         ostr.writeString(this.mainFileId);
+        ostr.writeString(this.companyId);
+        ostr.writeLong(this.lastFileLength);
+        ostr.writeString(this.lastFileMd5);
+        ostr.writeLong(this.lastCommitFileLength);
+        ostr.writeString(this.lastCommitFileMd5);
         ostr.writeBool(this.isPassCheck);
         ostr.writeBool(this.isPassAudit);
+        ostr.writeBool(this.passDesign);
+        ostr.writeBool(this.passCheck);
+        ostr.writeBool(this.passAudit);
         ostr.writeString(this.serverTypeId);
         ostr.writeString(this.serverAddress);
         ostr.writeString(this.baseDir);
         ostr.writeString(this.readOnlyKey);
         ostr.writeString(this.writableKey);
+        ostr.writeString(this.mainServerTypeId);
+        ostr.writeString(this.mainServerAddress);
+        ostr.writeString(this.mainBaseDir);
+        ostr.writeString(this.mainFileTypeId);
         ostr.writeString(this.readOnlyMirrorKey);
         ostr.writeString(this.writableMirrorKey);
+        ostr.writeString(this.nodeId);
+        ostr.writeString(this.pid);
+        ostr.writeString(this.name);
+        ostr.writeLong(this.createTimeStamp);
+        ostr.writeLong(this.lastModifyTimeStamp);
+        ostr.writeString(this.path);
+        ostr.writeString(this.roleName);
+        ostr.writeString(this.projectId);
+        ostr.writeString(this.projectName);
+        ostr.writeString(this.taskId);
+        ostr.writeString(this.taskName);
+        ostr.writeString(this.ownerUserId);
+        ostr.writeString(this.ownerName);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.id = istr.readString();
         this.fileTypeId = istr.readString();
+        this.fileTypeName = istr.readString();
         this.fileVersion = istr.readString();
+        this.fileLength = istr.readLong();
         this.fileChecksum = istr.readString();
+        this.fileMd5 = istr.readString();
         this.majorTypeId = istr.readString();
         this.mainFileId = istr.readString();
+        this.companyId = istr.readString();
+        this.lastFileLength = istr.readLong();
+        this.lastFileMd5 = istr.readString();
+        this.lastCommitFileLength = istr.readLong();
+        this.lastCommitFileMd5 = istr.readString();
         this.isPassCheck = istr.readBool();
         this.isPassAudit = istr.readBool();
+        this.passDesign = istr.readBool();
+        this.passCheck = istr.readBool();
+        this.passAudit = istr.readBool();
         this.serverTypeId = istr.readString();
         this.serverAddress = istr.readString();
         this.baseDir = istr.readString();
         this.readOnlyKey = istr.readString();
         this.writableKey = istr.readString();
+        this.mainServerTypeId = istr.readString();
+        this.mainServerAddress = istr.readString();
+        this.mainBaseDir = istr.readString();
+        this.mainFileTypeId = istr.readString();
         this.readOnlyMirrorKey = istr.readString();
         this.writableMirrorKey = istr.readString();
+        this.nodeId = istr.readString();
+        this.pid = istr.readString();
+        this.name = istr.readString();
+        this.createTimeStamp = istr.readLong();
+        this.lastModifyTimeStamp = istr.readLong();
+        this.path = istr.readString();
+        this.roleName = istr.readString();
+        this.projectId = istr.readString();
+        this.projectName = istr.readString();
+        this.taskId = istr.readString();
+        this.taskName = istr.readString();
+        this.ownerUserId = istr.readString();
+        this.ownerName = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, NodeFileDTO v)
@@ -495,5 +1197,5 @@ public class NodeFileDTO implements java.lang.Cloneable,
 
     private static final NodeFileDTO _nullMarshalValue = new NodeFileDTO();
 
-    public static final long serialVersionUID = 537888817L;
+    public static final long serialVersionUID = 1164279292L;
 }

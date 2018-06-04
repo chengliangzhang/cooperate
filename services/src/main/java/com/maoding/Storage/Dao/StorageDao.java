@@ -1,8 +1,8 @@
-package com.maoding.Storage.Dao;
+package com.maoding.storage.dao;
 
-import com.maoding.Storage.Dto.StorageEntityUnionDTO;
-import com.maoding.Storage.Entity.StorageFileEntity;
-import com.maoding.Storage.zeroc.*;
+import com.maoding.storage.dto.StorageEntityUnionDTO;
+import com.maoding.storage.entity.StorageFileEntity;
+import com.maoding.storage.zeroc.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -17,19 +17,24 @@ import java.util.Map;
  */
 @Repository
 public interface StorageDao {
-//    @Deprecated
+    @Deprecated
     List<CANodeDTO> listCANode(QueryCANodeDTO query);
 
-//    List<FileNodeDTO> listFile(QueryFileNodeDTO query);
+    List<NodeFileDTO> listFile(QueryNodeDTO query);
+    List<FullNodeDTO> listFullNode(QueryNodeDTO query);
+    List<HistoryDTO> listHistory(QueryHistoryDTO query);
     List<SimpleNodeDTO> listWebArchiveDir(QueryNodeDTO query);
 
     List<SimpleNodeDTO> listNode(QueryNodeDTO query);
+
+    @Deprecated
     List<NodeFileDTO> listNodeFile(QueryNodeFileDTO query);
 
     StorageEntityUnionDTO selectStorageEntityUnion(QueryNodeDTO query);
     StorageFileEntity selectFileEntity(Map<String,Object> query);
 
+    @Deprecated
     FullNodeDTO getNodeDetailByNodeId(@Param("id") String nodeId, @Param("request") QueryNodeInfoDTO request);
 
-    Long summaryNodeLength(QuerySummaryDTO query);
+    List<SummaryFileCompanyDTO> summaryFile(QuerySummaryDTO query);
 }

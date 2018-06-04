@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class FullNodeDTO implements java.lang.Cloneable,
                                     java.io.Serializable
@@ -35,14 +35,14 @@ public class FullNodeDTO implements java.lang.Cloneable,
         this.basic = basic;
     }
 
-    public NodeTextDTO textInfo;
+    public com.maoding.common.zeroc.StringElementDTO textInfo;
 
-    public NodeTextDTO getTextInfo()
+    public com.maoding.common.zeroc.StringElementDTO getTextInfo()
     {
         return textInfo;
     }
 
-    public void setTextInfo(NodeTextDTO textInfo)
+    public void setTextInfo(com.maoding.common.zeroc.StringElementDTO textInfo)
     {
         this.textInfo = textInfo;
     }
@@ -116,13 +116,13 @@ public class FullNodeDTO implements java.lang.Cloneable,
     public FullNodeDTO()
     {
         this.basic = new SimpleNodeDTO();
-        this.textInfo = new NodeTextDTO();
+        this.textInfo = new com.maoding.common.zeroc.StringElementDTO();
         this.fileInfo = new NodeFileDTO();
         this.issuePath = "";
         this.taskPath = "";
     }
 
-    public FullNodeDTO(SimpleNodeDTO basic, NodeTextDTO textInfo, NodeFileDTO fileInfo, java.util.List<HistoryDTO> historyList, String issuePath, String taskPath)
+    public FullNodeDTO(SimpleNodeDTO basic, com.maoding.common.zeroc.StringElementDTO textInfo, NodeFileDTO fileInfo, java.util.List<HistoryDTO> historyList, String issuePath, String taskPath)
     {
         this.basic = basic;
         this.textInfo = textInfo;
@@ -225,7 +225,7 @@ public class FullNodeDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         SimpleNodeDTO.ice_write(ostr, this.basic);
-        NodeTextDTO.ice_write(ostr, this.textInfo);
+        com.maoding.common.zeroc.StringElementDTO.ice_write(ostr, this.textInfo);
         NodeFileDTO.ice_write(ostr, this.fileInfo);
         HistoryListHelper.write(ostr, this.historyList);
         ostr.writeString(this.issuePath);
@@ -235,7 +235,7 @@ public class FullNodeDTO implements java.lang.Cloneable,
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.basic = SimpleNodeDTO.ice_read(istr);
-        this.textInfo = NodeTextDTO.ice_read(istr);
+        this.textInfo = com.maoding.common.zeroc.StringElementDTO.ice_read(istr);
         this.fileInfo = NodeFileDTO.ice_read(istr);
         this.historyList = HistoryListHelper.read(istr);
         this.issuePath = istr.readString();

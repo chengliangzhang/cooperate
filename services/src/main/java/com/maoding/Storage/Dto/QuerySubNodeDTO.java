@@ -1,4 +1,4 @@
-package com.maoding.Storage.Dto;
+package com.maoding.storage.dto;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class QueryFullNodeDTO implements java.lang.Cloneable,
                                          java.io.Serializable

@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Task.zeroc;
+package com.maoding.task.zeroc;
 
 public final class TaskListHelper
 {

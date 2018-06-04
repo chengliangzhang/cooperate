@@ -1,4 +1,4 @@
-package com.maoding.CoreMybatis;
+package com.maoding.coreMybatis;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;

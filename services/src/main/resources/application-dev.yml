@@ -16,7 +16,14 @@ spring:
 # Druid
 # ===================================================================
 druid:
-    url: jdbc:mysql://127.0.0.1:3306/maoding_test?useAffectedRows=true
+#### 本地数据库
+    url: jdbc:mysql://127.0.0.1:3306/maoding_test
+#### .com数据库
+#    url: jdbc:mysql://rm-wz93ulb0g6s0y3bi4o.mysql.rds.aliyuncs.com:3306/maoding_pord_v2
+#### .net数据库
+#    url: jdbc:mysql://rm-wz93ulb0g6s0y3bi4o.mysql.rds.aliyuncs.com:3306/md_net
+#### 内网数据库
+#    url: jdbc:mysql://172.16.6.71:3306/maoding_qa
     username: idccapp
     password: idccapp
     driverClassName: com.mysql.jdbc.Driver
@@ -52,7 +59,7 @@ mybatis:
 
 mapper:
     mappers:
-        - com.maoding.Base.CoreDao
+        - com.maoding.coreBase.CoreDao
     not-empty: false
     identity: MYSQL
 
@@ -67,21 +74,18 @@ logging:
 # ===================================================================
 ice:
     config: c:/work/maoding-services/services/src/main/resources/properties/ice-config-dev.properties
-#    companyservice:
-#    fileservice:
-#    noticeservice:
-#    projectservice:
-#    storageservice:
-#    taskservice:
-#    userservice:
-#    stormservice:
-#    commontopic:
+#    storage: StorageService:tcp -h 127.0.0.1 -p 10003
+#    user:
+#    notice:
+#    topic:
 
 # ===================================================================
 # WEB SERVICE
 # ===================================================================
-webservice:
-    url: http://127.0.0.1:8071
+webService:
+    maodingWeb: http://127.0.0.1:8080
+### 本地文件管理器
+    fileCenter: http://127.0.0.1:8071/fileCenter
 
 # ===================================================================
 # FILE SERVER
@@ -125,3 +129,9 @@ startup:
     icegrid:
     icebox:
 
+# ===================================================================
+# Schedule
+# ===================================================================
+schedule:
+    clearServer: false
+    clearBuffer: true

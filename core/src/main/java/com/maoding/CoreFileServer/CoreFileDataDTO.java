@@ -1,4 +1,4 @@
-package com.maoding.CoreFileServer;
+package com.maoding.coreFileServer;
 
 /**
  * 深圳市卯丁技术有限公司

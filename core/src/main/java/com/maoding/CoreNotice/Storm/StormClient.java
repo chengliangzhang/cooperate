@@ -1,9 +1,10 @@
-package com.maoding.CoreNotice.Storm;
+package com.maoding.coreNotice.storm;
 
-import com.maoding.Base.CoreProperties;
-import com.maoding.CoreNotice.CoreMessageDTO;
-import com.maoding.CoreNotice.CoreNoticeService;
-import com.maoding.CoreNotice.CoreReceiverDTO;
+import com.maoding.coreBase.CoreRemoteService;
+import com.maoding.coreNotice.CoreMessageDTO;
+import com.maoding.coreNotice.CoreNoticeService;
+import com.maoding.coreNotice.CoreReceiverDTO;
+import com.maoding.coreUtils.StringUtils;
 import com.zeroc.Ice.Communicator;
 import com.zeroc.IceStorm.NoSuchTopic;
 import com.zeroc.IceStorm.TopicExists;
@@ -11,8 +12,9 @@ import com.zeroc.IceStorm.TopicManagerPrx;
 import com.zeroc.IceStorm.TopicPrx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -25,18 +27,44 @@ public class StormClient implements CoreNoticeService {
     /** 日志对象 */
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    CoreProperties iceProperties;
+    private final static String DEFAULT_TOPIC_MANAGER_SERVICE = "IceStorm/TopicManager@StormSvr";
+    private final static String DEFAULT_COMMUNICATE_CONFIG = "--Ice.Default.Locator=IceGrid/Locator:tcp -h 127.0.0.1 -p 4061";
+
+    private String topicManagerService = null;
+    private String communicateConfig = null;
 
     private static TopicManagerPrx topicManager = null;
 
-    private TopicManagerPrx getTopicManager(){
+    public String getTopicManagerService() {
+        return (StringUtils.isNotEmpty(topicManagerService)) ? topicManagerService : DEFAULT_TOPIC_MANAGER_SERVICE;
+    }
+
+    public void setTopicManagerService(String topicManagerService) {
+        this.topicManagerService = topicManagerService;
+    }
+
+    public String getCommunicateConfig() {
+        return (StringUtils.isNotEmpty(communicateConfig)) ? communicateConfig : DEFAULT_COMMUNICATE_CONFIG;
+    }
+
+    public void setCommunicateConfig(String communicateConfig) {
+        this.communicateConfig = communicateConfig;
+    }
+
+    public TopicManagerPrx getTopicManager(@NotNull String service, String config) {
         if (topicManager == null) {
-            Communicator c = (iceProperties != null) ? iceProperties.getCommunicator() : CoreProperties.getDirectCommunicator(null);
-            assert (c != null);
-            topicManager = TopicManagerPrx.checkedCast(c.stringToProxy("IceStorm/TopicManager@StormSvr"));
+            String[] configArray = null;
+            if (StringUtils.isNotEmpty(config)){
+                configArray = config.split(StringUtils.SPLIT_CONTENT);
+            }
+            Communicator c = CoreRemoteService.getCommunicator(configArray);
+            topicManager = TopicManagerPrx.checkedCast(c.stringToProxy(service));
         }
         return topicManager;
+    }
+
+    public TopicManagerPrx getTopicManager(){
+        return getTopicManager(getTopicManagerService(), getCommunicateConfig());
     }
 
     /**

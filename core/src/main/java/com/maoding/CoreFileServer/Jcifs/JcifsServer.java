@@ -1,9 +1,9 @@
-package com.maoding.CoreFileServer.Jcifs;
+package com.maoding.coreFileServer.jcifs;
 
-import com.maoding.CoreFileServer.BasicCallbackDTO;
-import com.maoding.CoreFileServer.BasicFileRequestDTO;
-import com.maoding.CoreFileServer.CoreFileDTO;
-import com.maoding.CoreFileServer.CoreFileServer;
+import com.maoding.coreFileServer.BasicCallbackDTO;
+import com.maoding.coreFileServer.BasicFileRequestDTO;
+import com.maoding.coreFileServer.CoreFileDTO;
+import com.maoding.coreFileServer.CoreFileServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

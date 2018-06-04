@@ -1,6 +1,6 @@
-package com.maoding.Common.Config;
+package com.maoding.common.config;
 
-import com.maoding.CoreMybatis.DruidConfig;
+import com.maoding.coreMybatis.DruidConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Configuration
 @EnableAutoConfiguration
 @ConfigurationProperties(prefix = "druid")
-@MapperScan(basePackages = "com.maoding.*.Dao", sqlSessionFactoryRef = "sqlSessionFactory")
+@MapperScan(basePackages = "com.maoding.*.dao", sqlSessionFactoryRef = "sqlSessionFactory")
 public class DbConfig extends DruidConfig {
     private String url;
     private String username;

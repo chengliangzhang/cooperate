@@ -1,6 +1,6 @@
-package com.maoding.Storage;
+package com.maoding.storage;
 
-import com.maoding.Base.CoreController;
+import com.maoding.coreBase.CoreController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

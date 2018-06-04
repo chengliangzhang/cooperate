@@ -1,9 +1,9 @@
-package com.maoding.Task;
+package com.maoding.task;
 
-import com.maoding.Base.CoreLocalService;
-import com.maoding.Task.zeroc.QueryTaskDTO;
-import com.maoding.Task.zeroc.TaskDTO;
-import com.maoding.Task.zeroc.TaskService;
+import com.maoding.coreBase.CoreLocalService;
+import com.maoding.task.zeroc.QueryTaskDTO;
+import com.maoding.task.zeroc.TaskDTO;
+import com.maoding.task.zeroc.TaskService;
 import com.zeroc.Ice.Current;
 import org.springframework.stereotype.Service;
 

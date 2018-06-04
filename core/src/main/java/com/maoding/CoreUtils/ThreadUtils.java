@@ -1,4 +1,4 @@
-package com.maoding.CoreUtils;
+package com.maoding.coreUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -18,11 +18,23 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class QuerySummaryDTO implements java.lang.Cloneable,
                                         java.io.Serializable
 {
+    public String accountId;
+
+    public String getAccountId()
+    {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId)
+    {
+        this.accountId = accountId;
+    }
+
     public String companyId;
 
     public String getCompanyId()
@@ -35,42 +47,72 @@ public class QuerySummaryDTO implements java.lang.Cloneable,
         this.companyId = companyId;
     }
 
-    public String projectId;
+    public String serverTypeId;
 
-    public String getProjectId()
+    public String getServerTypeId()
     {
-        return projectId;
+        return serverTypeId;
     }
 
-    public void setProjectId(String projectId)
+    public void setServerTypeId(String serverTypeId)
     {
-        this.projectId = projectId;
+        this.serverTypeId = serverTypeId;
     }
 
-    public String ownerUserId;
+    public String notServerTypeId;
 
-    public String getOwnerUserId()
+    public String getNotServerTypeId()
     {
-        return ownerUserId;
+        return notServerTypeId;
     }
 
-    public void setOwnerUserId(String ownerUserId)
+    public void setNotServerTypeId(String notServerTypeId)
     {
-        this.ownerUserId = ownerUserId;
+        this.notServerTypeId = notServerTypeId;
+    }
+
+    public String serverAddress;
+
+    public String getServerAddress()
+    {
+        return serverAddress;
+    }
+
+    public void setServerAddress(String serverAddress)
+    {
+        this.serverAddress = serverAddress;
+    }
+
+    public String baseDir;
+
+    public String getBaseDir()
+    {
+        return baseDir;
+    }
+
+    public void setBaseDir(String baseDir)
+    {
+        this.baseDir = baseDir;
     }
 
     public QuerySummaryDTO()
     {
+        this.accountId = "";
         this.companyId = "";
-        this.projectId = "";
-        this.ownerUserId = "";
+        this.serverTypeId = "";
+        this.notServerTypeId = "";
+        this.serverAddress = "";
+        this.baseDir = "";
     }
 
-    public QuerySummaryDTO(String companyId, String projectId, String ownerUserId)
+    public QuerySummaryDTO(String accountId, String companyId, String serverTypeId, String notServerTypeId, String serverAddress, String baseDir)
     {
+        this.accountId = accountId;
         this.companyId = companyId;
-        this.projectId = projectId;
-        this.ownerUserId = ownerUserId;
+        this.serverTypeId = serverTypeId;
+        this.notServerTypeId = notServerTypeId;
+        this.serverAddress = serverAddress;
+        this.baseDir = baseDir;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -87,6 +129,13 @@ public class QuerySummaryDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
+            if(this.accountId != r.accountId)
+            {
+                if(this.accountId == null || r.accountId == null || !this.accountId.equals(r.accountId))
+                {
+                    return false;
+                }
+            }
             if(this.companyId != r.companyId)
             {
                 if(this.companyId == null || r.companyId == null || !this.companyId.equals(r.companyId))
@@ -94,16 +143,30 @@ public class QuerySummaryDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.projectId != r.projectId)
+            if(this.serverTypeId != r.serverTypeId)
             {
-                if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
+                if(this.serverTypeId == null || r.serverTypeId == null || !this.serverTypeId.equals(r.serverTypeId))
                 {
                     return false;
                 }
             }
-            if(this.ownerUserId != r.ownerUserId)
+            if(this.notServerTypeId != r.notServerTypeId)
             {
-                if(this.ownerUserId == null || r.ownerUserId == null || !this.ownerUserId.equals(r.ownerUserId))
+                if(this.notServerTypeId == null || r.notServerTypeId == null || !this.notServerTypeId.equals(r.notServerTypeId))
+                {
+                    return false;
+                }
+            }
+            if(this.serverAddress != r.serverAddress)
+            {
+                if(this.serverAddress == null || r.serverAddress == null || !this.serverAddress.equals(r.serverAddress))
+                {
+                    return false;
+                }
+            }
+            if(this.baseDir != r.baseDir)
+            {
+                if(this.baseDir == null || r.baseDir == null || !this.baseDir.equals(r.baseDir))
                 {
                     return false;
                 }
@@ -119,9 +182,12 @@ public class QuerySummaryDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::QuerySummaryDTO");
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, accountId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notServerTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverAddress);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, baseDir);
         return h_;
     }
 
@@ -141,16 +207,22 @@ public class QuerySummaryDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
+        ostr.writeString(this.accountId);
         ostr.writeString(this.companyId);
-        ostr.writeString(this.projectId);
-        ostr.writeString(this.ownerUserId);
+        ostr.writeString(this.serverTypeId);
+        ostr.writeString(this.notServerTypeId);
+        ostr.writeString(this.serverAddress);
+        ostr.writeString(this.baseDir);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
+        this.accountId = istr.readString();
         this.companyId = istr.readString();
-        this.projectId = istr.readString();
-        this.ownerUserId = istr.readString();
+        this.serverTypeId = istr.readString();
+        this.notServerTypeId = istr.readString();
+        this.serverAddress = istr.readString();
+        this.baseDir = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, QuerySummaryDTO v)
@@ -205,5 +277,5 @@ public class QuerySummaryDTO implements java.lang.Cloneable,
 
     private static final QuerySummaryDTO _nullMarshalValue = new QuerySummaryDTO();
 
-    public static final long serialVersionUID = -1791162949L;
+    public static final long serialVersionUID = 1327074233L;
 }

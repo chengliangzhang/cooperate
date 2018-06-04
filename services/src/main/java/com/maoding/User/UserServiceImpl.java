@@ -1,13 +1,13 @@
-package com.maoding.User;
+package com.maoding.user;
 
-import com.maoding.Base.CoreLocalService;
-import com.maoding.Bean.CoreResponse;
-import com.maoding.Common.Config.WebServiceConfig;
-import com.maoding.Common.zeroc.IdNameDTO;
-import com.maoding.User.Dao.RoleDao;
-import com.maoding.User.Dao.RoleListDao;
-import com.maoding.User.zeroc.*;
-import com.maoding.CoreUtils.*;
+import com.maoding.coreBase.CoreLocalService;
+import com.maoding.coreBean.CoreResponse;
+import com.maoding.common.config.WebServiceConfig;
+import com.maoding.common.zeroc.IdNameDTO;
+import com.maoding.user.dao.RoleDao;
+import com.maoding.user.dao.RoleListDao;
+import com.maoding.user.zeroc.*;
+import com.maoding.coreUtils.*;
 import com.zeroc.Ice.Current;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;

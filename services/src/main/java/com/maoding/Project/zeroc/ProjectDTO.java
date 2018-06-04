@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Project.zeroc;
+package com.maoding.project.zeroc;
 
 public class ProjectDTO implements java.lang.Cloneable,
                                    java.io.Serializable
@@ -143,38 +143,38 @@ public class ProjectDTO implements java.lang.Cloneable,
         this.companyBidName = companyBidName;
     }
 
-    public com.maoding.Company.zeroc.CompanyDTO creatorCompany;
+    public com.maoding.company.zeroc.CompanyDTO creatorCompany;
 
-    public com.maoding.Company.zeroc.CompanyDTO getCreatorCompany()
+    public com.maoding.company.zeroc.CompanyDTO getCreatorCompany()
     {
         return creatorCompany;
     }
 
-    public void setCreatorCompany(com.maoding.Company.zeroc.CompanyDTO creatorCompany)
+    public void setCreatorCompany(com.maoding.company.zeroc.CompanyDTO creatorCompany)
     {
         this.creatorCompany = creatorCompany;
     }
 
-    public com.maoding.Company.zeroc.CompanyDTO partyACompany;
+    public com.maoding.company.zeroc.CompanyDTO partyACompany;
 
-    public com.maoding.Company.zeroc.CompanyDTO getPartyACompany()
+    public com.maoding.company.zeroc.CompanyDTO getPartyACompany()
     {
         return partyACompany;
     }
 
-    public void setPartyACompany(com.maoding.Company.zeroc.CompanyDTO partyACompany)
+    public void setPartyACompany(com.maoding.company.zeroc.CompanyDTO partyACompany)
     {
         this.partyACompany = partyACompany;
     }
 
-    public com.maoding.Company.zeroc.CompanyDTO partyBCompany;
+    public com.maoding.company.zeroc.CompanyDTO partyBCompany;
 
-    public com.maoding.Company.zeroc.CompanyDTO getPartyBCompany()
+    public com.maoding.company.zeroc.CompanyDTO getPartyBCompany()
     {
         return partyBCompany;
     }
 
-    public void setPartyBCompany(com.maoding.Company.zeroc.CompanyDTO partyBCompany)
+    public void setPartyBCompany(com.maoding.company.zeroc.CompanyDTO partyBCompany)
     {
         this.partyBCompany = partyBCompany;
     }
@@ -260,16 +260,16 @@ public class ProjectDTO implements java.lang.Cloneable,
         this.projectStatusText = "";
         this.projectLocation = new LocationDTO();
         this.companyBidName = "";
-        this.creatorCompany = new com.maoding.Company.zeroc.CompanyDTO();
-        this.partyACompany = new com.maoding.Company.zeroc.CompanyDTO();
-        this.partyBCompany = new com.maoding.Company.zeroc.CompanyDTO();
+        this.creatorCompany = new com.maoding.company.zeroc.CompanyDTO();
+        this.partyACompany = new com.maoding.company.zeroc.CompanyDTO();
+        this.partyBCompany = new com.maoding.company.zeroc.CompanyDTO();
         this.managerOfPartB = new ManagerOfPartBDTO();
         this.filePath = "";
         this.fileName = "";
         this.contractDateText = "";
     }
 
-    public ProjectDTO(String id, String projectNo, String name, short projectType, String projectTypeName, short projectStatus, String projectStatusText, LocationDTO projectLocation, java.util.List<ProjectPropertyDTO> projectPropertyList, String companyBidName, com.maoding.Company.zeroc.CompanyDTO creatorCompany, com.maoding.Company.zeroc.CompanyDTO partyACompany, com.maoding.Company.zeroc.CompanyDTO partyBCompany, ManagerOfPartBDTO managerOfPartB, String filePath, String fileName, java.util.List<ConstructionCateDTO> constructionList, long contractDateStamp, String contractDateText)
+    public ProjectDTO(String id, String projectNo, String name, short projectType, String projectTypeName, short projectStatus, String projectStatusText, LocationDTO projectLocation, java.util.List<ProjectPropertyDTO> projectPropertyList, String companyBidName, com.maoding.company.zeroc.CompanyDTO creatorCompany, com.maoding.company.zeroc.CompanyDTO partyACompany, com.maoding.company.zeroc.CompanyDTO partyBCompany, ManagerOfPartBDTO managerOfPartB, String filePath, String fileName, java.util.List<ConstructionCateDTO> constructionList, long contractDateStamp, String contractDateText)
     {
         this.id = id;
         this.projectNo = projectNo;
@@ -489,9 +489,9 @@ public class ProjectDTO implements java.lang.Cloneable,
         LocationDTO.ice_write(ostr, this.projectLocation);
         PropertyListHelper.write(ostr, this.projectPropertyList);
         ostr.writeString(this.companyBidName);
-        com.maoding.Company.zeroc.CompanyDTO.ice_write(ostr, this.creatorCompany);
-        com.maoding.Company.zeroc.CompanyDTO.ice_write(ostr, this.partyACompany);
-        com.maoding.Company.zeroc.CompanyDTO.ice_write(ostr, this.partyBCompany);
+        com.maoding.company.zeroc.CompanyDTO.ice_write(ostr, this.creatorCompany);
+        com.maoding.company.zeroc.CompanyDTO.ice_write(ostr, this.partyACompany);
+        com.maoding.company.zeroc.CompanyDTO.ice_write(ostr, this.partyBCompany);
         ManagerOfPartBDTO.ice_write(ostr, this.managerOfPartB);
         ostr.writeString(this.filePath);
         ostr.writeString(this.fileName);
@@ -512,9 +512,9 @@ public class ProjectDTO implements java.lang.Cloneable,
         this.projectLocation = LocationDTO.ice_read(istr);
         this.projectPropertyList = PropertyListHelper.read(istr);
         this.companyBidName = istr.readString();
-        this.creatorCompany = com.maoding.Company.zeroc.CompanyDTO.ice_read(istr);
-        this.partyACompany = com.maoding.Company.zeroc.CompanyDTO.ice_read(istr);
-        this.partyBCompany = com.maoding.Company.zeroc.CompanyDTO.ice_read(istr);
+        this.creatorCompany = com.maoding.company.zeroc.CompanyDTO.ice_read(istr);
+        this.partyACompany = com.maoding.company.zeroc.CompanyDTO.ice_read(istr);
+        this.partyBCompany = com.maoding.company.zeroc.CompanyDTO.ice_read(istr);
         this.managerOfPartB = ManagerOfPartBDTO.ice_read(istr);
         this.filePath = istr.readString();
         this.fileName = istr.readString();

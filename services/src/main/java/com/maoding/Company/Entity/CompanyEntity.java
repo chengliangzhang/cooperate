@@ -1,6 +1,6 @@
-package com.maoding.Company.Entity;
+package com.maoding.company.entity;
 
-import com.maoding.Base.CoreEntity;
+import com.maoding.coreBase.BaseEntity;
 
 import javax.persistence.Table;
 
@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * 描    述 :
  */
 @Table(name = "maoding_web_company")
-public class CompanyEntity extends CoreEntity {
+public class CompanyEntity extends BaseEntity {
 
     /**
      * 企业名称
@@ -370,11 +370,4 @@ public class CompanyEntity extends CoreEntity {
         this.companyComment = companyComment;
     }
 
-//    public String getAliasName() {
-//        return aliasName;
-//    }
-//
-//    public void setAliasName(String aliasName) {
-//        this.aliasName = aliasName;
-//    }
 }

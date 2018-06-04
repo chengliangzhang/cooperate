@@ -1,7 +1,7 @@
-package com.maoding.User.Dao;
+package com.maoding.user.dao;
 
-import com.maoding.Base.CoreDao;
-import com.maoding.User.Entity.RoleEntity;
+import com.maoding.coreBase.CoreDao;
+import com.maoding.user.entity.RoleEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class FileNodeDTO implements java.lang.Cloneable,
                                     java.io.Serializable
@@ -218,14 +218,14 @@ public class FileNodeDTO implements java.lang.Cloneable,
         return isPassAudit;
     }
 
-    public java.util.List<com.maoding.User.zeroc.RoleDTO> roleList;
+    public java.util.List<com.maoding.user.zeroc.RoleDTO> roleList;
 
-    public java.util.List<com.maoding.User.zeroc.RoleDTO> getRoleList()
+    public java.util.List<com.maoding.user.zeroc.RoleDTO> getRoleList()
     {
         return roleList;
     }
 
-    public void setRoleList(java.util.List<com.maoding.User.zeroc.RoleDTO> roleList)
+    public void setRoleList(java.util.List<com.maoding.user.zeroc.RoleDTO> roleList)
     {
         this.roleList = roleList;
     }
@@ -241,7 +241,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.lastCommitFileMd5 = "";
     }
 
-    public FileNodeDTO(SimpleNodeDTO basic, String id, String fileVersion, String majorName, long fileLength, String fileMd5, long createTimeStamp, long lastModifyTimeStamp, long lastFileLength, String lastFileMd5, long lastCommitFileLength, String lastCommitFileMd5, boolean isPassDesign, boolean isPassCheck, boolean isPassAudit, java.util.List<com.maoding.User.zeroc.RoleDTO> roleList)
+    public FileNodeDTO(SimpleNodeDTO basic, String id, String fileVersion, String majorName, long fileLength, String fileMd5, long createTimeStamp, long lastModifyTimeStamp, long lastFileLength, String lastFileMd5, long lastCommitFileLength, String lastCommitFileMd5, boolean isPassDesign, boolean isPassCheck, boolean isPassAudit, java.util.List<com.maoding.user.zeroc.RoleDTO> roleList)
     {
         this.basic = basic;
         this.id = id;
@@ -424,7 +424,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
         ostr.writeBool(this.isPassDesign);
         ostr.writeBool(this.isPassCheck);
         ostr.writeBool(this.isPassAudit);
-        com.maoding.User.zeroc.RoleListHelper.write(ostr, this.roleList);
+        com.maoding.user.zeroc.RoleListHelper.write(ostr, this.roleList);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -444,7 +444,7 @@ public class FileNodeDTO implements java.lang.Cloneable,
         this.isPassDesign = istr.readBool();
         this.isPassCheck = istr.readBool();
         this.isPassAudit = istr.readBool();
-        this.roleList = com.maoding.User.zeroc.RoleListHelper.read(istr);
+        this.roleList = com.maoding.user.zeroc.RoleListHelper.read(istr);
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, FileNodeDTO v)

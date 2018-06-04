@@ -1,4 +1,4 @@
-package com.maoding.CoreNotice;
+package com.maoding.coreNotice;
 
 /**
  * 深圳市卯丁技术有限公司

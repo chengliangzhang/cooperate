@@ -1,6 +1,7 @@
 package com.maoding.CoreUtils;
 
-import com.maoding.Base.CoreEntity;
+import com.maoding.coreBase.CoreEntity;
+import com.maoding.coreUtils.BeanUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.FileServer.zeroc;
+package com.maoding.fileServer.zeroc;
 
 public class FileDataDTO implements java.lang.Cloneable,
                                     java.io.Serializable

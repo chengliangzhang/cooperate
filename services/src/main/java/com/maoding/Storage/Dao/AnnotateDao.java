@@ -1,7 +1,7 @@
-package com.maoding.Storage.Dao;
+package com.maoding.storage.dao;
 
-import com.maoding.Storage.zeroc.AnnotateDTO;
-import com.maoding.Storage.zeroc.QueryAnnotateDTO;
+import com.maoding.storage.zeroc.AnnotateDTO;
+import com.maoding.storage.zeroc.QueryAnnotateDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

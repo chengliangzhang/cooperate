@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class AnnotateDTO implements java.lang.Cloneable,
                                     java.io.Serializable

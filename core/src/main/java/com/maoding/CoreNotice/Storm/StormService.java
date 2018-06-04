@@ -1,6 +1,6 @@
-package com.maoding.CoreNotice.Storm;
+package com.maoding.coreNotice.storm;
 
-import com.maoding.Base.CoreRemoteService;
+import com.maoding.coreBase.CoreRemoteService;
 import com.zeroc.Ice.Current;
 import com.zeroc.IceStorm.*;
 

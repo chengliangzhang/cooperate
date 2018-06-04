@@ -18,19 +18,19 @@
 // </auto-generated>
 //
 
-package com.maoding.FileServer.zeroc;
+package com.maoding.fileServer.zeroc;
 
 public class CommitListResultDTO implements java.lang.Cloneable,
                                             java.io.Serializable
 {
-    public java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> successList;
+    public java.util.List<com.maoding.storage.zeroc.SimpleNodeDTO> successList;
 
-    public java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> getSuccessList()
+    public java.util.List<com.maoding.storage.zeroc.SimpleNodeDTO> getSuccessList()
     {
         return successList;
     }
 
-    public void setSuccessList(java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> successList)
+    public void setSuccessList(java.util.List<com.maoding.storage.zeroc.SimpleNodeDTO> successList)
     {
         this.successList = successList;
     }
@@ -51,7 +51,7 @@ public class CommitListResultDTO implements java.lang.Cloneable,
     {
     }
 
-    public CommitListResultDTO(java.util.List<com.maoding.Storage.zeroc.SimpleNodeDTO> successList, java.util.List<CommitFailDTO> failList)
+    public CommitListResultDTO(java.util.List<com.maoding.storage.zeroc.SimpleNodeDTO> successList, java.util.List<CommitFailDTO> failList)
     {
         this.successList = successList;
         this.failList = failList;
@@ -117,13 +117,13 @@ public class CommitListResultDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        com.maoding.Storage.zeroc.SimpleNodeListHelper.write(ostr, this.successList);
+        com.maoding.storage.zeroc.SimpleNodeListHelper.write(ostr, this.successList);
         CommitFailListHelper.write(ostr, this.failList);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.successList = com.maoding.Storage.zeroc.SimpleNodeListHelper.read(istr);
+        this.successList = com.maoding.storage.zeroc.SimpleNodeListHelper.read(istr);
         this.failList = CommitFailListHelper.read(istr);
     }
 

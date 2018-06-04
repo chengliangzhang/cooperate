@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.FileServer.zeroc;
+package com.maoding.fileServer.zeroc;
 
 /**
  **/
@@ -145,14 +145,14 @@ public class CallbackDTO implements java.lang.Cloneable,
     {
         ostr.writeString(this.url);
         ostr.writeString(this.name);
-        com.maoding.Common.zeroc.MapHelper.write(ostr, this.params);
+        com.maoding.common.zeroc.MapHelper.write(ostr, this.params);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.url = istr.readString();
         this.name = istr.readString();
-        this.params = com.maoding.Common.zeroc.MapHelper.read(istr);
+        this.params = com.maoding.common.zeroc.MapHelper.read(istr);
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, CallbackDTO v)

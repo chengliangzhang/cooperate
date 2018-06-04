@@ -1,6 +1,6 @@
-package com.maoding.Common.Dao;
+package com.maoding.common.dao;
 
-import com.maoding.Common.Entity.ConstEntity;
+import com.maoding.common.entity.ConstEntity;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 

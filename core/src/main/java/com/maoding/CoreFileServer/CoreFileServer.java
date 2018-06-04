@@ -1,6 +1,4 @@
-package com.maoding.CoreFileServer;
-
-import com.maoding.CoreUtils.StringUtils;
+package com.maoding.coreFileServer;
 
 import java.io.File;
 import java.util.List;
@@ -65,7 +63,7 @@ public interface CoreFileServer {
     }
 
     /** 计算文件MD5 */
-    default String coreCalcChecksum(String key){return null;}
+    default String coreCalcMd5(String key){return null;}
 
     /** 判断在文件服务器上是否存在指定文件 */
     default boolean coreIsExist(String key){return false;}
@@ -87,6 +85,9 @@ public interface CoreFileServer {
     default void coreClearMirrorFile(){}
 
     /** 获取文件服务器上的文件标识 */
-    default List<String> coreListKey(String key){return null;}
-    default List<String> coreListKey(){return coreListKey(StringUtils.SPLIT_PATH);}
+    default List<String> coreListKey(long timeBefore){return null;}
+    default List<String> coreListKey(){
+        final long DEFAULT_TIME_BEFORE = 3 * 1000;
+        return coreListKey(DEFAULT_TIME_BEFORE);
+    }
 }

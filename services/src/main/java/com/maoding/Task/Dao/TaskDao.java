@@ -1,7 +1,7 @@
-package com.maoding.Task.Dao;
+package com.maoding.task.dao;
 
-import com.maoding.Task.zeroc.QueryTaskDTO;
-import com.maoding.Task.zeroc.TaskDTO;
+import com.maoding.task.zeroc.QueryTaskDTO;
+import com.maoding.task.zeroc.TaskDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

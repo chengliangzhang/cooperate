@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.User.zeroc;
+package com.maoding.user.zeroc;
 
 public class TaskRoleDTO implements java.lang.Cloneable,
                                     java.io.Serializable
@@ -47,14 +47,14 @@ public class TaskRoleDTO implements java.lang.Cloneable,
         this.name = name;
     }
 
-    public java.util.List<com.maoding.Common.zeroc.IdNameDTO> taskRoleList;
+    public java.util.List<com.maoding.common.zeroc.IdNameDTO> taskRoleList;
 
-    public java.util.List<com.maoding.Common.zeroc.IdNameDTO> getTaskRoleList()
+    public java.util.List<com.maoding.common.zeroc.IdNameDTO> getTaskRoleList()
     {
         return taskRoleList;
     }
 
-    public void setTaskRoleList(java.util.List<com.maoding.Common.zeroc.IdNameDTO> taskRoleList)
+    public void setTaskRoleList(java.util.List<com.maoding.common.zeroc.IdNameDTO> taskRoleList)
     {
         this.taskRoleList = taskRoleList;
     }
@@ -65,7 +65,7 @@ public class TaskRoleDTO implements java.lang.Cloneable,
         this.name = "";
     }
 
-    public TaskRoleDTO(String id, String name, java.util.List<com.maoding.Common.zeroc.IdNameDTO> taskRoleList)
+    public TaskRoleDTO(String id, String name, java.util.List<com.maoding.common.zeroc.IdNameDTO> taskRoleList)
     {
         this.id = id;
         this.name = name;
@@ -142,14 +142,14 @@ public class TaskRoleDTO implements java.lang.Cloneable,
     {
         ostr.writeString(this.id);
         ostr.writeString(this.name);
-        com.maoding.Common.zeroc.IdNameListHelper.write(ostr, this.taskRoleList);
+        com.maoding.common.zeroc.IdNameListHelper.write(ostr, this.taskRoleList);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.id = istr.readString();
         this.name = istr.readString();
-        this.taskRoleList = com.maoding.Common.zeroc.IdNameListHelper.read(istr);
+        this.taskRoleList = com.maoding.common.zeroc.IdNameListHelper.read(istr);
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, TaskRoleDTO v)

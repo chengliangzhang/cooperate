@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class QueryNodeDTO implements java.lang.Cloneable,
                                      java.io.Serializable
@@ -35,16 +35,16 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.id = id;
     }
 
-    public String pid;
+    public String fuzzyId;
 
-    public String getPid()
+    public String getFuzzyId()
     {
-        return pid;
+        return fuzzyId;
     }
 
-    public void setPid(String pid)
+    public void setFuzzyId(String fuzzyId)
     {
-        this.pid = pid;
+        this.fuzzyId = fuzzyId;
     }
 
     public String name;
@@ -59,16 +59,28 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.name = name;
     }
 
-    public String path;
+    public String fuzzyName;
 
-    public String getPath()
+    public String getFuzzyName()
     {
-        return path;
+        return fuzzyName;
     }
 
-    public void setPath(String path)
+    public void setFuzzyName(String fuzzyName)
     {
-        this.path = path;
+        this.fuzzyName = fuzzyName;
+    }
+
+    public String pid;
+
+    public String getPid()
+    {
+        return pid;
+    }
+
+    public void setPid(String pid)
+    {
+        this.pid = pid;
     }
 
     public String typeId;
@@ -83,6 +95,18 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.typeId = typeId;
     }
 
+    public String notTypeId;
+
+    public String getNotTypeId()
+    {
+        return notTypeId;
+    }
+
+    public void setNotTypeId(String notTypeId)
+    {
+        this.notTypeId = notTypeId;
+    }
+
     public String projectId;
 
     public String getProjectId()
@@ -93,6 +117,18 @@ public class QueryNodeDTO implements java.lang.Cloneable,
     public void setProjectId(String projectId)
     {
         this.projectId = projectId;
+    }
+
+    public String notProjectId;
+
+    public String getNotProjectId()
+    {
+        return notProjectId;
+    }
+
+    public void setNotProjectId(String notProjectId)
+    {
+        this.notProjectId = notProjectId;
     }
 
     public String rangeId;
@@ -107,16 +143,16 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.rangeId = rangeId;
     }
 
-    public String issueId;
+    public String notRangeId;
 
-    public String getIssueId()
+    public String getNotRangeId()
     {
-        return issueId;
+        return notRangeId;
     }
 
-    public void setIssueId(String issueId)
+    public void setNotRangeId(String notRangeId)
     {
-        this.issueId = issueId;
+        this.notRangeId = notRangeId;
     }
 
     public String taskId;
@@ -131,16 +167,16 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.taskId = taskId;
     }
 
-    public String companyId;
+    public String notTaskId;
 
-    public String getCompanyId()
+    public String getNotTaskId()
     {
-        return companyId;
+        return notTaskId;
     }
 
-    public void setCompanyId(String companyId)
+    public void setNotTaskId(String notTaskId)
     {
-        this.companyId = companyId;
+        this.notTaskId = notTaskId;
     }
 
     public String ownerUserId;
@@ -179,16 +215,172 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.lastModifyRoleId = lastModifyRoleId;
     }
 
-    public String accountId;
+    public String notLastModifyRoleId;
 
-    public String getAccountId()
+    public String getNotLastModifyRoleId()
     {
-        return accountId;
+        return notLastModifyRoleId;
     }
 
-    public void setAccountId(String accountId)
+    public void setNotLastModifyRoleId(String notLastModifyRoleId)
     {
-        this.accountId = accountId;
+        this.notLastModifyRoleId = notLastModifyRoleId;
+    }
+
+    public String nodeTypeAttr;
+
+    public String getNodeTypeAttr()
+    {
+        return nodeTypeAttr;
+    }
+
+    public void setNodeTypeAttr(String nodeTypeAttr)
+    {
+        this.nodeTypeAttr = nodeTypeAttr;
+    }
+
+    public String directoryMode;
+
+    public String getDirectoryMode()
+    {
+        return directoryMode;
+    }
+
+    public void setDirectoryMode(String directoryMode)
+    {
+        this.directoryMode = directoryMode;
+    }
+
+    public String designMode;
+
+    public String getDesignMode()
+    {
+        return designMode;
+    }
+
+    public void setDesignMode(String designMode)
+    {
+        this.designMode = designMode;
+    }
+
+    public String caMode;
+
+    public String getCaMode()
+    {
+        return caMode;
+    }
+
+    public void setCaMode(String caMode)
+    {
+        this.caMode = caMode;
+    }
+
+    public String commitMode;
+
+    public String getCommitMode()
+    {
+        return commitMode;
+    }
+
+    public void setCommitMode(String commitMode)
+    {
+        this.commitMode = commitMode;
+    }
+
+    public String historyMode;
+
+    public String getHistoryMode()
+    {
+        return historyMode;
+    }
+
+    public void setHistoryMode(String historyMode)
+    {
+        this.historyMode = historyMode;
+    }
+
+    public String companyName;
+
+    public String getCompanyName()
+    {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName)
+    {
+        this.companyName = companyName;
+    }
+
+    public String fuzzyCompanyName;
+
+    public String getFuzzyCompanyName()
+    {
+        return fuzzyCompanyName;
+    }
+
+    public void setFuzzyCompanyName(String fuzzyCompanyName)
+    {
+        this.fuzzyCompanyName = fuzzyCompanyName;
+    }
+
+    public String ownerName;
+
+    public String getOwnerName()
+    {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName)
+    {
+        this.ownerName = ownerName;
+    }
+
+    public String fuzzyOwnerName;
+
+    public String getFuzzyOwnerName()
+    {
+        return fuzzyOwnerName;
+    }
+
+    public void setFuzzyOwnerName(String fuzzyOwnerName)
+    {
+        this.fuzzyOwnerName = fuzzyOwnerName;
+    }
+
+    public String lastModifyUserName;
+
+    public String getLastModifyUserName()
+    {
+        return lastModifyUserName;
+    }
+
+    public void setLastModifyUserName(String lastModifyUserName)
+    {
+        this.lastModifyUserName = lastModifyUserName;
+    }
+
+    public String fuzzyLastModifyUserName;
+
+    public String getFuzzyLastModifyUserName()
+    {
+        return fuzzyLastModifyUserName;
+    }
+
+    public void setFuzzyLastModifyUserName(String fuzzyLastModifyUserName)
+    {
+        this.fuzzyLastModifyUserName = fuzzyLastModifyUserName;
+    }
+
+    public String path;
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
     }
 
     public String parentPath;
@@ -203,16 +395,208 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.parentPath = parentPath;
     }
 
-    public String notTypeId;
+    public String fuzzyPath;
 
-    public String getNotTypeId()
+    public String getFuzzyPath()
     {
-        return notTypeId;
+        return fuzzyPath;
     }
 
-    public void setNotTypeId(String notTypeId)
+    public void setFuzzyPath(String fuzzyPath)
     {
-        this.notTypeId = notTypeId;
+        this.fuzzyPath = fuzzyPath;
+    }
+
+    public String projectName;
+
+    public String getProjectName()
+    {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName)
+    {
+        this.projectName = projectName;
+    }
+
+    public String fuzzyProjectName;
+
+    public String getFuzzyProjectName()
+    {
+        return fuzzyProjectName;
+    }
+
+    public void setFuzzyProjectName(String fuzzyProjectName)
+    {
+        this.fuzzyProjectName = fuzzyProjectName;
+    }
+
+    public String companyId;
+
+    public String getCompanyId()
+    {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId)
+    {
+        this.companyId = companyId;
+    }
+
+    public String notCompanyId;
+
+    public String getNotCompanyId()
+    {
+        return notCompanyId;
+    }
+
+    public void setNotCompanyId(String notCompanyId)
+    {
+        this.notCompanyId = notCompanyId;
+    }
+
+    public String accountId;
+
+    public String getAccountId()
+    {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId)
+    {
+        this.accountId = accountId;
+    }
+
+    public String roleAttr;
+
+    public String getRoleAttr()
+    {
+        return roleAttr;
+    }
+
+    public void setRoleAttr(String roleAttr)
+    {
+        this.roleAttr = roleAttr;
+    }
+
+    public String isTaskLeader;
+
+    public String getIsTaskLeader()
+    {
+        return isTaskLeader;
+    }
+
+    public void setIsTaskLeader(String isTaskLeader)
+    {
+        this.isTaskLeader = isTaskLeader;
+    }
+
+    public String isTaskDesigner;
+
+    public String getIsTaskDesigner()
+    {
+        return isTaskDesigner;
+    }
+
+    public void setIsTaskDesigner(String isTaskDesigner)
+    {
+        this.isTaskDesigner = isTaskDesigner;
+    }
+
+    public String isTaskChecker;
+
+    public String getIsTaskChecker()
+    {
+        return isTaskChecker;
+    }
+
+    public void setIsTaskChecker(String isTaskChecker)
+    {
+        this.isTaskChecker = isTaskChecker;
+    }
+
+    public String isTaskAuditor;
+
+    public String getIsTaskAuditor()
+    {
+        return isTaskAuditor;
+    }
+
+    public void setIsTaskAuditor(String isTaskAuditor)
+    {
+        this.isTaskAuditor = isTaskAuditor;
+    }
+
+    public String issueId;
+
+    public String getIssueId()
+    {
+        return issueId;
+    }
+
+    public void setIssueId(String issueId)
+    {
+        this.issueId = issueId;
+    }
+
+    public String serverTypeId;
+
+    public String getServerTypeId()
+    {
+        return serverTypeId;
+    }
+
+    public void setServerTypeId(String serverTypeId)
+    {
+        this.serverTypeId = serverTypeId;
+    }
+
+    public String serverAddress;
+
+    public String getServerAddress()
+    {
+        return serverAddress;
+    }
+
+    public void setServerAddress(String serverAddress)
+    {
+        this.serverAddress = serverAddress;
+    }
+
+    public String baseDir;
+
+    public String getBaseDir()
+    {
+        return baseDir;
+    }
+
+    public void setBaseDir(String baseDir)
+    {
+        this.baseDir = baseDir;
+    }
+
+    public String key;
+
+    public String getKey()
+    {
+        return key;
+    }
+
+    public void setKey(String key)
+    {
+        this.key = key;
+    }
+
+    public String statusAttr;
+
+    public String getStatusAttr()
+    {
+        return statusAttr;
+    }
+
+    public void setStatusAttr(String statusAttr)
+    {
+        this.statusAttr = statusAttr;
     }
 
     public String passDesign;
@@ -251,92 +635,352 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.passAudit = passAudit;
     }
 
-    public String directoryMode;
+    public String isMirror;
 
-    public String getDirectoryMode()
+    public String getIsMirror()
     {
-        return directoryMode;
+        return isMirror;
     }
 
-    public void setDirectoryMode(String directoryMode)
+    public void setIsMirror(String isMirror)
     {
-        this.directoryMode = directoryMode;
+        this.isMirror = isMirror;
     }
 
-    public String fuzzyId;
+    public String onlyOne;
 
-    public String getFuzzyId()
+    public String getOnlyOne()
     {
-        return fuzzyId;
+        return onlyOne;
     }
 
-    public void setFuzzyId(String fuzzyId)
+    public void setOnlyOne(String onlyOne)
     {
-        this.fuzzyId = fuzzyId;
+        this.onlyOne = onlyOne;
     }
 
-    public String fuzzyPath;
+    public String needPath;
 
-    public String getFuzzyPath()
+    public String getNeedPath()
     {
-        return fuzzyPath;
+        return needPath;
     }
 
-    public void setFuzzyPath(String fuzzyPath)
+    public void setNeedPath(String needPath)
     {
-        this.fuzzyPath = fuzzyPath;
+        this.needPath = needPath;
+    }
+
+    public String needProjectName;
+
+    public String getNeedProjectName()
+    {
+        return needProjectName;
+    }
+
+    public void setNeedProjectName(String needProjectName)
+    {
+        this.needProjectName = needProjectName;
+    }
+
+    public String needTaskName;
+
+    public String getNeedTaskName()
+    {
+        return needTaskName;
+    }
+
+    public void setNeedTaskName(String needTaskName)
+    {
+        this.needTaskName = needTaskName;
+    }
+
+    public String needTaskPath;
+
+    public String getNeedTaskPath()
+    {
+        return needTaskPath;
+    }
+
+    public void setNeedTaskPath(String needTaskPath)
+    {
+        this.needTaskPath = needTaskPath;
+    }
+
+    public String needOwnerName;
+
+    public String getNeedOwnerName()
+    {
+        return needOwnerName;
+    }
+
+    public void setNeedOwnerName(String needOwnerName)
+    {
+        this.needOwnerName = needOwnerName;
+    }
+
+    public String needCompanyId;
+
+    public String getNeedCompanyId()
+    {
+        return needCompanyId;
+    }
+
+    public void setNeedCompanyId(String needCompanyId)
+    {
+        this.needCompanyId = needCompanyId;
+    }
+
+    public String needCompanyName;
+
+    public String getNeedCompanyName()
+    {
+        return needCompanyName;
+    }
+
+    public void setNeedCompanyName(String needCompanyName)
+    {
+        this.needCompanyName = needCompanyName;
+    }
+
+    public String needIssueId;
+
+    public String getNeedIssueId()
+    {
+        return needIssueId;
+    }
+
+    public void setNeedIssueId(String needIssueId)
+    {
+        this.needIssueId = needIssueId;
+    }
+
+    public String needIssuePath;
+
+    public String getNeedIssuePath()
+    {
+        return needIssuePath;
+    }
+
+    public void setNeedIssuePath(String needIssuePath)
+    {
+        this.needIssuePath = needIssuePath;
+    }
+
+    public String needDesignTaskPath;
+
+    public String getNeedDesignTaskPath()
+    {
+        return needDesignTaskPath;
+    }
+
+    public void setNeedDesignTaskPath(String needDesignTaskPath)
+    {
+        this.needDesignTaskPath = needDesignTaskPath;
+    }
+
+    public String needLastModifyUserName;
+
+    public String getNeedLastModifyUserName()
+    {
+        return needLastModifyUserName;
+    }
+
+    public void setNeedLastModifyUserName(String needLastModifyUserName)
+    {
+        this.needLastModifyUserName = needLastModifyUserName;
+    }
+
+    public String needRoleInfo;
+
+    public String getNeedRoleInfo()
+    {
+        return needRoleInfo;
+    }
+
+    public void setNeedRoleInfo(String needRoleInfo)
+    {
+        this.needRoleInfo = needRoleInfo;
+    }
+
+    public String needFileInfo;
+
+    public String getNeedFileInfo()
+    {
+        return needFileInfo;
+    }
+
+    public void setNeedFileInfo(String needFileInfo)
+    {
+        this.needFileInfo = needFileInfo;
+    }
+
+    public String needMainFileInfo;
+
+    public String getNeedMainFileInfo()
+    {
+        return needMainFileInfo;
+    }
+
+    public void setNeedMainFileInfo(String needMainFileInfo)
+    {
+        this.needMainFileInfo = needMainFileInfo;
+    }
+
+    public String needFileHistoryInfo;
+
+    public String getNeedFileHistoryInfo()
+    {
+        return needFileHistoryInfo;
+    }
+
+    public void setNeedFileHistoryInfo(String needFileHistoryInfo)
+    {
+        this.needFileHistoryInfo = needFileHistoryInfo;
     }
 
     public QueryNodeDTO()
     {
         this.id = "";
-        this.pid = "";
+        this.fuzzyId = "";
         this.name = "";
-        this.path = "";
+        this.fuzzyName = "";
+        this.pid = "";
         this.typeId = "";
+        this.notTypeId = "";
         this.projectId = "";
+        this.notProjectId = "";
         this.rangeId = "";
-        this.issueId = "";
+        this.notRangeId = "";
         this.taskId = "";
-        this.companyId = "";
+        this.notTaskId = "";
         this.ownerUserId = "";
         this.notOwnerUserId = "";
         this.lastModifyRoleId = "";
-        this.accountId = "";
+        this.notLastModifyRoleId = "";
+        this.nodeTypeAttr = "";
+        this.directoryMode = "";
+        this.designMode = "";
+        this.caMode = "";
+        this.commitMode = "";
+        this.historyMode = "";
+        this.companyName = "";
+        this.fuzzyCompanyName = "";
+        this.ownerName = "";
+        this.fuzzyOwnerName = "";
+        this.lastModifyUserName = "";
+        this.fuzzyLastModifyUserName = "";
+        this.path = "";
         this.parentPath = "";
-        this.notTypeId = "";
+        this.fuzzyPath = "";
+        this.projectName = "";
+        this.fuzzyProjectName = "";
+        this.companyId = "";
+        this.notCompanyId = "";
+        this.accountId = "";
+        this.roleAttr = "";
+        this.isTaskLeader = "";
+        this.isTaskDesigner = "";
+        this.isTaskChecker = "";
+        this.isTaskAuditor = "";
+        this.issueId = "";
+        this.serverTypeId = "";
+        this.serverAddress = "";
+        this.baseDir = "";
+        this.key = "";
+        this.statusAttr = "";
         this.passDesign = "";
         this.passCheck = "";
         this.passAudit = "";
-        this.directoryMode = "";
-        this.fuzzyId = "";
-        this.fuzzyPath = "";
+        this.isMirror = "";
+        this.onlyOne = "";
+        this.needPath = "";
+        this.needProjectName = "";
+        this.needTaskName = "";
+        this.needTaskPath = "";
+        this.needOwnerName = "";
+        this.needCompanyId = "";
+        this.needCompanyName = "";
+        this.needIssueId = "";
+        this.needIssuePath = "";
+        this.needDesignTaskPath = "";
+        this.needLastModifyUserName = "";
+        this.needRoleInfo = "";
+        this.needFileInfo = "";
+        this.needMainFileInfo = "";
+        this.needFileHistoryInfo = "";
     }
 
-    public QueryNodeDTO(String id, String pid, String name, String path, String typeId, String projectId, String rangeId, String issueId, String taskId, String companyId, String ownerUserId, String notOwnerUserId, String lastModifyRoleId, String accountId, String parentPath, String notTypeId, String passDesign, String passCheck, String passAudit, String directoryMode, String fuzzyId, String fuzzyPath)
+    public QueryNodeDTO(String id, String fuzzyId, String name, String fuzzyName, String pid, String typeId, String notTypeId, String projectId, String notProjectId, String rangeId, String notRangeId, String taskId, String notTaskId, String ownerUserId, String notOwnerUserId, String lastModifyRoleId, String notLastModifyRoleId, String nodeTypeAttr, String directoryMode, String designMode, String caMode, String commitMode, String historyMode, String companyName, String fuzzyCompanyName, String ownerName, String fuzzyOwnerName, String lastModifyUserName, String fuzzyLastModifyUserName, String path, String parentPath, String fuzzyPath, String projectName, String fuzzyProjectName, String companyId, String notCompanyId, String accountId, String roleAttr, String isTaskLeader, String isTaskDesigner, String isTaskChecker, String isTaskAuditor, String issueId, String serverTypeId, String serverAddress, String baseDir, String key, String statusAttr, String passDesign, String passCheck, String passAudit, String isMirror, String onlyOne, String needPath, String needProjectName, String needTaskName, String needTaskPath, String needOwnerName, String needCompanyId, String needCompanyName, String needIssueId, String needIssuePath, String needDesignTaskPath, String needLastModifyUserName, String needRoleInfo, String needFileInfo, String needMainFileInfo, String needFileHistoryInfo)
     {
         this.id = id;
-        this.pid = pid;
+        this.fuzzyId = fuzzyId;
         this.name = name;
-        this.path = path;
+        this.fuzzyName = fuzzyName;
+        this.pid = pid;
         this.typeId = typeId;
+        this.notTypeId = notTypeId;
         this.projectId = projectId;
+        this.notProjectId = notProjectId;
         this.rangeId = rangeId;
-        this.issueId = issueId;
+        this.notRangeId = notRangeId;
         this.taskId = taskId;
-        this.companyId = companyId;
+        this.notTaskId = notTaskId;
         this.ownerUserId = ownerUserId;
         this.notOwnerUserId = notOwnerUserId;
         this.lastModifyRoleId = lastModifyRoleId;
-        this.accountId = accountId;
+        this.notLastModifyRoleId = notLastModifyRoleId;
+        this.nodeTypeAttr = nodeTypeAttr;
+        this.directoryMode = directoryMode;
+        this.designMode = designMode;
+        this.caMode = caMode;
+        this.commitMode = commitMode;
+        this.historyMode = historyMode;
+        this.companyName = companyName;
+        this.fuzzyCompanyName = fuzzyCompanyName;
+        this.ownerName = ownerName;
+        this.fuzzyOwnerName = fuzzyOwnerName;
+        this.lastModifyUserName = lastModifyUserName;
+        this.fuzzyLastModifyUserName = fuzzyLastModifyUserName;
+        this.path = path;
         this.parentPath = parentPath;
-        this.notTypeId = notTypeId;
+        this.fuzzyPath = fuzzyPath;
+        this.projectName = projectName;
+        this.fuzzyProjectName = fuzzyProjectName;
+        this.companyId = companyId;
+        this.notCompanyId = notCompanyId;
+        this.accountId = accountId;
+        this.roleAttr = roleAttr;
+        this.isTaskLeader = isTaskLeader;
+        this.isTaskDesigner = isTaskDesigner;
+        this.isTaskChecker = isTaskChecker;
+        this.isTaskAuditor = isTaskAuditor;
+        this.issueId = issueId;
+        this.serverTypeId = serverTypeId;
+        this.serverAddress = serverAddress;
+        this.baseDir = baseDir;
+        this.key = key;
+        this.statusAttr = statusAttr;
         this.passDesign = passDesign;
         this.passCheck = passCheck;
         this.passAudit = passAudit;
-        this.directoryMode = directoryMode;
-        this.fuzzyId = fuzzyId;
-        this.fuzzyPath = fuzzyPath;
+        this.isMirror = isMirror;
+        this.onlyOne = onlyOne;
+        this.needPath = needPath;
+        this.needProjectName = needProjectName;
+        this.needTaskName = needTaskName;
+        this.needTaskPath = needTaskPath;
+        this.needOwnerName = needOwnerName;
+        this.needCompanyId = needCompanyId;
+        this.needCompanyName = needCompanyName;
+        this.needIssueId = needIssueId;
+        this.needIssuePath = needIssuePath;
+        this.needDesignTaskPath = needDesignTaskPath;
+        this.needLastModifyUserName = needLastModifyUserName;
+        this.needRoleInfo = needRoleInfo;
+        this.needFileInfo = needFileInfo;
+        this.needMainFileInfo = needMainFileInfo;
+        this.needFileHistoryInfo = needFileHistoryInfo;
     }
 
     public boolean equals(java.lang.Object rhs)
@@ -360,9 +1004,9 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.pid != r.pid)
+            if(this.fuzzyId != r.fuzzyId)
             {
-                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
+                if(this.fuzzyId == null || r.fuzzyId == null || !this.fuzzyId.equals(r.fuzzyId))
                 {
                     return false;
                 }
@@ -374,9 +1018,16 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.path != r.path)
+            if(this.fuzzyName != r.fuzzyName)
             {
-                if(this.path == null || r.path == null || !this.path.equals(r.path))
+                if(this.fuzzyName == null || r.fuzzyName == null || !this.fuzzyName.equals(r.fuzzyName))
+                {
+                    return false;
+                }
+            }
+            if(this.pid != r.pid)
+            {
+                if(this.pid == null || r.pid == null || !this.pid.equals(r.pid))
                 {
                     return false;
                 }
@@ -388,9 +1039,23 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.notTypeId != r.notTypeId)
+            {
+                if(this.notTypeId == null || r.notTypeId == null || !this.notTypeId.equals(r.notTypeId))
+                {
+                    return false;
+                }
+            }
             if(this.projectId != r.projectId)
             {
                 if(this.projectId == null || r.projectId == null || !this.projectId.equals(r.projectId))
+                {
+                    return false;
+                }
+            }
+            if(this.notProjectId != r.notProjectId)
+            {
+                if(this.notProjectId == null || r.notProjectId == null || !this.notProjectId.equals(r.notProjectId))
                 {
                     return false;
                 }
@@ -402,9 +1067,9 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.issueId != r.issueId)
+            if(this.notRangeId != r.notRangeId)
             {
-                if(this.issueId == null || r.issueId == null || !this.issueId.equals(r.issueId))
+                if(this.notRangeId == null || r.notRangeId == null || !this.notRangeId.equals(r.notRangeId))
                 {
                     return false;
                 }
@@ -416,9 +1081,9 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.companyId != r.companyId)
+            if(this.notTaskId != r.notTaskId)
             {
-                if(this.companyId == null || r.companyId == null || !this.companyId.equals(r.companyId))
+                if(this.notTaskId == null || r.notTaskId == null || !this.notTaskId.equals(r.notTaskId))
                 {
                     return false;
                 }
@@ -444,9 +1109,100 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.accountId != r.accountId)
+            if(this.notLastModifyRoleId != r.notLastModifyRoleId)
             {
-                if(this.accountId == null || r.accountId == null || !this.accountId.equals(r.accountId))
+                if(this.notLastModifyRoleId == null || r.notLastModifyRoleId == null || !this.notLastModifyRoleId.equals(r.notLastModifyRoleId))
+                {
+                    return false;
+                }
+            }
+            if(this.nodeTypeAttr != r.nodeTypeAttr)
+            {
+                if(this.nodeTypeAttr == null || r.nodeTypeAttr == null || !this.nodeTypeAttr.equals(r.nodeTypeAttr))
+                {
+                    return false;
+                }
+            }
+            if(this.directoryMode != r.directoryMode)
+            {
+                if(this.directoryMode == null || r.directoryMode == null || !this.directoryMode.equals(r.directoryMode))
+                {
+                    return false;
+                }
+            }
+            if(this.designMode != r.designMode)
+            {
+                if(this.designMode == null || r.designMode == null || !this.designMode.equals(r.designMode))
+                {
+                    return false;
+                }
+            }
+            if(this.caMode != r.caMode)
+            {
+                if(this.caMode == null || r.caMode == null || !this.caMode.equals(r.caMode))
+                {
+                    return false;
+                }
+            }
+            if(this.commitMode != r.commitMode)
+            {
+                if(this.commitMode == null || r.commitMode == null || !this.commitMode.equals(r.commitMode))
+                {
+                    return false;
+                }
+            }
+            if(this.historyMode != r.historyMode)
+            {
+                if(this.historyMode == null || r.historyMode == null || !this.historyMode.equals(r.historyMode))
+                {
+                    return false;
+                }
+            }
+            if(this.companyName != r.companyName)
+            {
+                if(this.companyName == null || r.companyName == null || !this.companyName.equals(r.companyName))
+                {
+                    return false;
+                }
+            }
+            if(this.fuzzyCompanyName != r.fuzzyCompanyName)
+            {
+                if(this.fuzzyCompanyName == null || r.fuzzyCompanyName == null || !this.fuzzyCompanyName.equals(r.fuzzyCompanyName))
+                {
+                    return false;
+                }
+            }
+            if(this.ownerName != r.ownerName)
+            {
+                if(this.ownerName == null || r.ownerName == null || !this.ownerName.equals(r.ownerName))
+                {
+                    return false;
+                }
+            }
+            if(this.fuzzyOwnerName != r.fuzzyOwnerName)
+            {
+                if(this.fuzzyOwnerName == null || r.fuzzyOwnerName == null || !this.fuzzyOwnerName.equals(r.fuzzyOwnerName))
+                {
+                    return false;
+                }
+            }
+            if(this.lastModifyUserName != r.lastModifyUserName)
+            {
+                if(this.lastModifyUserName == null || r.lastModifyUserName == null || !this.lastModifyUserName.equals(r.lastModifyUserName))
+                {
+                    return false;
+                }
+            }
+            if(this.fuzzyLastModifyUserName != r.fuzzyLastModifyUserName)
+            {
+                if(this.fuzzyLastModifyUserName == null || r.fuzzyLastModifyUserName == null || !this.fuzzyLastModifyUserName.equals(r.fuzzyLastModifyUserName))
+                {
+                    return false;
+                }
+            }
+            if(this.path != r.path)
+            {
+                if(this.path == null || r.path == null || !this.path.equals(r.path))
                 {
                     return false;
                 }
@@ -458,9 +1214,121 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.notTypeId != r.notTypeId)
+            if(this.fuzzyPath != r.fuzzyPath)
             {
-                if(this.notTypeId == null || r.notTypeId == null || !this.notTypeId.equals(r.notTypeId))
+                if(this.fuzzyPath == null || r.fuzzyPath == null || !this.fuzzyPath.equals(r.fuzzyPath))
+                {
+                    return false;
+                }
+            }
+            if(this.projectName != r.projectName)
+            {
+                if(this.projectName == null || r.projectName == null || !this.projectName.equals(r.projectName))
+                {
+                    return false;
+                }
+            }
+            if(this.fuzzyProjectName != r.fuzzyProjectName)
+            {
+                if(this.fuzzyProjectName == null || r.fuzzyProjectName == null || !this.fuzzyProjectName.equals(r.fuzzyProjectName))
+                {
+                    return false;
+                }
+            }
+            if(this.companyId != r.companyId)
+            {
+                if(this.companyId == null || r.companyId == null || !this.companyId.equals(r.companyId))
+                {
+                    return false;
+                }
+            }
+            if(this.notCompanyId != r.notCompanyId)
+            {
+                if(this.notCompanyId == null || r.notCompanyId == null || !this.notCompanyId.equals(r.notCompanyId))
+                {
+                    return false;
+                }
+            }
+            if(this.accountId != r.accountId)
+            {
+                if(this.accountId == null || r.accountId == null || !this.accountId.equals(r.accountId))
+                {
+                    return false;
+                }
+            }
+            if(this.roleAttr != r.roleAttr)
+            {
+                if(this.roleAttr == null || r.roleAttr == null || !this.roleAttr.equals(r.roleAttr))
+                {
+                    return false;
+                }
+            }
+            if(this.isTaskLeader != r.isTaskLeader)
+            {
+                if(this.isTaskLeader == null || r.isTaskLeader == null || !this.isTaskLeader.equals(r.isTaskLeader))
+                {
+                    return false;
+                }
+            }
+            if(this.isTaskDesigner != r.isTaskDesigner)
+            {
+                if(this.isTaskDesigner == null || r.isTaskDesigner == null || !this.isTaskDesigner.equals(r.isTaskDesigner))
+                {
+                    return false;
+                }
+            }
+            if(this.isTaskChecker != r.isTaskChecker)
+            {
+                if(this.isTaskChecker == null || r.isTaskChecker == null || !this.isTaskChecker.equals(r.isTaskChecker))
+                {
+                    return false;
+                }
+            }
+            if(this.isTaskAuditor != r.isTaskAuditor)
+            {
+                if(this.isTaskAuditor == null || r.isTaskAuditor == null || !this.isTaskAuditor.equals(r.isTaskAuditor))
+                {
+                    return false;
+                }
+            }
+            if(this.issueId != r.issueId)
+            {
+                if(this.issueId == null || r.issueId == null || !this.issueId.equals(r.issueId))
+                {
+                    return false;
+                }
+            }
+            if(this.serverTypeId != r.serverTypeId)
+            {
+                if(this.serverTypeId == null || r.serverTypeId == null || !this.serverTypeId.equals(r.serverTypeId))
+                {
+                    return false;
+                }
+            }
+            if(this.serverAddress != r.serverAddress)
+            {
+                if(this.serverAddress == null || r.serverAddress == null || !this.serverAddress.equals(r.serverAddress))
+                {
+                    return false;
+                }
+            }
+            if(this.baseDir != r.baseDir)
+            {
+                if(this.baseDir == null || r.baseDir == null || !this.baseDir.equals(r.baseDir))
+                {
+                    return false;
+                }
+            }
+            if(this.key != r.key)
+            {
+                if(this.key == null || r.key == null || !this.key.equals(r.key))
+                {
+                    return false;
+                }
+            }
+            if(this.statusAttr != r.statusAttr)
+            {
+                if(this.statusAttr == null || r.statusAttr == null || !this.statusAttr.equals(r.statusAttr))
                 {
                     return false;
                 }
@@ -486,23 +1354,121 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
-            if(this.directoryMode != r.directoryMode)
+            if(this.isMirror != r.isMirror)
             {
-                if(this.directoryMode == null || r.directoryMode == null || !this.directoryMode.equals(r.directoryMode))
+                if(this.isMirror == null || r.isMirror == null || !this.isMirror.equals(r.isMirror))
                 {
                     return false;
                 }
             }
-            if(this.fuzzyId != r.fuzzyId)
+            if(this.onlyOne != r.onlyOne)
             {
-                if(this.fuzzyId == null || r.fuzzyId == null || !this.fuzzyId.equals(r.fuzzyId))
+                if(this.onlyOne == null || r.onlyOne == null || !this.onlyOne.equals(r.onlyOne))
                 {
                     return false;
                 }
             }
-            if(this.fuzzyPath != r.fuzzyPath)
+            if(this.needPath != r.needPath)
             {
-                if(this.fuzzyPath == null || r.fuzzyPath == null || !this.fuzzyPath.equals(r.fuzzyPath))
+                if(this.needPath == null || r.needPath == null || !this.needPath.equals(r.needPath))
+                {
+                    return false;
+                }
+            }
+            if(this.needProjectName != r.needProjectName)
+            {
+                if(this.needProjectName == null || r.needProjectName == null || !this.needProjectName.equals(r.needProjectName))
+                {
+                    return false;
+                }
+            }
+            if(this.needTaskName != r.needTaskName)
+            {
+                if(this.needTaskName == null || r.needTaskName == null || !this.needTaskName.equals(r.needTaskName))
+                {
+                    return false;
+                }
+            }
+            if(this.needTaskPath != r.needTaskPath)
+            {
+                if(this.needTaskPath == null || r.needTaskPath == null || !this.needTaskPath.equals(r.needTaskPath))
+                {
+                    return false;
+                }
+            }
+            if(this.needOwnerName != r.needOwnerName)
+            {
+                if(this.needOwnerName == null || r.needOwnerName == null || !this.needOwnerName.equals(r.needOwnerName))
+                {
+                    return false;
+                }
+            }
+            if(this.needCompanyId != r.needCompanyId)
+            {
+                if(this.needCompanyId == null || r.needCompanyId == null || !this.needCompanyId.equals(r.needCompanyId))
+                {
+                    return false;
+                }
+            }
+            if(this.needCompanyName != r.needCompanyName)
+            {
+                if(this.needCompanyName == null || r.needCompanyName == null || !this.needCompanyName.equals(r.needCompanyName))
+                {
+                    return false;
+                }
+            }
+            if(this.needIssueId != r.needIssueId)
+            {
+                if(this.needIssueId == null || r.needIssueId == null || !this.needIssueId.equals(r.needIssueId))
+                {
+                    return false;
+                }
+            }
+            if(this.needIssuePath != r.needIssuePath)
+            {
+                if(this.needIssuePath == null || r.needIssuePath == null || !this.needIssuePath.equals(r.needIssuePath))
+                {
+                    return false;
+                }
+            }
+            if(this.needDesignTaskPath != r.needDesignTaskPath)
+            {
+                if(this.needDesignTaskPath == null || r.needDesignTaskPath == null || !this.needDesignTaskPath.equals(r.needDesignTaskPath))
+                {
+                    return false;
+                }
+            }
+            if(this.needLastModifyUserName != r.needLastModifyUserName)
+            {
+                if(this.needLastModifyUserName == null || r.needLastModifyUserName == null || !this.needLastModifyUserName.equals(r.needLastModifyUserName))
+                {
+                    return false;
+                }
+            }
+            if(this.needRoleInfo != r.needRoleInfo)
+            {
+                if(this.needRoleInfo == null || r.needRoleInfo == null || !this.needRoleInfo.equals(r.needRoleInfo))
+                {
+                    return false;
+                }
+            }
+            if(this.needFileInfo != r.needFileInfo)
+            {
+                if(this.needFileInfo == null || r.needFileInfo == null || !this.needFileInfo.equals(r.needFileInfo))
+                {
+                    return false;
+                }
+            }
+            if(this.needMainFileInfo != r.needMainFileInfo)
+            {
+                if(this.needMainFileInfo == null || r.needMainFileInfo == null || !this.needMainFileInfo.equals(r.needMainFileInfo))
+                {
+                    return false;
+                }
+            }
+            if(this.needFileHistoryInfo != r.needFileHistoryInfo)
+            {
+                if(this.needFileHistoryInfo == null || r.needFileHistoryInfo == null || !this.needFileHistoryInfo.equals(r.needFileHistoryInfo))
                 {
                     return false;
                 }
@@ -519,27 +1485,73 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::QueryNodeDTO");
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, id);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, name);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, pid);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, typeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notProjectId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, rangeId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issueId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notRangeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notTaskId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerUserId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notOwnerUserId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyRoleId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, accountId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notLastModifyRoleId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, nodeTypeAttr);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, directoryMode);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, designMode);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, caMode);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, commitMode);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, historyMode);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyCompanyName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyOwnerName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, lastModifyUserName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyLastModifyUserName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, path);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, parentPath);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyPath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyProjectName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, companyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notCompanyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, accountId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, roleAttr);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskLeader);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskDesigner);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskChecker);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskAuditor);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issueId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverAddress);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, baseDir);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, key);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, statusAttr);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, passDesign);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, passCheck);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, passAudit);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, directoryMode);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyId);
-        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fuzzyPath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isMirror);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, onlyOne);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needPath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needProjectName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needTaskName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needTaskPath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needOwnerName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needCompanyId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needCompanyName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needIssueId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needIssuePath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needDesignTaskPath);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needLastModifyUserName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needRoleInfo);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needFileInfo);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needMainFileInfo);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, needFileHistoryInfo);
         return h_;
     }
 
@@ -560,53 +1572,145 @@ public class QueryNodeDTO implements java.lang.Cloneable,
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
         ostr.writeString(this.id);
-        ostr.writeString(this.pid);
+        ostr.writeString(this.fuzzyId);
         ostr.writeString(this.name);
-        ostr.writeString(this.path);
+        ostr.writeString(this.fuzzyName);
+        ostr.writeString(this.pid);
         ostr.writeString(this.typeId);
+        ostr.writeString(this.notTypeId);
         ostr.writeString(this.projectId);
+        ostr.writeString(this.notProjectId);
         ostr.writeString(this.rangeId);
-        ostr.writeString(this.issueId);
+        ostr.writeString(this.notRangeId);
         ostr.writeString(this.taskId);
-        ostr.writeString(this.companyId);
+        ostr.writeString(this.notTaskId);
         ostr.writeString(this.ownerUserId);
         ostr.writeString(this.notOwnerUserId);
         ostr.writeString(this.lastModifyRoleId);
-        ostr.writeString(this.accountId);
+        ostr.writeString(this.notLastModifyRoleId);
+        ostr.writeString(this.nodeTypeAttr);
+        ostr.writeString(this.directoryMode);
+        ostr.writeString(this.designMode);
+        ostr.writeString(this.caMode);
+        ostr.writeString(this.commitMode);
+        ostr.writeString(this.historyMode);
+        ostr.writeString(this.companyName);
+        ostr.writeString(this.fuzzyCompanyName);
+        ostr.writeString(this.ownerName);
+        ostr.writeString(this.fuzzyOwnerName);
+        ostr.writeString(this.lastModifyUserName);
+        ostr.writeString(this.fuzzyLastModifyUserName);
+        ostr.writeString(this.path);
         ostr.writeString(this.parentPath);
-        ostr.writeString(this.notTypeId);
+        ostr.writeString(this.fuzzyPath);
+        ostr.writeString(this.projectName);
+        ostr.writeString(this.fuzzyProjectName);
+        ostr.writeString(this.companyId);
+        ostr.writeString(this.notCompanyId);
+        ostr.writeString(this.accountId);
+        ostr.writeString(this.roleAttr);
+        ostr.writeString(this.isTaskLeader);
+        ostr.writeString(this.isTaskDesigner);
+        ostr.writeString(this.isTaskChecker);
+        ostr.writeString(this.isTaskAuditor);
+        ostr.writeString(this.issueId);
+        ostr.writeString(this.serverTypeId);
+        ostr.writeString(this.serverAddress);
+        ostr.writeString(this.baseDir);
+        ostr.writeString(this.key);
+        ostr.writeString(this.statusAttr);
         ostr.writeString(this.passDesign);
         ostr.writeString(this.passCheck);
         ostr.writeString(this.passAudit);
-        ostr.writeString(this.directoryMode);
-        ostr.writeString(this.fuzzyId);
-        ostr.writeString(this.fuzzyPath);
+        ostr.writeString(this.isMirror);
+        ostr.writeString(this.onlyOne);
+        ostr.writeString(this.needPath);
+        ostr.writeString(this.needProjectName);
+        ostr.writeString(this.needTaskName);
+        ostr.writeString(this.needTaskPath);
+        ostr.writeString(this.needOwnerName);
+        ostr.writeString(this.needCompanyId);
+        ostr.writeString(this.needCompanyName);
+        ostr.writeString(this.needIssueId);
+        ostr.writeString(this.needIssuePath);
+        ostr.writeString(this.needDesignTaskPath);
+        ostr.writeString(this.needLastModifyUserName);
+        ostr.writeString(this.needRoleInfo);
+        ostr.writeString(this.needFileInfo);
+        ostr.writeString(this.needMainFileInfo);
+        ostr.writeString(this.needFileHistoryInfo);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
         this.id = istr.readString();
-        this.pid = istr.readString();
+        this.fuzzyId = istr.readString();
         this.name = istr.readString();
-        this.path = istr.readString();
+        this.fuzzyName = istr.readString();
+        this.pid = istr.readString();
         this.typeId = istr.readString();
+        this.notTypeId = istr.readString();
         this.projectId = istr.readString();
+        this.notProjectId = istr.readString();
         this.rangeId = istr.readString();
-        this.issueId = istr.readString();
+        this.notRangeId = istr.readString();
         this.taskId = istr.readString();
-        this.companyId = istr.readString();
+        this.notTaskId = istr.readString();
         this.ownerUserId = istr.readString();
         this.notOwnerUserId = istr.readString();
         this.lastModifyRoleId = istr.readString();
-        this.accountId = istr.readString();
+        this.notLastModifyRoleId = istr.readString();
+        this.nodeTypeAttr = istr.readString();
+        this.directoryMode = istr.readString();
+        this.designMode = istr.readString();
+        this.caMode = istr.readString();
+        this.commitMode = istr.readString();
+        this.historyMode = istr.readString();
+        this.companyName = istr.readString();
+        this.fuzzyCompanyName = istr.readString();
+        this.ownerName = istr.readString();
+        this.fuzzyOwnerName = istr.readString();
+        this.lastModifyUserName = istr.readString();
+        this.fuzzyLastModifyUserName = istr.readString();
+        this.path = istr.readString();
         this.parentPath = istr.readString();
-        this.notTypeId = istr.readString();
+        this.fuzzyPath = istr.readString();
+        this.projectName = istr.readString();
+        this.fuzzyProjectName = istr.readString();
+        this.companyId = istr.readString();
+        this.notCompanyId = istr.readString();
+        this.accountId = istr.readString();
+        this.roleAttr = istr.readString();
+        this.isTaskLeader = istr.readString();
+        this.isTaskDesigner = istr.readString();
+        this.isTaskChecker = istr.readString();
+        this.isTaskAuditor = istr.readString();
+        this.issueId = istr.readString();
+        this.serverTypeId = istr.readString();
+        this.serverAddress = istr.readString();
+        this.baseDir = istr.readString();
+        this.key = istr.readString();
+        this.statusAttr = istr.readString();
         this.passDesign = istr.readString();
         this.passCheck = istr.readString();
         this.passAudit = istr.readString();
-        this.directoryMode = istr.readString();
-        this.fuzzyId = istr.readString();
-        this.fuzzyPath = istr.readString();
+        this.isMirror = istr.readString();
+        this.onlyOne = istr.readString();
+        this.needPath = istr.readString();
+        this.needProjectName = istr.readString();
+        this.needTaskName = istr.readString();
+        this.needTaskPath = istr.readString();
+        this.needOwnerName = istr.readString();
+        this.needCompanyId = istr.readString();
+        this.needCompanyName = istr.readString();
+        this.needIssueId = istr.readString();
+        this.needIssuePath = istr.readString();
+        this.needDesignTaskPath = istr.readString();
+        this.needLastModifyUserName = istr.readString();
+        this.needRoleInfo = istr.readString();
+        this.needFileInfo = istr.readString();
+        this.needMainFileInfo = istr.readString();
+        this.needFileHistoryInfo = istr.readString();
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, QueryNodeDTO v)
@@ -661,5 +1765,5 @@ public class QueryNodeDTO implements java.lang.Cloneable,
 
     private static final QueryNodeDTO _nullMarshalValue = new QueryNodeDTO();
 
-    public static final long serialVersionUID = -1979324051L;
+    public static final long serialVersionUID = 1398976762L;
 }

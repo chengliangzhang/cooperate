@@ -1,4 +1,4 @@
-package com.maoding.CoreUtils;
+package com.maoding.coreUtils;
 
 import java.util.Random;
 

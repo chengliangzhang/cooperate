@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class SimpleNodeDTO implements java.lang.Cloneable,
                                       java.io.Serializable
@@ -220,6 +220,74 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.taskName = taskName;
     }
 
+    public boolean isTaskRole;
+
+    public boolean getIsTaskRole()
+    {
+        return isTaskRole;
+    }
+
+    public void setIsTaskRole(boolean isTaskRole)
+    {
+        this.isTaskRole = isTaskRole;
+    }
+
+    public boolean isIsTaskRole()
+    {
+        return isTaskRole;
+    }
+
+    public boolean isTaskDesigner;
+
+    public boolean getIsTaskDesigner()
+    {
+        return isTaskDesigner;
+    }
+
+    public void setIsTaskDesigner(boolean isTaskDesigner)
+    {
+        this.isTaskDesigner = isTaskDesigner;
+    }
+
+    public boolean isIsTaskDesigner()
+    {
+        return isTaskDesigner;
+    }
+
+    public boolean isTaskChecker;
+
+    public boolean getIsTaskChecker()
+    {
+        return isTaskChecker;
+    }
+
+    public void setIsTaskChecker(boolean isTaskChecker)
+    {
+        this.isTaskChecker = isTaskChecker;
+    }
+
+    public boolean isIsTaskChecker()
+    {
+        return isTaskChecker;
+    }
+
+    public boolean isTaskAuditor;
+
+    public boolean getIsTaskAuditor()
+    {
+        return isTaskAuditor;
+    }
+
+    public void setIsTaskAuditor(boolean isTaskAuditor)
+    {
+        this.isTaskAuditor = isTaskAuditor;
+    }
+
+    public boolean isIsTaskAuditor()
+    {
+        return isTaskAuditor;
+    }
+
     public boolean isReadOnly;
 
     public boolean getIsReadOnly()
@@ -270,7 +338,7 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.taskName = "";
     }
 
-    public SimpleNodeDTO(String id, String pid, String typeId, String name, long createTimeStamp, long lastModifyTimeStamp, boolean isDirectory, String projectId, String taskId, String ownerUserId, String path, String fileMd5, long fileLength, String ownerName, String projectName, String taskName, boolean isReadOnly, boolean canCreateChild)
+    public SimpleNodeDTO(String id, String pid, String typeId, String name, long createTimeStamp, long lastModifyTimeStamp, boolean isDirectory, String projectId, String taskId, String ownerUserId, String path, String fileMd5, long fileLength, String ownerName, String projectName, String taskName, boolean isTaskRole, boolean isTaskDesigner, boolean isTaskChecker, boolean isTaskAuditor, boolean isReadOnly, boolean canCreateChild)
     {
         this.id = id;
         this.pid = pid;
@@ -288,6 +356,10 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.ownerName = ownerName;
         this.projectName = projectName;
         this.taskName = taskName;
+        this.isTaskRole = isTaskRole;
+        this.isTaskDesigner = isTaskDesigner;
+        this.isTaskChecker = isTaskChecker;
+        this.isTaskAuditor = isTaskAuditor;
         this.isReadOnly = isReadOnly;
         this.canCreateChild = canCreateChild;
     }
@@ -406,6 +478,22 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.isTaskRole != r.isTaskRole)
+            {
+                return false;
+            }
+            if(this.isTaskDesigner != r.isTaskDesigner)
+            {
+                return false;
+            }
+            if(this.isTaskChecker != r.isTaskChecker)
+            {
+                return false;
+            }
+            if(this.isTaskAuditor != r.isTaskAuditor)
+            {
+                return false;
+            }
             if(this.isReadOnly != r.isReadOnly)
             {
                 return false;
@@ -441,6 +529,10 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, ownerName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, projectName);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, taskName);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskRole);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskDesigner);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskChecker);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskAuditor);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isReadOnly);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, canCreateChild);
         return h_;
@@ -478,6 +570,10 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.ownerName);
         ostr.writeString(this.projectName);
         ostr.writeString(this.taskName);
+        ostr.writeBool(this.isTaskRole);
+        ostr.writeBool(this.isTaskDesigner);
+        ostr.writeBool(this.isTaskChecker);
+        ostr.writeBool(this.isTaskAuditor);
         ostr.writeBool(this.isReadOnly);
         ostr.writeBool(this.canCreateChild);
     }
@@ -500,6 +596,10 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
         this.ownerName = istr.readString();
         this.projectName = istr.readString();
         this.taskName = istr.readString();
+        this.isTaskRole = istr.readBool();
+        this.isTaskDesigner = istr.readBool();
+        this.isTaskChecker = istr.readBool();
+        this.isTaskAuditor = istr.readBool();
         this.isReadOnly = istr.readBool();
         this.canCreateChild = istr.readBool();
     }
@@ -556,5 +656,5 @@ public class SimpleNodeDTO implements java.lang.Cloneable,
 
     private static final SimpleNodeDTO _nullMarshalValue = new SimpleNodeDTO();
 
-    public static final long serialVersionUID = 813566748L;
+    public static final long serialVersionUID = -1600068884L;
 }

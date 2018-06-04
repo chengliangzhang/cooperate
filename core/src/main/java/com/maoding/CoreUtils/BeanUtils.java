@@ -1,4 +1,4 @@
-package com.maoding.CoreUtils;
+package com.maoding.coreUtils;
 
 import com.esotericsoftware.reflectasm.MethodAccess;
 import org.slf4j.Logger;
@@ -66,7 +66,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         }
     }
 
-    public static <K,V> Map<K,V> createMapFrom(final Object input,Class<? extends K> keyClass,Class<? extends V> valClass){
+    public static <K,V> Map<K,V> createMapFrom(final Object input,Class<? extends K> keyClass,Class<? extends V> valClass,boolean isClean){
         assert (keyClass != null) && (!keyClass.isPrimitive()) && (!keyClass.isArray());
         assert (valClass != null) && (!valClass.isPrimitive()) && (!valClass.isArray());
         if (input == null) return null;
@@ -79,12 +79,13 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         List<String> fieldList = fieldMap.get(input.getClass());
         if (fieldList != null) {
             for (String field : fieldList) {
-                K key = createFrom(field,keyClass,false);
                 String getKey = input.getClass().getName() + DOT + GET + field;
                 Integer getIndex = methodIndexMap.get(getKey);
                 if (getIndex != null){
-                    V val = createFrom(inputMethodAccess.invoke(input, getIndex),valClass,false);
+                    Object i = inputMethodAccess.invoke(input, getIndex);
+                    V val = createFrom(inputMethodAccess.invoke(input, getIndex),valClass,isClean);
                     if (val != null) {
+                        K key = createFrom(field,keyClass,false);
                         output.put(key,val);
                     }
                 }
@@ -92,40 +93,20 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         }
         return output;
     }
+    public static <K,V> Map<K,V> createMapFrom(final Object input,Class<? extends K> keyClass,Class<? extends V> valClass){
+        return createMapFrom(input,keyClass,valClass,false);
+    }
+    public static Map<String,Object> createMapFrom(final Object input,boolean isClean){
+        return createMapFrom(input,String.class,Object.class,isClean);
+    }
     public static Map<String,Object> createMapFrom(final Object input){
-        return createMapFrom(input,String.class,Object.class);
+        return createMapFrom(input,false);
     }
-
-    @Deprecated
-    public static void copyProperties(final Object input, Map<String,Object> output, boolean isClean) {
-        assert (output != null) && (!output.getClass().isPrimitive()) && (!output.getClass().isArray());
-        if ((input == null) || (input.getClass().isPrimitive()) || input.getClass().isArray()) return;
-
-        MethodAccess inputMethodAccess = methodMap.get(input.getClass());
-        if (inputMethodAccess == null) inputMethodAccess = cache(input.getClass());
-
-        List<String> fieldList = fieldMap.get(input.getClass());
-        if (fieldList != null) {
-            for (String field : fieldList) {
-                String getKey = input.getClass().getName() + DOT + GET + field;
-                Integer getIndex = methodIndexMap.get(getKey);
-                if (getIndex != null){
-                    Object val = inputMethodAccess.invoke(input, getIndex);
-                    if (val != null) {
-                        if (!isClean || !val.getClass().isAssignableFrom(String.class) || !StringUtils.isEmpty(val.toString()))
-                            output.put(field,val);
-                    }
-                }
-            }
-        }
+    public static <K,V> Map<K,V> createCleanMapFrom(final Object input,Class<? extends K> keyClass,Class<? extends V> valClass){
+        return createMapFrom(input,keyClass,valClass,true);
     }
-    @Deprecated
-    public static void copyProperties(final Object input, Map<String,Object> output) {
-        copyProperties(input,output,false);
-    }
-    @Deprecated
-    public static void copyCleanProperties(final Object input, Map<String,Object> output) {
-        copyProperties(input,output,true);
+    public static Map<String,Object> createCleanMapFrom(final Object input){
+        return createMapFrom(input,true);
     }
 
     public static <K,V> void copyProperties(final Map<K,V> input, Object output, boolean isClean) {
@@ -259,9 +240,9 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         } else if (outputClass.isArray()) {
             Class<?> elementClass = outputClass.getComponentType();
             if (input.getClass().isArray() && elementClass.isAssignableFrom(input.getClass().getComponentType())) {
-                return outputClass.cast(input);
+                return outputClass.cast((isClean) ? cleanProperties(input) : input);
             } else {
-                return outputClass.cast(createArrayObjectFrom(input, outputClass.getComponentType()));
+                return outputClass.cast(createArrayObjectFrom(input, outputClass.getComponentType(),isClean));
             }
         } else if (input instanceof Map) {
             D output = constructNull(outputClass);
@@ -278,73 +259,81 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         return createFrom(input,outputClass,true);
     }
 
-    public static <D> List<D> createListFrom(Object input, Class<? extends D> elementClass){
+    public static <D> List<D> createListFrom(Object input, Class<? extends D> elementClass,boolean isClean){
         assert (elementClass != null) && (!elementClass.isPrimitive());
         List<D> outputList = null;
         if (input != null) {
             outputList = new ArrayList<>();
             if (input.getClass().isArray()) {
                 for (int i = 0; i < Array.getLength(input); i++) {
-                    outputList.add(createFrom(Array.get(input, i), elementClass));
+                    outputList.add(createFrom(Array.get(input,i),elementClass,isClean));
                 }
             } else if (input instanceof List) {
                 List<?> inputList = (List<?>) input;
                 for (Object inputElement : inputList) {
                     if (inputElement == null) continue;
                     if (elementClass.isAssignableFrom(inputElement.getClass())) {
-                        outputList.add(elementClass.cast(inputElement));
+                        outputList.add(elementClass.cast((isClean) ? cleanProperties(inputElement) : inputElement));
                     } else {
-                        outputList.add(createFrom(inputElement, elementClass));
+                        outputList.add(createFrom(inputElement,elementClass,isClean));
                     }
                 }
             } else {
                 if (elementClass.isInstance(input)) {
-                    outputList.add(elementClass.cast(input));
+                    outputList.add(elementClass.cast((isClean) ? cleanProperties(input) : input));
                 } else {
-                    outputList.add(createFrom(input, elementClass));
+                    outputList.add(createFrom(input,elementClass,isClean));
                 }
             }
         }
         return outputList;
     }
 
+    public static <D> List<D> createListFrom(Object input, Class<? extends D> elementClass){
+        return createListFrom(input,elementClass,false);
+    }
+
+    public static <D> List<D> createCleanListFrom(Object input, Class<? extends D> elementClass){
+        return createListFrom(input,elementClass,true);
+    }
+
     @SuppressWarnings("unchecked")
-    public static <D> D[] createArrayFrom(Object input, Class<? extends D> elementClass){
+    public static <D> D[] createArrayFrom(Object input, Class<? extends D> elementClass,boolean isClean){
         assert (elementClass != null) && (!elementClass.isPrimitive());
         D[] outputArray = null;
         if (input != null){
             if (input.getClass().isArray()) {
                 outputArray = (D[])Array.newInstance(elementClass,Array.getLength(input));
                 for (int i=0; i<Array.getLength(input); i++){
-                    outputArray[i] = createFrom(Array.get(input,i),elementClass);
+                    outputArray[i] = createFrom(Array.get(input,i),elementClass,isClean);
                 }
             } else {
                 outputArray = (D[])Array.newInstance(elementClass,1);
                 if (elementClass.isInstance(input)) {
-                    outputArray[0] = elementClass.cast(input);
+                    outputArray[0] = elementClass.cast((isClean) ? cleanProperties(input) : input);
                 } else {
-                    outputArray[0] = createFrom(input,elementClass);
+                    outputArray[0] = createFrom(input,elementClass,isClean);
                 }
             }
         }
         return outputArray;
     }
 
-    public static Object createArrayObjectFrom(Object input,Class<?> elementClass){
+    public static Object createArrayObjectFrom(Object input,Class<?> elementClass,boolean isClean){
         assert (elementClass != null);
-        if (elementClass == boolean.class) return createBooleanArrayFrom(input);
-        else if (elementClass == char.class) return createCharArrayFrom(input);
-        else if (elementClass == byte.class) return createByteArrayFrom(input);
-        else if (elementClass == short.class) return createShortArrayFrom(input);
-        else if (elementClass == int.class) return createIntArrayFrom(input);
-        else if (elementClass == long.class) return createLongArrayFrom(input);
-        else if (elementClass == float.class) return createFloatArrayFrom(input);
-        else if (elementClass == double.class) return createDoubleArrayFrom(input);
-        else return createArrayFrom(input,elementClass);
+        if (elementClass == boolean.class) return createBooleanArrayFrom(input,isClean);
+        else if (elementClass == char.class) return createCharArrayFrom(input,isClean);
+        else if (elementClass == byte.class) return createByteArrayFrom(input,isClean);
+        else if (elementClass == short.class) return createShortArrayFrom(input,isClean);
+        else if (elementClass == int.class) return createIntArrayFrom(input,isClean);
+        else if (elementClass == long.class) return createLongArrayFrom(input,isClean);
+        else if (elementClass == float.class) return createFloatArrayFrom(input,isClean);
+        else if (elementClass == double.class) return createDoubleArrayFrom(input,isClean);
+        else return createArrayFrom(input,elementClass,isClean);
     }
 
-    public static boolean[] createBooleanArrayFrom(Object input){
-        Boolean[] tmp = createArrayFrom(input,Boolean.class);
+    public static boolean[] createBooleanArrayFrom(Object input,boolean isClean){
+        Boolean[] tmp = createArrayFrom(input,Boolean.class,isClean);
         boolean[] output = null;
         if (tmp != null){
             output = new boolean[tmp.length];
@@ -355,8 +344,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         return output;
     }
 
-    public static char[] createCharArrayFrom(Object input){
-        Character[] tmp = createArrayFrom(input,Character.class);
+    public static char[] createCharArrayFrom(Object input,boolean isClean){
+        Character[] tmp = createArrayFrom(input,Character.class,isClean);
         char[] output = null;
         if (tmp != null){
             output = new char[tmp.length];
@@ -367,8 +356,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         return output;
     }
 
-    public static byte[] createByteArrayFrom(Object input){
-        Byte[] tmp = createArrayFrom(input,Byte.class);
+    public static byte[] createByteArrayFrom(Object input,boolean isClean){
+        Byte[] tmp = createArrayFrom(input,Byte.class,isClean);
         byte[] output = null;
         if (tmp != null){
             output = new byte[tmp.length];
@@ -379,8 +368,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         return output;
     }
 
-    public static short[] createShortArrayFrom(Object input){
-        Short[] tmp = createArrayFrom(input,Short.class);
+    public static short[] createShortArrayFrom(Object input,boolean isClean){
+        Short[] tmp = createArrayFrom(input,Short.class,isClean);
         short[] output = null;
         if (tmp != null){
             output = new short[tmp.length];
@@ -391,8 +380,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         return output;
     }
 
-    public static int[] createIntArrayFrom(Object input){
-        Integer[] tmp = createArrayFrom(input,Integer.class);
+    public static int[] createIntArrayFrom(Object input,boolean isClean){
+        Integer[] tmp = createArrayFrom(input,Integer.class,isClean);
         int[] output = null;
         if (tmp != null){
             output = new int[tmp.length];
@@ -403,8 +392,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         return output;
     }
 
-    public static long[] createLongArrayFrom(Object input){
-        Long[] tmp = createArrayFrom(input,Long.class);
+    public static long[] createLongArrayFrom(Object input,boolean isClean){
+        Long[] tmp = createArrayFrom(input,Long.class,isClean);
         long[] output = null;
         if (tmp != null){
             output = new long[tmp.length];
@@ -415,8 +404,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         return output;
     }
 
-    public static float[] createFloatArrayFrom(Object input){
-        Float[] tmp = createArrayFrom(input,Float.class);
+    public static float[] createFloatArrayFrom(Object input,boolean isClean){
+        Float[] tmp = createArrayFrom(input,Float.class,isClean);
         float[] output = null;
         if (tmp != null){
             output = new float[tmp.length];
@@ -427,8 +416,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         return output;
     }
 
-    public static double[] createDoubleArrayFrom(Object input){
-        Double[] tmp = createArrayFrom(input,Double.class);
+    public static double[] createDoubleArrayFrom(Object input,boolean isClean){
+        Double[] tmp = createArrayFrom(input,Double.class,isClean);
         double[] output = null;
         if (tmp != null){
             output = new double[tmp.length];
@@ -511,7 +500,6 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         //其他情况，先构造一个空对象，再复制属性
         if (output == null){
             output = constructNull(outputClass);
-            if (isClean) output = cleanProperties(output);
             copyProperties(input,output,isClean);
         }
 
@@ -540,9 +528,10 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     public static <T> T cleanProperties(T obj){
         if (ObjectUtils.isEmpty(obj)) {
             return null;
-        } else if ((DigitUtils.isDigitalClass(obj.getClass())) ||
-                (obj.getClass().isArray()) ||
-                (obj.getClass().isPrimitive())) {
+        } else if ((obj.getClass().isPrimitive()) ||
+                (DigitUtils.isDigitalClass(obj.getClass())) ||
+                (obj instanceof String) ||
+                (obj.getClass().isArray())) {
             return obj;
         }
 
@@ -554,21 +543,30 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         if (fieldList != null) {
             assert (objMethodAccess != null);
             Class[][] objParameterTypes = objMethodAccess.getParameterTypes();
+            boolean foundPty = false;
             for (String field : fieldList) {
                 String getKey = obj.getClass().getName() + DOT + GET + field;
                 String setKey = obj.getClass().getName() + DOT + SET + field;
                 Integer getIndex = methodIndexMap.get(getKey);
                 Integer setIndex = methodIndexMap.get(setKey);
                 if ((setIndex != null) && (getIndex != null)) {
-                    if (ObjectUtils.isEmpty(objMethodAccess.invoke(obj,getIndex))) {
-                        Class<?> fieldClass = objParameterTypes[setIndex][0];
-                        if (!fieldClass.isPrimitive()) {
-                            objMethodAccess.invoke(obj, setIndex, fieldClass.cast(null));
-                        }
-                    } else {
+                    foundPty = true;
+                    Class<?> fieldClass = objParameterTypes[setIndex][0];
+                    if (fieldClass.isPrimitive()) {
                         isValid = true;
+                    } else {
+                        if (ObjectUtils.isEmpty(objMethodAccess.invoke(obj,getIndex))) {
+                            objMethodAccess.invoke(obj, setIndex, fieldClass.cast(null));
+                        } else if (cleanProperties(objMethodAccess.invoke(obj,getIndex)) == null){
+                            objMethodAccess.invoke(obj, setIndex, fieldClass.cast(null));
+                        } else {
+                            isValid = true;
+                        }
                     }
                 }
+            }
+            if (!foundPty) {
+                isValid = true;
             }
         }
         return (isValid) ? obj : null;

@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Company.zeroc;
+package com.maoding.company.zeroc;
 
 public interface CompanyServicePrx extends com.zeroc.Ice.ObjectPrx
 {

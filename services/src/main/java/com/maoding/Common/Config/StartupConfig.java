@@ -1,4 +1,4 @@
-package com.maoding.Common.Config;
+package com.maoding.common.config;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;

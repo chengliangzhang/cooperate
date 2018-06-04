@@ -1,13 +1,11 @@
 #pragma once
-#include <Common.ice>
-#include <FileServer.ice>
-#include <User.ice>
-#include <StorageData.ice>
+#include <data/StorageData.ice>
 
-[["java:package:com.maoding.Storage"]]
+[["java:package:com.maoding.storage"]]
 module zeroc {
     interface StorageService {
-        FullNodeList listFullNode(QueryFullNodeDTO query) throws CustomException; //列出文件节点
+        NodeFileList listFile(QueryNodeDTO query) throws CustomException; //列出文件节点
+        FullNodeList listFullNode(QueryNodeDTO query) throws CustomException; //列出文件节点
         HistoryList listHistory(QueryHistoryDTO query) throws CustomException; //列出历史动作节点
 
         ["deprecate"] CANodeList listCANode(QueryCANodeDTO query) throws CustomException; //列出设计及校验审核文档
@@ -20,12 +18,16 @@ module zeroc {
         AnnotateDTO updateAnnotate(AnnotateDTO src,UpdateAnnotateDTO request) throws CustomException; //更新文件注解
         AnnotateList listAnnotate(QueryAnnotateDTO query) throws CustomException; //查询文件注解
 
-        NodeFileDTO createNodeFile(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //创建文件或镜像
-        NodeFileDTO createNodeFileWithRequestOnly(UpdateNodeFileDTO request) throws CustomException; //创建文件或镜像
-        NodeFileDTO updateNodeFile(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //更新文件或镜像
-        NodeFileList listNodeFile(QueryNodeFileDTO query) throws CustomException; //查询文件或镜像
+        NodeFileDTO createFile(UpdateNodeFileDTO request) throws CustomException; //创建文件
+        NodeFileDTO createMirror(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //创建镜像
+        NodeFileDTO updateFile(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //更新文件或镜像
 
-        long summaryNodeLength(QuerySummaryDTO query) throws CustomException; //查询总使用空间
+        ["deprecate"] NodeFileDTO createNodeFile(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //创建文件或镜像
+        ["deprecate"] NodeFileDTO createNodeFileWithRequestOnly(UpdateNodeFileDTO request) throws CustomException; //创建文件或镜像
+        ["deprecate"] NodeFileDTO updateNodeFile(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //更新文件或镜像
+        ["deprecate"] NodeFileList listNodeFile(QueryNodeFileDTO query) throws CustomException; //查询文件或镜像
+
+        SummaryFileDTO summaryFile(QuerySummaryDTO query) throws CustomException; //查询总使用空间
 
         void deleteNodeById(string id,DeleteAskDTO request) throws CustomException; //删除树节点
         void deleteNodeByIdList(StringList idList,DeleteAskDTO request) throws CustomException; //删除树节点

@@ -1,6 +1,6 @@
-package com.maoding.FileServer.Dto;
+package com.maoding.fileServer.dto;
 
-import com.maoding.CoreFileServer.CoreCreateFileRequest;
+import com.maoding.coreFileServer.CoreCreateFileRequest;
 
 /**
  * 深圳市卯丁技术有限公司

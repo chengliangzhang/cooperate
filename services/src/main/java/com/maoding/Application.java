@@ -1,6 +1,6 @@
 package com.maoding;
 
-import com.maoding.CoreUtils.SpringUtils;
+import com.maoding.coreUtils.SpringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

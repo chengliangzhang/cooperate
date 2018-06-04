@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.User.zeroc;
+package com.maoding.user.zeroc;
 
 public class ProjectRoleDTO implements java.lang.Cloneable,
                                        java.io.Serializable
@@ -47,14 +47,14 @@ public class ProjectRoleDTO implements java.lang.Cloneable,
         this.userName = userName;
     }
 
-    public java.util.List<com.maoding.Common.zeroc.IdNameDTO> projectRoleList;
+    public java.util.List<com.maoding.common.zeroc.IdNameDTO> projectRoleList;
 
-    public java.util.List<com.maoding.Common.zeroc.IdNameDTO> getProjectRoleList()
+    public java.util.List<com.maoding.common.zeroc.IdNameDTO> getProjectRoleList()
     {
         return projectRoleList;
     }
 
-    public void setProjectRoleList(java.util.List<com.maoding.Common.zeroc.IdNameDTO> projectRoleList)
+    public void setProjectRoleList(java.util.List<com.maoding.common.zeroc.IdNameDTO> projectRoleList)
     {
         this.projectRoleList = projectRoleList;
     }
@@ -77,7 +77,7 @@ public class ProjectRoleDTO implements java.lang.Cloneable,
         this.userName = "";
     }
 
-    public ProjectRoleDTO(String userId, String userName, java.util.List<com.maoding.Common.zeroc.IdNameDTO> projectRoleList, java.util.List<TaskRoleDTO> taskList)
+    public ProjectRoleDTO(String userId, String userName, java.util.List<com.maoding.common.zeroc.IdNameDTO> projectRoleList, java.util.List<TaskRoleDTO> taskList)
     {
         this.userId = userId;
         this.userName = userName;
@@ -163,7 +163,7 @@ public class ProjectRoleDTO implements java.lang.Cloneable,
     {
         ostr.writeString(this.userId);
         ostr.writeString(this.userName);
-        com.maoding.Common.zeroc.IdNameListHelper.write(ostr, this.projectRoleList);
+        com.maoding.common.zeroc.IdNameListHelper.write(ostr, this.projectRoleList);
         TaskRoleListHelper.write(ostr, this.taskList);
     }
 
@@ -171,7 +171,7 @@ public class ProjectRoleDTO implements java.lang.Cloneable,
     {
         this.userId = istr.readString();
         this.userName = istr.readString();
-        this.projectRoleList = com.maoding.Common.zeroc.IdNameListHelper.read(istr);
+        this.projectRoleList = com.maoding.common.zeroc.IdNameListHelper.read(istr);
         this.taskList = TaskRoleListHelper.read(istr);
     }
 

@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.FileServer.zeroc;
+package com.maoding.fileServer.zeroc;
 
 public class AnnotateRequestDTO implements java.lang.Cloneable,
                                            java.io.Serializable
@@ -86,26 +86,26 @@ public class AnnotateRequestDTO implements java.lang.Cloneable,
         this.data[index] = val;
     }
 
-    public java.util.List<com.maoding.Storage.zeroc.NodeFileDTO> addAccessoryList;
+    public java.util.List<com.maoding.storage.zeroc.NodeFileDTO> addAccessoryList;
 
-    public java.util.List<com.maoding.Storage.zeroc.NodeFileDTO> getAddAccessoryList()
+    public java.util.List<com.maoding.storage.zeroc.NodeFileDTO> getAddAccessoryList()
     {
         return addAccessoryList;
     }
 
-    public void setAddAccessoryList(java.util.List<com.maoding.Storage.zeroc.NodeFileDTO> addAccessoryList)
+    public void setAddAccessoryList(java.util.List<com.maoding.storage.zeroc.NodeFileDTO> addAccessoryList)
     {
         this.addAccessoryList = addAccessoryList;
     }
 
-    public java.util.List<com.maoding.Storage.zeroc.NodeFileDTO> delAccessoryList;
+    public java.util.List<com.maoding.storage.zeroc.NodeFileDTO> delAccessoryList;
 
-    public java.util.List<com.maoding.Storage.zeroc.NodeFileDTO> getDelAccessoryList()
+    public java.util.List<com.maoding.storage.zeroc.NodeFileDTO> getDelAccessoryList()
     {
         return delAccessoryList;
     }
 
-    public void setDelAccessoryList(java.util.List<com.maoding.Storage.zeroc.NodeFileDTO> delAccessoryList)
+    public void setDelAccessoryList(java.util.List<com.maoding.storage.zeroc.NodeFileDTO> delAccessoryList)
     {
         this.delAccessoryList = delAccessoryList;
     }
@@ -116,7 +116,7 @@ public class AnnotateRequestDTO implements java.lang.Cloneable,
         this.content = "";
     }
 
-    public AnnotateRequestDTO(String typeId, boolean isPassed, String content, byte[] data, java.util.List<com.maoding.Storage.zeroc.NodeFileDTO> addAccessoryList, java.util.List<com.maoding.Storage.zeroc.NodeFileDTO> delAccessoryList)
+    public AnnotateRequestDTO(String typeId, boolean isPassed, String content, byte[] data, java.util.List<com.maoding.storage.zeroc.NodeFileDTO> addAccessoryList, java.util.List<com.maoding.storage.zeroc.NodeFileDTO> delAccessoryList)
     {
         this.typeId = typeId;
         this.isPassed = isPassed;
@@ -216,8 +216,8 @@ public class AnnotateRequestDTO implements java.lang.Cloneable,
         ostr.writeBool(this.isPassed);
         ostr.writeString(this.content);
         ostr.writeByteSeq(this.data);
-        com.maoding.Storage.zeroc.NodeFileListHelper.write(ostr, this.addAccessoryList);
-        com.maoding.Storage.zeroc.NodeFileListHelper.write(ostr, this.delAccessoryList);
+        com.maoding.storage.zeroc.NodeFileListHelper.write(ostr, this.addAccessoryList);
+        com.maoding.storage.zeroc.NodeFileListHelper.write(ostr, this.delAccessoryList);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
@@ -226,8 +226,8 @@ public class AnnotateRequestDTO implements java.lang.Cloneable,
         this.isPassed = istr.readBool();
         this.content = istr.readString();
         this.data = istr.readByteSeq();
-        this.addAccessoryList = com.maoding.Storage.zeroc.NodeFileListHelper.read(istr);
-        this.delAccessoryList = com.maoding.Storage.zeroc.NodeFileListHelper.read(istr);
+        this.addAccessoryList = com.maoding.storage.zeroc.NodeFileListHelper.read(istr);
+        this.delAccessoryList = com.maoding.storage.zeroc.NodeFileListHelper.read(istr);
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, AnnotateRequestDTO v)

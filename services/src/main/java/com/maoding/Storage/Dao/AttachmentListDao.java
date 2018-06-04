@@ -1,7 +1,7 @@
-package com.maoding.Storage.Dao;
+package com.maoding.storage.dao;
 
-import com.maoding.Base.CoreDao;
-import com.maoding.Storage.Entity.AttachmentEntity;
+import com.maoding.coreBase.CoreDao;
+import com.maoding.storage.entity.AttachmentEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

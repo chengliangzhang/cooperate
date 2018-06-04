@@ -18,43 +18,43 @@
 // </auto-generated>
 //
 
-package com.maoding.User.zeroc;
+package com.maoding.user.zeroc;
 
 public class UserJoinDTO implements java.lang.Cloneable,
                                     java.io.Serializable
 {
-    public java.util.List<com.maoding.Common.zeroc.IdNameDTO> projectList;
+    public java.util.List<com.maoding.common.zeroc.IdNameDTO> projectList;
 
-    public java.util.List<com.maoding.Common.zeroc.IdNameDTO> getProjectList()
+    public java.util.List<com.maoding.common.zeroc.IdNameDTO> getProjectList()
     {
         return projectList;
     }
 
-    public void setProjectList(java.util.List<com.maoding.Common.zeroc.IdNameDTO> projectList)
+    public void setProjectList(java.util.List<com.maoding.common.zeroc.IdNameDTO> projectList)
     {
         this.projectList = projectList;
     }
 
-    public java.util.List<com.maoding.Common.zeroc.IdNameDTO> taskList;
+    public java.util.List<com.maoding.common.zeroc.IdNameDTO> taskList;
 
-    public java.util.List<com.maoding.Common.zeroc.IdNameDTO> getTaskList()
+    public java.util.List<com.maoding.common.zeroc.IdNameDTO> getTaskList()
     {
         return taskList;
     }
 
-    public void setTaskList(java.util.List<com.maoding.Common.zeroc.IdNameDTO> taskList)
+    public void setTaskList(java.util.List<com.maoding.common.zeroc.IdNameDTO> taskList)
     {
         this.taskList = taskList;
     }
 
-    public java.util.List<com.maoding.Common.zeroc.IdNameDTO> companyList;
+    public java.util.List<com.maoding.common.zeroc.IdNameDTO> companyList;
 
-    public java.util.List<com.maoding.Common.zeroc.IdNameDTO> getCompanyList()
+    public java.util.List<com.maoding.common.zeroc.IdNameDTO> getCompanyList()
     {
         return companyList;
     }
 
-    public void setCompanyList(java.util.List<com.maoding.Common.zeroc.IdNameDTO> companyList)
+    public void setCompanyList(java.util.List<com.maoding.common.zeroc.IdNameDTO> companyList)
     {
         this.companyList = companyList;
     }
@@ -63,7 +63,7 @@ public class UserJoinDTO implements java.lang.Cloneable,
     {
     }
 
-    public UserJoinDTO(java.util.List<com.maoding.Common.zeroc.IdNameDTO> projectList, java.util.List<com.maoding.Common.zeroc.IdNameDTO> taskList, java.util.List<com.maoding.Common.zeroc.IdNameDTO> companyList)
+    public UserJoinDTO(java.util.List<com.maoding.common.zeroc.IdNameDTO> projectList, java.util.List<com.maoding.common.zeroc.IdNameDTO> taskList, java.util.List<com.maoding.common.zeroc.IdNameDTO> companyList)
     {
         this.projectList = projectList;
         this.taskList = taskList;
@@ -138,16 +138,16 @@ public class UserJoinDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
-        com.maoding.Common.zeroc.IdNameListHelper.write(ostr, this.projectList);
-        com.maoding.Common.zeroc.IdNameListHelper.write(ostr, this.taskList);
-        com.maoding.Common.zeroc.IdNameListHelper.write(ostr, this.companyList);
+        com.maoding.common.zeroc.IdNameListHelper.write(ostr, this.projectList);
+        com.maoding.common.zeroc.IdNameListHelper.write(ostr, this.taskList);
+        com.maoding.common.zeroc.IdNameListHelper.write(ostr, this.companyList);
     }
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
-        this.projectList = com.maoding.Common.zeroc.IdNameListHelper.read(istr);
-        this.taskList = com.maoding.Common.zeroc.IdNameListHelper.read(istr);
-        this.companyList = com.maoding.Common.zeroc.IdNameListHelper.read(istr);
+        this.projectList = com.maoding.common.zeroc.IdNameListHelper.read(istr);
+        this.taskList = com.maoding.common.zeroc.IdNameListHelper.read(istr);
+        this.companyList = com.maoding.common.zeroc.IdNameListHelper.read(istr);
     }
 
     static public void ice_write(com.zeroc.Ice.OutputStream ostr, UserJoinDTO v)

@@ -1,4 +1,4 @@
-package com.maoding.CoreUtils;
+package com.maoding.coreUtils;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -100,8 +100,12 @@ public class FileUtils {
         }
     }
 
-    public static String calcChecksum(@NotNull File srcFile) {
-        assert (srcFile.exists() && srcFile.isFile());
+    public static boolean isValidFile(File file){
+        return (file != null) && file.exists() && file.isFile();
+    }
+
+    public static String calcMd5(@NotNull File srcFile) {
+        assert (isValidFile(srcFile));
         String md5 = null;
         FileInputStream inStream = null;
         try {
@@ -115,5 +119,15 @@ public class FileUtils {
             log.info("关闭计算Md5的文件：" + srcFile.getPath());
         }
         return md5;
+    }
+
+    public static long getFileLength(@NotNull File file) {
+        assert (isValidFile(file));
+        return file.length();
+    }
+
+    public static String getFileLengthStr(@NotNull File file) {
+        assert (isValidFile(file));
+        return Long.toString(getFileLength(file));
     }
 }

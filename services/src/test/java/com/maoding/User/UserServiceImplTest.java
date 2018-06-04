@@ -1,7 +1,8 @@
 package com.maoding.User;
 
-import com.maoding.Base.CoreRemoteService;
-import com.maoding.User.zeroc.*;
+
+import com.maoding.coreBase.CoreRemoteService;
+import com.maoding.user.zeroc.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -43,19 +44,18 @@ public class UserServiceImplTest {
     private UserServicePrx getRemote(){
         if (remote == null) {
             CoreRemoteService<UserServicePrx> prx = new CoreRemoteService<>();
-            remote = prx.getServicePrx("UserService","UserServer;192.168.13.140",UserServicePrx.class,_UserServicePrxI.class);
+            remote = prx.getServicePrx("UserService@UserServer",
+                    "--Ice.Default.Locator=IceGrid/Locator:tcp -h 192.168.13.140 -p 4061",
+                    UserServicePrx.class,_UserServicePrxI.class);
         }
         return remote;
     }
 
     @Test
-    public void testLogin() throws Exception{
-        loginRemote();
-    }
-
-    private boolean loginRemote() throws Exception {
+    public void loginRemote() throws Exception {
         log.debug("\t>>>>>>>> loginRemote");
-        return getRemote().login(getLocalLoginInfo());
+        boolean isOk;
+        isOk = getRemote().login(getLocalLoginInfo());
     }
 
     private LoginDTO getLocalLoginInfo() {

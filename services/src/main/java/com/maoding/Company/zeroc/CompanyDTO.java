@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Company.zeroc;
+package com.maoding.company.zeroc;
 
 public class CompanyDTO implements java.lang.Cloneable,
                                    java.io.Serializable

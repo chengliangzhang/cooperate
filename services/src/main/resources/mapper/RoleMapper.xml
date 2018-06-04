@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.maoding.User.Dao.RoleDao">
+<mapper namespace="com.maoding.user.dao.RoleDao">
     <sql id="ConditionForQueryWebRole">
         <if test="attrStr != null and attrStr != ''.toString()">
             and find_in_set(web_role.attr_str,#{attrStr})
@@ -29,7 +29,7 @@
         </if>
     </sql>
 
-    <select id="listWebRole" resultType="com.maoding.User.zeroc.WebRoleDTO" parameterType="com.maoding.User.zeroc.QueryWebRoleDTO">
+    <select id="listWebRole" resultType="com.maoding.user.zeroc.WebRoleDTO" parameterType="com.maoding.user.zeroc.QueryWebRoleDTO">
         select web_role.*,
         unix_timestamp(ifnull(task.start_time,0)) as task_start_time_stamp,
         date_format(task.start_time,'%Y/%m/%d') as task_start_time_text,
@@ -47,17 +47,17 @@
     </select>
 
 
-    <resultMap id="TaskRoleMap" type="com.maoding.User.zeroc.TaskRoleDTO">
+    <resultMap id="TaskRoleMap" type="com.maoding.user.zeroc.TaskRoleDTO">
         <result property="id" column="task_id"/>
         <result property="name" column="task_name"/>
-        <collection property="taskRoleList" ofType="com.maoding.Common.zeroc.IdNameDTO">
+        <collection property="taskRoleList" ofType="com.maoding.common.zeroc.IdNameDTO">
             <result property="id" column="task_role_id"/>
             <result property="name" column="task_role_name"/>
         </collection>
     </resultMap>
 
-    <resultMap id="ProjectRoleMap" type="com.maoding.User.zeroc.ProjectRoleDTO" autoMapping="true">
-        <collection property="projectRoleList" ofType="com.maoding.Common.zeroc.IdNameDTO">
+    <resultMap id="ProjectRoleMap" type="com.maoding.user.zeroc.ProjectRoleDTO" autoMapping="true">
+        <collection property="projectRoleList" ofType="com.maoding.common.zeroc.IdNameDTO">
             <result property="id" column="project_role_id"/>
             <result property="name" column="project_role_name"/>
         </collection>
@@ -79,7 +79,7 @@
         group by role.user_id,role.task_id
     </select>
 
-    <select id="listProject" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="java.util.Map">
+    <select id="listProject" resultType="com.maoding.common.zeroc.IdNameDTO" parameterType="java.util.Map">
         select distinct role.project_id as id, role.project_name as name from md_web_role_project role
         <where>
             role.project_id is not null
@@ -88,7 +88,7 @@
             </if>
         </where>
     </select>
-    <select id="listTask" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="java.util.Map">
+    <select id="listTask" resultType="com.maoding.common.zeroc.IdNameDTO" parameterType="java.util.Map">
         select distinct role.task_id as id, role.task_name as name from md_web_role_project role
         <where>
             role.task_id is not null
@@ -97,7 +97,7 @@
             </if>
         </where>
     </select>
-    <select id="listCompany" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="java.util.Map">
+    <select id="listCompany" resultType="com.maoding.common.zeroc.IdNameDTO" parameterType="java.util.Map">
         select distinct role.company_id as id, role.company_name as name from md_web_role_project role
         <where>
             role.company_id is not null
@@ -107,7 +107,7 @@
         </where>
     </select>
 
-    <select id="listMember" resultType="com.maoding.Common.zeroc.IdNameDTO" parameterType="com.maoding.User.zeroc.QueryMemberDTO">
+    <select id="listMember" resultType="com.maoding.common.zeroc.IdNameDTO" parameterType="com.maoding.user.zeroc.QueryMemberDTO">
         select distinct role.user_id as id, role.user_name as name from md_web_role_project role
         <where>
             <if test="userTypeIdString != null">

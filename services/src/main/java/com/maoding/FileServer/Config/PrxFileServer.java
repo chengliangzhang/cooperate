@@ -1,8 +1,9 @@
-package com.maoding.FileServer.Config;
+package com.maoding.fileServer.config;
 
-import com.maoding.CoreFileServer.CoreFileServer;
-import com.maoding.FileServer.zeroc.FileServicePrx;
-import com.maoding.CoreUtils.StringUtils;
+import com.maoding.common.remoteService.RemoteFileServerPrx;
+import com.maoding.coreFileServer.CoreFileServer;
+import com.maoding.fileServer.zeroc.FileServicePrx;
+import com.maoding.coreUtils.StringUtils;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -11,41 +12,44 @@ import com.maoding.CoreUtils.StringUtils;
  * 描    述 :
  */
 public class PrxFileServer implements CoreFileServer{
-    private static final String DEFAULT_ADAPTER_NAME = "FileServer";
-    private static final String DEFAULT_LOCATOR_IP = "127.0.0.1";
+    private static final String DEFAULT_SERVICE = "FileService:tcp -h 127.0.0.1 -p 10002";
 
     private FileServicePrx remote = null;
-    private String adapterName = null;
-    private String locatorIp = null;
+    private String service = null;
+    private String config = null;
 
     @Override
     public String coreGetServerAddress() {
-        return StringUtils.isEmpty(adapterName) ? DEFAULT_ADAPTER_NAME : adapterName;
+        return StringUtils.isEmpty(service) ? DEFAULT_SERVICE : service;
     }
 
     @Override
     public void coreSetServerAddress(String serverAddress) {
-        this.adapterName = serverAddress;
+        this.service = serverAddress;
     }
 
 
     @Override
     public String coreGetBaseDir() {
-        return StringUtils.isEmpty(locatorIp) ? DEFAULT_LOCATOR_IP : locatorIp;
+        return config;
     }
 
     @Override
     public void coreSetBaseDir(String baseDir) {
-        this.locatorIp = baseDir;
+        this.config = baseDir;
     }
 
-    private String getAdapter(){
-        return coreGetServerAddress() + ";" + coreGetBaseDir();
+    private String getService(){
+        return coreGetServerAddress();
+    }
+
+    private String getConfig(){
+        return coreGetBaseDir();
     }
 
     private FileServicePrx getRemote(){
         if (remote == null) {
-            remote = RemoteFileServerPrx.getInstance(getAdapter());
+            remote = RemoteFileServerPrx.getInstance(getService(),getConfig());
         }
         return remote;
     }

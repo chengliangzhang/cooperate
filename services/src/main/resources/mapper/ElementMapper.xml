@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.maoding.Storage.Dao.ElementDao">
+<mapper namespace="com.maoding.storage.dao.ElementDao">
     <sql id="ConditionForQueryElement">
         <if test="id != null and id != ''.toString()">
             and find_in_set(element.id,#{id})
@@ -19,7 +19,7 @@
         </if>
     </sql>
 
-    <select id="listElement" resultType="com.maoding.Storage.zeroc.EmbedElementDTO" parameterType="com.maoding.Common.zeroc.QueryAskDTO">
+    <select id="listElement" resultType="com.maoding.storage.zeroc.EmbedElementDTO" parameterType="com.maoding.common.zeroc.QueryAskDTO">
         select element.*
         from
             md_list_element element

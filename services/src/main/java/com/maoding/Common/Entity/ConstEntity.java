@@ -1,6 +1,6 @@
-package com.maoding.Common.Entity;
+package com.maoding.common.entity;
 
-import com.maoding.CoreUtils.StringUtils;
+import com.maoding.coreUtils.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -18,7 +18,7 @@ public class ConstEntity {
     private Short classicId;
     /** 值id */
     @Column
-    private Short codeId;
+    private String codeId;
     /** 显示信息 */
     private String title;
     /** 控制定义 */
@@ -32,11 +32,11 @@ public class ConstEntity {
         this.classicId = classicId;
     }
 
-    public Short getCodeId() {
+    public String getCodeId() {
         return codeId;
     }
 
-    public void setCodeId(Short codeId) {
+    public void setCodeId(String codeId) {
         this.codeId = codeId;
     }
 

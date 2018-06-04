@@ -1,6 +1,6 @@
-package com.maoding.User.Entity;
+package com.maoding.user.entity;
 
-import com.maoding.Base.CoreEntity;
+import com.maoding.coreBase.CoreEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Table;

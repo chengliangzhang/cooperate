@@ -1,4 +1,4 @@
-package com.maoding.CoreUtils;
+package com.maoding.coreUtils;
 
 import com.zeroc.Ice.Current;
 import org.slf4j.Logger;
@@ -35,6 +35,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static final String SPLIT_NAME_PART = "_";
     public static final String SPLIT_CONTENT = ";";
 
+    public static final String ICE_IP_PARAM = "-h";
+
     private static final int KILO_BYTE = 1024;
     private static final int KILO_MS = 1000;
 
@@ -57,14 +59,14 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /** 如果字符串为空，返回默认值 */
-    public static String getStringOrDefault(String s, String ds){
+    public static String getString(String s, String ds){
         return (isEmpty(s)) ? ds : s;
     }
 
     /** 替换字符串 */
     public static String replace(String s, String src, String des, String ds){
         if (isNotEmpty(s)) {
-            s = s.replace(src,getStringOrDefault(des,ds));
+            s = s.replace(src, getString(des,ds));
         }
         return s;
     }
@@ -160,6 +162,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         int pos = path.lastIndexOf(SPLIT_PATH);
         if (pos < 0) return "";
         return path.substring(0,pos);
+    }
+
+    /** 附加路径 */
+    public static String appendPath(String parentPath,@NotNull String newPath){
+        return (isNotEmpty(parentPath)) ? formatPath(parentPath + SPLIT_PATH + newPath) : formatPath(newPath);
     }
 
     //带单位计算字节数
@@ -298,5 +305,13 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
         str += SPLIT_NAME_PART + StringUtils.getTimeStamp(TIME_STAMP_FORMAT);
         return str;
+    }
+
+    public static Character  getChar(Character ch, Character defaultCh){
+        return (ch != null) ? ch : defaultCh;
+    }
+
+    public static Character getChar(String s, int n, Character defaultCh){
+        return (StringUtils.isNotEmpty(s) && (s.length() >= n)) ? s.charAt(n-1) : defaultCh;
     }
 }

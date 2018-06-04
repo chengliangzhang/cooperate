@@ -1,8 +1,7 @@
 #pragma once
-#include <Common.ice>
-#include <ProjectData.ice>
+#include <data/ProjectData.ice>
 
-[["java:package:com.maoding.Project"]]
+[["java:package:com.maoding.project"]]
 module zeroc {
     interface ProjectService {
         ProjectList listProject(QueryProjectDTO query); //查询任务

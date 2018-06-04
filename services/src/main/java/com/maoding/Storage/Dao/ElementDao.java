@@ -1,7 +1,7 @@
-package com.maoding.Storage.Dao;
+package com.maoding.storage.dao;
 
-import com.maoding.Common.zeroc.QueryAskDTO;
-import com.maoding.Storage.zeroc.EmbedElementDTO;
+import com.maoding.common.zeroc.QueryAskDTO;
+import com.maoding.storage.zeroc.EmbedElementDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

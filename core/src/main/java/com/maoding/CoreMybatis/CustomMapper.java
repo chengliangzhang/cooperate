@@ -1,4 +1,4 @@
-package com.maoding.CoreMybatis;
+package com.maoding.coreMybatis;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;

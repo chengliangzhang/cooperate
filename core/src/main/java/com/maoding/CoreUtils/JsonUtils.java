@@ -1,4 +1,4 @@
-package com.maoding.CoreUtils;
+package com.maoding.coreUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -29,6 +30,18 @@ public class JsonUtils {
         String json = null;
         try {
             json = objectMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage(),e);
+        }
+        return json;
+    }
+
+    /** 把java对象转换为json字符串 */
+    public static String obj2CleanJson(Object obj){
+        String json = null;
+        try {
+            Map<String,Object> map = BeanUtils.createCleanMapFrom(obj);
+            json = objectMapper.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(),e);
         }

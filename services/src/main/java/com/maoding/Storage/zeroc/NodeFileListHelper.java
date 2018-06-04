@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public final class NodeFileListHelper
 {
@@ -42,7 +42,7 @@ public final class NodeFileListHelper
     {
         final java.util.List<NodeFileDTO> v;
         v = new java.util.ArrayList<NodeFileDTO>();
-        final int len0 = istr.readAndCheckSeqSize(15);
+        final int len0 = istr.readAndCheckSeqSize(78);
         for(int i0 = 0; i0 < len0; i0++)
         {
             NodeFileDTO elem;

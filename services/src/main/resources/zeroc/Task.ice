@@ -1,8 +1,7 @@
 #pragma once
-#include <Common.ice>
-#include <TaskData.ice>
+#include <data/TaskData.ice>
 
-[["java:package:com.maoding.Task"]]
+[["java:package:com.maoding.task"]]
 module zeroc {
     interface TaskService {
         TaskList listTask(QueryTaskDTO query); //查询任务

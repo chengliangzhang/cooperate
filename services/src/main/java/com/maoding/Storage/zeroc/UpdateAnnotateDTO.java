@@ -18,7 +18,7 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class UpdateAnnotateDTO implements java.lang.Cloneable,
                                           java.io.Serializable
@@ -340,9 +340,9 @@ public class UpdateAnnotateDTO implements java.lang.Cloneable,
         ostr.writeString(this.content);
         ostr.writeString(this.fileId);
         ostr.writeString(this.mainFileId);
-        com.maoding.Common.zeroc.StringListHelper.write(ostr, this.addElementIdList);
-        com.maoding.Common.zeroc.StringListHelper.write(ostr, this.addFileIdList);
-        com.maoding.Common.zeroc.StringListHelper.write(ostr, this.delAttachmentIdList);
+        com.maoding.common.zeroc.StringListHelper.write(ostr, this.addElementIdList);
+        com.maoding.common.zeroc.StringListHelper.write(ostr, this.addFileIdList);
+        com.maoding.common.zeroc.StringListHelper.write(ostr, this.delAttachmentIdList);
         ostr.writeString(this.typeId);
         ostr.writeString(this.pid);
         ostr.writeString(this.path);
@@ -356,9 +356,9 @@ public class UpdateAnnotateDTO implements java.lang.Cloneable,
         this.content = istr.readString();
         this.fileId = istr.readString();
         this.mainFileId = istr.readString();
-        this.addElementIdList = com.maoding.Common.zeroc.StringListHelper.read(istr);
-        this.addFileIdList = com.maoding.Common.zeroc.StringListHelper.read(istr);
-        this.delAttachmentIdList = com.maoding.Common.zeroc.StringListHelper.read(istr);
+        this.addElementIdList = com.maoding.common.zeroc.StringListHelper.read(istr);
+        this.addFileIdList = com.maoding.common.zeroc.StringListHelper.read(istr);
+        this.delAttachmentIdList = com.maoding.common.zeroc.StringListHelper.read(istr);
         this.typeId = istr.readString();
         this.pid = istr.readString();
         this.path = istr.readString();

@@ -1,14 +1,13 @@
 #pragma once
-#include <Common.ice>
-#include <FileServerData.ice>
-#include <StorageData.ice>
-
+#include <data/FileServerData.ice>
 #include <Notice.ice>
-#include <User.ice>
+#include <Storage.ice>
 
-[["java:package:com.maoding.FileServer"]]
+[["java:package:com.maoding.fileServer"]]
 module zeroc {
     interface FileService {
+        void flushBuffer() throws CustomException; //更新写缓存
+        SummaryFileDTO summaryFile(QuerySummarySimpleDTO query) throws CustomException; //查询文件所占用空间
         void clearAll(AccountDTO account) throws CustomException; //整理文件服务器上的文件，并清理不再用到的文件
         void clearKey(AccountDTO account,string key) throws CustomException; //整理文件服务器上的文件，并清理不再用到的文件
         CANodeList listDesignNode(AccountDTO account) throws CustomException; //查询可提交的设计文档
@@ -67,7 +66,8 @@ module zeroc {
         FullNodeDTO getNodeInfo(SimpleNodeDTO node,QueryNodeInfoDTO request) throws CustomException; //查询节点详细信息
         FullNodeDTO getNodeInfoForAccount(AccountDTO account,SimpleNodeDTO node,QueryNodeInfoDTO request) throws CustomException; //查询节点详细信息
 
-        NodeFileList listFile(AccountDTO account,QueryNodeFileDTO query) throws CustomException; //查询文件
+        NodeFileList listFile(AccountDTO account,AskFileDTO query) throws CustomException; //查询文件
+        NodeFileList listValidFile(AccountDTO account,AskValidFileDTO query) throws CustomException; //查询文件
 
         SimpleNodeList listChildNode(SimpleNodeDTO parent) throws CustomException; //查询子节点
         SimpleNodeList listChildNodeForAccount(AccountDTO account,SimpleNodeDTO parent) throws CustomException; //查询子节点

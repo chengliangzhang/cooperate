@@ -1,4 +1,4 @@
-package com.maoding.CoreFileServer;
+package com.maoding.coreFileServer;
 
 import java.io.File;
 

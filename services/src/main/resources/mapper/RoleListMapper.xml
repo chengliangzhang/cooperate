@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.maoding.User.Dao.RoleListDao">
+<mapper namespace="com.maoding.user.dao.RoleListDao">
     <update id="setWebRoleStatus" parameterType="java.util.Map">
         update
             maoding_web_project_member task_role

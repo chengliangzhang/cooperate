@@ -18,11 +18,23 @@
 // </auto-generated>
 //
 
-package com.maoding.Storage.zeroc;
+package com.maoding.storage.zeroc;
 
 public class QueryHistoryDTO implements java.lang.Cloneable,
                                         java.io.Serializable
 {
+    public String mainFileId;
+
+    public String getMainFileId()
+    {
+        return mainFileId;
+    }
+
+    public void setMainFileId(String mainFileId)
+    {
+        this.mainFileId = mainFileId;
+    }
+
     public String actionAttr;
 
     public String getActionAttr()
@@ -85,6 +97,7 @@ public class QueryHistoryDTO implements java.lang.Cloneable,
 
     public QueryHistoryDTO()
     {
+        this.mainFileId = "";
         this.actionAttr = "";
         this.actionTypeId = "";
         this.notActionTypeId = "";
@@ -92,8 +105,9 @@ public class QueryHistoryDTO implements java.lang.Cloneable,
         this.isCommit = "";
     }
 
-    public QueryHistoryDTO(String actionAttr, String actionTypeId, String notActionTypeId, String isCA, String isCommit)
+    public QueryHistoryDTO(String mainFileId, String actionAttr, String actionTypeId, String notActionTypeId, String isCA, String isCommit)
     {
+        this.mainFileId = mainFileId;
         this.actionAttr = actionAttr;
         this.actionTypeId = actionTypeId;
         this.notActionTypeId = notActionTypeId;
@@ -115,6 +129,13 @@ public class QueryHistoryDTO implements java.lang.Cloneable,
 
         if(r != null)
         {
+            if(this.mainFileId != r.mainFileId)
+            {
+                if(this.mainFileId == null || r.mainFileId == null || !this.mainFileId.equals(r.mainFileId))
+                {
+                    return false;
+                }
+            }
             if(this.actionAttr != r.actionAttr)
             {
                 if(this.actionAttr == null || r.actionAttr == null || !this.actionAttr.equals(r.actionAttr))
@@ -161,6 +182,7 @@ public class QueryHistoryDTO implements java.lang.Cloneable,
     {
         int h_ = 5381;
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, "::zeroc::QueryHistoryDTO");
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, mainFileId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionAttr);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, actionTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, notActionTypeId);
@@ -185,6 +207,7 @@ public class QueryHistoryDTO implements java.lang.Cloneable,
 
     public void ice_writeMembers(com.zeroc.Ice.OutputStream ostr)
     {
+        ostr.writeString(this.mainFileId);
         ostr.writeString(this.actionAttr);
         ostr.writeString(this.actionTypeId);
         ostr.writeString(this.notActionTypeId);
@@ -194,6 +217,7 @@ public class QueryHistoryDTO implements java.lang.Cloneable,
 
     public void ice_readMembers(com.zeroc.Ice.InputStream istr)
     {
+        this.mainFileId = istr.readString();
         this.actionAttr = istr.readString();
         this.actionTypeId = istr.readString();
         this.notActionTypeId = istr.readString();
@@ -253,5 +277,5 @@ public class QueryHistoryDTO implements java.lang.Cloneable,
 
     private static final QueryHistoryDTO _nullMarshalValue = new QueryHistoryDTO();
 
-    public static final long serialVersionUID = -1877857999L;
+    public static final long serialVersionUID = 1048901526L;
 }

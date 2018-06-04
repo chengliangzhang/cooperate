@@ -1,4 +1,4 @@
-package com.maoding.Storage.Dto;
+package com.maoding.storage.dto;
 
 /**
  * 深圳市卯丁技术有限公司
