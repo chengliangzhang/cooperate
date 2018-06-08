@@ -3,6 +3,7 @@ package com.maoding;
 import com.maoding.common.config.IceConfig;
 import com.maoding.common.config.ScheduleConfig;
 import com.maoding.common.config.StartupConfig;
+import com.maoding.common.zeroc.CommonService;
 import com.maoding.coreUtils.FileUtils;
 import com.maoding.coreUtils.StringUtils;
 import com.maoding.coreUtils.ThreadUtils;
@@ -46,6 +47,9 @@ public class Runner implements SchedulingConfigurer {
 
     @Autowired
     private ScheduleConfig scheduleConfig;
+
+    @Autowired
+    private CommonService commonService;
 
     private boolean started = false;
 
@@ -192,7 +196,7 @@ public class Runner implements SchedulingConfigurer {
 
         //定期清理服务器文件
         if (scheduleConfig.getClearServer()) {
-            FileServicePrx fileServicePrx = iceConfig.getFileService();
+            FileServicePrx fileServicePrx = commonService.getDefaultFileService(null);
             if (fileServicePrx != null) {
                 log.info("------- ------- ------- 清理文件 ------- ------- -------");
                 long t = System.currentTimeMillis();
@@ -203,7 +207,7 @@ public class Runner implements SchedulingConfigurer {
 
         //定期升级文件服务器
         if (scheduleConfig.getAutoUpdate()) {
-            FileServicePrx fileServicePrx = iceConfig.getFileService();
+            FileServicePrx fileServicePrx = commonService.getDefaultFileService(null);
             if (fileServicePrx != null) {
                 log.info("------- ------- ------- 检查更新 ------- ------- -------");
                 long t = System.currentTimeMillis();

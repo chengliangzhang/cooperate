@@ -4,8 +4,7 @@ package com.maoding.common.config;
 import com.maoding.common.servicePrx.CommonServicePrxImpl;
 import com.maoding.common.servicePrx.TopicManagerPrxImpl;
 import com.maoding.common.zeroc.CommonServicePrx;
-import com.maoding.coreFileServer.web.CoreKeyValuePair;
-import com.maoding.coreUtils.StringUtils;
+import com.maoding.coreBase.CoreProperties;
 import com.maoding.fileServer.zeroc.FileServicePrx;
 import com.maoding.notice.zeroc.NoticeServicePrx;
 import com.maoding.storage.zeroc.StorageServicePrx;
@@ -27,7 +26,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Configuration
 @ConfigurationProperties(prefix = "ice")
-public class IceConfig extends BaseConfig {
+public class IceConfig extends CoreProperties {
     private final static String ICE_CONFIG_FILE = "--Ice.Config=";
     private final static String DEFAULT_STORAGE = null;
     private final static String DEFAULT_USER = null;
@@ -35,15 +34,26 @@ public class IceConfig extends BaseConfig {
     private final static String DEFAULT_FILE = null;
     private final static String DEFAULT_TOPIC = "IceStorm/TopicManager@StormSvr";
 
+    /** ice服务 */
     private String common;
-    private String storage;
     private String file;
+    private String storage;
     private String user;
     private String notice;
     private String topic;
+    /** 本机特殊标记 */
+    private String identify;
+
+    public String getIdentify() {
+        return identify;
+    }
+
+    public void setIdentify(String identify) {
+        this.identify = identify;
+    }
 
     public String getCommon() {
-        return common;
+        return getProperty("common",common);
     }
 
     public void setCommon(String common) {
@@ -51,7 +61,7 @@ public class IceConfig extends BaseConfig {
     }
 
     public String getFile() {
-        return file;
+        return getProperty("file",file);
     }
 
     public void setFile(String file) {
@@ -59,7 +69,7 @@ public class IceConfig extends BaseConfig {
     }
 
     public String getTopic() {
-        return topic;
+        return getProperty("topic",topic);
     }
 
     public void setTopic(String topic) {
@@ -67,7 +77,7 @@ public class IceConfig extends BaseConfig {
     }
 
     public String getNotice() {
-        return notice;
+        return getProperty("notice",notice);
     }
 
     public void setNotice(String notice) {
@@ -75,7 +85,7 @@ public class IceConfig extends BaseConfig {
     }
 
     public String getStorage() {
-        return storage;
+        return getProperty("storage",storage);
     }
 
     public void setStorage(String storage) {
@@ -83,55 +93,35 @@ public class IceConfig extends BaseConfig {
     }
 
     public String getUser() {
-        return user;
+        return getProperty("user",user);
     }
 
     public void setUser(String user) {
         this.user = user;
     }
 
-    private CoreKeyValuePair getServiceKeyValue(String serviceConfig){
-        String service = StringUtils.left(serviceConfig,StringUtils.SPLIT_CONTENT);
-        String config = StringUtils.right(serviceConfig,StringUtils.SPLIT_CONTENT);
-        if (StringUtils.isEmpty(config) && StringUtils.isNotEmpty(getConfig())){
-            config = ICE_CONFIG_FILE + getConfig();
-        }
-        return new CoreKeyValuePair(service,config);
-    }
-
     public CommonServicePrx getCommonService() {
-        String serviceConfig = getProperty("common",getCommon(),null);
-        CoreKeyValuePair serviceKeyValue = getServiceKeyValue(serviceConfig);
-        return CommonServicePrxImpl.getInstance(serviceKeyValue.getKey(),serviceKeyValue.getValue());
+        return CommonServicePrxImpl.getInstance(null,null);
     }
 
     public FileServicePrx getFileService() {
-        String serviceConfig = getProperty("file",getFile(),null);
-        CoreKeyValuePair serviceKeyValue = getServiceKeyValue(serviceConfig);
-        return getCommonService().getFileService(serviceKeyValue.getKey(),serviceKeyValue.getValue());
+        return getCommonService().getDefaultFileService();
     }
 
     public StorageServicePrx getStorageService() {
-        String serviceConfig = getProperty("storage",getStorage(),null);
-        CoreKeyValuePair serviceKeyValue = getServiceKeyValue(serviceConfig);
-        return getCommonService().getStorageService(serviceKeyValue.getKey(),serviceKeyValue.getValue());
+        return getCommonService().getStorageService(null,null);
     }
 
     public NoticeServicePrx getNoticeService(){
-        String serviceConfig = getProperty("notice",getNotice(),null);
-        CoreKeyValuePair serviceKeyValue = getServiceKeyValue(serviceConfig);
-        return getCommonService().getNoticeService(serviceKeyValue.getKey(),serviceKeyValue.getValue());
+        return getCommonService().getNoticeService(null,null);
     }
 
     public UserServicePrx getUserService() {
-        String serviceConfig = getProperty("user",getUser(),null);
-        CoreKeyValuePair serviceKeyValue = getServiceKeyValue(serviceConfig);
-        return getCommonService().getUserService(serviceKeyValue.getKey(),serviceKeyValue.getValue());
+        return getCommonService().getUserService(null,null);
     }
 
     public TopicManagerPrx getTopicManager() {
-        String serviceConfig = getProperty("topic",getTopic(),null);
-        CoreKeyValuePair serviceKeyValue = getServiceKeyValue(serviceConfig);
-        return TopicManagerPrxImpl.getInstance(serviceKeyValue.getKey(),serviceKeyValue.getValue());
+        return TopicManagerPrxImpl.getInstance(null,null);
     }
+
 }

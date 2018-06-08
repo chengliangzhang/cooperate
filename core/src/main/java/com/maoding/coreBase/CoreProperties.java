@@ -1,5 +1,7 @@
 package com.maoding.coreBase;
 
+import com.maoding.coreUtils.DigitUtils;
+import com.maoding.coreUtils.ObjectUtils;
 import com.maoding.coreUtils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -27,66 +30,86 @@ public class CoreProperties {
 
     private final static String DEFAULT_CODE = "ISO-8859-1";
     private final static String DEFAULT_CHARSET = "utf-8";
-    private final static String DEFAULT_CONFIG = "classpath:properties/ice-config-dev.properties";
 
     private Map<String, String> propertiesMap;
+    private long lastRefreshTime = 0;
+
+    /** 配置文件 */
     private String config;
+    /** 配置文件刷新时间 */
+    private Long refreshTime;
 
-    public CoreProperties(){}
+    public Long getRefreshTime() {
+        return refreshTime;
+    }
 
-    public CoreProperties(String config){
-        loadAllProperties(config);
-        setConfig(config);
+    public void setRefreshTime(Long refreshTime) {
+        this.refreshTime = refreshTime;
     }
 
     public String getConfig() {
-        return StringUtils.isNotEmpty(config) ? config : DEFAULT_CONFIG;
+        return config;
     }
 
     public void setConfig(String config) {
         this.config = config;
     }
 
-    private void loadAllProperties(Properties props) throws BeansException {
-        if (props != null) {
-            propertiesMap = new HashMap<>();
-            for (Object key : props.keySet()) {
-                String keyStr = key.toString();
-                try {
-                    propertiesMap.put(keyStr, new String(props.getProperty(keyStr).getBytes(DEFAULT_CODE), DEFAULT_CHARSET));
-                } catch (UnsupportedEncodingException e) {
-                    log.error("加载配置属性出错",e);
-                }
+    private void loadAllProperties(@NotNull Properties props) throws BeansException {
+        propertiesMap = new HashMap<>(props.size());
+        for (Object key : props.keySet()) {
+            String keyStr = key.toString();
+            try {
+                propertiesMap.put(keyStr, new String(props.getProperty(keyStr).getBytes(DEFAULT_CODE), DEFAULT_CHARSET));
+            } catch (UnsupportedEncodingException e) {
+                log.error("加载配置属性出错",e);
             }
         }
+        lastRefreshTime = System.currentTimeMillis();
     }
 
-    public void loadAllProperties(String config) {
+    private void loadAllProperties(@NotNull String config) {
         try {
             ResourceLoader loader = new FileSystemResourceLoader();
             Resource resource = loader.getResource(config);
             Properties properties = PropertiesLoaderUtils.loadProperties(resource);
-            loadAllProperties(properties);
+            if (ObjectUtils.isNotEmpty(properties)) {
+                loadAllProperties(properties);
+            }
         } catch (IOException e) {
             log.error("初始化配置文件出错",e);
         }
     }
 
-    public void loadAllProperties() {
-        loadAllProperties(getConfig());
+    private boolean needReload() {
+        return (lastRefreshTime <= 0) ||
+                ((getRefreshTime() != null) &&
+                        ((System.currentTimeMillis() - lastRefreshTime) > DigitUtils.parseLong(getRefreshTime())));
+    }
+    private void refresh() {
+        if (needReload()) {
+            if (StringUtils.isNotEmpty(getConfig())) {
+                loadAllProperties(getConfig());
+            }
+        }
     }
 
-    public String getProperty(String name) {
-        if (propertiesMap == null) {
-            loadAllProperties();
-        }
-        return propertiesMap.get(name);
+    public String getProperty(@NotNull String propertyName){
+        return getProperty(propertyName,null);
     }
 
-    public Map<String, String> getPropertiesMap() {
-        if (propertiesMap == null) {
-            loadAllProperties();
+    public String getProperty(String propertyName,String defaultValue){
+        refresh();
+        String value = defaultValue;
+        if (propertiesMap != null) {
+            for (Map.Entry<String,String> entry : propertiesMap.entrySet()){
+                if (StringUtils.isSame(propertyName,entry.getKey())){
+                    value = entry.getValue();
+                    break;
+                }
+            }
         }
-        return propertiesMap;
+        return value;
     }
+
 }

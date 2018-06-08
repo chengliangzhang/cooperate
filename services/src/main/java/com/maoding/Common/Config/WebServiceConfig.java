@@ -1,5 +1,7 @@
 package com.maoding.common.config;
 
+import com.maoding.coreBase.CoreProperties;
+import com.maoding.coreUtils.StringUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConfigurationProperties(prefix = "webService")
-public class WebServiceConfig extends BaseConfig {
+public class WebServiceConfig extends CoreProperties {
     private final static String DEFAULT_WEB_URL = "http://172.16.6.73/maoding";
     private final static String DEFAULT_FILE_CENTER_URL = "http://172.16.6.71:8071";
 
@@ -22,7 +24,7 @@ public class WebServiceConfig extends BaseConfig {
     private CloseableHttpClient client = null;
 
     public String getMaodingWeb() {
-        return getProperty("maodingWeb",maodingWeb,DEFAULT_WEB_URL);
+        return getProperty("maodingWeb",(StringUtils.isEmpty(maodingWeb) ? DEFAULT_WEB_URL : maodingWeb));
     }
 
     public void setMaodingWeb(String maodingWeb) {
@@ -30,7 +32,7 @@ public class WebServiceConfig extends BaseConfig {
     }
 
     public String getFileCenter() {
-        return getProperty("fileCenter",fileCenter,DEFAULT_FILE_CENTER_URL);
+        return getProperty("fileCenter",(StringUtils.isEmpty(fileCenter) ? DEFAULT_FILE_CENTER_URL : fileCenter));
     }
 
     public void setFileCenter(String fileCenter) {
