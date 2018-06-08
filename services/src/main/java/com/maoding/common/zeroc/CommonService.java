@@ -22,6 +22,12 @@ package com.maoding.common.zeroc;
 
 public interface CommonService extends com.zeroc.Ice.Object
 {
+    com.maoding.fileServer.zeroc.FileServicePrx getDefaultFileService(com.zeroc.Ice.Current current);
+
+    com.maoding.user.zeroc.UserServicePrx getDefaultUserService(com.zeroc.Ice.Current current);
+
+    ConstServicePrx getDefaultConstService(com.zeroc.Ice.Current current);
+
     com.maoding.fileServer.zeroc.FileServicePrx getFileService(String service, String config, com.zeroc.Ice.Current current);
 
     com.maoding.notice.zeroc.NoticeServicePrx getNoticeService(String service, String config, com.zeroc.Ice.Current current);
@@ -29,6 +35,10 @@ public interface CommonService extends com.zeroc.Ice.Object
     com.maoding.storage.zeroc.StorageServicePrx getStorageService(String service, String config, com.zeroc.Ice.Current current);
 
     com.maoding.user.zeroc.UserServicePrx getUserService(String service, String config, com.zeroc.Ice.Current current);
+
+    void updateService(com.zeroc.Ice.Current current);
+
+    String getNewestClient(com.zeroc.Ice.Current current);
 
     static final String[] _iceIds =
     {
@@ -51,6 +61,39 @@ public interface CommonService extends com.zeroc.Ice.Object
     static String ice_staticId()
     {
         return "::zeroc::CommonService";
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getDefaultFileService(CommonService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        com.maoding.fileServer.zeroc.FileServicePrx ret = obj.getDefaultFileService(current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeProxy(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getDefaultUserService(CommonService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        com.maoding.user.zeroc.UserServicePrx ret = obj.getDefaultUserService(current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeProxy(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getDefaultConstService(CommonService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        ConstServicePrx ret = obj.getDefaultConstService(current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeProxy(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
     }
 
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getFileService(CommonService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
@@ -117,16 +160,40 @@ public interface CommonService extends com.zeroc.Ice.Object
         return inS.setResult(ostr);
     }
 
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_updateService(CommonService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        obj.updateService(current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getNewestClient(CommonService obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        String ret = obj.getNewestClient(current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeString(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     final static String[] _iceOps =
     {
+        "getDefaultConstService",
+        "getDefaultFileService",
+        "getDefaultUserService",
         "getFileService",
+        "getNewestClient",
         "getNoticeService",
         "getStorageService",
         "getUserService",
         "ice_id",
         "ice_ids",
         "ice_isA",
-        "ice_ping"
+        "ice_ping",
+        "updateService"
     };
 
     @Override
@@ -143,35 +210,55 @@ public interface CommonService extends com.zeroc.Ice.Object
         {
             case 0:
             {
-                return _iceD_getFileService(this, in, current);
+                return _iceD_getDefaultConstService(this, in, current);
             }
             case 1:
             {
-                return _iceD_getNoticeService(this, in, current);
+                return _iceD_getDefaultFileService(this, in, current);
             }
             case 2:
             {
-                return _iceD_getStorageService(this, in, current);
+                return _iceD_getDefaultUserService(this, in, current);
             }
             case 3:
             {
-                return _iceD_getUserService(this, in, current);
+                return _iceD_getFileService(this, in, current);
             }
             case 4:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getNewestClient(this, in, current);
             }
             case 5:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return _iceD_getNoticeService(this, in, current);
             }
             case 6:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return _iceD_getStorageService(this, in, current);
             }
             case 7:
             {
+                return _iceD_getUserService(this, in, current);
+            }
+            case 8:
+            {
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+            }
+            case 9:
+            {
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+            }
+            case 10:
+            {
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+            }
+            case 11:
+            {
                 return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+            }
+            case 12:
+            {
+                return _iceD_updateService(this, in, current);
             }
         }
 

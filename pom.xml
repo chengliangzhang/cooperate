@@ -362,6 +362,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency><!-- janino -->
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>3.0.6</version>
+        </dependency>
         <dependency><!-- log4jdbc -->
             <groupId>com.googlecode.log4jdbc</groupId>
             <artifactId>log4jdbc</artifactId>

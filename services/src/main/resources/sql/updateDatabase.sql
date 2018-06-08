@@ -1,3 +1,31 @@
+-- 软件版本描述
+DROP PROCEDURE IF EXISTS `update_md_list_version`;
+CREATE PROCEDURE `update_md_list_version`()
+BEGIN
+    CREATE TABLE IF NOT EXISTS `md_list_version` (
+        `id` char(32) NOT NULL COMMENT '唯一编号',
+        `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
+        `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+        `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+        `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
+        `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
+
+        `svn_repo` varchar(255) DEFAULT NULL COMMENT '在版本库内的项目名称',
+        `svn_version` int(11) DEFAULT NULL COMMENT '在版本库内的唯一编号',
+        `app_name` varchar(255) DEFAULT NULL COMMENT '软件名称,java软件为maven主pom内artifactId定义',
+        `version_name` varchar(255) DEFAULT NULL COMMENT '版本名称,java软件为maven主pom内version定义',
+        `update_url` varchar(255) DEFAULT NULL COMMENT '安装包下载地址',
+        `description` varchar(512) DEFAULT NULL COMMENT '版本更改历史',
+        `min_depend_svn_version` int(11) DEFAULT NULL COMMENT '依赖服务的最小有效版本',
+        `max_depend_svn_version` int(11) DEFAULT NULL COMMENT '依赖服务的最大有效版本',
+        `include_depend_svn_version` varchar(11) DEFAULT NULL COMMENT '依赖服务的范围外有效版本',
+        `exclude_depend_svn_version` varchar(11) DEFAULT NULL COMMENT '依赖服务的范围内无效版本',
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+END;
+call update_md_list_version();
+DROP PROCEDURE IF EXISTS `update_md_list_version`;
+
 DROP PROCEDURE IF EXISTS `update_md_list_file`;
 CREATE PROCEDURE `update_md_list_file`()
 BEGIN
@@ -5,8 +33,8 @@ BEGIN
     CREATE TABLE IF NOT EXISTS `md_list_storage_file` (
         `id` char(32) NOT NULL COMMENT '唯一编号',
         `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-        `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-        `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+        `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+        `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
         `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
         `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -285,8 +313,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_list_attachment` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -300,8 +328,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_tree_annotate` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -332,8 +360,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_list_element` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -369,8 +397,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
 	CREATE TABLE IF NOT EXISTS `md_list_const_custom` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -398,8 +426,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
 	CREATE TABLE IF NOT EXISTS `md_tree_storage` (
 		`id` char(32) NOT NULL COMMENT '唯一编号',
 		`deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-		`create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-		`last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+		`create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+		`last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
 		`last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
 		`last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -443,8 +471,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
 	CREATE TABLE IF NOT EXISTS `md_list_storage_file_his` (
 		`id` char(32) NOT NULL COMMENT '唯一编号',
 		`deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-		`create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-		`last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+		`create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+		`last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
 		`last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
     
@@ -476,8 +504,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_tree_org` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -497,8 +525,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_list_org_company` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -511,8 +539,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_list_role` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -526,8 +554,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_tree_work` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -549,8 +577,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_list_work_project` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -562,8 +590,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_list_work_issue` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -577,8 +605,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_list_work_task` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -591,8 +619,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_list_work_his` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -607,8 +635,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_list_gui` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -624,8 +652,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_tree_finance` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 
@@ -644,8 +672,8 @@ if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=datab
   CREATE TABLE IF NOT EXISTS `md_list_finance_bill` (
     `id` char(32) NOT NULL COMMENT '唯一编号',
     `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除标志',
-    `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    `last_modify_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `last_modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录最后修改时间',
     `last_modify_user_id` char(32) DEFAULT NULL COMMENT '记录最后修改者用户id',
     `last_modify_role_id` varchar(40) DEFAULT NULL COMMENT '记录最后修改者职责id',
 

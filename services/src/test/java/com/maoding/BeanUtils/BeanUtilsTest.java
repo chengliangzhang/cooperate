@@ -1,10 +1,8 @@
-package com.maoding.CoreUtils;
+package com.maoding.BeanUtils;
 
 import com.maoding.coreBase.CoreEntity;
 import com.maoding.coreUtils.BeanUtils;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.SpringBootConfiguration;
@@ -24,178 +22,10 @@ import java.util.Map;
 * @since 10/27/2017
 * @version 1.0
 */
-class Father {
-    private Integer i;
-
-
-    public Father(){}
-    public Father(Integer i){
-        this.i = i;
-    }
-
-    public Integer getI() {
-        return i;
-    }
-
-    public void setI(Integer i) {
-        this.i = i;
-    }
-}
-
-class Child extends Father {
-    private String s;
-
-    public Child(){}
-    public Child(Integer i, String s){
-        super(i);
-        this.s = s;
-    }
-
-    public String getS() {
-        return s;
-    }
-
-    public void setS(String s) {
-        this.s = s;
-    }
-}
-
-class TestClass1 {
-    private int digital;
-    private Long objectDigital;
-    private String string;
-    private Father object;
-    private byte[] array;
-    private CoreEntity entity;
-    private List<Integer> list;
-
-    public List<Integer> getList() {
-        return list;
-    }
-
-    public void setList(List<Integer> list) {
-        this.list = list;
-    }
-
-    public CoreEntity getEntity() {
-        return entity;
-    }
-
-    public void setEntity(CoreEntity entity) {
-        this.entity = entity;
-    }
-
-    public byte[] getArray() {
-        return array;
-    }
-
-    public void setArray(byte[] array) {
-        this.array = array;
-    }
-
-    public Father getObject() {
-        return object;
-    }
-
-    public void setObject(Father object) {
-        this.object = object;
-    }
-
-    public int getDigital() {
-        return digital;
-    }
-
-    public void setDigital(int digital) {
-        this.digital = digital;
-    }
-
-    public Long getObjectDigital() {
-        return objectDigital;
-    }
-
-    public void setObjectDigital(Long objectDigital) {
-        this.objectDigital = objectDigital;
-    }
-
-    public String getString() {
-        return string;
-    }
-
-    public void setString(String string) {
-        this.string = string;
-    }
-}
-
-class TestClass2 {
-    private float digital;
-    private Double objectDigital;
-    private StringBuffer string;
-    private Child object;
-    private Byte[] array;
-    private CoreEntity entity;
-    private List<Float> list;
-
-    public List<Float> getList() {
-        return list;
-    }
-
-    public void setList(List<Float> list) {
-        this.list = list;
-    }
-
-    public CoreEntity getEntity() {
-        return entity;
-    }
-
-    public void setEntity(CoreEntity entity) {
-        this.entity = entity;
-    }
-
-    public Byte[] getArray() {
-        return array;
-    }
-
-    public void setArray(Byte[] array) {
-        this.array = array;
-    }
-
-    public Child getObject() {
-        return object;
-    }
-
-    public void setObject(Child object) {
-        this.object = object;
-    }
-
-    public float getDigital() {
-        return digital;
-    }
-
-    public void setDigital(float digital) {
-        this.digital = digital;
-    }
-
-    public Double getObjectDigital() {
-        return objectDigital;
-    }
-
-    public void setObjectDigital(Double objectDigital) {
-        this.objectDigital = objectDigital;
-    }
-
-    public StringBuffer getString() {
-        return string;
-    }
-
-    public void setString(StringBuffer string) {
-        this.string = string;
-    }
-}
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @SpringBootConfiguration
-@ComponentScan(basePackages = {"com.maoding.CoreUtils"})
+@ComponentScan(basePackages = {"com.maoding"})
 public class BeanUtilsTest {
 
     @Test
@@ -313,28 +143,4 @@ public class BeanUtilsTest {
         Assert.assertEquals(src.getI(),des.getI());
     }
 
-    /** for method: copyProperties(final Map<String, Object> input, final Object output) */
-    @Test
-    public void testCopyPropertiesForInputOutput() throws Exception {
-    }
-
-    /** for method: getProperty(final Object obj, final String ptyName) */
-    @Test
-    public void testGetProperty() throws Exception {
-
-    }
-
-    @Test
-    public void testCleanProperties() throws Exception {
-    }
-
-    /** action before each test */
-    @Before
-    public void before() throws Exception {
-    }
-
-    /** action after every test */
-    @After
-    public void after() throws Exception {
-    }
 }

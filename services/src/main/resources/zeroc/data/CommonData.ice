@@ -109,6 +109,48 @@ module zeroc {
         string lastModifyRoleId; //最后编辑角色id
     };
 
+
+    ["java:getset","clr:property"]
+    struct VersionDTO { //可用的版本
+        string id; //版本编号
+        string versionName; //版本号
+        string updateUrl; //升级地址
+        string description; //变动历史
+        string svnVersion; //版本库内唯一编号
+    };
+    ["java:type:java.util.ArrayList<VersionDTO>"] sequence<VersionDTO> VersionList;
+
+    ["java:getset","clr:property"]
+    struct VersionSimpleDTO { //可用的版本
+        string service; //可用的卯丁服务器版本
+        string client; //可用的客户端版本
+    };
+    ["java:type:java.util.ArrayList<VersionSimpleDTO>"] sequence<VersionSimpleDTO> VersionSimpleList;
+
+    ["java:getset","clr:property"]
+    struct VersionQuery { //查找版本申请
+        string svnRepo; //项目名
+        string versionName; //版本号
+        string serviceSvnVersion; //要求兼容的服务器版本
+        string limitOffset; //要求返回的首条记录行数
+        string limitRows; //要求返回的记录数
+    };
+
+    ["java:getset","clr:property"]
+    struct VersionSimpleQuery { //查找版本申请
+        string service; //要求兼容的服务器版本
+    };
+
+    ["java:getset","clr:property"]
+    struct ConstQuery { //查找常量申请
+        string classicId; //常量大类编号
+        string classicName; //常量名称
+        string codeId; //常量编号
+        string title; //常量名称编号
+        string fieldNum; //将返回值分隔后返回的是哪个部分
+        StringElementDTO convertData; //转换字符串定义
+    };
+
     enum ErrorCode {
         Unknown,Assert,InvalidParameter,NoPermission,DataNotFound,DataIsInvalid
     };

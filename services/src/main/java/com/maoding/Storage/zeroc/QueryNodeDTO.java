@@ -539,6 +539,18 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.issueId = issueId;
     }
 
+    public String fileId;
+
+    public String getFileId()
+    {
+        return fileId;
+    }
+
+    public void setFileId(String fileId)
+    {
+        this.fileId = fileId;
+    }
+
     public String serverTypeId;
 
     public String getServerTypeId()
@@ -884,6 +896,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.isTaskChecker = "";
         this.isTaskAuditor = "";
         this.issueId = "";
+        this.fileId = "";
         this.serverTypeId = "";
         this.serverAddress = "";
         this.baseDir = "";
@@ -911,7 +924,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.needFileHistoryInfo = "";
     }
 
-    public QueryNodeDTO(String id, String fuzzyId, String name, String fuzzyName, String pid, String typeId, String notTypeId, String projectId, String notProjectId, String rangeId, String notRangeId, String taskId, String notTaskId, String ownerUserId, String notOwnerUserId, String lastModifyRoleId, String notLastModifyRoleId, String nodeTypeAttr, String directoryMode, String designMode, String caMode, String commitMode, String historyMode, String companyName, String fuzzyCompanyName, String ownerName, String fuzzyOwnerName, String lastModifyUserName, String fuzzyLastModifyUserName, String path, String parentPath, String fuzzyPath, String projectName, String fuzzyProjectName, String companyId, String notCompanyId, String accountId, String roleAttr, String isTaskLeader, String isTaskDesigner, String isTaskChecker, String isTaskAuditor, String issueId, String serverTypeId, String serverAddress, String baseDir, String key, String statusAttr, String passDesign, String passCheck, String passAudit, String isMirror, String onlyOne, String needPath, String needProjectName, String needTaskName, String needTaskPath, String needOwnerName, String needCompanyId, String needCompanyName, String needIssueId, String needIssuePath, String needDesignTaskPath, String needLastModifyUserName, String needRoleInfo, String needFileInfo, String needMainFileInfo, String needFileHistoryInfo)
+    public QueryNodeDTO(String id, String fuzzyId, String name, String fuzzyName, String pid, String typeId, String notTypeId, String projectId, String notProjectId, String rangeId, String notRangeId, String taskId, String notTaskId, String ownerUserId, String notOwnerUserId, String lastModifyRoleId, String notLastModifyRoleId, String nodeTypeAttr, String directoryMode, String designMode, String caMode, String commitMode, String historyMode, String companyName, String fuzzyCompanyName, String ownerName, String fuzzyOwnerName, String lastModifyUserName, String fuzzyLastModifyUserName, String path, String parentPath, String fuzzyPath, String projectName, String fuzzyProjectName, String companyId, String notCompanyId, String accountId, String roleAttr, String isTaskLeader, String isTaskDesigner, String isTaskChecker, String isTaskAuditor, String issueId, String fileId, String serverTypeId, String serverAddress, String baseDir, String key, String statusAttr, String passDesign, String passCheck, String passAudit, String isMirror, String onlyOne, String needPath, String needProjectName, String needTaskName, String needTaskPath, String needOwnerName, String needCompanyId, String needCompanyName, String needIssueId, String needIssuePath, String needDesignTaskPath, String needLastModifyUserName, String needRoleInfo, String needFileInfo, String needMainFileInfo, String needFileHistoryInfo)
     {
         this.id = id;
         this.fuzzyId = fuzzyId;
@@ -956,6 +969,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.isTaskChecker = isTaskChecker;
         this.isTaskAuditor = isTaskAuditor;
         this.issueId = issueId;
+        this.fileId = fileId;
         this.serverTypeId = serverTypeId;
         this.serverAddress = serverAddress;
         this.baseDir = baseDir;
@@ -1298,6 +1312,13 @@ public class QueryNodeDTO implements java.lang.Cloneable,
                     return false;
                 }
             }
+            if(this.fileId != r.fileId)
+            {
+                if(this.fileId == null || r.fileId == null || !this.fileId.equals(r.fileId))
+                {
+                    return false;
+                }
+            }
             if(this.serverTypeId != r.serverTypeId)
             {
                 if(this.serverTypeId == null || r.serverTypeId == null || !this.serverTypeId.equals(r.serverTypeId))
@@ -1527,6 +1548,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskChecker);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, isTaskAuditor);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, issueId);
+        h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, fileId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverTypeId);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, serverAddress);
         h_ = com.zeroc.IceInternal.HashUtil.hashAdd(h_, baseDir);
@@ -1614,6 +1636,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         ostr.writeString(this.isTaskChecker);
         ostr.writeString(this.isTaskAuditor);
         ostr.writeString(this.issueId);
+        ostr.writeString(this.fileId);
         ostr.writeString(this.serverTypeId);
         ostr.writeString(this.serverAddress);
         ostr.writeString(this.baseDir);
@@ -1686,6 +1709,7 @@ public class QueryNodeDTO implements java.lang.Cloneable,
         this.isTaskChecker = istr.readString();
         this.isTaskAuditor = istr.readString();
         this.issueId = istr.readString();
+        this.fileId = istr.readString();
         this.serverTypeId = istr.readString();
         this.serverAddress = istr.readString();
         this.baseDir = istr.readString();
@@ -1765,5 +1789,5 @@ public class QueryNodeDTO implements java.lang.Cloneable,
 
     private static final QueryNodeDTO _nullMarshalValue = new QueryNodeDTO();
 
-    public static final long serialVersionUID = 1398976762L;
+    public static final long serialVersionUID = 1094337462L;
 }

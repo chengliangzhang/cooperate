@@ -105,4 +105,11 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
             return null;
         }
     }
+
+    public static boolean isBasicType(final Class<?> clazz){
+        return (clazz.isPrimitive()) ||
+                (DigitUtils.isDigitalClass(clazz)) ||
+                (clazz.isAssignableFrom(String.class)) ||
+                (clazz.isArray());
+    }
 }

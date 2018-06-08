@@ -1,18 +1,20 @@
 package com.maoding.common.entity;
 
+import com.maoding.coreBase.CoreEntity;
 import com.maoding.coreUtils.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
 
 /**
- * 深圳市卯丁技术有限公司
- * 作    者 : 张成亮
- * 日    期 : 2018/1/12 19:14
+ * 深圳市设计同道技术有限公司
+ * 类    名 : ConstEntity
  * 描    述 :
+ * @author : 张成亮
+ * 日    期 : 2018/6/7 14:40
  */
-@Table(name = "md_const")
-public class ConstEntity {
+@Table(name = "md_list_const_custom")
+public class ConstEntity extends CoreEntity {
     /** 分类id */
     @Column
     private Short classicId;

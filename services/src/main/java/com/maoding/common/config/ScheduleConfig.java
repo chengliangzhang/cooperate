@@ -23,6 +23,16 @@ public class ScheduleConfig {
     private Boolean clearServer;
     /** 自动执行线程个数 */
     private Integer poolSize;
+    /** 自动升级 */
+    private Boolean autoUpdate;
+
+    public Boolean getAutoUpdate() {
+        return autoUpdate;
+    }
+
+    public void setAutoUpdate(Boolean autoUpdate) {
+        this.autoUpdate = autoUpdate;
+    }
 
     public Integer getPoolSize() {
         return (poolSize != null) ? poolSize : DEFAULT_POOL_SIZE;

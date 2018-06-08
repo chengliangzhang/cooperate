@@ -1,6 +1,6 @@
 package com.maoding.fileServer.config;
 
-import com.maoding.common.ConstService;
+import com.maoding.common.LocalConstService;
 import com.maoding.common.config.WebServiceConfig;
 import com.maoding.coreFileServer.CoreFileServer;
 import com.maoding.coreFileServer.disk.DiskFileServer;
@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 @Component
 @ConfigurationProperties(prefix = "fileServer")
 public class FileServerConfig {
-    private static final String DEFAULT_SERVER_TYPE_ID = Short.toString(ConstService.FILE_SERVER_TYPE_DISK);
+    private static final String DEFAULT_SERVER_TYPE_ID = Short.toString(LocalConstService.FILE_SERVER_TYPE_DISK);
     private static final String DEFAULT_SERVER_ADDRESS = "127.0.0.1";
     private static final String DEFAULT_BASE_DIR = "c:/work/file_server";
     private static final String DEFAULT_MIRROR_BASE_DIR = "c:/work/file_server/.mirror";
@@ -62,16 +62,16 @@ public class FileServerConfig {
         if (StringUtils.isNotEmpty(baseDir)){
             return baseDir;
         } else if (isDiskServer(serverTypeId)) {
-            return getBaseDir();
+            return DEFAULT_BASE_DIR;
         } else if (isWebServer(serverTypeId)) {
             return webServiceConfig.getUpload();
         } else {
-            return getBaseDir();
+            return DEFAULT_BASE_DIR;
         }
     }
 
     public String getBaseDir() {
-        return StringUtils.isEmpty(baseDir) ? DEFAULT_BASE_DIR : baseDir;
+        return StringUtils.isEmpty(baseDir) ? getBaseDir(getServerTypeId(),null) : baseDir;
     }
 
     public void setBaseDir(String baseDir) {
@@ -83,16 +83,16 @@ public class FileServerConfig {
         if (StringUtils.isNotEmpty(serverAddress)){
             return serverAddress;
         } else if (isDiskServer(serverTypeId)) {
-            return getServerAddress();
+            return DEFAULT_SERVER_ADDRESS;
         } else if (isWebServer(serverTypeId)) {
             return webServiceConfig.getFileCenter();
         } else {
-            return getServerAddress();
+            return DEFAULT_SERVER_ADDRESS;
         }
     }
 
     public String getServerAddress() {
-        return StringUtils.isEmpty(serverAddress) ? DEFAULT_SERVER_ADDRESS : serverAddress;
+        return StringUtils.isEmpty(serverAddress) ? getServerAddress(getServerTypeId(),null) : serverAddress;
     }
 
     public void setServerAddress(String serverAddress) {
@@ -105,10 +105,10 @@ public class FileServerConfig {
                 StringUtils.isSame(getBaseDir(serverTypeId,baseDir),getBaseDir());
     }
     private boolean isDiskServer(String serverTypeId){
-        return ConstService.FILE_SERVER_TYPE_DISK == DigitUtils.parseShort(serverTypeId);
+        return LocalConstService.FILE_SERVER_TYPE_DISK == DigitUtils.parseShort(serverTypeId);
     }
     private boolean isWebServer(String serverTypeId){
-        return ConstService.FILE_SERVER_TYPE_WEB == DigitUtils.parseShort(serverTypeId);
+        return LocalConstService.FILE_SERVER_TYPE_WEB == DigitUtils.parseShort(serverTypeId);
     }
 
     public CoreFileServer createCoreFileServer(@NotNull String serverTypeId){

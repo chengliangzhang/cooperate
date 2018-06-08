@@ -33,6 +33,7 @@ public class EntityUtils {
         return (isValid(entity)) ? entity.getId() : null;
     }
 
+    @Deprecated
     public static <T extends CoreEntity> T replace(@NotNull CoreDao<T> dao,@NotNull Class<T> entityClass,Object request,T entity,String id){
         if (ObjectUtils.isEmpty(request)){
             return null;
@@ -44,22 +45,40 @@ public class EntityUtils {
             }
             dao.insert(entity);
         } else {
-            BeanUtils.copyCleanProperties(request,entity);
+            id = entity.getId();
+            BeanUtils.copyProperties(request,entity);
+
             entity.update();
             dao.update(entity);
         }
         return entity;
     }
 
+    @Deprecated
     public static <T extends CoreEntity> T replace(@NotNull CoreDao<T> dao,@NotNull Class<T> entityClass,Object request,T entity){
         return replace(dao,entityClass,request,entity,null);
     }
 
-    public static <T extends CoreEntity> T replace(@NotNull CoreDao<T> dao,@NotNull Class<T> entityClass,Object request,String id){
-        return replace(dao,entityClass,request,null,id);
+    public static <T extends CoreEntity> T replace(@NotNull CoreDao<T> dao,@NotNull Class<T> entityClass,@NotNull Object request,String id){
+        T entity = BeanUtils.createCleanFrom(request,entityClass);
+        if (StringUtils.isEmpty(id)){
+            dao.insert(entity);
+        } else {
+            entity.setId(id);
+            T oldEntity = dao.selectById(id);
+            if (oldEntity != null) {
+                entity.update();
+                dao.update(entity);
+                BeanUtils.copyCleanProperties(oldEntity,entity);
+                entity = oldEntity;
+            } else {
+                dao.insert(entity);
+            }
+        }
+        return entity;
     }
 
     public static <T extends CoreEntity> T replace(@NotNull CoreDao<T> dao,@NotNull Class<T> entityClass,Object request){
-        return replace(dao,entityClass,request,null,null);
+        return replace(dao,entityClass,request,(String)null);
     }
 }

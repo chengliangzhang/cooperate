@@ -27,7 +27,9 @@ public class DigitUtils {
 
     public static Boolean isDigitalClass(final Class<?> clazz){
         return (clazz.isPrimitive()
+                || clazz.isAssignableFrom(Boolean.class)
                 || clazz.isAssignableFrom(Byte.class)
+                || clazz.isAssignableFrom(Character.class)
                 || clazz.isAssignableFrom(Short.class)
                 || clazz.isAssignableFrom(Integer.class)
                 || clazz.isAssignableFrom(Long.class)

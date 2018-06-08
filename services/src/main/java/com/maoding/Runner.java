@@ -18,10 +18,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -188,14 +185,29 @@ public class Runner implements SchedulingConfigurer {
 
     @Scheduled(fixedDelay  = 5 * 1000)
     public void clearFileServer() throws Exception {
-        if (!started) return;
+        //如果尚未完全启动，不执行定义任务
+        if (!started) {
+            return;
+        }
+
+        //定期清理服务器文件
         if (scheduleConfig.getClearServer()) {
             FileServicePrx fileServicePrx = iceConfig.getFileService();
             if (fileServicePrx != null) {
                 log.info("------- ------- ------- 清理文件 ------- ------- -------");
                 long t = System.currentTimeMillis();
                 fileServicePrx.clearAll(null);
-                log.info("------- ------- 结束清理，用时" + (System.currentTimeMillis() - t) + "ms ------- -------");
+                log.info("------- ------- 结束清理文件，用时" + (System.currentTimeMillis() - t) + "ms ------- -------");
+            }
+        }
+
+        //定期升级文件服务器
+        if (scheduleConfig.getAutoUpdate()) {
+            FileServicePrx fileServicePrx = iceConfig.getFileService();
+            if (fileServicePrx != null) {
+                log.info("------- ------- ------- 检查更新 ------- ------- -------");
+                long t = System.currentTimeMillis();
+                log.info("------- ------- 结束检查更新，用时" + (System.currentTimeMillis() - t) + "ms ------- -------");
             }
         }
     }

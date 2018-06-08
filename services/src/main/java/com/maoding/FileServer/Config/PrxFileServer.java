@@ -1,6 +1,6 @@
 package com.maoding.fileServer.config;
 
-import com.maoding.common.remoteService.RemoteFileServerPrx;
+import com.maoding.common.servicePrx.FileServerPrxImpl;
 import com.maoding.coreFileServer.CoreFileServer;
 import com.maoding.fileServer.zeroc.FileServicePrx;
 import com.maoding.coreUtils.StringUtils;
@@ -49,7 +49,7 @@ public class PrxFileServer implements CoreFileServer{
 
     private FileServicePrx getRemote(){
         if (remote == null) {
-            remote = RemoteFileServerPrx.getInstance(getService(),getConfig());
+            remote = FileServerPrxImpl.getInstance(getService(),getConfig());
         }
         return remote;
     }

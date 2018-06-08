@@ -1,7 +1,7 @@
 package com.maoding.storage;
 
 import com.maoding.common.CheckService;
-import com.maoding.common.ConstService;
+import com.maoding.common.LocalConstService;
 import com.maoding.common.zeroc.CustomException;
 import com.maoding.common.zeroc.DeleteAskDTO;
 import com.maoding.common.zeroc.ErrorCode;
@@ -225,18 +225,23 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
     }
 
     @Override
-    public NodeFileDTO createFile(@NotNull UpdateNodeFileDTO request, Current current) throws CustomException {
+    public NodeFileDTO createFileWithId(UpdateNodeFileDTO request, String id, Current current) throws CustomException {
         long t = System.currentTimeMillis();
 
-        StorageFileEntity fileEntity = EntityUtils.replace(storageFileDao,StorageFileEntity.class,formatRequest(request));
+        StorageFileEntity fileEntity = EntityUtils.replace(storageFileDao,StorageFileEntity.class,formatRequest(request),id);
         if (request.getHistoryUpdateRequest() != null){
             String mainId = StringUtils.getString(fileEntity.getMainFileId(),fileEntity.getId());
             createHistory(request.getHistoryUpdateRequest(),mainId);
         }
         NodeFileDTO file = BeanUtils.createCleanFrom(fileEntity,NodeFileDTO.class);
 
-        log.info("\t----> createFile:" + (System.currentTimeMillis()-t) + "ms");
+        log.info("\t----> createFileWithId:" + (System.currentTimeMillis()-t) + "ms");
         return file;
+    }
+
+    @Override
+    public NodeFileDTO createFile(@NotNull UpdateNodeFileDTO request, Current current) throws CustomException {
+        return createFileWithId(request,null,current);
     }
 
     @Override
@@ -251,8 +256,7 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
         long t = System.currentTimeMillis();
 
         CheckService.check(isValid(src),ErrorCode.DataIsInvalid);
-        StorageFileEntity fileEntity = storageFileDao.selectById(src.getId());
-        fileEntity = EntityUtils.replace(storageFileDao,StorageFileEntity.class,formatRequest(request),fileEntity);
+        StorageFileEntity fileEntity = EntityUtils.replace(storageFileDao,StorageFileEntity.class,formatRequest(request),src.getId());
         if (request.getHistoryUpdateRequest() != null){
             createHistory(request.getHistoryUpdateRequest(),StringUtils.getString(fileEntity.getMainFileId(),fileEntity.getId()));
         }
@@ -419,16 +423,16 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
         QueryNodeDTO query = new QueryNodeDTO();
         query.setId(node.getId());
         if (request.getTextQuery() != null){
-            query.setNeedPath(ConstService.MODE_TRUE);
-            query.setNeedProjectName(ConstService.MODE_TRUE);
-            query.setNeedTaskName(ConstService.MODE_TRUE);
-            query.setNeedOwnerName(ConstService.MODE_TRUE);
+            query.setNeedPath(LocalConstService.MODE_TRUE);
+            query.setNeedProjectName(LocalConstService.MODE_TRUE);
+            query.setNeedTaskName(LocalConstService.MODE_TRUE);
+            query.setNeedOwnerName(LocalConstService.MODE_TRUE);
         }
         if (request.getFileQuery() != null) {
-            query.setNeedFileInfo(ConstService.MODE_TRUE);
+            query.setNeedFileInfo(LocalConstService.MODE_TRUE);
         }
         if (request.getHistoryQuery() != null) {
-            query.setNeedFileHistoryInfo(ConstService.MODE_TRUE);
+            query.setNeedFileHistoryInfo(LocalConstService.MODE_TRUE);
         }
         List<FullNodeDTO> fullNodeList = storageDao.listFullNode(BeanUtils.cleanProperties(query));
         FullNodeDTO fullNode = (ObjectUtils.isNotEmpty(fullNodeList)) ? fullNodeList.get(0) : null;
@@ -496,13 +500,13 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
     }
 
     private boolean isHisInfoValid(@NotNull UpdateNodeDTO request){
-        return (ConstService.STORAGE_ACTION_TYPE_UNKNOWN != DigitUtils.parseShort(request.getActionTypeId()))
+        return (LocalConstService.STORAGE_ACTION_TYPE_UNKNOWN != DigitUtils.parseShort(request.getActionTypeId()))
                 || (ObjectUtils.isNotEmpty(request.getRemark()));
 
     }
 
     private boolean isFileInfoValid(@NotNull UpdateNodeDTO request){
-        return (ConstService.FILE_SERVER_TYPE_UNKNOWN != DigitUtils.parseShort(request.getServerTypeId()))
+        return (LocalConstService.FILE_SERVER_TYPE_UNKNOWN != DigitUtils.parseShort(request.getServerTypeId()))
                 || (ObjectUtils.isNotEmpty(request.getServerAddress()))
                 || (ObjectUtils.isNotEmpty(request.getReadOnlyKey()))
                 || (ObjectUtils.isNotEmpty(request.getWritableKey()))
@@ -576,17 +580,17 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
             if (lastEntity != null) {
                 entity.setPid(lastEntity.getId());
                 if (StringUtils.isNotEmpty(lastEntity.getTypeId())) {
-                    entity.setTypeId(ConstService.getPathType(lastEntity.getTypeId()));
+                    entity.setTypeId(LocalConstService.getPathType(lastEntity.getTypeId()));
                 } else {
-                    entity.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
+                    entity.setTypeId(Short.toString(LocalConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
                 }
                 entity.setTaskId(lastEntity.getTaskId());
                 entity.setProjectId(lastEntity.getProjectId());
             } else if (isValid(parent)){
                 if (StringUtils.isNotEmpty(parent.getTypeId())) {
-                    entity.setTypeId(ConstService.getPathType(parent.getTypeId()));
+                    entity.setTypeId(LocalConstService.getPathType(parent.getTypeId()));
                 } else {
-                    entity.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
+                    entity.setTypeId(Short.toString(LocalConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
                 }
                 entity.setTaskId(parent.getTaskId());
                 entity.setProjectId(parent.getProjectId());
@@ -595,14 +599,14 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
                 lastEntity.reset();
                 lastEntity.setPath(StringUtils.SPLIT_PATH);
                 lastEntity.setNodeName(StringUtils.SPLIT_PATH);
-                lastEntity.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
+                lastEntity.setTypeId(Short.toString(LocalConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
                 lastEntity.setLastModifyUserId(accountId);
                 lastEntity.setLastModifyRoleId(accountRoleId);
                 nodeList.add(BeanUtils.cleanProperties(lastEntity));
                 pathBuilder = new StringBuilder(StringUtils.SPLIT_PATH).append(nodeName);
 
                 entity.setPid(lastEntity.getId());
-                entity.setTypeId(ConstService.getPathType(lastEntity.getTypeId()));
+                entity.setTypeId(LocalConstService.getPathType(lastEntity.getTypeId()));
             }
 
             entity.setNodeName(nodeName);
@@ -629,10 +633,10 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
                 parentPath += StringUtils.SPLIT_PATH;
             }
             nodeUnion.setPath(StringUtils.formatPath(parentPath + nodeUnion.getNodeName()));
-            if (ConstService.isDirectoryType(nodeUnion.getTypeId())) {
-                nodeUnion.setTypeId(ConstService.getPathType(parentEntity.getTypeId()));
+            if (LocalConstService.isDirectoryType(nodeUnion.getTypeId())) {
+                nodeUnion.setTypeId(LocalConstService.getPathType(parentEntity.getTypeId()));
             } else {
-                nodeUnion.setTypeId(ConstService.getFileType(parentEntity.getTypeId()));
+                nodeUnion.setTypeId(LocalConstService.getFileType(parentEntity.getTypeId()));
             }
             nodeUnion.setTaskId(parentEntity.getTaskId());
             nodeUnion.setProjectId(parentEntity.getProjectId());
@@ -640,10 +644,10 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
             nodeUnion.setPid("-");
             nodeUnion.setPath(nodeUnion.getNodeName());
             if (isValid(parent)) {
-                if (ConstService.isDirectoryType(nodeUnion.getTypeId())) {
-                    nodeUnion.setTypeId(ConstService.getPathType(parent.getTypeId()));
+                if (LocalConstService.isDirectoryType(nodeUnion.getTypeId())) {
+                    nodeUnion.setTypeId(LocalConstService.getPathType(parent.getTypeId()));
                 } else {
-                    nodeUnion.setTypeId(ConstService.getFileType(parent.getTypeId()));
+                    nodeUnion.setTypeId(LocalConstService.getFileType(parent.getTypeId()));
                 }
                 if (StringUtils.isEmpty(nodeUnion.getTaskId())) {
                     nodeUnion.setTaskId(parent.getTaskId());
@@ -712,10 +716,10 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
         }
         if (isValid(parent)){
             if (StringUtils.isEmpty(request.getTypeId())) {
-                if (ConstService.isDirectoryType(request.getTypeId())) {
-                    request.setTypeId(ConstService.getPathType(parent.getTypeId()));
+                if (LocalConstService.isDirectoryType(request.getTypeId())) {
+                    request.setTypeId(LocalConstService.getPathType(parent.getTypeId()));
                 } else {
-                    request.setTypeId(ConstService.getFileType(parent.getTypeId()));
+                    request.setTypeId(LocalConstService.getFileType(parent.getTypeId()));
                 }
             }
             request.setProjectId(parent.getProjectId());
@@ -745,20 +749,42 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
 
         String requestPath = request.getPath();
 
-        if (StringUtils.isEmpty(requestPath) && (parent != null)) {
-            requestPath = parent.getPath();
-        }
-        if (StringUtils.isEmpty(requestPath)){
-            requestPath = StringUtils.getDirName(src.getPath());
+        //*//本行前为双斜杠，则不调用selectStorageEntityUnion
+        //如果父节点被更改，则调整request
+        if (isValid(parent) && StringUtils.isNotSame(src.getPid(),parent.getId())) {
+            String nodeName = StringUtils.getFileName(request.getPath());
+            if (StringUtils.isEmpty(nodeName)) {
+                nodeName = src.getName();
+            }
+            CheckService.check(StringUtils.isNotEmpty(nodeName),ErrorCode.DataIsInvalid);
+            StorageTreeEntity parentEntity = getParentEntity(parent, request, current);
+            request = updateRequest(request,parent,parentEntity,nodeName);
+            request.setNodeName(nodeName);
         }
 
+        //更新数据库
+        String id = StringUtils.left(src.getId(),StringUtils.DEFAULT_ID_LENGTH);
+        StorageTreeEntity nodeEntity = EntityUtils.replace(storageTreeDao,StorageTreeEntity.class,formatRequest(request),id);
+        CheckService.check(EntityUtils.isValid(nodeEntity),ErrorCode.DataIsInvalid);
+        if (request.getUpdateFileRequest() != null) {
+            UpdateNodeFileDTO fileUpdateRequest = request.getUpdateFileRequest();
+            EntityUtils.replace(storageFileDao,StorageFileEntity.class,formatRequest(fileUpdateRequest),id);
+            if (fileUpdateRequest.getHistoryUpdateRequest() != null){
+                createHistory(fileUpdateRequest.getHistoryUpdateRequest(),nodeEntity.getId());
+            }
+        }
+
+        //填充返回节点的文字信息
+        if ((nodeEntity != null) && StringUtils.isSame("-",nodeEntity.getPid())){
+            nodeEntity.setPid(null);
+        }
+        SimpleNodeDTO node = convertToSimpleNodeDTO(nodeEntity,src,parent,requestPath,request.getOwnerUserId());
+
+        /*///维持已测试过的updateNode
         //获取要修改的节点信息
         QueryNodeDTO query = new QueryNodeDTO();
         query.setId(StringUtils.left(src.getId(),StringUtils.DEFAULT_ID_LENGTH));
         StorageEntityUnionDTO srcUnion = storageDao.selectStorageEntityUnion(BeanUtils.cleanProperties(query));
-        if (srcUnion == null) {
-            clearBufferAndWarning();
-        }
         BeanUtils.copyCleanProperties(request,srcUnion);
 
         //获取父节点信息
@@ -784,15 +810,13 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
                 createHistory(fileUpdateRequest.getHistoryUpdateRequest(),nodeEntity.getId());
             }
         }
-
         //填充返回节点的文字信息
         if ((srcUnion != null) && StringUtils.isSame("-",srcUnion.getPid())){
             srcUnion.setPid(null);
         }
         SimpleNodeDTO node = convertToSimpleNodeDTO(srcUnion,src,parent,requestPath,request.getOwnerUserId());
-        if (node != null) {
-            clearBuffer(src.getPid(), node.getPid());
-        }
+        //*/
+
 
         log.info("\t----> updateNode:" + (System.currentTimeMillis()-t) + "ms");
         return node;
@@ -1022,14 +1046,14 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
         }
         SimpleNodeDTO node = BeanUtils.createCleanFrom(entity,SimpleNodeDTO.class);
         if (StringUtils.isNotEmpty(entity.getTypeId())) {
-            node.setIsDirectory(ConstService.isDirectoryType(entity.getTypeId()));
+            node.setIsDirectory(LocalConstService.isDirectoryType(entity.getTypeId()));
         } else {
-            entity.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_UNKNOWN));
+            entity.setTypeId(Short.toString(LocalConstService.STORAGE_NODE_TYPE_UNKNOWN));
             node.setIsDirectory(false);
         }
         node.setName(entity.getNodeName());
         node.setPath(path);
-        Short rangeId = DigitUtils.parseShort(ConstService.getRangeId(entity.getTypeId()));
+        Short rangeId = DigitUtils.parseShort(LocalConstService.getRangeId(entity.getTypeId()));
         node.setId(node.getId() + "-" + rangeId);
         if (StringUtils.isEmpty(node.getPid())) {
             if (isValid(parent)){
@@ -1131,7 +1155,7 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
                 query.setTaskId(parent.getTaskId());
             }
             query.setFuzzyPath(parentPath);
-            query.setOnlyOne(ConstService.MODE_TRUE);
+            query.setOnlyOne(LocalConstService.MODE_TRUE);
             List<SimpleNodeDTO> direList = listNode(query,current);
             SimpleNodeDTO dirNode = ObjectUtils.getFirst(direList);
             if (isValid(dirNode)) {
@@ -1160,7 +1184,7 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
             }
             QueryNodeDTO query = new QueryNodeDTO();
             query.setFuzzyPath(parentPath);
-            query.setOnlyOne(ConstService.MODE_TRUE);
+            query.setOnlyOne(LocalConstService.MODE_TRUE);
             List<SimpleNodeDTO> parentList = listNode(query, current);
             parent = ObjectUtils.getFirst(parentList);
             if (isValid(parent)) {
@@ -1177,7 +1201,7 @@ public class StorageServiceImpl extends CoreLocalService implements StorageServi
         if (StringUtils.isEmpty(id)) return null;
         QueryNodeDTO query = new QueryNodeDTO();
         query.setId(id);
-        query.setNeedPath(ConstService.MODE_TRUE);
+        query.setNeedPath(LocalConstService.MODE_TRUE);
         List<SimpleNodeDTO> list = listNode(query, current);
         return ObjectUtils.getFirst(list);
     }

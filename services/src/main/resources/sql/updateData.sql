@@ -1,3 +1,18 @@
+-- 创建协同服务和客户端版本
+DROP PROCEDURE IF EXISTS `createVersion`;
+CREATE PROCEDURE `createVersion`()
+BEGIN
+    REPLACE INTO `md_list_version` (id,svn_repo,svn_version,app_name,version_name,update_url,description,min_depend_svn_version,max_depend_svn_version) VALUES ('08c1cb756a3911e8a8e000ffecc6934a','maoding-services','11230','卯丁协同','v1.0','http://www.maoding.com/','初始创建',null,null);
+    REPLACE INTO `md_list_version` (id,svn_repo,svn_version,app_name,version_name,update_url,description,min_depend_svn_version,max_depend_svn_version) VALUES ('491d1dee6a4e11e8a8e000ffecc6934a','maoding-services','11240','卯丁协同','v1.1','http://www.maoding.com/','第一次升级',null,null);
+    REPLACE INTO `md_list_version` (id,svn_repo,svn_version,app_name,version_name,update_url,description,min_depend_svn_version,max_depend_svn_version) VALUES ('bdb105856a4011e8a8e000ffecc6934a','app','12231','卯丁协同客户端','v2.0','http://www.maoding.com/','初始创建',null,null);
+    REPLACE INTO `md_list_version` (id,svn_repo,svn_version,app_name,version_name,update_url,description,min_depend_svn_version,max_depend_svn_version) VALUES ('ddb2fea36a4011e8a8e000ffecc6934a','app','12232','卯丁协同客户端','v2.1','http://www.maoding.com/','第一次升级',null,'11230');
+    REPLACE INTO `md_list_version` (id,svn_repo,svn_version,app_name,version_name,update_url,description,min_depend_svn_version,max_depend_svn_version) VALUES ('76bc3c7d6a4e11e8a8e000ffecc6934a','app','12233','卯丁协同客户端','v2.2','http://www.maoding.com/','第二次升级','11240',null);
+END;
+call createVersion();
+DROP PROCEDURE IF EXISTS `createVersion`;
+
+
+-- 从storage内复制owner_user_id到file
 DROP PROCEDURE IF EXISTS `updateFileData`;
 CREATE PROCEDURE `updateFileData`()
 BEGIN
@@ -12,7 +27,8 @@ BEGIN
     set file_list.owner_user_id = storage_tree.owner_user_id,
 				file_list.company_id = storage_task.company_id;
 END;
-call updateFileData();
+-- call updateFileData();
+DROP PROCEDURE IF EXISTS `updateFileData`;
 
 -- fillStorageInfo -- 从老的sky_drive表中复制数据到storage中
 -- DROP PROCEDURE IF EXISTS `fillStorageInfo`;

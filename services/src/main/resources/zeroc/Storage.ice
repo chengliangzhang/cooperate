@@ -19,6 +19,7 @@ module zeroc {
         AnnotateList listAnnotate(QueryAnnotateDTO query) throws CustomException; //查询文件注解
 
         NodeFileDTO createFile(UpdateNodeFileDTO request) throws CustomException; //创建文件
+        NodeFileDTO createFileWithId(UpdateNodeFileDTO request,string id) throws CustomException; //创建文件
         NodeFileDTO createMirror(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //创建镜像
         NodeFileDTO updateFile(NodeFileDTO src,UpdateNodeFileDTO request) throws CustomException; //更新文件或镜像
 

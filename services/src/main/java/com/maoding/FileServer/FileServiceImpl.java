@@ -1,7 +1,7 @@
 package com.maoding.fileServer;
 
 import com.maoding.common.CheckService;
-import com.maoding.common.ConstService;
+import com.maoding.common.LocalConstService;
 import com.maoding.common.config.IceConfig;
 import com.maoding.common.config.WebServiceConfig;
 import com.maoding.common.zeroc.*;
@@ -71,9 +71,24 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     private AccountDTO lastAccount = null;
 
     @Override
+    public FileDataDTO readService(String version, long pos, int size, Current current) {
+        return null;
+    }
+
+    @Override
+    public String getNewestClient(Current current) {
+        return null;
+    }
+
+    @Override
+    public FileDataDTO readClient(String version, long pos, int size, Current current) {
+        return null;
+    }
+
+    @Override
     public SummaryFileDTO summaryFile(@NotNull QuerySummarySimpleDTO query, Current current) throws CustomException {
         QuerySummaryDTO storageQuery = BeanUtils.createCleanFrom(query,QuerySummaryDTO.class);
-        storageQuery.setNotServerTypeId(Short.toString(ConstService.FILE_SERVER_TYPE_WEB));
+        storageQuery.setNotServerTypeId(Short.toString(LocalConstService.FILE_SERVER_TYPE_WEB));
         return getStorageService().summaryFile(storageQuery);
     }
 
@@ -162,29 +177,35 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Override
     public List<CANodeDTO> listDesignNode(AccountDTO account, Current current) throws CustomException {
+        log.info("\t===>>> 进入 listDesignNode:" + JsonUtils.obj2CleanJson(account));
+        long t0 = System.currentTimeMillis();
         AskFileDTO query = new AskFileDTO();
-        query.setDesignMode(ConstService.MODE_TRUE);
-        query.setHistoryMode(ConstService.MODE_FALSE);
-        query.setIsTaskDesigner(ConstService.MODE_TRUE);
-        query.setIsTaskChecker(ConstService.MODE_FALSE);
-        query.setIsTaskAuditor(ConstService.MODE_FALSE);
+        query.setDesignMode(LocalConstService.MODE_TRUE);
+        query.setHistoryMode(LocalConstService.MODE_FALSE);
+        query.setIsTaskDesigner(LocalConstService.MODE_TRUE);
+        query.setIsTaskChecker(LocalConstService.MODE_FALSE);
+        query.setIsTaskAuditor(LocalConstService.MODE_FALSE);
         query.setAccountId(getAccountId(account));
         List<NodeFileDTO> fileList = listFile(account,query,current);
         List<CANodeDTO> caList = BeanUtils.createCleanListFrom(fileList,CANodeDTO.class);
+        log.info("\t===>>> 退出 listDesignNode:"+ (System.currentTimeMillis()-t0) + "ms," + JsonUtils.obj2CleanJson(ObjectUtils.getFirst(caList)));
         return caList;
     }
 
     @Override
     public List<CANodeDTO> listCANode(AccountDTO account, Current current) throws CustomException {
+        log.info("\t===>>> 进入 listCANode:" + JsonUtils.obj2CleanJson(account));
+        long t0 = System.currentTimeMillis();
         AskFileDTO query = new AskFileDTO();
-        query.setCaMode(ConstService.MODE_TRUE);
-        query.setHistoryMode(ConstService.MODE_FALSE);
-        query.setIsTaskDesigner(ConstService.MODE_FALSE);
-        query.setIsTaskChecker(ConstService.MODE_TRUE);
-        query.setIsTaskAuditor(ConstService.MODE_TRUE);
+        query.setCaMode(LocalConstService.MODE_TRUE);
+        query.setHistoryMode(LocalConstService.MODE_FALSE);
+        query.setIsTaskDesigner(LocalConstService.MODE_FALSE);
+        query.setIsTaskChecker(LocalConstService.MODE_TRUE);
+        query.setIsTaskAuditor(LocalConstService.MODE_TRUE);
         query.setAccountId(getAccountId(account));
         List<NodeFileDTO> fileList = listFile(account,query,current);
         List<CANodeDTO> caList = getCaNodeListByFileList(account,fileList,current);
+        log.info("\t===>>> 退出 listCANode:"+ (System.currentTimeMillis()-t0) + "ms," + JsonUtils.obj2CleanJson(ObjectUtils.getFirst(caList)));
         return caList;
     }
 
@@ -266,13 +287,13 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Override
     public AnnotateDTO createAnnotateCheck(AccountDTO account, @NotNull SimpleNodeDTO node, @NotNull AnnotateRequestDTO request, Current current) throws CustomException {
-        request.setTypeId(Short.toString(ConstService.ANNOTATE_TYPE_CHECK));
+        request.setTypeId(Short.toString(LocalConstService.ANNOTATE_TYPE_CHECK));
         return createAnnotate(account,node,request,current);
     }
 
     @Override
     public AnnotateDTO createAnnotateAudit(AccountDTO account, @NotNull SimpleNodeDTO node, @NotNull AnnotateRequestDTO request, Current current) throws CustomException {
-        request.setTypeId(Short.toString(ConstService.ANNOTATE_TYPE_AUDIT));
+        request.setTypeId(Short.toString(LocalConstService.ANNOTATE_TYPE_AUDIT));
         return createAnnotate(account,node,request,current);
     }
 
@@ -285,7 +306,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
         //建立创建申请
         UpdateAnnotateDTO updateRequest = BeanUtils.createCleanFrom(request,UpdateAnnotateDTO.class);
-        updateRequest.setStatusId(request.getIsPassed() ? Short.toString(ConstService.ANNOTATE_STATUS_TYPE_PASS) : Short.toString(ConstService.ANNOTATE_STATUS_TYPE_REFUSE));
+        updateRequest.setStatusId(request.getIsPassed() ? Short.toString(LocalConstService.ANNOTATE_STATUS_TYPE_PASS) : Short.toString(LocalConstService.ANNOTATE_STATUS_TYPE_REFUSE));
         updateRequest.setLastModifyUserId(getAccountId(account));
 
         EmbedElementDTO element = null;
@@ -316,7 +337,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     public AnnotateDTO updateAnnotate(AccountDTO account, @NotNull AnnotateDTO annotate, @NotNull AnnotateRequestDTO request, Current current) throws CustomException {
         //建立更新申请
         UpdateAnnotateDTO updateRequest = BeanUtils.createCleanFrom(request,UpdateAnnotateDTO.class);
-        updateRequest.setStatusId(request.getIsPassed() ? Short.toString(ConstService.ANNOTATE_STATUS_TYPE_PASS) : Short.toString(ConstService.ANNOTATE_STATUS_TYPE_REFUSE));
+        updateRequest.setStatusId(request.getIsPassed() ? Short.toString(LocalConstService.ANNOTATE_STATUS_TYPE_PASS) : Short.toString(LocalConstService.ANNOTATE_STATUS_TYPE_REFUSE));
         updateRequest.setLastModifyUserId(getAccountId(account));
 
         EmbedElementDTO element = annotate.getElement();
@@ -506,10 +527,11 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
             return file;
         } else {
             QueryNodeDTO query = new QueryNodeDTO();
-            query.setFuzzyId(file.getId());
+            query.setFileId(file.getId());
             query.setServerTypeId(fileServerConfig.getServerTypeId(serverTypeId));
             query.setServerAddress(fileServerConfig.getServerAddress(serverTypeId, serverAddress));
             query.setBaseDir(fileServerConfig.getBaseDir(serverTypeId, baseDir));
+            query.setOnlyOne(LocalConstService.MODE_TRUE);
             List<NodeFileDTO> fileList = callStorageListFile(query, accountId);
             return ObjectUtils.getFirst(fileList);
         }
@@ -676,8 +698,8 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     private String getNodeCompanyIdForAccount(AccountDTO account,@NotNull SimpleNodeDTO node,Current current) throws CustomException {
         QueryNodeDTO query = new QueryNodeDTO();
         query.setId(node.getId());
-        query.setNeedCompanyId(ConstService.MODE_TRUE);
-        query.setOnlyOne(ConstService.MODE_TRUE);
+        query.setNeedCompanyId(LocalConstService.MODE_TRUE);
+        query.setOnlyOne(LocalConstService.MODE_TRUE);
         List<FullNodeDTO> fullNodeList = callStorageListFullNode(query,getAccountId(account));
         FullNodeDTO fullNode = ObjectUtils.getFirst(fullNodeList);
 
@@ -701,7 +723,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
                 query.setId(node.getId());
                 query.setProjectId(node.getProjectId());
                 query.setTaskId(node.getTaskId());
-                query.setOnlyOne(ConstService.MODE_TRUE);
+                query.setOnlyOne(LocalConstService.MODE_TRUE);
                 List<SimpleNodeDTO> nodeList = listNodeForAccount(account, query, current);
                 node = ObjectUtils.getFirst(nodeList);
                 CheckService.check(isValid(node), ErrorCode.DataNotFound);
@@ -752,16 +774,17 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     }
 
     private NodeFileDTO getLocalFileByNode(AccountDTO account, @NotNull SimpleNodeDTO node, Current current) throws CustomException {
+        log.info("\t===>>> getLocalFileByNode启动:" + node.getPath());long t = System.currentTimeMillis();
         CheckService.check(!node.getIsDirectory(),ErrorCode.InvalidParameter);
-        long t = System.currentTimeMillis();
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setFuzzyId(StringUtils.left(node.getId(), StringUtils.DEFAULT_ID_LENGTH));
+        query.setFileId(getStorageIdByNode(node));
         query.setServerTypeId(fileServerConfig.getServerTypeId());
         query.setServerAddress(fileServerConfig.getServerAddress());
         query.setBaseDir(fileServerConfig.getBaseDir());
+        query.setOnlyOne(LocalConstService.MODE_TRUE);
         List<NodeFileDTO> fileList = callStorageListFile(query,getAccountId(account));
-        log.info("\t----> getLocalFileByNode1:" + node.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
         NodeFileDTO fileNode = ObjectUtils.getFirst(fileList);
+        log.info("\t===>>> getLocalFileByNode初步获取:" + node.getPath() + "," + (fileNode != null) + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
         if (fileNode == null){
             NodeFileDTO remoteFile = getFileByNode(account,node,current);
             if (remoteFile != null) {
@@ -786,7 +809,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
                 fileNode = callStorageCreateFile(fileUpdate, getAccountId(account));
             }
         }
-        log.info("\t----> getLocalFileByNode:" + node.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
+        log.info("\t===>>> getLocalFileByNode:" + node.getPath() + "," + (fileNode != null) + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
         return fileNode;
     }
 
@@ -820,8 +843,9 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     private NodeFileDTO getFileByNode(AccountDTO account,  @NotNull SimpleNodeDTO node, Current current) throws CustomException {
         CheckService.check(!node.getIsDirectory(),ErrorCode.InvalidParameter);
         QueryNodeDTO query = new QueryNodeDTO();
-        query.setFuzzyId(StringUtils.left(node.getId(),StringUtils.DEFAULT_ID_LENGTH));
-        query.setIsMirror(ConstService.MODE_FALSE);
+        query.setFileId(getStorageIdByNode(node));
+        query.setIsMirror(LocalConstService.MODE_FALSE);
+        query.setOnlyOne(LocalConstService.MODE_TRUE);
         List<NodeFileDTO> fileList = callStorageListFile(query,getAccountId(account));
         return ObjectUtils.getFirst(fileList);
     }
@@ -843,16 +867,16 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     public FullNodeDTO getNodeInfoForAccount(AccountDTO account, @NotNull SimpleNodeDTO node, QueryNodeInfoDTO request, Current current) throws CustomException {
         QueryNodeDTO query = BeanUtils.createCleanFrom(request,QueryNodeDTO.class);
         query.setId(node.getId());
-        query.setNeedPath(ConstService.MODE_TRUE);
-        query.setNeedProjectName(ConstService.MODE_TRUE);
-        query.setNeedTaskName(ConstService.MODE_TRUE);
-        query.setNeedTaskPath(ConstService.MODE_TRUE);
-        query.setNeedOwnerName(ConstService.MODE_TRUE);
-        query.setNeedCompanyId(ConstService.MODE_TRUE);
+        query.setNeedPath(LocalConstService.MODE_TRUE);
+        query.setNeedProjectName(LocalConstService.MODE_TRUE);
+        query.setNeedTaskName(LocalConstService.MODE_TRUE);
+        query.setNeedTaskPath(LocalConstService.MODE_TRUE);
+        query.setNeedOwnerName(LocalConstService.MODE_TRUE);
+        query.setNeedCompanyId(LocalConstService.MODE_TRUE);
         if (request.getFileQuery() != null) {
-            query.setNeedFileInfo(ConstService.MODE_TRUE);
+            query.setNeedFileInfo(LocalConstService.MODE_TRUE);
         }
-        query.setOnlyOne(ConstService.MODE_TRUE);
+        query.setOnlyOne(LocalConstService.MODE_TRUE);
         List<FullNodeDTO> fullNodeList = callStorageListFullNode(query,getAccountId(account));
         return ObjectUtils.getFirst(fullNodeList);
     }
@@ -917,7 +941,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         QueryNodeDTO query = new QueryNodeDTO();
         query.setAccountId(getAccountId(account));
         query.setProjectId(projectId);
-        query.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_DIR_OUTPUT_WEB_ARCHIVE));
+        query.setTypeId(Short.toString(LocalConstService.STORAGE_NODE_TYPE_DIR_OUTPUT_WEB_ARCHIVE));
         List<SimpleNodeDTO> nodeList = callStorageListSkyNode(query,getAccountId(account));
         return nodeList;
     }
@@ -932,17 +956,17 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     }
 
     private boolean isDstWebServer(@NotNull CopyRequestDTO request){
-        return (ConstService.FILE_SERVER_TYPE_WEB == DigitUtils.parseShort(request.getDstServerTypeId()));
+        return (LocalConstService.FILE_SERVER_TYPE_WEB == DigitUtils.parseShort(request.getDstServerTypeId()));
     }
 
     private boolean isSameServer(@NotNull CopyRequestDTO request){
         boolean isSame = true;
-        Short srcTypeId = ConstService.FILE_SERVER_TYPE_DISK;
-        if ((request.getSrcServerTypeId() != null) && (ConstService.FILE_SERVER_TYPE_UNKNOWN == DigitUtils.parseShort(request.getSrcServerTypeId()))) {
+        Short srcTypeId = LocalConstService.FILE_SERVER_TYPE_DISK;
+        if ((request.getSrcServerTypeId() != null) && (LocalConstService.FILE_SERVER_TYPE_UNKNOWN == DigitUtils.parseShort(request.getSrcServerTypeId()))) {
             srcTypeId = request.getSrcServerTypeId();
         }
-        Short dstTypeId = ConstService.FILE_SERVER_TYPE_DISK;
-        if ((request.getDstServerTypeId() != null) && (ConstService.FILE_SERVER_TYPE_UNKNOWN == DigitUtils.parseShort(request.getDstServerTypeId()))) {
+        Short dstTypeId = LocalConstService.FILE_SERVER_TYPE_DISK;
+        if ((request.getDstServerTypeId() != null) && (LocalConstService.FILE_SERVER_TYPE_UNKNOWN == DigitUtils.parseShort(request.getDstServerTypeId()))) {
             dstTypeId = request.getDstServerTypeId();
         }
 
@@ -965,7 +989,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Override
     public CommitListResultDTO issueNodeListForAccount(AccountDTO account, @NotNull List<SimpleNodeDTO> srcList, CommitRequestDTO request, Current current) throws CustomException {
-        request.setActionTypeId(Short.toString(ConstService.STORAGE_ACTION_TYPE_ISSUE));
+        request.setActionTypeId(Short.toString(LocalConstService.STORAGE_ACTION_TYPE_ISSUE));
         return commitNodeListForAccount(account,srcList,request,current);
     }
 
@@ -977,7 +1001,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Override
     public SimpleNodeDTO issueNodeForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, CommitRequestDTO request, Current current) throws CustomException {
-        request.setActionTypeId(Short.toString(ConstService.STORAGE_ACTION_TYPE_ISSUE));
+        request.setActionTypeId(Short.toString(LocalConstService.STORAGE_ACTION_TYPE_ISSUE));
         return commitNodeForAccount(account,src,request,current);
     }
 
@@ -990,7 +1014,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         BeanUtils.copyCleanProperties(request,stringElement);
         stringElement.setSkyPid(request.getPid());
         stringElement.setActionId(actionTypeId);
-        stringElement.setActionName(ConstService.getActionName(actionTypeId));
+        stringElement.setActionName(LocalConstService.getActionName(actionTypeId));
     }
 
     @Override
@@ -1016,11 +1040,11 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     }
 
     private boolean isDirectory(String nodeType) {
-        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_DIRECTORY);
+        return LocalConstService.isAttrTrue(LocalConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType, LocalConstService.POS_IS_DIRECTORY);
     }
 
     private boolean isProject(String nodeType) {
-        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_PROJECT);
+        return LocalConstService.isAttrTrue(LocalConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType, LocalConstService.POS_IS_PROJECT);
     }
 
     //判断节点类型是否分类目录，因目前在节点类型布尔属性内没有定义是否分类目录类型，因此使用是否能被100整除来计算
@@ -1029,27 +1053,27 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     }
 
     private boolean isIssue(String nodeType) {
-        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_ISSUE);
+        return LocalConstService.isAttrTrue(LocalConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType, LocalConstService.POS_IS_ISSUE);
     }
 
     private boolean isTask(String nodeType) {
-        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_ISSUE);
+        return LocalConstService.isAttrTrue(LocalConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType, LocalConstService.POS_IS_ISSUE);
     }
 
     private boolean isCA(String nodeType) {
-        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_CA);
+        return LocalConstService.isAttrTrue(LocalConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType, LocalConstService.POS_IS_CA);
     }
 
     private boolean isCommit(String nodeType) {
-        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_COMMIT);
+        return LocalConstService.isAttrTrue(LocalConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType, LocalConstService.POS_IS_COMMIT);
     }
 
     private boolean isWeb(String nodeType) {
-        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_WEB);
+        return LocalConstService.isAttrTrue(LocalConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType, LocalConstService.POS_IS_WEB);
     }
 
     private boolean isHistory(String nodeType) {
-        return ConstService.isAttrTrue(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType,ConstService.POS_IS_HISTORY);
+        return LocalConstService.isAttrTrue(LocalConstService.CLASSIC_TYPE_STORAGE_NODE,nodeType, LocalConstService.POS_IS_HISTORY);
     }
 
     private boolean isReadOnlyType(String nodeType) {
@@ -1150,7 +1174,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Override
     public List<IdNameDTO> listMajorForAccount(AccountDTO account, Current current) throws CustomException {
-        return ConstService.listMajor();
+        return LocalConstService.listMajor();
     }
 
     @Override
@@ -1161,7 +1185,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Override
     public List<IdNameDTO> listActionForAccount(AccountDTO account, Current current) throws CustomException {
-        return ConstService.listAction();
+        return LocalConstService.listAction();
     }
 
     @Override
@@ -1226,20 +1250,22 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         callStorageUpdateFile(file,request,getAccountId(account));
     }
 
+    private String getStorageIdByNode(@NotNull SimpleNodeDTO src){
+        return StringUtils.left(src.getId(),StringUtils.DEFAULT_ID_LENGTH);
+    }
 
     @Override
     public boolean setNodeLengthForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, long fileLength, Current current) throws CustomException {
         if (fileLength > 0) {
             long t = System.currentTimeMillis();
             CheckService.check(!src.getIsDirectory(), ErrorCode.InvalidParameter, "setNodeLengthForAccount");
-            log.info("\t----> setNodeLengthForAccount1:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
             NodeFileDTO file = getLocalFileByNode(account, src, current);
-            log.info("\t----> setNodeLengthForAccount2:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
+            log.info("\t===>>> setNodeLengthForAccount1:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
             if ((file != null) && (StringUtils.isNotEmpty(file.getWritableKey()))) {
                 String key = file.getWritableKey();
                 CoreFileServer localServer = getCoreFileServer();
                 localServer.coreSetFileLength(key, fileLength);
-                log.info("\t----> setNodeLengthForAccount2.1:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
+                log.info("\t===>>> setNodeLengthForAccount2.1:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
 //
 //                UpdateNodeFileDTO fileUpdate = new UpdateNodeFileDTO();
 //
@@ -1250,25 +1276,22 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
             } else {
                 CoreFileServer localServer = getCoreFileServer();
                 String key = createRealFile(localServer, src.getPath(), fileLength);
-                log.info("\t----> setNodeLengthForAccount2.2.1:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
+                log.info("\t===>>> setNodeLengthForAccount2.2.1:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
 
                 UpdateNodeFileDTO fileUpdate = new UpdateNodeFileDTO();
                 fileUpdate.setServerTypeId(fileServerConfig.getServerTypeId());
                 fileUpdate.setServerAddress(fileServerConfig.getServerAddress());
                 fileUpdate.setBaseDir(fileServerConfig.getBaseDir());
                 fileUpdate.setWritableKey(key);
-
-                UpdateNodeDTO nodeUpdate = new UpdateNodeDTO();
-                nodeUpdate.setFileLength(Long.toString(fileLength));
-                nodeUpdate.setUpdateFileRequest(fileUpdate);
-                callStorageUpdateNodeSimple(src, nodeUpdate, getAccountId(account));
-                log.info("\t----> setNodeLengthForAccount2.2.2:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
-
-                //因使用了写缓存，需要添加一条记录到读缓存内
-                createFileInBuffer(fileUpdate,src);
-                log.info("\t----> setNodeLengthForAccount2.2:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
+                callStorageCreateFile(fileUpdate,getAccountId(account),getStorageIdByNode(src));
+//
+//                UpdateNodeDTO nodeUpdate = new UpdateNodeDTO();
+//                nodeUpdate.setFileLength(Long.toString(fileLength));
+//                nodeUpdate.setUpdateFileRequest(fileUpdate);
+//                callStorageUpdateNodeSimple(src, nodeUpdate, getAccountId(account));
+                log.info("\t===>>> setNodeLengthForAccount2.2:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
             }
-            log.info("\t----> setNodeLengthForAccount:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
+            log.info("\t===>>> setNodeLengthForAccount:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
             return true;
         }
         return false;
@@ -1300,37 +1323,46 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Override
     public boolean releaseNodeForAccount(AccountDTO account, @NotNull SimpleNodeDTO src, long fileLength, Current current) throws CustomException {
+        log.info("\t===>>> 进入 releaseNodeForAccount:" + JsonUtils.obj2CleanJson(src));
+        long t0 = System.currentTimeMillis();
+        long t = t0;
         CheckService.check(!src.getIsDirectory(),ErrorCode.InvalidParameter,"releaseNodeForAccount");
-        long t = System.currentTimeMillis();
         NodeFileDTO localFileNode = getLocalFileByNode(account,src,current);
-        log.info("\t----> releaseNodeForAccount1:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
-        if (localFileNode == null){
-            return true;
-        }
-        CheckService.check((localFileNode != null),ErrorCode.DataNotFound);
-        String key = getFileKey(localFileNode, false);
-        CheckService.check(StringUtils.isNotEmpty(key),ErrorCode.DataIsInvalid);
-        CoreFileServer localServer = getCoreFileServer(localFileNode.getServerTypeId(),localFileNode.getServerAddress(),localFileNode.getBaseDir());
-        String md5 = localServer.coreCalcMd5(key);
-        log.info("\t----> releaseNodeForAccount2:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
-        if (StringUtils.isNotSame(src.getFileMd5(),md5)){
-            File localFile = localServer.coreGetFile(key);
-            if (fileLength <= 0){
-                fileLength = FileUtils.getFileLength(localFile);
-            }
-            String path = getNodePathForAccount(account,src,current);
-            String localKey = createRealFile(localServer,path,localFile);
-            UpdateNodeFileDTO mirrorUpdate = new UpdateNodeFileDTO();
-            mirrorUpdate.setReadOnlyKey(localKey);
-            mirrorUpdate.setFileLength(Long.toString(fileLength));
-            mirrorUpdate.setFileMd5(md5);
-            callStorageUpdateFile(localFileNode,mirrorUpdate,getAccountId(account));
-            log.info("\t----> releaseNodeForAccount3.1:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
-            UpdateNodeDTO nodeUpdate = new UpdateNodeDTO();
-            nodeUpdate.setFileLength(mirrorUpdate.getFileLength());
-            nodeUpdate.setFileMd5(mirrorUpdate.getFileMd5());
-            callStorageUpdateNode(src,null,nodeUpdate,getAccountId(account));
-            log.info("\t----> releaseNodeForAccount3:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
+        log.info("\t===>>> releaseNodeForAccount获取本地文件:" + (System.currentTimeMillis()-t) + "ms," + JsonUtils.obj2CleanJson(localFileNode));
+        t = System.currentTimeMillis();
+        if (localFileNode != null) {
+            CheckService.check((localFileNode != null), ErrorCode.DataNotFound);
+            String key = getFileKey(localFileNode, false);
+            CheckService.check(StringUtils.isNotEmpty(key), ErrorCode.DataIsInvalid);
+            CoreFileServer localServer = getCoreFileServer();
+            String md5 = localServer.coreCalcMd5(key);
+            log.info("\t===>>> releaseNodeForAccount计算md5:" + (System.currentTimeMillis() - t) + "ms," + key);
+            t = System.currentTimeMillis();
+            if (StringUtils.isNotSame(src.getFileMd5(), md5)) {
+                File localFile = localServer.coreGetFile(key);
+                if (fileLength <= 0) {
+                    fileLength = FileUtils.getFileLength(localFile);
+                }
+                String path = getNodePathForAccount(account, src, current);
+                String localKey = createRealFile(localServer, path, localFile);
+                UpdateNodeFileDTO mirrorUpdate = new UpdateNodeFileDTO();
+                mirrorUpdate.setReadOnlyKey(localKey);
+//                mirrorUpdate.setFileLength(Long.toString(fileLength));
+//                mirrorUpdate.setFileMd5(md5);
+//                callStorageUpdateFile(localFileNode, mirrorUpdate, getAccountId(account));
+                UpdateNodeDTO nodeUpdate = new UpdateNodeDTO();
+                nodeUpdate.setFileLength(Long.toString(fileLength));
+                nodeUpdate.setFileMd5(md5);
+                nodeUpdate.setUpdateFileRequest(mirrorUpdate);
+                SimpleNodeDTO node = callStorageUpdateNode(src, null, nodeUpdate, getAccountId(account));
+                log.info("\t===>>> releaseNodeForAccount更新数据库:" + (System.currentTimeMillis() - t) + "ms," + JsonUtils.obj2CleanJson(node));
+                t = System.currentTimeMillis();
+//                UpdateNodeDTO nodeUpdate = new UpdateNodeDTO();
+//                nodeUpdate.setFileLength(mirrorUpdate.getFileLength());
+//                nodeUpdate.setFileMd5(mirrorUpdate.getFileMd5());
+//                callStorageUpdateNode(src, null, nodeUpdate, getAccountId(account));
+//                log.info("\t===>>> releaseNodeForAccount3:" + src.getPath() + "," + (System.currentTimeMillis() - t) + "ms");
+//                t = System.currentTimeMillis();
 //            NodeFileDTO srcFileNode = getFileByNode(account,src,current);
 //            if (!isLocalFile(srcFileNode))
 //            {
@@ -1351,8 +1383,9 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 //                    }
 //                }.start();
 //            }
+            }
         }
-        log.info("\t----> releaseNodeForAccount:" + src.getPath() + "," + (System.currentTimeMillis()-t) + "ms");t = System.currentTimeMillis();
+        log.info("\t===>>> 退出 releaseNodeForAccount:"+ (System.currentTimeMillis()-t0) + "ms," + JsonUtils.obj2CleanJson(src));
         return true;
     }
 
@@ -1419,7 +1452,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         CheckService.check(StringUtils.isNotEmpty(getAccountId(account)),ErrorCode.NoPermission,"listAllNodeForAccount");
         QueryNodeDTO query = new QueryNodeDTO();
         query.setAccountId(getAccountId(account));
-        query.setNeedRoleInfo(ConstService.MODE_TRUE);
+        query.setNeedRoleInfo(LocalConstService.MODE_TRUE);
         return listNodeForAccount(account,query,current);
     }
 
@@ -1431,10 +1464,10 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Override
     public List<SimpleNodeDTO> listNodeForAccount(AccountDTO account, @NotNull QueryNodeDTO query, Current current) throws CustomException {
-        query.setNeedProjectName(ConstService.MODE_TRUE);
-        query.setNeedTaskName(ConstService.MODE_TRUE);
-        query.setNeedPath(ConstService.MODE_TRUE);
-        query.setNeedOwnerName(ConstService.MODE_TRUE);
+        query.setNeedProjectName(LocalConstService.MODE_TRUE);
+        query.setNeedTaskName(LocalConstService.MODE_TRUE);
+        query.setNeedPath(LocalConstService.MODE_TRUE);
+        query.setNeedOwnerName(LocalConstService.MODE_TRUE);
         lastAccount = account;
         return callStorageListNode(query,getAccountId(account));
     }
@@ -1483,16 +1516,16 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     public FullNodeDTO getFullNodeForAccount(AccountDTO account, @NotNull SimpleNodeDTO node, Current current) throws CustomException {
         QueryNodeDTO query = new QueryNodeDTO();
         query.setId(node.getId());
-        query.setNeedProjectName(ConstService.MODE_TRUE);
-        query.setNeedTaskName(ConstService.MODE_TRUE);
-        query.setNeedPath(ConstService.MODE_TRUE);
-        query.setNeedOwnerName(ConstService.MODE_TRUE);
-        query.setNeedTaskPath(ConstService.MODE_TRUE);
-        query.setNeedCompanyId(ConstService.MODE_TRUE);
-        query.setNeedIssueId(ConstService.MODE_TRUE);
-        query.setNeedIssuePath(ConstService.MODE_TRUE);
-        query.setNeedDesignTaskPath(ConstService.MODE_TRUE);
-        query.setOnlyOne(ConstService.MODE_TRUE);
+        query.setNeedProjectName(LocalConstService.MODE_TRUE);
+        query.setNeedTaskName(LocalConstService.MODE_TRUE);
+        query.setNeedPath(LocalConstService.MODE_TRUE);
+        query.setNeedOwnerName(LocalConstService.MODE_TRUE);
+        query.setNeedTaskPath(LocalConstService.MODE_TRUE);
+        query.setNeedCompanyId(LocalConstService.MODE_TRUE);
+        query.setNeedIssueId(LocalConstService.MODE_TRUE);
+        query.setNeedIssuePath(LocalConstService.MODE_TRUE);
+        query.setNeedDesignTaskPath(LocalConstService.MODE_TRUE);
+        query.setOnlyOne(LocalConstService.MODE_TRUE);
         List<FullNodeDTO> list = callStorageListFullNode(query,getAccountId(account));
         return ObjectUtils.getFirst(list);
     }
@@ -1500,21 +1533,21 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     @Override
     public List<NodeFileDTO> listValidFile(AccountDTO account, AskValidFileDTO query, Current current) throws CustomException {
         QueryNodeDTO fileQuery = BeanUtils.createCleanFrom(query,QueryNodeDTO.class);
-        fileQuery.setDirectoryMode(ConstService.MODE_FALSE);
+        fileQuery.setDirectoryMode(LocalConstService.MODE_FALSE);
         return callStorageListFile(fileQuery,getAccountId(account));
     }
 
     @Override
     public List<NodeFileDTO> listFile(AccountDTO account, @NotNull AskFileDTO query, Current current) throws CustomException {
         QueryNodeDTO fileQuery = BeanUtils.createCleanFrom(query,QueryNodeDTO.class);
-        fileQuery.setNeedPath(ConstService.MODE_TRUE);
-        fileQuery.setNeedProjectName(ConstService.MODE_TRUE);
-        fileQuery.setNeedTaskName(ConstService.MODE_TRUE);
-        fileQuery.setNeedOwnerName(ConstService.MODE_TRUE);
-        fileQuery.setNeedRoleInfo(ConstService.MODE_TRUE);
+        fileQuery.setNeedPath(LocalConstService.MODE_TRUE);
+        fileQuery.setNeedProjectName(LocalConstService.MODE_TRUE);
+        fileQuery.setNeedTaskName(LocalConstService.MODE_TRUE);
+        fileQuery.setNeedOwnerName(LocalConstService.MODE_TRUE);
+        fileQuery.setNeedRoleInfo(LocalConstService.MODE_TRUE);
         fileQuery.setAccountId(getAccountId(account));
-        fileQuery.setDirectoryMode(ConstService.MODE_FALSE);
-        fileQuery.setNeedFileHistoryInfo(ConstService.MODE_TRUE);
+//        fileQuery.setDirectoryMode(ConstService.MODE_FALSE);
+        fileQuery.setNeedFileHistoryInfo(LocalConstService.MODE_TRUE);
         //设置角色掩码
         final int MIN_LENGTH = 3;
 
@@ -1557,23 +1590,21 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         if (file == null){
             CoreFileServer coreLocalServer = getCoreFileServer();
             String key = coreLocalServer.coreCreateFile(src.getPath());
-            UpdateNodeFileDTO updateFile = new UpdateNodeFileDTO();
             String serverTypeId = fileServerConfig.getServerTypeId();
-            String serverAddress = fileServerConfig.getServerAddress(serverTypeId,fileServerConfig.getServerAddress());
-            String serverBaseDir = fileServerConfig.getBaseDir(serverTypeId,fileServerConfig.getBaseDir());
+            String serverAddress = fileServerConfig.getServerAddress();
+            String serverBaseDir = fileServerConfig.getBaseDir();
             String companyId = getNodeCompanyIdForAccount(account,src,current);
+            UpdateNodeFileDTO updateFile = new UpdateNodeFileDTO();
             updateFile.setCompanyId(companyId);
             updateFile.setServerTypeId(serverTypeId);
             updateFile.setServerAddress(serverAddress);
             updateFile.setBaseDir(serverBaseDir);
             updateFile.setWritableKey(key);
-            UpdateNodeDTO updateNode = new UpdateNodeDTO();
-            updateNode.setLastModifyUserId(getAccountId(account));
-            updateNode.setUpdateFileRequest(updateFile);
-            callStorageUpdateNodeSimple(src,updateNode,getAccountId(account));
-
-            //因使用了写缓存，需创建记录
-            file = createFileInBuffer(updateFile,src);
+            file = callStorageCreateFile(updateFile,getAccountId(account),getStorageIdByNode(src));
+//            UpdateNodeDTO updateNode = new UpdateNodeDTO();
+//            updateNode.setLastModifyUserId(getAccountId(account));
+//            updateNode.setUpdateFileRequest(updateFile);
+//            callStorageUpdateNodeSimple(src,updateNode,getAccountId(account));
         }
         String path = getNodePathForAccount(account,src,current);
         boolean rw = isReadOnly(src,account);
@@ -1651,9 +1682,9 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         List<CommitFailDTO> failList = new ArrayList<>();
         for (CANodeDTO src : srcList){
             try {
-                fileUpdate.setPassCheck(src.getIsPassCheck() ? ConstService.MODE_TRUE : ConstService.MODE_FALSE);
-                fileUpdate.setPassAudit(src.getIsPassAudit() ? ConstService.MODE_TRUE : ConstService.MODE_FALSE);
-                SimpleNodeDTO dst = callStorageUpdateNodeSimple(getNodeByCANode(account,src,ConstService.MODE_FALSE,ConstService.MODE_TRUE,current),
+                fileUpdate.setPassCheck(src.getIsPassCheck() ? LocalConstService.MODE_TRUE : LocalConstService.MODE_FALSE);
+                fileUpdate.setPassAudit(src.getIsPassAudit() ? LocalConstService.MODE_TRUE : LocalConstService.MODE_FALSE);
+                SimpleNodeDTO dst = callStorageUpdateNodeSimple(getNodeByCANode(account,src, LocalConstService.MODE_FALSE, LocalConstService.MODE_TRUE,current),
                         nodeUpdate,getAccountId(account));
                 successList.add(dst);
             } catch (CustomException e) {
@@ -1706,11 +1737,11 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     @Override
     public SimpleNodeDTO checkNodeRequestForAccount(AccountDTO account, CANodeDTO src, Current current) throws CustomException {
         UpdateNodeFileDTO fileUpdate = new UpdateNodeFileDTO();
-        fileUpdate.setPassCheck(src.getIsPassCheck() ? ConstService.MODE_TRUE : ConstService.MODE_FALSE);
+        fileUpdate.setPassCheck(src.getIsPassCheck() ? LocalConstService.MODE_TRUE : LocalConstService.MODE_FALSE);
         UpdateNodeDTO nodeUpdate = new UpdateNodeDTO();
         nodeUpdate.setLastModifyUserId(getAccountId(account));
         nodeUpdate.setUpdateFileRequest(fileUpdate);
-        SimpleNodeDTO srcNode = getNodeByCANode(account,src,ConstService.MODE_FALSE,ConstService.MODE_TRUE,current);
+        SimpleNodeDTO srcNode = getNodeByCANode(account,src, LocalConstService.MODE_FALSE, LocalConstService.MODE_TRUE,current);
         return callStorageUpdateNodeSimple(srcNode,nodeUpdate,getAccountId(account));
     }
 
@@ -1734,11 +1765,11 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     @Override
     public SimpleNodeDTO auditNodeRequestForAccount(AccountDTO account, CANodeDTO src, Current current) throws CustomException {
         UpdateNodeFileDTO fileUpdate = new UpdateNodeFileDTO();
-        fileUpdate.setPassAudit(src.getIsPassAudit() ? ConstService.MODE_TRUE : ConstService.MODE_FALSE);
+        fileUpdate.setPassAudit(src.getIsPassAudit() ? LocalConstService.MODE_TRUE : LocalConstService.MODE_FALSE);
         UpdateNodeDTO nodeUpdate = new UpdateNodeDTO();
         nodeUpdate.setLastModifyUserId(getAccountId(account));
         nodeUpdate.setUpdateFileRequest(fileUpdate);
-        SimpleNodeDTO srcNode = getNodeByCANode(account,src,ConstService.MODE_FALSE,ConstService.MODE_TRUE,current);
+        SimpleNodeDTO srcNode = getNodeByCANode(account,src, LocalConstService.MODE_FALSE, LocalConstService.MODE_TRUE,current);
         return callStorageUpdateNodeSimple(srcNode,nodeUpdate,getAccountId(account));
     }
 
@@ -1783,34 +1814,34 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     @Override
     public CommitListResultDTO requestIssueListForAccount(AccountDTO account, List<CANodeDTO> srcList, SimpleNodeDTO parent, Current current) throws CustomException {
         CommitRequestDTO request = new CommitRequestDTO();
-        request.setActionTypeId(Short.toString(ConstService.STORAGE_ACTION_TYPE_ISSUE));
+        request.setActionTypeId(Short.toString(LocalConstService.STORAGE_ACTION_TYPE_ISSUE));
         request.setPid(parent.getId());
-        List<SimpleNodeDTO> nodeList = getNodeListByCANodeList(account,srcList,ConstService.MODE_TRUE,ConstService.MODE_FALSE,current);
+        List<SimpleNodeDTO> nodeList = getNodeListByCANodeList(account,srcList, LocalConstService.MODE_TRUE, LocalConstService.MODE_FALSE,current);
         return commitNodeListForAccount(account,nodeList,request,current);
     }
 
     @Override
     public SimpleNodeDTO requestIssueForAccount(AccountDTO account, CANodeDTO src, SimpleNodeDTO parent, Current current) throws CustomException {
         CommitRequestDTO request = new CommitRequestDTO();
-        request.setActionTypeId(Short.toString(ConstService.STORAGE_ACTION_TYPE_ISSUE));
+        request.setActionTypeId(Short.toString(LocalConstService.STORAGE_ACTION_TYPE_ISSUE));
         request.setPid(parent.getId());
-        SimpleNodeDTO srcNode = getNodeByCANode(account,src,ConstService.MODE_TRUE,ConstService.MODE_FALSE,current);
+        SimpleNodeDTO srcNode = getNodeByCANode(account,src, LocalConstService.MODE_TRUE, LocalConstService.MODE_FALSE,current);
         return commitNodeForAccount(account,srcNode,request,current);
     }
 
     @Override
     public CommitListResultDTO requestCommitListForAccount(AccountDTO account, @NotNull List<CANodeDTO> srcList, Current current) throws CustomException {
         CommitRequestDTO request = new CommitRequestDTO();
-        request.setActionTypeId(Short.toString(ConstService.STORAGE_ACTION_TYPE_COMMIT));
-        List<SimpleNodeDTO> nodeList = getNodeListByCANodeList(account,srcList,ConstService.MODE_TRUE,ConstService.MODE_FALSE,current);
+        request.setActionTypeId(Short.toString(LocalConstService.STORAGE_ACTION_TYPE_COMMIT));
+        List<SimpleNodeDTO> nodeList = getNodeListByCANodeList(account,srcList, LocalConstService.MODE_TRUE, LocalConstService.MODE_FALSE,current);
         return commitNodeListForAccount(account,nodeList,request,current);
     }
 
     @Override
     public SimpleNodeDTO requestCommitForAccount(AccountDTO account, CANodeDTO src, Current current) throws CustomException {
         CommitRequestDTO request = new CommitRequestDTO();
-        request.setActionTypeId(Short.toString(ConstService.STORAGE_ACTION_TYPE_COMMIT));
-        SimpleNodeDTO srcNode = getNodeByCANode(account,src,ConstService.MODE_TRUE,ConstService.MODE_FALSE,current);
+        request.setActionTypeId(Short.toString(LocalConstService.STORAGE_ACTION_TYPE_COMMIT));
+        SimpleNodeDTO srcNode = getNodeByCANode(account,src, LocalConstService.MODE_TRUE, LocalConstService.MODE_FALSE,current);
         return commitNodeForAccount(account,srcNode,request,current);
     }
 
@@ -1822,9 +1853,9 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     @Override
     public CommitListResultDTO askCANodeListRequestForAccount(AccountDTO account, List<CANodeDTO> srcList, Current current) throws CustomException {
         CommitRequestDTO request = new CommitRequestDTO();
-        request.setActionTypeId(Short.toString(ConstService.STORAGE_ACTION_TYPE_ASK_CA));
+        request.setActionTypeId(Short.toString(LocalConstService.STORAGE_ACTION_TYPE_ASK_CA));
         request.setIsPassDesign(true);
-        List<SimpleNodeDTO> nodeList = getNodeListByCANodeList(account,srcList,ConstService.MODE_TRUE,ConstService.MODE_FALSE,current);
+        List<SimpleNodeDTO> nodeList = getNodeListByCANodeList(account,srcList, LocalConstService.MODE_TRUE, LocalConstService.MODE_FALSE,current);
         return commitNodeListForAccount(account,nodeList,request,current);
     }
 
@@ -1835,11 +1866,15 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Override
     public SimpleNodeDTO askCANodeRequestForAccount(AccountDTO account, CANodeDTO src, Current current) throws CustomException {
+        log.info("\t===>>> 进入 askCANodeRequestForAccount:" + JsonUtils.obj2CleanJson(src));
+        long t0 = System.currentTimeMillis();
         CommitRequestDTO request = new CommitRequestDTO();
-        request.setActionTypeId(Short.toString(ConstService.STORAGE_ACTION_TYPE_ASK_CA));
+        request.setActionTypeId(Short.toString(LocalConstService.STORAGE_ACTION_TYPE_ASK_CA));
         request.setIsPassDesign(true);
-        SimpleNodeDTO node = getNodeByCANode(account,src,ConstService.MODE_TRUE,ConstService.MODE_FALSE,current);
-        return commitNodeForAccount(account,node,request,current);
+        SimpleNodeDTO node = getNodeByCANode(account,src, LocalConstService.MODE_TRUE, LocalConstService.MODE_FALSE,current);
+        SimpleNodeDTO dstNode = commitNodeForAccount(account,node,request,current);
+        log.info("\t===>>> 退出 askCANodeRequestForAccount:"+ (System.currentTimeMillis()-t0) + "ms," + JsonUtils.obj2CleanJson(dstNode));
+        return dstNode;
     }
 
     @Override
@@ -1875,7 +1910,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     private String getActionPath(AccountDTO account, @NotNull SimpleNodeDTO src, @NotNull String actionTypeId, @NotNull CommitRequestDTO request, Current current) throws CustomException {
         //获取目标文件的地址
-        String actionName = ConstService.getActionName(actionTypeId);
+        String actionName = LocalConstService.getActionName(actionTypeId);
 
         FullNodeDTO srcFull = getFullNodeForAccount(account,src,current);
         StringElementDTO stringElement = srcFull.getTextInfo();
@@ -1884,7 +1919,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         stringElement.setActionId(actionTypeId);
         stringElement.setActionName(actionName);
 
-        String path = ConstService.getActionNodePath(actionTypeId, stringElement);
+        String path = LocalConstService.getActionNodePath(actionTypeId, stringElement);
 
         //如果未定义，使用当前路径
         if (StringUtils.isEmpty(path)) {
@@ -1909,7 +1944,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         //确定和调整文件提交动作
         String actionTypeId = request.getActionTypeId();
         if (StringUtils.isEmpty(actionTypeId)){
-            actionTypeId = Short.toString(ConstService.STORAGE_ACTION_TYPE_COMMIT);
+            actionTypeId = Short.toString(LocalConstService.STORAGE_ACTION_TYPE_COMMIT);
         }
 
         request.setActionTypeId(actionTypeId);
@@ -1926,13 +1961,13 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         if (request.getIsPassDesign() || request.getIsPassCheck() || request.getIsPassAudit()) {
             UpdateNodeFileDTO srcFileRequest = new UpdateNodeFileDTO();
             if (request.getIsPassDesign()) {
-                srcFileRequest.setPassDesign(ConstService.MODE_TRUE);
+                srcFileRequest.setPassDesign(LocalConstService.MODE_TRUE);
             }
             if (request.getIsPassCheck()) {
-                srcFileRequest.setPassCheck(ConstService.MODE_TRUE);
+                srcFileRequest.setPassCheck(LocalConstService.MODE_TRUE);
             }
             if (request.getIsPassAudit()) {
-                srcFileRequest.setPassAudit(ConstService.MODE_TRUE);
+                srcFileRequest.setPassAudit(LocalConstService.MODE_TRUE);
             }
             UpdateNodeDTO srcNodeRequest = new UpdateNodeDTO();
             srcNodeRequest.setLastModifyUserId(getAccountId(account));
@@ -1952,7 +1987,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     }
 
     private boolean isCoreFileServer(Short serverTypeId, String serverAddress){
-        boolean isCore = ConstService.FILE_SERVER_TYPE_DISK != DigitUtils.parseShort(serverTypeId);
+        boolean isCore = LocalConstService.FILE_SERVER_TYPE_DISK != DigitUtils.parseShort(serverTypeId);
         if (!isCore) isCore = StringUtils.isSame(serverAddress, fileServerConfig.getServerAddress());
         return isCore;
     }
@@ -2001,19 +2036,19 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         String actionTypeId = request.getActionTypeId();
         String serverTypeId = request.getServerTypeId();
         if (StringUtils.isEmpty(serverTypeId)){
-            serverTypeId = ConstService.getActionFileServerTypeId(actionTypeId);
+            serverTypeId = LocalConstService.getActionFileServerTypeId(actionTypeId);
         }
         if (StringUtils.isEmpty(serverTypeId)){
             serverTypeId = fileServerConfig.getServerTypeId();
         }
         String serverAddress = request.getServerAddress();
         if (StringUtils.isEmpty(serverAddress)){
-            serverAddress = ConstService.getActionFileServerAddress(actionTypeId);
+            serverAddress = LocalConstService.getActionFileServerAddress(actionTypeId);
             serverAddress = fileServerConfig.getServerAddress(serverTypeId,serverAddress);
         }
         String baseDir = request.getBaseDir();
         if (StringUtils.isEmpty(baseDir)){
-            baseDir = ConstService.getActionFileServerBaseDir(actionTypeId);
+            baseDir = LocalConstService.getActionFileServerBaseDir(actionTypeId);
             baseDir = fileServerConfig.getBaseDir(serverTypeId,baseDir);
         }
 
@@ -2039,7 +2074,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         String dstKey = createRealFile(fileServer,dstPath,localFile);
 
         //获取目标文件的类型
-        String nodeTypeId = ConstService.getActionNodeTypeId(actionTypeId);
+        String nodeTypeId = LocalConstService.getActionNodeTypeId(actionTypeId);
 
         //创建记录
         UpdateHistoryDTO hisRequest = BeanUtils.createCleanFrom(request,UpdateHistoryDTO.class);
@@ -2187,17 +2222,13 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         log.info("FileService.listFile：" + key);
 
         List<NodeFileDTO> list = fileListMap.get(key);
-        Long lastTime = fileIgnoreMap.get(key);
+        Long aliveTime = fileIgnoreMap.get(key);
         long currentTime = System.currentTimeMillis();
-        if ((lastTime == null) || ((currentTime - lastTime) > FILE_IGNORE_TIME)) {
+        if ((list == null) || (aliveTime == null) || (currentTime < aliveTime)) {
             list = getStorageService().listFile(query);
-            if (ObjectUtils.isNotEmpty(list)) {
-                fileListMap.put(key, list);
-                fileIgnoreMap.put(key,currentTime);
-                removeBufferEarliest(fileListMap,fileIgnoreMap,MAX_BUFFER_SIZE);
-            }
+            setFileList(key,list,(long)FILE_IGNORE_TIME);
         } else {
-            fileIgnoreMap.put(key,currentTime);
+            fileIgnoreMap.put(key,currentTime + FILE_IGNORE_TIME);
         }
 
         return list;
@@ -2282,6 +2313,14 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
             return;
         }
 
+        QueryNodeDTO prepareQuery = new QueryNodeDTO();
+        prepareQuery.setFileId(file.getId());
+        prepareQuery.setServerTypeId(fileServerConfig.getServerTypeId());
+        prepareQuery.setServerAddress(fileServerConfig.getServerAddress());
+        prepareQuery.setBaseDir(fileServerConfig.getBaseDir());
+        prepareQuery.setOnlyOne(LocalConstService.MODE_TRUE);
+        String key = JsonUtils.obj2CleanJson(prepareQuery);
+        boolean found = false;
         for (Map.Entry<String,List<NodeFileDTO>> entry : fListMap.entrySet()){
             for (NodeFileDTO f : entry.getValue()){
                 if (StringUtils.isSame(file.getId(),f.getId())){
@@ -2289,8 +2328,24 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
                     entry.getValue().add(file);
                     ignoreMap.put(entry.getKey(),System.currentTimeMillis());
                 }
+                if (StringUtils.isSame(key,entry.getKey())){
+                    found = true;
+                }
             }
         }
+        if (!found) {
+            List<NodeFileDTO> list = new ArrayList<>();
+            list.add(file);
+            setFileList(key,list,(long)FILE_IGNORE_TIME);
+        }
+    }
+
+    private void setFileList(String key, List<NodeFileDTO> list, Long aliveTime){
+        fileListMap.put(key,list);
+        if (aliveTime != null) {
+            fileIgnoreMap.put(key, System.currentTimeMillis() + aliveTime);
+        }
+        removeBufferEarliest(fileListMap,fileIgnoreMap,MAX_BUFFER_SIZE);
     }
 
     private void flushUpdateFileBuffer(Current current) throws CustomException {
@@ -2304,7 +2359,12 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     }
 
     private NodeFileDTO callStorageCreateFile(UpdateNodeFileDTO request, String accountId) throws CustomException {
-        NodeFileDTO file = getStorageService().createFile(request);
+        return callStorageCreateFile(request,accountId,null);
+    }
+
+    private NodeFileDTO callStorageCreateFile(UpdateNodeFileDTO request, String accountId, String id) throws CustomException {
+        NodeFileDTO file = getStorageService().createFileWithId(request,id);
+        updateFileListMap(file,fileListMap,fileIgnoreMap);
         return file;
     }
 
@@ -2381,11 +2441,11 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
     }
 
     private String getBackupNodeTypeId(String actionTypeId) {
-        return ConstService.getExtra(ConstService.CLASSIC_TYPE_ACTION,actionTypeId,8);
+        return LocalConstService.getExtra(LocalConstService.CLASSIC_TYPE_ACTION,actionTypeId,8);
     }
 
     private String getNodeTypeName(String nodeTypeId) {
-        return ConstService.getTitle(ConstService.CLASSIC_TYPE_STORAGE_NODE,nodeTypeId);
+        return LocalConstService.getTitle(LocalConstService.CLASSIC_TYPE_STORAGE_NODE,nodeTypeId);
     }
 
     @Override
@@ -2449,6 +2509,8 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
 
     @Override
     public SimpleNodeDTO createNodeForAccount(AccountDTO account, SimpleNodeDTO parent, @NotNull CreateNodeRequestDTO request, Current current) throws CustomException {
+        log.info("\t===>>> 进入 createNodeForAccount:" + JsonUtils.obj2CleanJson(parent) + JsonUtils.obj2CleanJson(request));
+        long t0 = System.currentTimeMillis();
         //填充与输入相关属性
         UpdateNodeDTO createRequest = BeanUtils.createCleanFrom(request,UpdateNodeDTO.class);
         String accountId = getAccountId(account);
@@ -2466,16 +2528,16 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         //填充文件类型
         if (request.getIsDirectory()) {
             if (isValid(parent)) {
-                createRequest.setTypeId(ConstService.getPathType(parent.getTypeId()));
+                createRequest.setTypeId(LocalConstService.getPathType(parent.getTypeId()));
             } else {
-                createRequest.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
+                createRequest.setTypeId(Short.toString(LocalConstService.STORAGE_NODE_TYPE_DIR_UNKNOWN));
             }
         } else {
             if (request.getFileLength() > 0) {
                 if (isValid(parent)) {
-                    createRequest.setTypeId(ConstService.getFileType(parent.getTypeId()));
+                    createRequest.setTypeId(LocalConstService.getFileType(parent.getTypeId()));
                 } else {
-                    createRequest.setTypeId(Short.toString(ConstService.STORAGE_NODE_TYPE_UNKNOWN));
+                    createRequest.setTypeId(Short.toString(LocalConstService.STORAGE_NODE_TYPE_UNKNOWN));
                 }
                 createRequest.setFileLength(Long.toString(request.getFileLength()));
                 //创建实体文件
@@ -2498,6 +2560,7 @@ public class FileServiceImpl extends CoreLocalService implements FileService {
         SimpleNodeDTO node =  callStorageCreateNode(parent,createRequest,getAccountId(account));
         node.setIsReadOnly(false);
         node.setCanCreateChild(node.getIsDirectory());
+        log.info("\t===>>> 退出 createNodeForAccount:" + (System.currentTimeMillis()-t0) + "ms," + JsonUtils.obj2CleanJson(node));
         return node;
     }
 

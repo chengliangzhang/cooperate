@@ -18,6 +18,41 @@
 
 	<!-- ConsoleAppender 控制台输出日志 -->
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
+				<expression>return message.contains("getLocalFileByNode");</expression>
+			</evaluator>
+			<onMatch>ACCEPT</onMatch>
+			<onMatch>DENY</onMatch>
+		</filter>
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
+				<expression>return logger.contains("DiskFileServer");</expression>
+			</evaluator>
+			<onMatch>ACCEPT</onMatch>
+			<onMatch>DENY</onMatch>
+		</filter>
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
+				<expression>return logger.contains("StorageServiceImpl");</expression>
+			</evaluator>
+			<onMatch>ACCEPT</onMatch>
+			<onMatch>DENY</onMatch>
+		</filter>
+		<!--<filter class="ch.qos.logback.core.filter.EvaluatorFilter">-->
+			<!--<evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">-->
+				<!--<expression>return logger.contains("dao.Storage");</expression>-->
+			<!--</evaluator>-->
+			<!--<onMatch>ACCEPT</onMatch>-->
+			<!--<onMatch>DENY</onMatch>-->
+		<!--</filter>-->
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
+				<expression>return logger.contains("coreUtils");</expression>
+			</evaluator>
+			<onMatch>ACCEPT</onMatch>
+			<onMatch>DENY</onMatch>
+		</filter>
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} %-5level [%10thread] %-30logger: %msg%n</pattern>
 		</encoder>

@@ -1,6 +1,6 @@
 package com.maoding.notice.config;
 
-import com.maoding.common.remoteService.RemoteTopicManagerPrx;
+import com.maoding.common.servicePrx.TopicManagerPrxImpl;
 import com.maoding.coreNotice.CoreNoticeService;
 import com.maoding.coreNotice.activeMQ.ActiveMQClient;
 import com.maoding.coreUtils.SpringUtils;
@@ -67,7 +67,7 @@ public class NoticeConfig {
     }
 
     public TopicManagerPrx getTopicManager(String service, String config){
-        return RemoteTopicManagerPrx.getInstance(service,config);
+        return TopicManagerPrxImpl.getInstance(service,config);
     }
     public TopicManagerPrx getTopicManager(){
         return getTopicManager(getTopicService(),getCommunicateConfig());

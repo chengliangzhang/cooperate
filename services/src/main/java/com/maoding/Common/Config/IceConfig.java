@@ -1,8 +1,8 @@
 package com.maoding.common.config;
 
 
-import com.maoding.common.remoteService.RemoteCommonServicePrx;
-import com.maoding.common.remoteService.RemoteTopicManagerPrx;
+import com.maoding.common.servicePrx.CommonServicePrxImpl;
+import com.maoding.common.servicePrx.TopicManagerPrxImpl;
 import com.maoding.common.zeroc.CommonServicePrx;
 import com.maoding.coreFileServer.web.CoreKeyValuePair;
 import com.maoding.coreUtils.StringUtils;
@@ -102,7 +102,7 @@ public class IceConfig extends BaseConfig {
     public CommonServicePrx getCommonService() {
         String serviceConfig = getProperty("common",getCommon(),null);
         CoreKeyValuePair serviceKeyValue = getServiceKeyValue(serviceConfig);
-        return RemoteCommonServicePrx.getInstance(serviceKeyValue.getKey(),serviceKeyValue.getValue());
+        return CommonServicePrxImpl.getInstance(serviceKeyValue.getKey(),serviceKeyValue.getValue());
     }
 
     public FileServicePrx getFileService() {
@@ -132,6 +132,6 @@ public class IceConfig extends BaseConfig {
     public TopicManagerPrx getTopicManager() {
         String serviceConfig = getProperty("topic",getTopic(),null);
         CoreKeyValuePair serviceKeyValue = getServiceKeyValue(serviceConfig);
-        return RemoteTopicManagerPrx.getInstance(serviceKeyValue.getKey(),serviceKeyValue.getValue());
+        return TopicManagerPrxImpl.getInstance(serviceKeyValue.getKey(),serviceKeyValue.getValue());
     }
 }

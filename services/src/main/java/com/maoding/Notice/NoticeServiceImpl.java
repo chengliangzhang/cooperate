@@ -2,7 +2,7 @@ package com.maoding.notice;
 
 import com.maoding.coreBase.CoreLocalService;
 import com.maoding.common.config.IceConfig;
-import com.maoding.common.ConstService;
+import com.maoding.common.LocalConstService;
 import com.maoding.common.zeroc.IdNameDTO;
 import com.maoding.common.zeroc.StringElementDTO;
 import com.maoding.coreNotice.CoreMessageDTO;
@@ -61,22 +61,22 @@ public class NoticeServiceImpl extends CoreLocalService implements NoticeService
         if (uj != null) {
             if (uj.getProjectList() != null){
                 for (IdNameDTO idName : uj.getProjectList()){
-                    subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_PROJECT)) + idName.getId(),client,current);
+                    subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_PROJECT)) + idName.getId(),client,current);
                 }
             }
             if (uj.getTaskList() != null){
                 for (IdNameDTO idName : uj.getTaskList()){
-                    subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_TASK)) + idName.getId(),client,current);
+                    subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_TASK)) + idName.getId(),client,current);
                 }
             }
             if (uj.getCompanyList() != null){
                 for (IdNameDTO idName : uj.getCompanyList()){
-                    subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_COMPANY)) + idName.getId(),client,current);
+                    subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_COMPANY)) + idName.getId(),client,current);
                 }
             }
         }
         //注册用户频道
-        subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_USER)) + account.getId(),client,current);
+        subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_USER)) + account.getId(),client,current);
 
         //注册公共频道
         String commonTopicString = noticeConfig.getCommonTopic();
@@ -100,91 +100,91 @@ public class NoticeServiceImpl extends CoreLocalService implements NoticeService
 
     @Override
     public void subscribeTopicForWeb(String topic, NoticeClientPrx client, Current current) {
-        TopicPrx topicPrx = getTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_PROJECT)) + topic,current);
-        subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_PROJECT)) + topic,client,current);
+        TopicPrx topicPrx = getTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_PROJECT)) + topic,current);
+        subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_PROJECT)) + topic,client,current);
         NoticeClientImpl noticeClient = new NoticeClientImpl(topicPrx);
         getCommonNoticeService().subscribeTopic(topic,noticeClient);
     }
 
     @Override
     public void subscribeTopicForUser(String id, NoticeClientPrx client, Current current) {
-        subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_USER)) + id,client,current);
+        subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_USER)) + id,client,current);
     }
 
     @Override
     public void subscribeTopicForTask(String id, NoticeClientPrx client, Current current) {
-        subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_TASK)) + id,client,current);
+        subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_TASK)) + id,client,current);
     }
 
     @Override
     public void subscribeTopicForProject(String id, NoticeClientPrx client, Current current) {
-        subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_PROJECT)) + id,client,current);
+        subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_PROJECT)) + id,client,current);
     }
 
     @Override
     public void subscribeTopicForCompany(String id, NoticeClientPrx client, Current current) {
-        subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_COMPANY)) + id,client,current);
+        subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_COMPANY)) + id,client,current);
     }
 
     @Override
     public void subscribeTopicForTaskList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_TASK)) + id, client, current);
+            subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_TASK)) + id, client, current);
         }
     }
 
     @Override
     public void subscribeTopicForProjectList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_PROJECT)) + id, client, current);
+            subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_PROJECT)) + id, client, current);
         }
     }
 
     @Override
     public void subscribeTopicForCompanyList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            subscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_COMPANY)) + id, client, current);
+            subscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_COMPANY)) + id, client, current);
         }
     }
 
     @Override
     public void unSubscribeTopicForUser(String id, NoticeClientPrx client, Current current) {
-        unSubscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_USER)) + id, client, current);
+        unSubscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_USER)) + id, client, current);
     }
 
     @Override
     public void unSubscribeTopicForTask(String id, NoticeClientPrx client, Current current) {
-        unSubscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_TASK)) + id, client, current);
+        unSubscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_TASK)) + id, client, current);
     }
 
     @Override
     public void unSubscribeTopicForProject(String id, NoticeClientPrx client, Current current) {
-        unSubscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_PROJECT)) + id, client, current);
+        unSubscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_PROJECT)) + id, client, current);
     }
 
     @Override
     public void unSubscribeTopicForCompany(String id, NoticeClientPrx client, Current current) {
-        unSubscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_COMPANY)) + id, client, current);
+        unSubscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_COMPANY)) + id, client, current);
     }
 
     @Override
     public void unSubscribeTopicForTaskList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            unSubscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_TASK)) + id, client, current);
+            unSubscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_TASK)) + id, client, current);
         }
     }
 
     @Override
     public void unSubscribeTopicForProjectList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            unSubscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_PROJECT)) + id, client, current);
+            unSubscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_PROJECT)) + id, client, current);
         }
     }
 
     @Override
     public void unSubscribeTopicForCompanyList(List<String> idList, NoticeClientPrx client, Current current) {
         for (String id : idList) {
-            unSubscribeTopic(ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_COMPANY)) + id, client, current);
+            unSubscribeTopic(LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_COMPANY)) + id, client, current);
         }
     }
 
@@ -227,22 +227,22 @@ public class NoticeServiceImpl extends CoreLocalService implements NoticeService
 
     @Override
     public void noticeToUser(MessageDTO message, String id, Current current) {
-        notice(message, ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_USER)) + id,current);
+        notice(message, LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_USER)) + id,current);
     }
 
     @Override
     public void noticeToTask(MessageDTO message, String id, Current current) {
-        notice(message, ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_TASK)) + id,current);
+        notice(message, LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_TASK)) + id,current);
     }
 
     @Override
     public void noticeToProject(MessageDTO message, String id, Current current) {
-        notice(message, ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_PROJECT)) + id,current);
+        notice(message, LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_PROJECT)) + id,current);
     }
 
     @Override
     public void noticeToCompany(MessageDTO message, String id, Current current) {
-        notice(message, ConstService.getTopicPrefix(Short.toString(ConstService.NOTICE_TYPE_COMPANY)) + id,current);
+        notice(message, LocalConstService.getTopicPrefix(Short.toString(LocalConstService.NOTICE_TYPE_COMPANY)) + id,current);
     }
 
     @Override
@@ -331,17 +331,17 @@ public class NoticeServiceImpl extends CoreLocalService implements NoticeService
             String[] typeArray = typeIdString.split(":");
             for (String sTypeId : typeArray) {
                 String typeId = sTypeId;
-                String topic = ConstService.getNoticeTopic(typeId);
+                String topic = LocalConstService.getNoticeTopic(typeId);
                 if (stringElement != null) {
-                    topic = ConstService.convertString(topic,stringElement);
+                    topic = LocalConstService.convertString(topic,stringElement);
                 }
-                String title = ConstService.getNoticeTitle(typeId);
+                String title = LocalConstService.getNoticeTitle(typeId);
                 if (stringElement != null) {
-                    title = ConstService.convertString(title,stringElement);
+                    title = LocalConstService.convertString(title,stringElement);
                 }
-                String content = ConstService.getNoticeContent(typeId);
+                String content = LocalConstService.getNoticeContent(typeId);
                 if (stringElement != null) {
-                    content = ConstService.convertString(content,stringElement);
+                    content = LocalConstService.convertString(content,stringElement);
                 }
                 String accountId = (account != null) ? account.getId() : null;
                 if (!isWebNotice(topic)) {

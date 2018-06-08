@@ -22,6 +22,99 @@ package com.maoding.common.zeroc;
 
 public interface CommonServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default com.maoding.fileServer.zeroc.FileServicePrx getDefaultFileService()
+    {
+        return getDefaultFileService(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.fileServer.zeroc.FileServicePrx getDefaultFileService(java.util.Map<String, String> context)
+    {
+        return _iceI_getDefaultFileServiceAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.fileServer.zeroc.FileServicePrx> getDefaultFileServiceAsync()
+    {
+        return _iceI_getDefaultFileServiceAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.fileServer.zeroc.FileServicePrx> getDefaultFileServiceAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_getDefaultFileServiceAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.fileServer.zeroc.FileServicePrx> _iceI_getDefaultFileServiceAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.fileServer.zeroc.FileServicePrx> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getDefaultFileService", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     com.maoding.fileServer.zeroc.FileServicePrx ret;
+                     ret = com.maoding.fileServer.zeroc.FileServicePrx.uncheckedCast(istr.readProxy());
+                     return ret;
+                 });
+        return f;
+    }
+
+    default com.maoding.user.zeroc.UserServicePrx getDefaultUserService()
+    {
+        return getDefaultUserService(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default com.maoding.user.zeroc.UserServicePrx getDefaultUserService(java.util.Map<String, String> context)
+    {
+        return _iceI_getDefaultUserServiceAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.user.zeroc.UserServicePrx> getDefaultUserServiceAsync()
+    {
+        return _iceI_getDefaultUserServiceAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<com.maoding.user.zeroc.UserServicePrx> getDefaultUserServiceAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_getDefaultUserServiceAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<com.maoding.user.zeroc.UserServicePrx> _iceI_getDefaultUserServiceAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<com.maoding.user.zeroc.UserServicePrx> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getDefaultUserService", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     com.maoding.user.zeroc.UserServicePrx ret;
+                     ret = com.maoding.user.zeroc.UserServicePrx.uncheckedCast(istr.readProxy());
+                     return ret;
+                 });
+        return f;
+    }
+
+    default ConstServicePrx getDefaultConstService()
+    {
+        return getDefaultConstService(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default ConstServicePrx getDefaultConstService(java.util.Map<String, String> context)
+    {
+        return _iceI_getDefaultConstServiceAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<ConstServicePrx> getDefaultConstServiceAsync()
+    {
+        return _iceI_getDefaultConstServiceAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<ConstServicePrx> getDefaultConstServiceAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_getDefaultConstServiceAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<ConstServicePrx> _iceI_getDefaultConstServiceAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<ConstServicePrx> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getDefaultConstService", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     ConstServicePrx ret;
+                     ret = ConstServicePrx.uncheckedCast(istr.readProxy());
+                     return ret;
+                 });
+        return f;
+    }
+
     default com.maoding.fileServer.zeroc.FileServicePrx getFileService(String service, String config)
     {
         return getFileService(service, config, com.zeroc.Ice.ObjectPrx.noExplicitContext);
@@ -153,6 +246,64 @@ public interface CommonServicePrx extends com.zeroc.Ice.ObjectPrx
                  }, istr -> {
                      com.maoding.user.zeroc.UserServicePrx ret;
                      ret = com.maoding.user.zeroc.UserServicePrx.uncheckedCast(istr.readProxy());
+                     return ret;
+                 });
+        return f;
+    }
+
+    default void updateService()
+    {
+        updateService(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void updateService(java.util.Map<String, String> context)
+    {
+        _iceI_updateServiceAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> updateServiceAsync()
+    {
+        return _iceI_updateServiceAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> updateServiceAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_updateServiceAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_updateServiceAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "updateService", null, sync, null);
+        f.invoke(false, context, null, null, null);
+        return f;
+    }
+
+    default String getNewestClient()
+    {
+        return getNewestClient(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default String getNewestClient(java.util.Map<String, String> context)
+    {
+        return _iceI_getNewestClientAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> getNewestClientAsync()
+    {
+        return _iceI_getNewestClientAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> getNewestClientAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_getNewestClientAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_getNewestClientAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getNewestClient", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     String ret;
+                     ret = istr.readString();
                      return ret;
                  });
         return f;

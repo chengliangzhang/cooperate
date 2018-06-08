@@ -1,4 +1,4 @@
-package com.maoding.common.remoteService;
+package com.maoding.common.servicePrx;
 
 import com.maoding.coreBase.CoreRemoteService;
 import com.maoding.coreUtils.SpringUtils;
@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
  * 日    期 : 2018/1/17 9:50
  * 描    述 :
  */
-public class RemoteNoticeServicePrx extends CoreRemoteService<NoticeServicePrx> implements NoticeServicePrx{
+public class NoticeServicePrxImpl extends CoreRemoteService<NoticeServicePrx> implements NoticeServicePrx{
 
     private static NoticeServicePrx lastPrx = null;
     private static NoticeService noticeService = null;
@@ -32,7 +32,7 @@ public class RemoteNoticeServicePrx extends CoreRemoteService<NoticeServicePrx> 
     /** 异步方式获取业务接口代理对象 */
     public static NoticeServicePrx getInstance(String service, String config) {
         if ((lastPrx == null) || (StringUtils.isNotSame(lastService,service)) || (StringUtils.isNotSame(lastConfig,config))){
-            RemoteNoticeServicePrx prx = new RemoteNoticeServicePrx();
+            NoticeServicePrxImpl prx = new NoticeServicePrxImpl();
             lastPrx = prx.getServicePrx(service, config, NoticeServicePrx.class, _NoticeServicePrxI.class, prx);
             lastService = service;
             lastConfig = config;

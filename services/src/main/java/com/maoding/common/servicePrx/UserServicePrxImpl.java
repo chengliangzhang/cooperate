@@ -1,4 +1,4 @@
-package com.maoding.common.remoteService;
+package com.maoding.common.servicePrx;
 
 import com.maoding.common.zeroc.IdNameDTO;
 import com.maoding.coreBase.CoreRemoteService;
@@ -14,7 +14,7 @@ import java.util.List;
  * 日    期 : 2018/1/8 11:54
  * 描    述 :
  */
-public class RemoteUserServicePrx extends CoreRemoteService<UserServicePrx> implements UserServicePrx {
+public class UserServicePrxImpl extends CoreRemoteService<UserServicePrx> implements UserServicePrx {
 
     private static UserServicePrx lastPrx = null;
     private static UserService userService = null;
@@ -31,7 +31,7 @@ public class RemoteUserServicePrx extends CoreRemoteService<UserServicePrx> impl
     /** 异步方式获取业务接口代理对象 */
     public static UserServicePrx getInstance(String service, String config) {
         if ((lastPrx == null) || (StringUtils.isNotSame(lastService,service)) || (StringUtils.isNotSame(lastConfig,config))){
-            RemoteUserServicePrx prx = new RemoteUserServicePrx();
+            UserServicePrxImpl prx = new UserServicePrxImpl();
             lastPrx = prx.getServicePrx(service, config, UserServicePrx.class, _UserServicePrxI.class, prx);
             lastService = service;
             lastConfig = config;

@@ -1,4 +1,4 @@
-package com.maoding.common.remoteService;
+package com.maoding.common.servicePrx;
 
 import com.maoding.common.zeroc.CustomException;
 import com.maoding.common.zeroc.DeleteAskDTO;
@@ -15,7 +15,7 @@ import java.util.List;
  * 日    期 : 2018/1/8 11:54
  * 描    述 :
  */
-public class RemoteStorageServicePrx extends CoreRemoteService<StorageServicePrx> implements StorageServicePrx {
+public class StorageServicePrxImpl extends CoreRemoteService<StorageServicePrx> implements StorageServicePrx {
 
     private static StorageServicePrx lastPrx = null;
     private static StorageService storageService = null;
@@ -32,7 +32,7 @@ public class RemoteStorageServicePrx extends CoreRemoteService<StorageServicePrx
     /** 异步方式获取业务接口代理对象 */
     public static StorageServicePrx getInstance(String service, String config) {
         if ((lastPrx == null) || (StringUtils.isNotSame(lastService,service)) || (StringUtils.isNotSame(lastConfig,config))){
-            RemoteStorageServicePrx prx = new RemoteStorageServicePrx();
+            StorageServicePrxImpl prx = new StorageServicePrxImpl();
             lastPrx = prx.getServicePrx(service, config, StorageServicePrx.class, _StorageServicePrxI.class, prx);
             lastService = service;
             lastConfig = config;
@@ -100,6 +100,11 @@ public class RemoteStorageServicePrx extends CoreRemoteService<StorageServicePrx
     @Override
     public List<SimpleNodeDTO> listRoot(String accountId) throws CustomException {
         return getStorageService().listRoot(accountId,null);
+    }
+
+    @Override
+    public NodeFileDTO createFileWithId(UpdateNodeFileDTO request, String id) throws CustomException {
+        return getStorageService().createFileWithId(request,id,null);
     }
 
     @Override

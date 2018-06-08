@@ -22,6 +22,107 @@ package com.maoding.fileServer.zeroc;
 
 public interface FileServicePrx extends com.zeroc.Ice.ObjectPrx
 {
+    default String getNewestClient()
+    {
+        return getNewestClient(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default String getNewestClient(java.util.Map<String, String> context)
+    {
+        return _iceI_getNewestClientAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> getNewestClientAsync()
+    {
+        return _iceI_getNewestClientAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> getNewestClientAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_getNewestClientAsync(context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_getNewestClientAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getNewestClient", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     String ret;
+                     ret = istr.readString();
+                     return ret;
+                 });
+        return f;
+    }
+
+    default FileDataDTO readClient(String version, long pos, int size)
+    {
+        return readClient(version, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default FileDataDTO readClient(String version, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readClientAsync(version, pos, size, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<FileDataDTO> readClientAsync(String version, long pos, int size)
+    {
+        return _iceI_readClientAsync(version, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<FileDataDTO> readClientAsync(String version, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readClientAsync(version, pos, size, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<FileDataDTO> _iceI_readClientAsync(String iceP_version, long iceP_pos, int iceP_size, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<FileDataDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "readClient", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_version);
+                     ostr.writeLong(iceP_pos);
+                     ostr.writeInt(iceP_size);
+                 }, istr -> {
+                     FileDataDTO ret;
+                     ret = FileDataDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    default FileDataDTO readService(String version, long pos, int size)
+    {
+        return readService(version, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default FileDataDTO readService(String version, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readServiceAsync(version, pos, size, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<FileDataDTO> readServiceAsync(String version, long pos, int size)
+    {
+        return _iceI_readServiceAsync(version, pos, size, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<FileDataDTO> readServiceAsync(String version, long pos, int size, java.util.Map<String, String> context)
+    {
+        return _iceI_readServiceAsync(version, pos, size, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<FileDataDTO> _iceI_readServiceAsync(String iceP_version, long iceP_pos, int iceP_size, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<FileDataDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "readService", null, sync, null);
+        f.invoke(true, context, null, ostr -> {
+                     ostr.writeString(iceP_version);
+                     ostr.writeLong(iceP_pos);
+                     ostr.writeInt(iceP_size);
+                 }, istr -> {
+                     FileDataDTO ret;
+                     ret = FileDataDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
     default void flushBuffer()
         throws com.maoding.common.zeroc.CustomException
     {

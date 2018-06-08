@@ -1,6 +1,6 @@
 package com.maoding.common.config;
 
-import com.maoding.common.ConstService;
+import com.maoding.common.LocalConstService;
 import com.maoding.coreBase.CoreProperties;
 import com.maoding.coreUtils.ObjectUtils;
 import com.maoding.coreUtils.StringUtils;
@@ -48,7 +48,7 @@ public class BaseConfig {
 
     public String getProperty(short classicId, @NotNull String name){
         //从数据库读取配置信息
-        String p = ConstService.getExtraByTitle(classicId,name + getIdentify());
+        String p = LocalConstService.getExtraByTitle(classicId,name + getIdentify());
         //如果没有从数据库内读取到配置信息，则从配置文件读取配置信息
         if (StringUtils.isEmpty(p) && ObjectUtils.isNotEmpty(getProperties())) {
             p = getProperties().getProperty(name);
@@ -57,7 +57,7 @@ public class BaseConfig {
     }
 
     public String getProperty(@NotNull String name){
-        return getProperty(ConstService.CLASSIC_TYPE_CONFIG,name);
+        return getProperty(LocalConstService.CLASSIC_TYPE_CONFIG,name);
     }
 
     public String getProperty(String name,String defaultConfig,String defaultConst){

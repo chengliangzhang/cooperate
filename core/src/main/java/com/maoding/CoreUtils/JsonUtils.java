@@ -41,7 +41,9 @@ public class JsonUtils {
         String json = null;
         try {
             Map<String,Object> map = BeanUtils.createCleanMapFrom(obj);
-            json = objectMapper.writeValueAsString(map);
+            if (map != null) {
+                json = objectMapper.writeValueAsString(map);
+            }
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(),e);
         }

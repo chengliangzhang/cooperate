@@ -1,4 +1,4 @@
-package com.maoding.common.remoteService;
+package com.maoding.common.servicePrx;
 
 import com.maoding.common.zeroc.CommonService;
 import com.maoding.common.zeroc.CommonServicePrx;
@@ -17,7 +17,7 @@ import com.maoding.user.zeroc.UserServicePrx;
  * 日    期 : 2018/5/29 15:19
  * 描    述 :
  */
-public class RemoteCommonServicePrx extends CoreRemoteService<CommonServicePrx> implements CommonServicePrx {
+public class CommonServicePrxImpl extends CoreRemoteService<CommonServicePrx> implements CommonServicePrx {
     private static CommonServicePrx lastPrx = null;
     private static CommonService commonService = null;
     private static String lastService = null;
@@ -33,7 +33,7 @@ public class RemoteCommonServicePrx extends CoreRemoteService<CommonServicePrx> 
     /** 同步方式获取业务接口代理对象 */
     public static CommonServicePrx getInstance(String service, String config) {
         if ((lastPrx == null) || (StringUtils.isNotSame(lastService,service)) || (StringUtils.isNotSame(lastConfig,config))){
-            RemoteCommonServicePrx prx = new RemoteCommonServicePrx();
+            CommonServicePrxImpl prx = new CommonServicePrxImpl();
             if (StringUtils.isNotEmpty(service)) {
                 lastPrx = prx.getServicePrx(service, config, CommonServicePrx.class, _CommonServicePrxI.class);
             } else {

@@ -369,6 +369,7 @@ module zeroc {
         string issueId; //节点所属签发任务id
 
         //文件信息
+        string fileId; //文件编号
         string serverTypeId; //文件存储服务器类型
         string serverAddress; //文件存储服务器地址
         string baseDir; //文件在文件存储服务器上的存储位置

@@ -6,6 +6,7 @@
         <if test="accountId != null and accountId != ''.toString()">
             inner join maoding_web_project_member project_member on (project_member.deleted = 0
                     and node.project_id = project_member.project_id
+                    and node.task_id = ifnull(project_member.node_id,project_member.target_id)
                     and find_in_set(project_member.account_id,#{accountId}))
             <if test="(roleAttr != null and roleAttr != ''.toString())
                     or (isTaskLeader != null and isTaskLeader != ''.toString())
@@ -944,6 +945,7 @@
     <sql id="QueryForFile">
         <!-- 节点信息 -->
         <if test="(id != null and id != ''.toString())
+                or (fuzzyId != null and fuzzyId != ''.toString())
                 or (name != null and name != ''.toString())
                 or (fuzzyName != null and fuzzyName != ''.toString())
                 or (pid != null and pid != ''.toString())
@@ -986,8 +988,9 @@
             <include refid="QueryForNodeStorage"/>
         </if>
         <!-- 文件信息 -->
-        <if test="fuzzyId != null and fuzzyId != ''.toString()">
-            and find_in_set(file.id,#{fuzzyId})
+        <if test="fileId != null and fileId != ''.toString()">
+            and ((file.is_mirror = 0 and find_in_set(file.id,#{fileId}))
+                or (file.is_mirror != 0 and find_in_set(file.main_file_id,#{fileId})))
         </if>
         <if test="companyId != null and companyId != ''.toString()">
             and find_in_set(file.company_id,#{companyId})
@@ -1042,24 +1045,14 @@
         ">
             inner join maoding_web_company file_company on (file_company.status = '0' and file_company.id = file.company_id)
         </if>
-        <if test="(needOwnerName != null and needOwnerName != ''.toString())
-                or (fuzzyOwnerName != null and fuzzyOwnerName != ''.toString())
-        ">
-            inner join maoding_web_account file_owner on (file_owner.status = '0' and file_owner.id = file.owner_user_id)
-        </if>
         <if test="(lastModifyUserName != null and lastModifyUserName != ''.toString())
                 or (fuzzyLastModifyUserName != null and fuzzyLastModifyUserName != ''.toString())
                 or (needLastModifyUserName != null and needLastModifyUserName != ''.toString())
         ">
             inner join maoding_web_account file_last_modifier on (file_last_modifier.status = '0' and file_last_modifier.id = file.owner_user_id)
         </if>
-        <if test="(needFileHistoryInfo != null and needFileHistoryInfo != ''.toString())">
-            left join md_history ca_history on (ca_history.is_ca = 1
-                and ca_history.main_file_id = ifnull(file.main_file_id,file.id))
-            left join md_history commit_history on (commit_history.is_commit = 1
-                and commit_history.main_file_id = ifnull(file.main_file_id,file.id))
-        </if>
         <if test="(id != null and id != ''.toString())
+                or (fuzzyId != null and fuzzyId != ''.toString())
                 or (name != null and name != ''.toString())
                 or (fuzzyName != null and fuzzyName != ''.toString())
                 or (pid != null and pid != ''.toString())
@@ -1100,7 +1093,7 @@
                 or (needRoleInfo != null and needRoleInfo != ''.toString())
         ">
             inner join md_node_storage node on ((file.is_mirror = 0 and node.storage_id = file.id)
-                or (file.is_mirror = 1 and node.storage_id = file.main_file_id))
+                or (file.is_mirror != 0 and node.storage_id = file.main_file_id))
             <include refid="ProjectMemberTable"/>
         </if>
         <if test="(needPath != null and needPath != ''.toString())
@@ -1141,6 +1134,17 @@
         </if>
         <if test="(needMainFileInfo != null and needMainFileInfo != ''.toString())">
             left join md_list_storage_file main_file on (main_file.deleted = 0 and main_file.id = file.main_file_id)
+        </if>
+        <if test="(needFileHistoryInfo != null and needFileHistoryInfo != ''.toString())">
+            left join md_history ca_history on (ca_history.is_ca = 1
+                and ca_history.main_file_id = ifnull(file.main_file_id,file.id))
+            left join md_history commit_history on (commit_history.is_commit = 1
+                and commit_history.main_file_id = ifnull(file.main_file_id,file.id))
+        </if>
+        <if test="(needOwnerName != null and needOwnerName != ''.toString())
+                or (fuzzyOwnerName != null and fuzzyOwnerName != ''.toString())
+        ">
+            left join maoding_web_account file_owner on (file_owner.status = '0' and file_owner.id = file.owner_user_id)
         </if>
     </sql>
 

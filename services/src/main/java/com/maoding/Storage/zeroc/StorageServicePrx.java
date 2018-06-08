@@ -602,6 +602,58 @@ public interface StorageServicePrx extends com.zeroc.Ice.ObjectPrx
         com.maoding.common.zeroc.CustomException.class
     };
 
+    default NodeFileDTO createFileWithId(UpdateNodeFileDTO request, String id)
+        throws com.maoding.common.zeroc.CustomException
+    {
+        return createFileWithId(request, id, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default NodeFileDTO createFileWithId(UpdateNodeFileDTO request, String id, java.util.Map<String, String> context)
+        throws com.maoding.common.zeroc.CustomException
+    {
+        try
+        {
+            return _iceI_createFileWithIdAsync(request, id, context, true).waitForResponseOrUserEx();
+        }
+        catch(com.maoding.common.zeroc.CustomException ex)
+        {
+            throw ex;
+        }
+        catch(com.zeroc.Ice.UserException ex)
+        {
+            throw new com.zeroc.Ice.UnknownUserException(ex.ice_id(), ex);
+        }
+    }
+
+    default java.util.concurrent.CompletableFuture<NodeFileDTO> createFileWithIdAsync(UpdateNodeFileDTO request, String id)
+    {
+        return _iceI_createFileWithIdAsync(request, id, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<NodeFileDTO> createFileWithIdAsync(UpdateNodeFileDTO request, String id, java.util.Map<String, String> context)
+    {
+        return _iceI_createFileWithIdAsync(request, id, context, false);
+    }
+
+    default com.zeroc.IceInternal.OutgoingAsync<NodeFileDTO> _iceI_createFileWithIdAsync(UpdateNodeFileDTO iceP_request, String iceP_id, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<NodeFileDTO> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "createFileWithId", null, sync, _iceE_createFileWithId);
+        f.invoke(true, context, null, ostr -> {
+                     UpdateNodeFileDTO.ice_write(ostr, iceP_request);
+                     ostr.writeString(iceP_id);
+                 }, istr -> {
+                     NodeFileDTO ret;
+                     ret = NodeFileDTO.ice_read(istr);
+                     return ret;
+                 });
+        return f;
+    }
+
+    static final Class<?>[] _iceE_createFileWithId =
+    {
+        com.maoding.common.zeroc.CustomException.class
+    };
+
     default NodeFileDTO createMirror(NodeFileDTO src, UpdateNodeFileDTO request)
         throws com.maoding.common.zeroc.CustomException
     {

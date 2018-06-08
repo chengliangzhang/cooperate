@@ -64,7 +64,7 @@ mapper:
 # 日志
 # ===================================================================
 logging:
-    config: classpath:logback-dev.xml
+    config: classpath:logback-test.xml
 
 # ===================================================================
 # ICE

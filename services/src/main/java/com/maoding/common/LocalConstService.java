@@ -2,6 +2,7 @@ package com.maoding.common;
 
 import com.maoding.common.dao.ConstDao;
 import com.maoding.common.entity.ConstEntity;
+import com.maoding.common.zeroc.ConstQuery;
 import com.maoding.common.zeroc.IdNameDTO;
 import com.maoding.common.zeroc.StringElementDTO;
 import com.maoding.coreUtils.DigitUtils;
@@ -23,9 +24,9 @@ import java.util.Map;
  * 日    期 : 2018/1/12 19:21
  * 描    述 :
  */
-public class ConstService {
+public class LocalConstService {
     /** 日志对象 */
-    private static final Logger log = LoggerFactory.getLogger(ConstService.class);
+    private static final Logger log = LoggerFactory.getLogger(LocalConstService.class);
 
     public static final short CLASSIC_TYPE_CONST = 0;
     public static final short CLASSIC_TYPE_RIGHT = 1;
@@ -160,7 +161,7 @@ public class ConstService {
             }
             assert (constDao != null);
             Map<Short,Map<String,ConstEntity>> cMap = new HashMap<>();
-            List<ConstEntity> constList = constDao.selectAll();
+            List<ConstEntity> constList = constDao.listConst(new ConstQuery());
             for (ConstEntity e : constList){
                 Map<String, ConstEntity> vMap = cMap.computeIfAbsent(e.getClassicId(), k -> new HashMap<>());
                 vMap.put(e.getCodeId(),e);

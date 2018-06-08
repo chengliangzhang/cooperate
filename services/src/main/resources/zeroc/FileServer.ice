@@ -6,6 +6,11 @@
 [["java:package:com.maoding.fileServer"]]
 module zeroc {
     interface FileService {
+
+        string getNewestClient(); //获取与此文件服务器匹配的最新客户端版本
+        FileDataDTO readClient(string version,long pos,int size); //读取指定客户端版本的升级文件
+        FileDataDTO readService(string version,long pos,int size); //读取指定客户端版本的升级文件
+
         void flushBuffer() throws CustomException; //更新写缓存
         SummaryFileDTO summaryFile(QuerySummarySimpleDTO query) throws CustomException; //查询文件所占用空间
         void clearAll(AccountDTO account) throws CustomException; //整理文件服务器上的文件，并清理不再用到的文件

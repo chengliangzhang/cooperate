@@ -18,6 +18,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     private static final String GET = "get";
     private static final String SET = "set";
     private static final String DOT = ".";
+    private static final String DEFAULT_KEY_NAME = "Id";
 
     private static Map<Class, MethodAccess> methodMap = new HashMap<>();
     private static Map<String, Integer> methodIndexMap = new HashMap<>();
@@ -528,10 +529,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     public static <T> T cleanProperties(T obj){
         if (ObjectUtils.isEmpty(obj)) {
             return null;
-        } else if ((obj.getClass().isPrimitive()) ||
-                (DigitUtils.isDigitalClass(obj.getClass())) ||
-                (obj instanceof String) ||
-                (obj.getClass().isArray())) {
+        } else if (ObjectUtils.isBasicType(obj.getClass())) {
             return obj;
         }
 
@@ -580,5 +578,47 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             }
         }
         return obj;
+    }
+
+    public static <T,K> K getProperty(T obj,String ptyName,Class<? extends K> ptyClass,boolean isClean){
+        if ((ObjectUtils.isEmpty(obj)) || (ObjectUtils.isBasicType(obj.getClass())) || (StringUtils.isEmpty(ptyName))){
+            return null;
+        }
+
+        MethodAccess objMethodAccess = methodMap.get(obj.getClass());
+        if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
+
+        String getKey = obj.getClass().getName() + DOT + GET + ptyName;
+        Integer getIndex = methodIndexMap.get(getKey);
+        if ((objMethodAccess == null) || (getIndex == null)){
+            return null;
+        }
+
+        if (isClean) {
+            return ptyClass.cast(cleanProperties(objMethodAccess.invoke(obj, getIndex)));
+        } else {
+            return ptyClass.cast(objMethodAccess.invoke(obj, getIndex));
+        }
+    }
+
+    public static <T> boolean isValid(T obj,String keyName){
+        if (ObjectUtils.isEmpty(obj)){
+            return false;
+        } else if (ObjectUtils.isBasicType(obj.getClass())) {
+            return false;
+        } else if (StringUtils.isEmpty(keyName)){
+            return ObjectUtils.isNotEmpty(obj);
+        } else {
+            String key = getProperty(obj,keyName,String.class,false);
+            return StringUtils.isNotEmpty(key);
+        }
+    }
+
+    public static <T> boolean isValid(T obj){
+        return isValid(obj,DEFAULT_KEY_NAME);
+    }
+
+    public static <T> String getId(T obj){
+        return getProperty(obj,DEFAULT_KEY_NAME,String.class,false);
     }
 }
